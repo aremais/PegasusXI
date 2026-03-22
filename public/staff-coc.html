@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PegasusXI • Staff Code of Conduct</title>
+  <meta name="description" content="PegasusXI private server portal" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Force header layout on live (overrides cached/different CSS) */
+    header .nav { display: flex !important; flex-wrap: nowrap !important; align-items: center !important; }
+    header .brand-wrap { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: center !important; gap: 8px !important; }
+    header .brand-icon { width: 48px !important; height: 48px !important; max-width: 48px !important; max-height: 48px !important; display: block !important; object-fit: contain !important; }
+    header nav ul { display: flex !important; flex-wrap: nowrap !important; flex-direction: row !important; align-items: center !important; }
+    header .nav-dropdown { display: flex !important; flex-direction: column !important; align-items: flex-start !important; }
+    header .nav-dropdown .dropdown-menu { display: block !important; position: absolute !important; top: 100% !important; left: 0 !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+    header .nav-dropdown:hover .dropdown-menu, header .nav-dropdown.open .dropdown-menu { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+    header .nav-dropdown .dropdown-menu li { display: block !important; width: 100% !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="nav">
+        <div class="brand-wrap">
+          <a class="brand" href="index.html" aria-label="PegasusXI Home">
+            <img src="images/icon.png" alt="PegasusXI" class="brand-icon" width="48" height="48" />
+          </a>
+          <a class="brand-play" href="play-now.html">Play Now</a>
+        </div>
+        <nav aria-label="Primary"><ul>
+          <li class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">About <span class="chevron" aria-hidden="true">▼</span></button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="server-info.html">Server Info</a></li>
+              <li><a href="addons.html">Addons</a></li>
+            </ul>
+          </li>
+          <li><a href="rules.html">Rules</a></li>
+          <li><a href="news.html">News</a></li>
+          <li class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">Tools <span class="chevron" aria-hidden="true">▼</span></button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="players.html">Players</a></li>
+              <li><a href="seeking.html">Seeking</a></li>
+              <li><a href="items.html">Items</a></li>
+              <li><a href="bazaar.html">Bazaar</a></li>
+              <li><a href="bcnm-ranking.html">BCNM Ranking</a></li>
+              <li><a href="wiki.html">Wiki</a></li>
+              <li><a href="yells.html">Yells</a></li>
+            </ul>
+          </li>
+        </ul></nav>
+        <div class="nav-right">
+          <div id="navStatus" class="nav-status" aria-live="polite">
+            <span class="dot ok"></span><span class="nav-status-text">— Online</span>
+          </div>
+          <span class="nav-game-icon" aria-hidden="true"></span>
+          <span class="nav-sep" aria-hidden="true"></span>
+          <a class="nav-link" href="login.html">Login</a>
+          <a class="nav-link" href="register.html">Register</a>
+          <button class="btn hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">Menu</button>
+        </div>
+      </div>
+      <div id="mobileMenu" class="mobile-menu" aria-label="Mobile navigation" style="display:none">
+        <a href="server-info.html">Server Info</a>
+        <a href="addons.html">Addons</a>
+        <a href="rules.html">Rules</a>
+        <a href="news.html">News</a>
+        <a href="players.html">Players</a>
+        <a href="seeking.html">Seeking</a>
+        <a href="items.html">Items</a>
+        <a href="bazaar.html">Bazaar</a>
+        <a href="bcnm-ranking.html">BCNM Ranking</a>
+        <a href="wiki.html">Wiki</a>
+        <a href="yells.html">Yells</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 18px 0 0;">
+    
+<section class="card pad">
+  <div class="section-title">
+    <h2>Staff Code of Conduct</h2>
+    <span>Transparency matters</span>
+  </div>
+  <div class="list">
+    <div class="post"><strong>Impartiality</strong><p>No favoritism. No playing on “staff powers.”</p></div>
+    <div class="post"><strong>Conflicts of interest</strong><p>Disclose relationships and step back from decisions.</p></div>
+    <div class="post"><strong>Logs & accountability</strong><p>Maintain audit trails for staff actions.</p></div>
+  </div>
+</section>
+
+  </main>
+
+  <div id="siteFooter"></div>
+  <script src="app.js"></script>
+</body>
+</html>

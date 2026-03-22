@@ -1,41 +1,46 @@
-<p align="center">
-    <img width="256" height="256" src="res/lsb_logo_circle.png">
-    <h1 align="center">LandSandBoat</h1>
-</p>
+# PegasusXI Website Server
 
-<p align="center">
-An open-source server emulator for FFXI.
-</p>
+Serves the PegasusXI static site and proxies `/api/*` to the game-api.
 
-<p align="center">
-<a href="https://github.com/LandSandBoat/server/actions/workflows/build.yml"><img src="https://github.com/LandSandBoat/server/actions/workflows/build.yml/badge.svg?branch=base"/></a>
-<a href="https://github.com/LandSandBoat/server/actions/workflows/test.yml"><img src="https://github.com/LandSandBoat/server/actions/workflows/test.yml/badge.svg?branch=base"/></a>
-<a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg"/></a>
-<a href="https://github.com/LandSandBoat/server/pulls"><img src="https://img.shields.io/badge/Contributions-welcome-brightgreen.svg?style=flat"/></a>
-</p>
+## Setup
 
-## Getting Started
+```bash
+cd server
+npm install
+```
 
-A [quick start guide](https://github.com/LandSandBoat/server/wiki/Quick-Start-Guide), the [frequently asked questions](https://github.com/LandSandBoat/server/wiki/Frequently-Asked-Questions), and a table of "[what works](https://github.com/LandSandBoat/server/wiki/What-Works)" are all available on [our wiki](https://github.com/LandSandBoat/server/wiki).
+## Configure
 
-## Interacting with LandSandBoat
+Edit `.env`:
 
-### Crashes, warnings, errors, bugs, gameplay issues, visual issues, etc.
+- **STATIC_PATH** – Path to your PegasusXI.com folder (optional).  
+  If not set, serves from `server/public`.  
+  Example (Windows): `STATIC_PATH=C:\Users\arema\Documents\Current Projects\PegasusXI.com`
+- **PORT** – Website port (default 3000).
+- **GAME_API_URL** – Game API base URL (default http://localhost:4000).
+- **GAME_API_SECRET** – Must match `API_SECRET` in game-api `.env`.
 
-Please create a new issue in the [issues tab](https://github.com/LandSandBoat/server/issues) after searching to see if your issue is already logged.
+## Run
 
-### Balance discussion, technical discussion, meta discussions, etc.
+1. Start the **game-api** first (in another terminal):
 
-Discussions are similar to forum posts. Please open a new discussion post in the [discussions tab](https://github.com/LandSandBoat/server/discussions) for less directed and more open-ended conversation than issues.
+   ```bash
+   cd ../game-api
+   npm install
+   npm start
+   ```
 
-*If you are encountering an issue, please open an issue and not a discussion!* It's much easier for us to track and you're more likely to get resolution through an issue.
+2. Start this server:
 
-## LICENSE
+   ```bash
+   npm start
+   ```
 
-LandSandBoat is licensed under [GNU GPL v3](https://github.com/LandSandBoat/server/blob/base/LICENSE)
+3. Open http://localhost:3000 (or your PORT). Login, register, and players will use the API.
 
-## Thanks
+## Static files
 
-Thanks to all contributors past and present, we wouldn't be here without you!
+Either:
 
-Thanks to GitHub for hosting us, and for all the CI minutes we use!
+- Set **STATIC_PATH** in `.env` to your PegasusXI.com folder, or  
+- Copy the contents of PegasusXI.com into `server/public`.
