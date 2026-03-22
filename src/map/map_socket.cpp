@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2025 LandSandBoat Dev Teams
@@ -22,6 +22,38 @@
 #include "map_socket.h"
 
 #include "common/logging.h"
+
+#include <asio/error.hpp>
+#include <system_error>
+
+namespace
+{
+// Windows (and some POSIX stacks) surface ICMP unreachable / "no listener" on UDP as
+// connection_refused on a later recv/send completion — not a server bug.
+bool isBenignUdpSocketError(const std::error_code& ec)
+{
+    if (!ec)
+    {
+        return false;
+    }
+    if (ec == asio::error::operation_aborted)
+    {
+        return true;
+    }
+    const std::error_condition cond = ec.default_error_condition();
+    if (cond == std::errc::connection_refused || cond == std::errc::connection_reset)
+    {
+        return true;
+    }
+#if defined(_WIN32)
+    if (ec.category() == std::system_category() && ec.value() == WSAECONNREFUSED)
+    {
+        return true;
+    }
+#endif
+    return false;
+}
+} // namespace
 
 MapSocket::MapSocket(Scheduler& scheduler, const uint16 port, ReceiveFn onReceiveFn)
 : scheduler_(scheduler)
@@ -64,11 +96,17 @@ void MapSocket::startReceive()
             const auto sender_port = remote_endpoint_.port();
             const auto ipp         = IPP(sender_ip, sender_port);
 
+            std::error_code recv_ec = ec;
+            if (ec && isBenignUdpSocketError(ec))
+            {
+                recv_ec.clear();
+            }
+
             const auto buffer = std::span(buffer_.data(), bytes_recvd);
 
             DebugPacketsFmt("Received {} bytes from {}", buffer.size(), ipp.toString());
 
-            onReceiveFn_(ec, buffer, ipp);
+            onReceiveFn_(recv_ec, buffer, ipp);
 
             if (!scheduler_.closeRequested() && socket_.is_open())
             {
@@ -93,7 +131,7 @@ void MapSocket::send(const IPP& ipp, std::span<uint8> buffer)
         endpoint,
         [](const std::error_code& ec, std::size_t /*bytes_sent*/)
         {
-            if (ec)
+            if (ec && !isBenignUdpSocketError(ec))
             {
                 ShowErrorFmt("Error sending data: {}", ec.message());
             }
