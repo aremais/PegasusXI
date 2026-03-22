@@ -66,14 +66,16 @@ uint32 TotalPacketsDelayedPerTick = 0U;
 
 } // namespace
 
-MapNetworking::MapNetworking(MapStatistics& mapStatistics, const MapConfig& mapConfig, asio::io_context& io_context)
-: mapStatistics_(mapStatistics)
-, mapIPP_(mapConfig.ipp)
+MapNetworking::MapNetworking(Scheduler& scheduler, MapStatistics& mapStatistics, MapConfig config)
+: scheduler_(scheduler)
+, mapStatistics_(mapStatistics)
+, mapIPP_(config.ipp) // TODO: Refactor to not use this, since we have config_ in here
+, config_(config)
 {
     TracyZoneScoped;
 
     // Embedded map server for testing does not actually need to open a socket
-    if (mapConfig.isTestServer)
+    if (config_.isTestServer)
     {
         return;
     }
@@ -82,7 +84,7 @@ MapNetworking::MapNetworking(MapStatistics& mapStatistics, const MapConfig& mapC
     try
     {
         const auto udpPort = mapIPP_.getPort() == 0 ? settings::get<uint16>("network.MAP_PORT") : mapIPP_.getPort();
-        mapSocket_         = std::make_unique<MapSocket>(io_context, udpPort, std::bind(&MapNetworking::handle_incoming_packet, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+        mapSocket_         = std::make_unique<MapSocket>(scheduler_, udpPort, std::bind(&MapNetworking::handle_incoming_packet, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     }
     catch (const std::exception& e)
     {
@@ -120,7 +122,6 @@ void MapNetworking::tapStatistics()
     mapStatistics_.set(MapStatistics::Key::ActiveZones, activeZoneCount);
     mapStatistics_.set(MapStatistics::Key::ConnectedPlayers, playerCount);
     mapStatistics_.set(MapStatistics::Key::ActiveMobs, mobCount);
-    mapStatistics_.set(MapStatistics::Key::TaskManagerTasks, CTaskManager::getInstance()->getTaskList().size());
 
     const auto percent = dynamicTargIdCapacity > 0
                              ? static_cast<double>(dynamicTargIdCount) / static_cast<double>(dynamicTargIdCapacity) * 100.0
@@ -131,21 +132,6 @@ void MapNetworking::tapStatistics()
     TotalPacketsToSendPerTick  = 0U;
     TotalPacketsSentPerTick    = 0U;
     TotalPacketsDelayedPerTick = 0U;
-}
-
-auto MapNetworking::doSocketsBlocking(timer::duration next) -> timer::duration
-{
-    TracyZoneScoped;
-
-    const auto start = timer::now();
-
-    message::handle_incoming();
-
-    mapSocket_->recvFor(next);
-
-    tapStatistics();
-
-    return timer::now() - start;
 }
 
 void MapNetworking::handle_incoming_packet(const std::error_code& ec, std::span<uint8> buffer, const IPP& ipp)
@@ -188,7 +174,7 @@ void MapNetworking::handle_incoming_packet(const std::error_code& ec, std::span<
 
                 // Client failed to receive 0x00B, resend it
                 GP_SERV_COMMAND_LOGOUT zonePacket(map_session_data->zone_type, map_session_data->zone_ipp);
-                sendSinglePacketNoPchar(PBuff.data(), &size, map_session_data, true, &zonePacket);
+                sendSinglePacketNoPChar(PBuff.data(), &size, map_session_data, true, &zonePacket);
 
                 // Increment sync count with every packet
                 // TODO: match incoming with a new parse that only cares about sync count
@@ -316,6 +302,7 @@ int32 MapNetworking::recv_parse(uint8* buff, size_t* buffsize, MapSession* map_s
                     // TODO: err msg?
                     return -1;
                 }
+                map_session_data->scheduler = &scheduler_;
             }
             else
             {
@@ -364,7 +351,7 @@ int32 MapNetworking::recv_parse(uint8* buff, size_t* buffsize, MapSession* map_s
                 ShowError("recv_parse: Cannot load session_key for charid %u", packetCharID);
             }
 
-            map_session_data->PChar     = charutils::LoadChar(packetCharID);
+            map_session_data->PChar     = charutils::LoadChar(scheduler_, config_, packetCharID);
             map_session_data->charID    = packetCharID;
             map_session_data->accountID = accountID;
 
@@ -546,6 +533,9 @@ int32 MapNetworking::parse(uint8* buff, size_t* buffsize, MapSession* map_sessio
         }
         PChar->retriggerLatents = false; // reset as we have retriggered the latents somewhere
     }
+
+    // Flush any batched equip changes after processing all incoming packets
+    PChar->flushEquipChanges();
 
     map_session_data->client_packet_id = SmallPD_Code;
 
@@ -795,7 +785,7 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
     return 0;
 }
 
-int32 MapNetworking::sendSinglePacketNoPchar(uint8* buff, size_t* buffsize, MapSession* map_session_data, bool usePreviousKey, CBasicPacket* packet)
+int32 MapNetworking::sendSinglePacketNoPChar(uint8* buff, size_t* buffsize, MapSession* map_session_data, bool usePreviousKey, CBasicPacket* packet)
 {
     TracyZoneScoped;
 
@@ -906,7 +896,7 @@ int32 MapNetworking::sendSinglePacketNoPchar(uint8* buff, size_t* buffsize, MapS
     return 0;
 }
 
-auto MapNetworking::ipp() -> IPP
+auto MapNetworking::ipp() const -> IPP
 {
     return mapIPP_;
 }
@@ -914,6 +904,11 @@ auto MapNetworking::ipp() -> IPP
 auto MapNetworking::sessions() -> MapSessionContainer&
 {
     return mapSessions_;
+}
+
+auto MapNetworking::scheduler() -> Scheduler&
+{
+    return scheduler_;
 }
 
 auto MapNetworking::socket() -> MapSocket&

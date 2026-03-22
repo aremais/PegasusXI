@@ -21,10 +21,12 @@
 
 #pragma once
 
-#include "common/blowfish.h"
-#include "common/cbasetypes.h"
-#include "common/ipp.h"
+#include <common/blowfish.h>
+#include <common/cbasetypes.h>
+#include <common/ipp.h>
+#include <common/scheduler.h>
 
+#include "map_config.h"
 #include "map_constants.h"
 #include "map_session.h"
 #include "map_session_container.h"
@@ -35,42 +37,45 @@
 #include <span>
 
 class CBasicPacket;
-struct MapConfig;
 class MapEngine;
+
 class MapNetworking
 {
 public:
-    MapNetworking(MapStatistics& mapStatistics, const MapConfig& mapConfig, asio::io_context& io_context);
+    MapNetworking(Scheduler& scheduler, MapStatistics& mapStatistics, MapConfig config);
 
     //
     // Networking
     //
 
     void tapStatistics();
-    auto doSocketsBlocking(timer::duration) -> timer::duration;
 
     // TODO: Pass around std::span<uint8> instead of uint8* and size_t*
     // TODO: Stop changing the buffsize size_t as we go along
     // TODO: Replace bool with named enum class
+    // TODO: All of these need to become coroutines
     void  handle_incoming_packet(const std::error_code& ec, std::span<uint8> buffer, const IPP& ipp);
     int32 map_decipher_packet(uint8*, size_t, MapSession*, blowfish_t*); // Decipher packet
     int32 recv_parse(uint8*, size_t*, MapSession*, const IPP& ipp);      // main function to parse recv packets
     int32 parse(uint8*, size_t*, MapSession*);                           // main function parsing the packets
     int32 send_parse(uint8*, size_t*, MapSession*, bool);                // main function is building big packet
 
-    int32 sendSinglePacketNoPchar(uint8*, size_t*, MapSession*, bool, CBasicPacket*); // used to resend 0x00B if client didn't receive it (dropped packet)
+    int32 sendSinglePacketNoPChar(uint8*, size_t*, MapSession*, bool, CBasicPacket*); // used to resend 0x00B if client didn't receive it (dropped packet)
 
     //
     // Accessors
     //
 
-    auto ipp() -> IPP;
+    auto ipp() const -> IPP;
     auto sessions() -> MapSessionContainer&;
+    auto scheduler() -> Scheduler&;
     auto socket() -> MapSocket&;
 
 private:
+    Scheduler&                 scheduler_;
     MapStatistics&             mapStatistics_;
     IPP                        mapIPP_;
     MapSessionContainer        mapSessions_;
     std::unique_ptr<MapSocket> mapSocket_;
+    MapConfig                  config_;
 };

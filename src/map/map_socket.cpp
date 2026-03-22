@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
   Copyright (c) 2025 LandSandBoat Dev Teams
@@ -23,44 +23,11 @@
 
 #include "common/logging.h"
 
-#include <asio/error.hpp>
-#include <system_error>
-
-namespace
-{
-// Windows (and some POSIX stacks) surface ICMP unreachable / "no listener" on UDP as
-// connection_refused on a later recv/send completion — not a server bug.
-bool isBenignUdpSocketError(const std::error_code& ec)
-{
-    if (!ec)
-    {
-        return false;
-    }
-    if (ec == asio::error::operation_aborted)
-    {
-        return true;
-    }
-    const std::error_condition cond = ec.default_error_condition();
-    if (cond == std::errc::connection_refused || cond == std::errc::connection_reset)
-    {
-        return true;
-    }
-#if defined(_WIN32)
-    if (ec.category() == std::system_category() && ec.value() == WSAECONNREFUSED)
-    {
-        return true;
-    }
-#endif
-    return false;
-}
-} // namespace
-
-MapSocket::MapSocket(asio::io_context& io_context, const uint16 port, ReceiveFn onReceiveFn)
-: port_(port)
-, io_context_(io_context)
-, socket_(io_context)
+MapSocket::MapSocket(Scheduler& scheduler, const uint16 port, ReceiveFn onReceiveFn)
+: scheduler_(scheduler)
+, port_(port)
+, socket_(scheduler_.mainContext())
 , buffer_{}
-, isRunning(true)
 , onReceiveFn_(std::move(onReceiveFn))
 {
     TracyZoneScoped;
@@ -97,39 +64,17 @@ void MapSocket::startReceive()
             const auto sender_port = remote_endpoint_.port();
             const auto ipp         = IPP(sender_ip, sender_port);
 
-            std::error_code recv_ec = ec;
-            if (ec && isBenignUdpSocketError(ec))
-            {
-                recv_ec.clear();
-            }
-
             const auto buffer = std::span(buffer_.data(), bytes_recvd);
 
             DebugPacketsFmt("Received {} bytes from {}", buffer.size(), ipp.toString());
 
-            onReceiveFn_(recv_ec, buffer, ipp);
+            onReceiveFn_(ec, buffer, ipp);
 
-            if (!io_context_.stopped() && socket_.is_open())
+            if (!scheduler_.closeRequested() && socket_.is_open())
             {
                 startReceive(); // Queue up more work
             }
         });
-}
-
-void MapSocket::recvFor(timer::duration duration)
-{
-    TracyZoneScoped;
-
-    // Blocks until the duration is up
-    io_context_.run_for(duration);
-
-    // Once run_for() or run() return the io_context enters a stopped state,
-    // even if there are still pending asynchronous operations. You need to
-    // call restart() to clear that state before you can run it again.
-    if (isRunning)
-    {
-        io_context_.restart();
-    }
 }
 
 void MapSocket::send(const IPP& ipp, std::span<uint8> buffer)
@@ -148,7 +93,7 @@ void MapSocket::send(const IPP& ipp, std::span<uint8> buffer)
         endpoint,
         [](const std::error_code& ec, std::size_t /*bytes_sent*/)
         {
-            if (ec && !isBenignUdpSocketError(ec))
+            if (ec)
             {
                 ShowErrorFmt("Error sending data: {}", ec.message());
             }
@@ -160,6 +105,6 @@ void MapSocket::send(const IPP& ipp, std::span<uint8> buffer)
 
 void MapSocket::requestExit()
 {
-    isRunning = false;
-    io_context_.stop();
+    isRunning_ = false;
+    scheduler_.stop();
 }

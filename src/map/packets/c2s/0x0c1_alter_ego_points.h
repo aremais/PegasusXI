@@ -1,7 +1,7 @@
 /*
 ===========================================================================
 
-  Copyright (c) 2022 LandSandBoat Dev Teams
+  Copyright (c) 2026 LandSandBoat Dev Teams
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,35 +21,10 @@
 
 #pragma once
 
-#include "cbasetypes.h"
-#include "timer.h"
+#include "base.h"
 
-#include <atomic>
-#include <chrono>
-#include <condition_variable>
-#include <functional>
-#include <mutex>
-#include <thread>
-
-class Watchdog final
-{
-public:
-    Watchdog(timer::duration timeout, std::function<void()> callback);
-    ~Watchdog();
-
-    void update();
-
-private:
-    void _innerFunc();
-
-    using voidFunc_t = std::function<void()>;
-
-    timer::duration   m_timeout;
-    voidFunc_t        m_callback;
-    timer::time_point m_lastUpdate;
-
-    std::jthread            m_watchdog;
-    std::atomic_bool        m_running;
-    std::mutex              m_bottleneck;
-    std::condition_variable m_stopCondition;
-};
+// https://github.com/atom0s/XiPackets/tree/main/world/client/0x00C1
+// This packet is sent by the client when upgrading alter ego categories.
+GP_CLI_PACKET(GP_CLI_COMMAND_ALTER_EGO_POINTS,
+              uint16_t CategoryIndex;
+              uint16_t padding00;);

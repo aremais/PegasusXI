@@ -7,11 +7,11 @@
 local mobskillObject = {}
 
 mobskillObject.onMobSkillCheck = function(target, mob, skill)
-    -- mob:messageBasic(xi.msg.basic.READIES_WS, 0, 37)
+    mob:messageBasic(xi.msg.basic.READIES_WS, 0, 37)
     return 0
 end
 
-mobskillObject.onMobWeaponSkill = function(target, mob, skill, action)
+mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
     params.baseDamage     = mob:getMainLvl() + 2
