@@ -9,6 +9,9 @@ xi.pirates = xi.pirates or {}
 -- chance for encounter to have a special middle NPC, which indicates a chance for NM to spawn
 local vermCloakPirateChance = 10
 
+-- At least this many Crossbones alive during the encounter; all zone Crossbones IDs may be up (e.g. 4) if available.
+local CROSSBONES_MIN_ALIVE = 3
+
 local actions =
 {
     ARRIVING        = 0,
@@ -68,6 +71,89 @@ local piratesData =
     },
 }
 
+local function countAliveCrossbones(crossbonesIds)
+    local n = 0
+    for _, mobId in ipairs(crossbonesIds) do
+        local mob = GetMobByID(mobId)
+        if mob and mob:isSpawned() and mob:isAlive() then
+            n = n + 1
+        end
+    end
+
+    return n
+end
+
+-- While pirates loop summon animations after mobs have spawned, keep at least CROSSBONES_MIN_ALIVE Crossbones up
+-- (spawn all listed IDs on pull; extra IDs mean more than the minimum can be alive).
+local function maybeSummonCrossboneOnPirateCastComplete(zone)
+    if zone:getLocalVar('currPiratesAction') ~= actions.MOBS_SPAWN then
+        return
+    end
+
+    local zoneId = zone:getID()
+    if
+        zoneId ~= xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES and
+        zoneId ~= xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES
+    then
+        return
+    end
+
+    local ID = zones[zoneId]
+    if not ID or not ID.mob or not ID.mob.CROSSBONES then
+        return
+    end
+
+    local crossbonesIds = ID.mob.CROSSBONES
+    local poolSize        = #crossbonesIds
+    if poolSize == 0 then
+        return
+    end
+
+    local minNeeded       = math.min(CROSSBONES_MIN_ALIVE, poolSize)
+    local deficit         = minNeeded - countAliveCrossbones(crossbonesIds)
+    if deficit <= 0 then
+        return
+    end
+
+    for i = 1, poolSize do
+        if deficit <= 0 then
+            break
+        end
+
+        local mobId = crossbonesIds[i]
+        local mob   = GetMobByID(mobId)
+        if mob and not mob:isSpawned() then
+            SpawnMob(mobId)
+            deficit = deficit - 1
+        end
+    end
+
+    if deficit <= 0 then
+        return
+    end
+
+    for i = 1, poolSize do
+        local mobId = crossbonesIds[i]
+        local mob   = GetMobByID(mobId)
+        if mob and mob:isSpawned() and not mob:isAlive() then
+            DespawnMob(mobId)
+            mob:timer(500, function()
+                if zone:getLocalVar('currPiratesAction') ~= actions.MOBS_SPAWN then
+                    return
+                end
+
+                local m = GetMobByID(mobId)
+                if m and not m:isSpawned() then
+                    SpawnMob(mobId)
+                end
+
+                maybeSummonCrossboneOnPirateCastComplete(zone)
+            end)
+            return
+        end
+    end
+end
+
 -- True from MOBS_SPAWN until PIRATES_RETREAT (currPiratesAction is not advanced between those triggers).
 xi.pirates.isPirateMobWaveActive = function(zone)
     if not zone then
@@ -118,6 +204,14 @@ local function summonAnimations(npc, rotation, offset)
             npc:setLocalVar('summonStartTime', GetSystemTime() + math.random(4 + offset, 10))
 
             npc:entityAnimationPacket(xi.animationString.CAST_SUMMONER_STOP)
+
+            -- One NPC handles respawn checks so three pirates do not race the same mob IDs
+            if offset == 1 then
+                local pirateZone = npc:getZone()
+                if pirateZone then
+                    maybeSummonCrossboneOnPirateCastComplete(pirateZone)
+                end
+            end
         end
     end
 
@@ -230,6 +324,7 @@ local function spawnPirateWave(zone)
     end
 end
 
+-- Despawn non-Crossbones wave mobs on retreat (players finish off skeletons).
 local function despawnPirateWave(zone)
     local zoneId = zone:getID()
     local ID = zones[zoneId]
@@ -238,12 +333,6 @@ local function despawnPirateWave(zone)
     end
 
     local despawnList = {}
-
-    if ID.mob.CROSSBONES then
-        for _, mobId in ipairs(ID.mob.CROSSBONES) do
-            despawnList[#despawnList + 1] = mobId
-        end
-    end
 
     if zoneId == xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES then
         despawnList[#despawnList + 1] = ID.mob.SHIP_WIGHT
