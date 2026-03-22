@@ -68,6 +68,15 @@ local piratesData =
     },
 }
 
+-- True from MOBS_SPAWN until PIRATES_RETREAT (currPiratesAction is not advanced between those triggers).
+xi.pirates.isPirateMobWaveActive = function(zone)
+    if not zone then
+        return false
+    end
+
+    return zone:getLocalVar('currPiratesAction') == actions.MOBS_SPAWN
+end
+
 xi.pirates.setupPirateNPCSchedule = function(npc)
     npc:initNpcAi()
 
@@ -77,7 +86,8 @@ xi.pirates.setupPirateNPCSchedule = function(npc)
     end
 end
 
--- calls itself via timer until the npc is hidden
+-- Re-arms a timer to loop summoner cast start/stop while pirates are alongside the ship.
+-- Visibility ends on DEPART (or DISAPPEAR elsewhere); do not hide NPCs here between cycles.
 local function summonAnimations(npc, rotation, offset)
     if npc:getStatus() == xi.status.DISAPPEAR then
         return
@@ -108,11 +118,6 @@ local function summonAnimations(npc, rotation, offset)
             npc:setLocalVar('summonStartTime', GetSystemTime() + math.random(4 + offset, 10))
 
             npc:entityAnimationPacket(xi.animationString.CAST_SUMMONER_STOP)
-        end
-
-        -- No more animations and npc is done pathing
-        if summonEndTime == 0 and summonStartTime == 0 then
-            npc:setStatus(xi.status.DISAPPEAR)
         end
     end
 
@@ -171,9 +176,8 @@ xi.pirates.pirateNPCTimeTrigger = function(npc, triggerId, zoneKey)
         npc:setLocalVar('initialNpcState', 1)
         summonAnimations(npc, pirateData.standingPos.rotation, pirateIdx)
     elseif triggerId == actions.PIRATES_RETREAT then
-        -- retreat
+        -- retreat; summoning stops (timers cleared) while pirates run back to their ship
         local summonEndTime = npc:getLocalVar('summonEndTime')
-        -- No more animations will happen and recursive function self destructs
         npc:setLocalVar('summonStartTime', 0)
         npc:setLocalVar('summonEndTime', 0)
         if summonEndTime > 0 then
@@ -190,17 +194,86 @@ xi.pirates.pirateNPCTimeTrigger = function(npc, triggerId, zoneKey)
     xi.pirates.zoneStateChange(pirateZone, triggerId)
 end
 
+local function spawnPirateWave(zone)
+    local zoneId = zone:getID()
+    local ID = zones[zoneId]
+    if not ID or not ID.mob then
+        return
+    end
+
+    local spawnList = {}
+
+    if ID.mob.CROSSBONES then
+        for _, mobId in ipairs(ID.mob.CROSSBONES) do
+            spawnList[#spawnList + 1] = mobId
+        end
+    end
+
+    if zoneId == xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES then
+        spawnList[#spawnList + 1] = ID.mob.SHIP_WIGHT
+        spawnList[#spawnList + 1] = ID.mob.BLACKBEARD
+        -- Enagakure uses night / key item logic in Zone.lua; not spawned by the pirate wave
+    elseif zoneId == xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES then
+        spawnList[#spawnList + 1] = ID.mob.WIGHT
+        spawnList[#spawnList + 1] = ID.mob.SILVERHOOK
+    else
+        return
+    end
+
+    for _, mobId in ipairs(spawnList) do
+        if mobId and mobId > 0 then
+            local mob = GetMobByID(mobId)
+            if mob and not mob:isSpawned() then
+                SpawnMob(mobId)
+            end
+        end
+    end
+end
+
+local function despawnPirateWave(zone)
+    local zoneId = zone:getID()
+    local ID = zones[zoneId]
+    if not ID or not ID.mob then
+        return
+    end
+
+    local despawnList = {}
+
+    if ID.mob.CROSSBONES then
+        for _, mobId in ipairs(ID.mob.CROSSBONES) do
+            despawnList[#despawnList + 1] = mobId
+        end
+    end
+
+    if zoneId == xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES then
+        despawnList[#despawnList + 1] = ID.mob.SHIP_WIGHT
+        despawnList[#despawnList + 1] = ID.mob.BLACKBEARD
+    elseif zoneId == xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES then
+        despawnList[#despawnList + 1] = ID.mob.WIGHT
+        despawnList[#despawnList + 1] = ID.mob.SILVERHOOK
+    else
+        return
+    end
+
+    for _, mobId in ipairs(despawnList) do
+        if mobId and mobId > 0 then
+            local mob = GetMobByID(mobId)
+            if mob and mob:isSpawned() and not mob:isEngaged() then
+                DespawnMob(mobId)
+            end
+        end
+    end
+end
+
 xi.pirates.zoneStateChange = function(zone, action)
     -- change the zone's state once per action cycle (this function is called by each NPC)
     if zone:getLocalVar('currPiratesAction') ~= action then
         zone:setLocalVar('currPiratesAction', action)
 
         if action == actions.MOBS_SPAWN then
-            -- TODO enable mob spawns (and NM spawns if nmCanSpawn is set to 1)
-            -- set them to setRespawn(1s), then set normal respawnTime in onMobSpawn
+            spawnPirateWave(zone)
         elseif action == actions.PIRATES_RETREAT then
-            -- TODO disable all spawns and despawn any not in combat
-            -- mobs in combat do not despawn when the ship leaves
+            despawnPirateWave(zone)
         end
     end
 end
