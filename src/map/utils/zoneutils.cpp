@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -410,7 +410,7 @@ auto LoadMOBList(Scheduler& scheduler, const std::vector<uint16>& zoneIds) -> Ta
 
                         auto* PZone = g_PZoneList[zoneId];
 
-                        const auto query = "SELECT mobname, packet_name, mobid, pos_rot, pos_x, pos_y, pos_z, "
+                        const auto query = "SELECT mobname, mob_spawn_points.polutils_name AS polutils_name, packet_name, mobid, pos_rot, pos_x, pos_y, pos_z, "
                                            "respawntime, spawntype, dropid, mob_groups.HP, mob_groups.MP, mob_spawn_points.minLevel, mob_spawn_points.maxLevel, "
                                            "modelid, mJob, sJob, cmbSkill, cmbDmgMult, cmbDelay, behavior, links, mobType, immunity, "
                                            "ecosystemID, speed, "
@@ -453,8 +453,10 @@ auto LoadMOBList(Scheduler& scheduler, const std::vector<uint16>& zoneIds) -> Ta
                                 {
                                     CMobEntity* PMob = new CMobEntity;
 
-                                    PMob->name       = rset->get<std::string>("mobname");
-                                    PMob->packetName = rset->get<std::string>("packet_name");
+                                    PMob->name = rset->get<std::string>("mobname");
+                                    // Prefer polutils_name (human-readable) for the client; mob_pools.packet_name uses underscores.
+                                    const auto polutilsName = rset->getOrDefault<std::string>("polutils_name", "");
+                                    PMob->packetName        = !polutilsName.empty() ? polutilsName : rset->get<std::string>("packet_name");
                                     PMob->id         = rset->get<uint32>("mobid");
 
                                     PMob->targid = static_cast<uint16>(PMob->id & 0x0FFF);

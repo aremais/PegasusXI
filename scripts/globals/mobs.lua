@@ -8,6 +8,19 @@ require('scripts/globals/quests')
 xi = xi or {}
 xi.mob = xi.mob or {}
 
+-- NM auto-spikes: addStatusEffect may not leave the effect immediately visible to getStatusEffect in
+-- all cases; use a safe chain so onMobInitialize does not error on nil:setEffectFlags.
+---@param mob CBaseEntity
+---@param effectId integer
+---@param power integer
+xi.mob.addSpikesWithDeathFlag = function(mob, effectId, power)
+    mob:addStatusEffect(effectId, { power = power, origin = mob })
+    local effect = mob:getStatusEffect(effectId)
+    if effect then
+        effect:setEffectFlags(xi.effectFlag.DEATH)
+    end
+end
+
 -- onMobDeathEx is called from the core
 xi.mob.onMobDeathEx = function(mob, player, isKiller, isWeaponSkillKill)
 end

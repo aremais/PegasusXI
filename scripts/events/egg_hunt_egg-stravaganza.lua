@@ -13,6 +13,8 @@ xi.events = xi.events or {}
 xi.events.eggHunt = xi.events.eggHunt or {}
 xi.events.eggHunt.data = xi.events.eggHunt.data or {}
 xi.events.eggHunt.entities = xi.events.eggHunt.entities or {}
+-- Prevents duplicate spawns per zone when using lazy-loaded zones (GetZone nil at server start).
+xi.events.eggHunt.spawnedZones = xi.events.eggHunt.spawnedZones or {}
 
 local event = SeasonalEvent:new('egg_hunt')
 
@@ -20,8 +22,10 @@ local event = SeasonalEvent:new('egg_hunt')
 local settings =
 {
     ANNOUNCE = false, -- Announce settings on load
-    START  = { DAY   =  6, MONTH = 4 },
-    FINISH = { DAY   = 17, MONTH = 4 },
+    -- Set to 1 to run the event outside START/FINISH (same idea as HALLOWEEN_YEAR_ROUND).
+    YEAR_ROUND = 0,
+    START  = { DAY   = 1, MONTH = 3 },
+    FINISH = { DAY   = 20, MONTH = 4 },
 
     VAR =
     {
@@ -68,9 +72,9 @@ local function loadSettings(currentTable, settingsName)
         end
     end
 
-    -- Load from main settings into current table
+    -- Load from main settings into current table (use ~= nil so false ERA_* flags still apply)
     for settingName, _ in pairs(currentTable) do
-        if settingTable[settingName] then
+        if settingTable[settingName] ~= nil then
             currentTable[settingName] = settingTable[settingName]
         end
     end
@@ -79,21 +83,46 @@ end
 loadSettings(settings, 'EGG_HUNT')
 
 xi.events.eggHunt.enabledCheck = function()
-    local month = JstMonth()
-    local day = JstDayOfTheMonth()
+    if settings.YEAR_ROUND ~= 0 then
+        return true
+    end
 
-    if month == settings.START.MONTH then
-        if day >= settings.START.DAY then
-            return true
-        end
+    local month = tonumber(JstMonth())
+    local day = tonumber(JstDayOfTheMonth())
+    local sm = tonumber(settings.START and settings.START.MONTH)
+    local sd = tonumber(settings.START and settings.START.DAY)
+    local fm = tonumber(settings.FINISH and settings.FINISH.MONTH)
+    local fd = tonumber(settings.FINISH and settings.FINISH.DAY)
 
-    elseif month == settings.FINISH.MONTH then
-        if day <= settings.FINISH.DAY then
+    if not (month and day and sm and sd and fm and fd) then
+        return false
+    end
+
+    -- Same calendar month: both bounds apply (the old if/elseif only enforced START in this case).
+    if sm == fm then
+        return month == sm and day >= sd and day <= fd
+    end
+
+    if sm < fm then
+        if month < sm or month > fm then
+            return false
+        elseif month == sm then
+            return day >= sd
+        elseif month == fm then
+            return day <= fd
+        else
             return true
         end
     end
 
-    return false
+    -- Window wraps year (e.g. late December through early January)
+    if month == sm then
+        return day >= sd
+    elseif month == fm then
+        return day <= fd
+    else
+        return month > sm or month < fm
+    end
 end
 
 event:setEnableCheck(xi.events.eggHunt.enabledCheck)
@@ -953,28 +982,56 @@ local function insertMoogle(zone, pos)
     table.insert(xi.events.eggHunt.entities, npc:getID())
 end
 
+local function spawnEggHuntForZone(zone, zoneID)
+    if xi.events.eggHunt.spawnedZones[zoneID] then
+        return
+    end
+
+    local data = xi.events.eggHunt.data[zoneID]
+    if not data then
+        return
+    end
+
+    insertMoogle(zone, data.moogle)
+
+    for _, entry in pairs(data.decorations) do
+        insertNpc(zone, entry)
+    end
+
+    if settings.ERA_2015 then
+        for _, entry in pairs(data.helpers) do
+            insertNpc(zone, entry)
+        end
+    end
+
+    xi.events.eggHunt.spawnedZones[zoneID] = true
+end
+
 xi.events.eggHunt.generateEntities = function()
-    for zoneID, data in pairs(xi.events.eggHunt.data) do
+    if not xi.events.eggHunt.enabledCheck() then
+        return
+    end
+
+    for zoneID in pairs(xi.events.eggHunt.data) do
         local zone = GetZone(zoneID)
         if zone then
-            insertMoogle(zone, data.moogle)
-
-            for _, entry in pairs(data.decorations) do
-                insertNpc(zone, entry)
-            end
-
-            -- Helpers wearing the Rabbit Cap
-            if settings.ERA_2015 then
-                for _, entry in pairs(data.helpers) do
-                    insertNpc(zone, entry)
-                end
-            end
+            spawnEggHuntForZone(zone, zoneID)
         end
     end
 end
 
+-- Call from each host city Zone.lua onInitialize when using lazy zone loading (GetZone was nil during onServerStart).
+xi.events.eggHunt.onZoneInitialize = function(zone)
+    if not xi.events.eggHunt.enabledCheck() then
+        return
+    end
+
+    spawnEggHuntForZone(zone, zone:getID())
+end
+
 xi.events.eggHunt.showEntities = function(enabled)
-    if enabled and #xi.events.eggHunt.entities == 0 then
+    if enabled then
+        -- Retry for zones that were not loaded yet (lazy zones); spawnedZones skips already-built areas.
         xi.events.eggHunt.generateEntities()
     end
 
@@ -991,6 +1048,7 @@ xi.events.eggHunt.showEntities = function(enabled)
 
     if not enabled then
         xi.events.eggHunt.entities = {}
+        xi.events.eggHunt.spawnedZones = {}
     end
 end
 

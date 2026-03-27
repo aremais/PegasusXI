@@ -5,7 +5,6 @@
 -----------------------------------
 
 local ID = zones[xi.zone.PORT_BASTOK]
-local npcUtil = require("scripts/globals/npc_util")
 
 ---@type TNpcEntity
 local entity = {}
@@ -23,7 +22,7 @@ local function grantStarterPack(player)
         player:addKeyItem(ki)
     end
 
-    -- KEY ITEMS 389 to 447
+    -- KEY ITEMS 389 to 447 -Maps
     for z = 389, 447 do
         player:addKeyItem(z)
     end
@@ -33,18 +32,19 @@ local function grantStarterPack(player)
         player:addKeyItem(z)
     end
 
-    -- KEY ITEMS 1738 to 1757
-    for z = 1738, 1757 do
-        player:addKeyItem(z)
+    -- Grants all Trust spells
+    for spellId = xi.magic.spell.SHANTOTTO, xi.magic.spell.SHANTOTTO_II do
+        player:addSpell(spellId, { silentLog = true })
     end
 
-    -- Adds all 3 starting nation rings
-    player:addItem(13497)
+    -- Trust permits (safe to include)
+    player:addKeyItem(xi.ki.BASTOK_TRUST_PERMIT)
+    player:addKeyItem(xi.ki.WINDURST_TRUST_PERMIT)
+    player:addKeyItem(xi.ki.SAN_DORIA_TRUST_PERMIT)
+
+    -- Adds nation items starting nation rings
     player:addItem(17584)
     player:addItem(14429)
-
-    -- Unlocks subjob
-    player:unlockJob(0)
 
     -- Grants gil and gives the appropriate message
     player:addGil(10000000)
@@ -52,18 +52,6 @@ local function grantStarterPack(player)
         player:messageSpecial(ID.text.GIL_OBTAINED, 10000000)
     end
 
-    -- Unlocks Advanced Jobs
-    for jobId = 7, 22 do
-        player:unlockJob(jobId)
-    end
-
-    -- Set main job to 99 and sub job to 49
-    player:setLevel(99)
-    if player.setSubJobLevel then
-        player:setSubJobLevel(49)
-    elseif player.setSubLevel then
-        player:setSubLevel(49)
-    end
 end
 
 entity.onTrade = function(player, npc, trade)

@@ -18,12 +18,8 @@ local content = Battlefield:new({
     exitNpcs         = { '_0n1', '_0n2', '_0n3' },
     requiredKeyItems = { xi.ki.CENSER_OF_ACRIMONY, message = spireOfVahzlID.text.FADES_INTO_NOTHINGNESS },
     grantXP          = 3000,
-    armouryCrates    =
-    {
-        spireOfVahzlID.mob.MEMORY_RECEPTACLE_RED + 9,
-        spireOfVahzlID.mob.MEMORY_RECEPTACLE_RED + 19,
-        spireOfVahzlID.mob.MEMORY_RECEPTACLE_RED + 29,
-    },
+    -- npc_list Armoury_Crate IDs (zone 23; must not overlap mob ids in mob_spawn_points)
+    armouryCrates    = { 16875517, 16875518, 16875519 },
 })
 
 -- Table of coordinated positions per shield receptacle per battlefield area
