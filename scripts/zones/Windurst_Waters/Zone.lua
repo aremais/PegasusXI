@@ -9,6 +9,7 @@ zoneObject.onInitialize = function(zone)
     zone:registerCuboidTriggerArea(1, 23, -12, -208, 31, -8, -197)
 
     xi.events.harvestFestival.applyHalloweenNpcCostumes(zone:getID())
+    xi.events.eggHunt.onZoneInitialize(zone)
 end
 
 zoneObject.onZoneIn = function(player, prevZone)

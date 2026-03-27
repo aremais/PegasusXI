@@ -1668,9 +1668,10 @@ INSERT INTO `npc_list` VALUES (16867764,'Moogle','Moogle',0,0.000,0.000,0.000,0,
 -- Spire of Vahzl (Zone 23)
 -- ------------------------------------------------------------
 
-INSERT INTO `npc_list` VALUES (16871455,'Armoury_Crate','Enigmatic Sphere',0,-240.005,60.250,-0.001,7,40,40,0,8,32,6,1667,0x00002A0100000000000000000000000000000000,0,'COP',1); -- ENM: Pulling the Plug - Renamed to Armoury_Crate so the battlefield framework fetches them automatically.
-INSERT INTO `npc_list` VALUES (16871465,'Armoury_Crate','Enigmatic Sphere',0,-0.018,0.250,0.064,7,40,40,0,8,32,6,1667,0x00002A0100000000000000000000000000000000,0,'COP',1);     
-INSERT INTO `npc_list` VALUES (16871475,'Armoury_Crate','Enigmatic Sphere',0,240.066,-59.750,0.100,7,40,40,0,8,32,6,1667,0x00002A0100000000000000000000000000000000,0,'COP',1);  
+-- Pulling the Plug armoury crates (IDs must not overlap mob_spawn_points in zone 23)
+INSERT INTO `npc_list` VALUES (16875517,'Armoury_Crate','Enigmatic Sphere',0,-240.005,60.250,-0.001,7,40,40,0,8,32,6,1667,0x00002A0100000000000000000000000000000000,0,'COP',1); -- ENM: Pulling the Plug - Renamed to Armoury_Crate so the battlefield framework fetches them automatically.
+INSERT INTO `npc_list` VALUES (16875518,'Armoury_Crate','Enigmatic Sphere',0,-0.018,0.250,0.064,7,40,40,0,8,32,6,1667,0x00002A0100000000000000000000000000000000,0,'COP',1);
+INSERT INTO `npc_list` VALUES (16875519,'Armoury_Crate','Enigmatic Sphere',0,240.066,-59.750,0.100,7,40,40,0,8,32,6,1667,0x00002A0100000000000000000000000000000000,0,'COP',1);
 
 INSERT INTO `npc_list` VALUES (16871572,'Achieve_Master','Achieve Master',0,0.000,0.000,0.000,0,50,50,0,0,0,2,3,0x0000320000000000000000000000000000000000,0,'SOA',0);
 

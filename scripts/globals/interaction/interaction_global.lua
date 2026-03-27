@@ -39,8 +39,11 @@ function InteractionGlobal.loadContainers(shouldReloadRequires)
     local containerFiles = GetContainerFilenamesList()
     local containers = {}
     for i = 1, #containerFiles do
-        containers[i] = utils.prequire(containerFiles[i])
-        containers[i].filename = containerFiles[i]
+        local mod = utils.prequire(containerFiles[i])
+        if mod then
+            mod.filename = containerFiles[i]
+            containers[#containers + 1] = mod
+        end
     end
 
     InteractionGlobal.lookup:addContainers(containers, zoneIds)

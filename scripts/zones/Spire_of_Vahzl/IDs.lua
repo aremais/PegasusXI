@@ -30,9 +30,12 @@ zones[xi.zone.SPIRE_OF_VAHZL] =
     },
     mob =
     {
-        AGONIZER                 = GetFirstID('Agonizer'),
-        MEMORY_RECEPTACLE_RED    = GetFirstID('Memory_Receptacle_Red'),
-        MEMORY_RECEPTACLE_SHIELD = GetFirstID('Memory_Receptacle_Shield'),
+        -- Lowest mobid per name in zone 23 (see sql/mob_spawn_points Spire of Vahzl block).
+        -- Not using GetFirstID here: unmigrated DBs still have 16875521+ rows, which decode as zone 24,
+        -- so PopulateIDLookups never sees them and logs errors while returning nil.
+        AGONIZER                 = 16871424,
+        MEMORY_RECEPTACLE_RED    = 16871445,
+        MEMORY_RECEPTACLE_SHIELD = 16871446,
     },
     npc =
     {

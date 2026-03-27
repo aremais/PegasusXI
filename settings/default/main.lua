@@ -258,8 +258,11 @@ xi.settings.main =
     HALLOWEEN_YEAR_ROUND            = 0,  -- Set to 1 to have Harvest Festival initialize outside of normal times.
     EGG_HUNT                        =
     {
-        START                       = { DAY = 6,  MONTH = 4 },
-        FINISH                      = { DAY = 17, MONTH = 4 },
+        -- Set to 1 to ignore START/FINISH and keep Egg Hunt active year-round (testing only).
+        YEAR_ROUND                  = 0,
+        -- JST inclusive window (all dates use Vanadiel JST helpers).
+        START                       = { DAY = 1, MONTH = 3 },
+        FINISH                      = { DAY = 20, MONTH = 4 },
 
         -- Default era is 2005
         ERA_2006 = false, -- Orphic Egg
