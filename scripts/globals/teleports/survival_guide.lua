@@ -29,10 +29,10 @@ local function checkForRegisteredSurvivalGuide(player, guide)
     if not hasRegisteredGuide then
         player:messageSpecial(zones[guide.zoneId].text.COMMON_SENSE_SURVIVAL)
         player:addTeleport(xi.teleport.type.SURVIVAL, guide.groupIndex - 1, guide.group - 1)
-
-        return false
     end
 
+    -- Start the event even on the first click.
+    -- Otherwise players get a "register first, click again to use" flow.
     return true
 end
 

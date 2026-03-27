@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -1062,6 +1062,7 @@ void PopulateIDLookups(uint16 zoneId, const std::string& zoneName)
             }
         });
 
+        // Same lookup as GetFirstID but no error log (for IDs.lua fallbacks when DB may lag repo SQL)
         std::unordered_map<std::string, sol::table> idLuaTables;
 
         lua.set_function("GetTableOfIDs", [&](std::string const& name) -> sol::table

@@ -82,10 +82,8 @@ auto SearchHandler::run() -> Task<void>
     {
         while (socket_.lowest_layer().is_open() && !scheduler_.closeRequested())
         {
-            std::memset(buffer_.data(), 0, buffer_.size());
-
             auto result = co_await scheduler_.withTimeout(
-                socket_.async_read_some(asio::buffer(buffer_.data(), buffer_.size()), asio::use_awaitable),
+                socket_.async_read_some(asio::buffer(readBuffer_.data(), readBuffer_.size()), asio::use_awaitable),
                 10s);
 
             if (!result.has_value()) // timed out
@@ -100,9 +98,33 @@ auto SearchHandler::run() -> Task<void>
                 break;
             }
 
-            DebugSocketsFmt("Received packet from IP {} ({} bytes)", ipAddress_, length);
+            DebugSocketsFmt("Received stream data from IP {} ({} bytes)", ipAddress_, length);
 
-            read_func(static_cast<uint16_t>(length));
+            receiveStream_.insert(receiveStream_.end(), readBuffer_.begin(), readBuffer_.begin() + length);
+
+            while (receiveStream_.size() >= 2)
+            {
+                const auto expectedLength = ref<uint16>(receiveStream_.data(), 0x00);
+
+                // Bad framing/noise: slide one byte and try to resync.
+                if (expectedLength < 28 || expectedLength > buffer_.size())
+                {
+                    ShowWarningFmt("Search packet framing desync from {}. Header size {} invalid; skipping 1 byte.", ipAddress_, expectedLength);
+                    receiveStream_.erase(receiveStream_.begin());
+                    continue;
+                }
+
+                if (receiveStream_.size() < expectedLength)
+                {
+                    break;
+                }
+
+                std::memset(buffer_.data(), 0, buffer_.size());
+                std::memcpy(buffer_.data(), receiveStream_.data(), expectedLength);
+                receiveStream_.erase(receiveStream_.begin(), receiveStream_.begin() + expectedLength);
+
+                read_func(expectedLength);
+            }
 
             while (!searchPackets_.empty())
             {

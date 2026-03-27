@@ -27,6 +27,7 @@
 #include <deque>
 #include <map>
 #include <unordered_set>
+#include <vector>
 
 #include "common/blowfish.h"
 #include "common/scheduler.h"
@@ -79,6 +80,8 @@ private:
     std::string             ipAddress_;
     asio::ip::tcp::socket   socket_;
     std::array<uint8, 4096> buffer_;
+    std::array<uint8, 4096> readBuffer_;
+    std::vector<uint8>      receiveStream_;
 
     SynchronizedShared<std::map<std::string, uint16_t>>& IPAddressesInUse_;
     SynchronizedShared<std::unordered_set<std::string>>& IPAddressWhitelist_;

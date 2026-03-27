@@ -30,9 +30,11 @@ zones[xi.zone.SPIRE_OF_VAHZL] =
     },
     mob =
     {
-        AGONIZER                 = GetFirstID('Agonizer'),
-        MEMORY_RECEPTACLE_RED    = GetFirstID('Memory_Receptacle_Red'),
-        MEMORY_RECEPTACLE_SHIELD = GetFirstID('Memory_Receptacle_Shield'),
+        -- First spawn each (ORDER BY mobid ASC). mobids require ((mobid >> 12) & 0xFFF) == 23 in mob_spawn_points.
+        -- If your DB still has pre-fix ids, run: sql/fix_spire_of_vahzl_mob_spawn_ids.sql
+        AGONIZER                 = 16875521,
+        MEMORY_RECEPTACLE_RED    = 16875542,
+        MEMORY_RECEPTACLE_SHIELD = 16875543,
     },
     npc =
     {
