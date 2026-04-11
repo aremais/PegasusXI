@@ -50,7 +50,7 @@ spellObject.onMobSpawn = function(mob)
     )
 
     mob:addGambit(ai.t.SELF,
-        { ai.c.ABILITY_READY, xi.ja.DIVINE_EMBLEM },
+        { ai.c.NOT_STATUS, xi.effect.DIVINE_EMBLEM },
         { ai.r.JA, ai.s.SPECIFIC, xi.ja.DIVINE_EMBLEM }
     )
 
@@ -68,13 +68,15 @@ spellObject.onMobSpawn = function(mob)
     )
 
     mob:addGambit(ai.t.TARGET,
-        {
-            ai.c.OR,
-            { ai.c.STATUS, xi.effect.CHAINSPELL },
-            { ai.c.STATUS, xi.effect.MANAFONT },
-            { ai.c.STATUS, xi.effect.ASTRAL_FLOW },
-            { ai.c.PET_EXISTS, 0 },
-        },
+        { ai.c.STATUS, xi.effect.CHAINSPELL },
+        { ai.r.JA, ai.s.SPECIFIC, xi.ja.RAMPART }
+    )
+    mob:addGambit(ai.t.TARGET,
+        { ai.c.STATUS, xi.effect.MANAFONT },
+        { ai.r.JA, ai.s.SPECIFIC, xi.ja.RAMPART }
+    )
+    mob:addGambit(ai.t.TARGET,
+        { ai.c.STATUS, xi.effect.ASTRAL_FLOW },
         { ai.r.JA, ai.s.SPECIFIC, xi.ja.RAMPART }
     )
 
@@ -129,30 +131,14 @@ spellObject.onMobSpawn = function(mob)
     -----------------------------------
     mob:addGambit(ai.t.TARGET,
         {
-            ai.c.TP_GT, 900,
-            ai.c.NOT_HAS_TOP_ENMITY, 0,
+            { ai.c.TP_GTE, 900 },
+            { ai.c.NOT_HAS_TOP_ENMITY, 0 },
         },
         { ai.r.WS, ai.s.SPECIFIC, xi.ws.URIEL_BLADE }
     )
 
     mob:addGambit(ai.t.TARGET,
-        {
-            ai.c.TP_GT, 900,
-            ai.c.MULTI_TARGET, 2,
-        },
-        { ai.r.WS, ai.s.SPECIFIC, xi.ws.URIEL_BLADE }
-    )
-
-    mob:addGambit(ai.t.TARGET,
-        {
-            ai.c.NOT_HAS_TOP_ENMITY, 0,
-            ai.c.MULTI_TARGET, 2,
-        },
-        { ai.r.WS, ai.s.SPECIFIC, xi.ws.URIEL_BLADE }
-    )
-
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.TP_GT, 1800 },
+        { ai.c.TP_GTE, 1800 },
         { ai.r.WS, ai.s.RANDOM }
     )
 end

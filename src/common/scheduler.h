@@ -625,6 +625,11 @@ public:
         return mainContext_;
     }
 
+    [[nodiscard]] auto getMainThreadId() const noexcept -> std::thread::id
+    {
+        return mainThreadId_;
+    }
+
 private:
     std::thread::id mainThreadId_{ std::this_thread::get_id() };
 

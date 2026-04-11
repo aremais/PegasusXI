@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2025 LandSandBoat Dev Teams
@@ -628,6 +628,11 @@ void IPCServer::handleMessage_KillSession(const IPP& ipp, const ipc::KillSession
             DebugIPCFmt("Message: -> rerouting to {}", zoneSettings.ipp.toString());
 
             sendMessage(zoneSettings.ipp, message);
+        }
+        else
+        {
+            // Stable in one zone (prev == next): e.g. admin-panel kick — target the map that holds accounts_sessions.
+            rerouteMessageToCharId(message.victimId, message);
         }
     }
     else // Otherwise, send to all zones

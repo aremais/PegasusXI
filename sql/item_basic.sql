@@ -19675,6 +19675,7 @@ INSERT INTO `item_basic` VALUES (23857,0,'apathy_platemail','apathy_platemail',@
 INSERT INTO `item_basic` VALUES (23858,0,'apathy_gauntlets','apathy_gauntlets',@EQUIPMENT_TYPE,1,63552,@NONE,0);
 INSERT INTO `item_basic` VALUES (23859,0,'apathy_brais','apathy_brais',@EQUIPMENT_TYPE,1,63552,@NONE,0);
 INSERT INTO `item_basic` VALUES (23860,0,'apathy_sabatons','apathy_sabatons',@EQUIPMENT_TYPE,1,63552,@NONE,0);
+INSERT INTO `item_basic` VALUES (24030,0,'pummelers_cuisses_+4','pumm._cuisses_+4',@EQUIPMENT_TYPE,1,63552,@NONE,0);
 INSERT INTO `item_basic` VALUES (25414,0,'elite_royal_collar','elite_royal_collar',@EQUIPMENT_TYPE,1,63552,@NONE,0);
 INSERT INTO `item_basic` VALUES (25415,0,'republican_platinum_medal','rep._plat._medal',@EQUIPMENT_TYPE,1,63552,@NONE,0);
 INSERT INTO `item_basic` VALUES (25416,0,'Sibyl_scarf','Sibyl_scarf',@EQUIPMENT_TYPE,1,63552,@NONE,0);

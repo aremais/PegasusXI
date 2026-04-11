@@ -11,6 +11,8 @@ mixins =
 ---@type TMobEntity
 local entity = {}
 
+-- Retail (BG-Wiki Dynamis - Jeuno): Odious Mask on this job via mob_groups drop table; not a PH for a timed Goblin NM.
+
 entity.onMobDeath = function(mob, player, optParams)
 end
 

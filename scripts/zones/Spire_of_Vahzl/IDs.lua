@@ -30,11 +30,12 @@ zones[xi.zone.SPIRE_OF_VAHZL] =
     },
     mob =
     {
-        -- First spawn each (ORDER BY mobid ASC). mobids require ((mobid >> 12) & 0xFFF) == 23 in mob_spawn_points.
-        -- If your DB still has pre-fix ids, run: sql/fix_spire_of_vahzl_mob_spawn_ids.sql
-        AGONIZER                 = 16875521,
-        MEMORY_RECEPTACLE_RED    = 16875542,
-        MEMORY_RECEPTACLE_SHIELD = 16875543,
+        -- Stock mob_spawn_points.sql (first Pulling the Plug / Desires mobs). Must decode as zone 23 via (mobid >> 12) & 0xFFF.
+        -- Do not use GetFirstID here: it logs errors when the DB omits these rows (e.g. partial migration), and `or` does not suppress that.
+        -- Never use 16875521 for Agonizer — that id is zone 25 (Lufaise), so battlefield scripts find no mobs in Spire.
+        AGONIZER                 = 16871424,
+        MEMORY_RECEPTACLE_RED    = 16871445,
+        MEMORY_RECEPTACLE_SHIELD = 16871446,
     },
     npc =
     {

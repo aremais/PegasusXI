@@ -45,11 +45,13 @@ void GP_CLI_COMMAND_CHARREQ::process(MapSession* PSession, CCharEntity* PChar) c
     if (!PEntity)
     {
         const auto fullId = ((4096 + PChar->getZone()) << 12) + ActIndex;
-        ShowWarningFmt("Could not look up entity <{}, {}> in zone <{} ({})>",
-                       ActIndex,
-                       fullId,
-                       zoneutils::GetZone(PChar->getZone())->getName(),
-                       PChar->getZone());
+        // The client often polls targids that are not spawned server-side (cutscenes, CS desync, stale target).
+        // Softlock without a running event still produces these packets; avoid warning spam — use debug logging.
+        ShowDebugFmt("Could not look up entity <{}, {}> in zone <{} ({})>",
+                     ActIndex,
+                     fullId,
+                     zoneutils::GetZone(PChar->getZone())->getName(),
+                     PChar->getZone());
         return;
     }
 

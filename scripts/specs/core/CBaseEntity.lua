@@ -56,7 +56,7 @@ end
 ---@param p3 integer?
 ---@param chat integer?
 ---@return nil
-function CBaseEntity:messageName(messageID, entity, p0, p1, p2, p3, chat)
+function CBaseEntity:messageName(messageID, entity, p0, p1, p2, p3, chat, showSender)
 end
 
 ---@param messageID integer

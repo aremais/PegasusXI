@@ -124,6 +124,7 @@ ai.select =
     HELIX_MOB_WEAKNESS  = 15,
     DEF_BAR_ELEMENT     = 16,
     RUNE_DAY            = 17,
+    PARTY_SKILLCHAIN    = 18, -- Must match C++ G_SELECT::PARTY_SKILLCHAIN (gambits_container.h); see static_assert in gambits_container.cpp
 }
 ai.s = ai.select
 

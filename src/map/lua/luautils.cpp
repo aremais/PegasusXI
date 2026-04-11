@@ -22,7 +22,9 @@
 #include "luautils.h"
 
 #include <common/application.h>
+#include <common/database.h>
 #include <common/filewatcher.h>
+#include <common/ipp.h>
 #include <common/ipc.h>
 #include <common/logging.h>
 #include <common/settings.h>
@@ -31,6 +33,9 @@
 #include <common/utils.h>
 #include <common/vana_time.h>
 #include <common/version.h>
+
+#include <algorithm>
+#include <cctype>
 
 #include "lua_action.h"
 #include "lua_battlefield.h"
@@ -257,6 +262,7 @@ void init(IPP mapIPP, bool isRunningInCI)
     lua.set_function("GetPlayerByName", &luautils::GetPlayerByName);
     lua.set_function("GetPlayerByID", &luautils::GetPlayerByID);
     lua.set_function("PlayerHasValidSession", &luautils::PlayerHasValidSession);
+    lua.set_function("KickSessionsByClientIP", &luautils::KickSessionsByClientIP);
     lua.set_function("GetPlayerIDByName", &charutils::getCharIdFromName);
     lua.set_function("SendToJailOffline", &luautils::SendToJailOffline);
     lua.set_function("DrawIn", &luautils::DrawIn);
@@ -1805,6 +1811,45 @@ bool PlayerHasValidSession(uint32 playerId)
     }
 
     return false;
+}
+
+/************************************************************************
+ *                                                                       *
+ *  Disconnect all characters whose accounts_sessions.client_addr        *
+ *  matches the given IPv4 (via KillSession IPC through world server).   *
+ *                                                                       *
+ ************************************************************************/
+
+uint32 KickSessionsByClientIP(const std::string& ipStr)
+{
+    TracyZoneScoped;
+
+    if (ipStr.empty())
+    {
+        return 0;
+    }
+
+    const uint32 clientAddr = str2ip(ipStr);
+    if (clientAddr == 0)
+    {
+        ShowWarning("KickSessionsByClientIP: invalid IPv4 string: %s", ipStr.c_str());
+        return 0;
+    }
+
+    const auto rset = db::preparedStmt("SELECT charid FROM accounts_sessions WHERE client_addr = ?", clientAddr);
+    uint32       count = 0;
+    if (rset && rset->rowsCount())
+    {
+        while (rset->next())
+        {
+            const uint32 charid = rset->get<uint32>("charid");
+            message::send(ipc::KillSession{ .victimId = charid });
+            ++count;
+        }
+    }
+
+    ShowInfoFmt("KickSessionsByClientIP: sent KillSession for {} character(s) at {}", count, ipStr);
+    return count;
 }
 
 /************************************************************************
@@ -4755,6 +4800,11 @@ void SetCharVar(uint32 charId, const std::string& varName, int32 value, const so
 {
     uint32 varTimestamp = expiry.is<uint32>() ? expiry.as<uint32>() : 0;
 
+    if (value != 0 && varName == "CONQUEST_RING_RECHARGE" && varTimestamp == 0)
+    {
+        varTimestamp = NextJstWeek();
+    }
+
     if (varTimestamp > 0 && varTimestamp <= earth_time::timestamp())
     {
         ShowWarning(fmt::format("Attempting to set variable '{}' with an expired time: {}", varName, varTimestamp));
@@ -5384,20 +5434,58 @@ void HandleCustomMenu(CCharEntity* PChar, const std::string& selection)
     }
     else
     {
+        // Extract the chosen menu label from the client's GMTELL-style reply. Locales use different
+        // "Result (" markers; if none match, fall back to substring matching (see below).
         const std::string resultJp = "\x3A\x8C\x8B\x89\xCA\x28";
         const std::string resultNa = "\x3A\x20\x52\x65\x73\x75\x6C\x74\x20\x28";
+        // French: " : Résultat (" (UTF-8 é)
+        const std::string resultFr = "\x20\x3A\x20\x52\xC3\xA9\x73\x75\x6C\x74\x61\x74\x20\x28";
+        // German: ": Ergebnis ("
+        const std::string resultDe = "\x3A\x20\x45\x72\x67\x65\x62\x6E\x69\x73\x20\x28";
 
-        std::string result = selection.find(resultJp) != selection.npos ? selection.substr(selection.find(resultJp) + resultJp.size()) : "";
+        auto extractAfterMarker = [](const std::string& text, const std::string& marker) -> std::string
+        {
+            const auto pos = text.find(marker);
+            if (pos == std::string::npos)
+            {
+                return {};
+            }
+            std::string out = text.substr(pos + marker.size());
+            if (!out.empty() && out.back() == ')')
+            {
+                out.pop_back();
+            }
+            while (!out.empty() && std::isspace(static_cast<unsigned char>(out.front())))
+            {
+                out.erase(out.begin());
+            }
+            while (!out.empty() && std::isspace(static_cast<unsigned char>(out.back())))
+            {
+                out.pop_back();
+            }
+            return out;
+        };
+
+        std::string result = extractAfterMarker(selection, resultJp);
         if (result.empty())
         {
-            result = selection.find(resultNa) != selection.npos ? selection.substr(selection.find(resultNa) + resultNa.size()) : "";
+            result = extractAfterMarker(selection, resultNa);
         }
-
-        if (!result.empty())
+        if (result.empty())
         {
-            result.pop_back();
+            result = extractAfterMarker(selection, resultFr);
+        }
+        if (result.empty())
+        {
+            // French alternate without leading space before colon
+            result = extractAfterMarker(selection, "\x3A\x20\x52\xC3\xA9\x73\x75\x6C\x74\x61\x74\x20\x28");
+        }
+        if (result.empty())
+        {
+            result = extractAfterMarker(selection, resultDe);
         }
 
+        bool invoked = false;
         for (const auto& entry : context["options"].get<sol::table>())
         {
             if (entry.second.get_type() == sol::type::table)
@@ -5406,15 +5494,53 @@ void HandleCustomMenu(CCharEntity* PChar, const std::string& selection)
                 auto name  = table[1].get<std::string>();
                 auto func  = table[2].get<sol::function>();
 
-                if (result.compare(name) == 0)
+                if (result == name)
                 {
-                    auto result = func(PChar);
-                    if (!result.valid())
+                    auto funcResult = func(PChar);
+                    if (!funcResult.valid())
                     {
-                        sol::error err = result;
+                        sol::error err = funcResult;
                         ShowError("Menu error: %s", err.what());
                         ReportErrorToPlayer(PChar, err.what());
                     }
+                    invoked = true;
+                    break;
+                }
+            }
+        }
+
+        // If locale/format still didn't yield a parseable choice, match option labels against the raw message
+        // (longest first so "Receive Ionis" wins over shorter substrings).
+        if (!invoked)
+        {
+            std::vector<std::pair<std::size_t, sol::object>> optionsByLen;
+            for (const auto& entry : context["options"].get<sol::table>())
+            {
+                if (entry.second.get_type() == sol::type::table)
+                {
+                    auto table = entry.second.as<sol::table>();
+                    optionsByLen.emplace_back(table[1].get<std::string>().size(), entry.second);
+                }
+            }
+            std::sort(optionsByLen.begin(), optionsByLen.end(), [](const auto& a, const auto& b)
+                      {
+                          return a.first > b.first;
+                      });
+            for (const auto& [_, optObj] : optionsByLen)
+            {
+                auto table = optObj.as<sol::table>();
+                auto name  = table[1].get<std::string>();
+                if (selection.find(name) != std::string::npos)
+                {
+                    auto func       = table[2].get<sol::function>();
+                    auto funcResult = func(PChar);
+                    if (!funcResult.valid())
+                    {
+                        sol::error err = funcResult;
+                        ShowError("Menu error: %s", err.what());
+                        ReportErrorToPlayer(PChar, err.what());
+                    }
+                    invoked = true;
                     break;
                 }
             }

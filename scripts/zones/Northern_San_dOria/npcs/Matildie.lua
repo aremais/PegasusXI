@@ -43,9 +43,9 @@ local function grantStarterPack(player)
     player:addKeyItem(xi.ki.WINDURST_TRUST_PERMIT)
     player:addKeyItem(xi.ki.SAN_DORIA_TRUST_PERMIT)
 
-    -- Adds nation items starting nation rings
-    player:addItem(17584)
-    player:addItem(14429)
+    -- Adds nation items from starting nation
+    player:addItem(14428)
+    player:addItem(17583)
 
     -- Grants gil and gives the appropriate message
     player:addGil(10000000)

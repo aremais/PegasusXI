@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2025 LandSandBoat Dev Teams
@@ -44,6 +44,14 @@
 
 namespace gambits
 {
+
+// scripts/globals/gambits.lua — ai.tp / ai.select numeric values must match gambits_container.h
+static_assert(static_cast<uint16_t>(G_TP_TRIGGER::ASAP) == 0U);
+static_assert(static_cast<uint16_t>(G_TP_TRIGGER::RANDOM) == 1U);
+static_assert(static_cast<uint16_t>(G_TP_TRIGGER::OPENER) == 2U);
+static_assert(static_cast<uint16_t>(G_TP_TRIGGER::CLOSER) == 3U);
+static_assert(static_cast<uint16_t>(G_TP_TRIGGER::CLOSER_UNTIL_TP) == 4U);
+static_assert(static_cast<uint16_t>(G_SELECT::PARTY_SKILLCHAIN) == 18U);
 
 // Return a new unique identifier for a gambit
 auto CGambitsContainer::NewGambitIdentifier(const Gambit_t& gambit) const -> std::string
@@ -555,24 +563,33 @@ auto CGambitsContainer::Tick(timer::time_point tick) -> Task<void>
                             if (tpCost != 0 && currentTP >= tpCost)
                             {
                                 PAbility = PWaltzAbility;
-                                controller->Ability(target->targid, PAbility->getID());
+                                if (target != nullptr)
+                                {
+                                    controller->Ability(target->targid, PAbility->getID());
+                                }
                             }
                         }
                     }
                 }
 
+                // Do not overwrite gambit `target`: JA valid-target may differ (e.g. Provoke on mob)
+                // while later actions in the same gambit still need the matched entity.
+                CBattleEntity* abilityTarget = target;
                 if (PAbility->getValidTarget() == TARGET_SELF)
                 {
-                    target = POwner;
+                    abilityTarget = POwner;
                 }
                 else
                 {
-                    target = POwner->GetBattleTarget();
+                    abilityTarget = POwner->GetBattleTarget();
                 }
 
                 if (action.select == G_SELECT::SPECIFIC)
                 {
-                    controller->Ability(target->targid, PAbility->getID());
+                    if (abilityTarget != nullptr)
+                    {
+                        controller->Ability(abilityTarget->targid, PAbility->getID());
+                    }
                 }
 
                 if (action.select == G_SELECT::BEST_SAMBA)
@@ -638,9 +655,18 @@ auto CGambitsContainer::Tick(timer::time_point tick) -> Task<void>
                         }
                     }
 
-                    if (tpCost != 0 && (currentTP >= tpCost))
+                    if (PAbility->getValidTarget() == TARGET_SELF)
                     {
-                        controller->Ability(target->targid, PAbility->getID());
+                        abilityTarget = POwner;
+                    }
+                    else
+                    {
+                        abilityTarget = POwner->GetBattleTarget();
+                    }
+
+                    if (tpCost != 0 && (currentTP >= tpCost) && abilityTarget != nullptr)
+                    {
+                        controller->Ability(abilityTarget->targid, PAbility->getID());
                     }
                 }
                 else if (action.select == G_SELECT::RUNE_DAY)
@@ -684,7 +710,10 @@ auto CGambitsContainer::Tick(timer::time_point tick) -> Task<void>
                             ability = ABILITY_IGNIS;
                             break;
                     }
-                    controller->Ability(target->targid, ability);
+                    if (abilityTarget != nullptr)
+                    {
+                        controller->Ability(abilityTarget->targid, ability);
+                    }
                 }
             }
             else if (action.reaction == G_REACTION::MS)
@@ -932,35 +961,40 @@ bool CGambitsContainer::CheckTrigger(const CBattleEntity* triggerTarget, Predica
             }
             case G_CONDITION::READYING_WS:
             {
-                predicateResults.push_back(triggerTarget->PAI->IsCurrentState<CWeaponSkillState>());
+                predicateResults.push_back(triggerTarget->PAI != nullptr && triggerTarget->PAI->IsCurrentState<CWeaponSkillState>());
                 continue;
             }
             case G_CONDITION::READYING_MS:
             {
-                predicateResults.push_back(triggerTarget->PAI->IsCurrentState<CMobSkillState>());
+                predicateResults.push_back(triggerTarget->PAI != nullptr && triggerTarget->PAI->IsCurrentState<CMobSkillState>());
                 continue;
             }
             case G_CONDITION::READYING_JA:
             {
-                predicateResults.push_back(triggerTarget->PAI->IsCurrentState<CAbilityState>());
+                predicateResults.push_back(triggerTarget->PAI != nullptr && triggerTarget->PAI->IsCurrentState<CAbilityState>());
                 continue;
             }
             case G_CONDITION::CASTING_MA:
             {
-                predicateResults.push_back(triggerTarget->PAI->IsCurrentState<CMagicState>());
+                predicateResults.push_back(triggerTarget->PAI != nullptr && triggerTarget->PAI->IsCurrentState<CMagicState>());
                 continue;
             }
             case G_CONDITION::CASTING_ELE_MA_AOE:
             {
                 bool isAOE = false;
-                if (triggerTarget->PAI->IsCurrentState<CMagicState>())
+                if (triggerTarget->PAI != nullptr && triggerTarget->PAI->IsCurrentState<CMagicState>())
                 {
-                    auto spellElement  = static_cast<CMagicState*>(triggerTarget->PAI->GetCurrentState())->GetSpell()->getElement();
-                    auto isElementalMA = spellElement >= ELEMENT_FIRE && spellElement <= ELEMENT_WATER;
-                    auto spellAOEType  = static_cast<CMagicState*>(triggerTarget->PAI->GetCurrentState())->GetSpell()->getAOE();
-                    if (isElementalMA && spellAOEType == SPELLAOE_RADIAL)
+                    auto* magicState = static_cast<CMagicState*>(triggerTarget->PAI->GetCurrentState());
+                    auto* PSpell     = magicState->GetSpell();
+                    if (PSpell)
                     {
-                        isAOE = true;
+                        auto spellElement  = PSpell->getElement();
+                        auto isElementalMA = spellElement >= ELEMENT_FIRE && spellElement <= ELEMENT_WATER;
+                        auto spellAOEType  = PSpell->getAOE();
+                        if (isElementalMA && spellAOEType == SPELLAOE_RADIAL)
+                        {
+                            isAOE = true;
+                        }
                     }
                 }
                 predicateResults.push_back(isAOE);
@@ -969,10 +1003,14 @@ bool CGambitsContainer::CheckTrigger(const CBattleEntity* triggerTarget, Predica
             case G_CONDITION::CASTING_ELEMENT_MA:
             {
                 bool isElementalMA = false;
-                if (triggerTarget->PAI->IsCurrentState<CMagicState>())
+                if (triggerTarget->PAI != nullptr && triggerTarget->PAI->IsCurrentState<CMagicState>())
                 {
-                    auto spellElement = static_cast<CMagicState*>(triggerTarget->PAI->GetCurrentState())->GetSpell()->getElement();
-                    isElementalMA     = spellElement >= ELEMENT_FIRE && spellElement <= ELEMENT_WATER;
+                    auto* PSpell = static_cast<CMagicState*>(triggerTarget->PAI->GetCurrentState())->GetSpell();
+                    if (PSpell)
+                    {
+                        auto spellElement = PSpell->getElement();
+                        isElementalMA     = spellElement >= ELEMENT_FIRE && spellElement <= ELEMENT_WATER;
+                    }
                 }
                 predicateResults.push_back(isElementalMA);
                 continue;
@@ -980,14 +1018,19 @@ bool CGambitsContainer::CheckTrigger(const CBattleEntity* triggerTarget, Predica
             case G_CONDITION::CAST_ELE_MA_SELF:
             {
                 bool isElementalMAOnSelf = false;
-                if (triggerTarget->PAI->IsCurrentState<CMagicState>())
+                if (triggerTarget->PAI != nullptr && triggerTarget->PAI->IsCurrentState<CMagicState>())
                 {
-                    auto spellElement  = static_cast<CMagicState*>(triggerTarget->PAI->GetCurrentState())->GetSpell()->getElement();
-                    auto targetID      = static_cast<CMagicState*>(triggerTarget->PAI->GetCurrentState())->GetTarget()->id;
-                    bool isElementalMA = spellElement >= ELEMENT_FIRE && spellElement <= ELEMENT_WATER;
-                    if (targetID == POwner->id && isElementalMA)
+                    auto* magicState = static_cast<CMagicState*>(triggerTarget->PAI->GetCurrentState());
+                    auto* PSpell     = magicState->GetSpell();
+                    auto* PSpellTarg = magicState->GetTarget();
+                    if (PSpell && PSpellTarg)
                     {
-                        isElementalMAOnSelf = true;
+                        auto spellElement  = PSpell->getElement();
+                        bool isElementalMA = spellElement >= ELEMENT_FIRE && spellElement <= ELEMENT_WATER;
+                        if (PSpellTarg->id == POwner->id && isElementalMA)
+                        {
+                            isElementalMAOnSelf = true;
+                        }
                     }
                 }
                 predicateResults.push_back(isElementalMAOnSelf);
@@ -996,9 +1039,16 @@ bool CGambitsContainer::CheckTrigger(const CBattleEntity* triggerTarget, Predica
             case G_CONDITION::NEED_ELE_BAREFFECT:
             {
                 bool needBarEffect = false;
-                if (triggerTarget->PAI->IsCurrentState<CMagicState>())
+                if (triggerTarget->PAI != nullptr && triggerTarget->PAI->IsCurrentState<CMagicState>())
                 {
-                    auto spellElement = static_cast<CMagicState*>(triggerTarget->PAI->GetCurrentState())->GetSpell()->getElement();
+                    auto* PSpell = static_cast<CMagicState*>(triggerTarget->PAI->GetCurrentState())->GetSpell();
+                    if (!PSpell)
+                    {
+                        predicateResults.push_back(false);
+                        continue;
+                    }
+
+                    auto spellElement = PSpell->getElement();
 
                     switch (spellElement)
                     {
@@ -1103,6 +1153,11 @@ bool CGambitsContainer::TryTrustSkill()
                 return true;
                 break;
             }
+            case G_TP_TRIGGER::RANDOM: // ai.tp.RANDOM — was missing; fell through to default and never WS
+            {
+                return true;
+                break;
+            }
             case G_TP_TRIGGER::OPENER:
             {
                 bool result = false;
@@ -1129,9 +1184,10 @@ bool CGambitsContainer::TryTrustSkill()
             }
             case G_TP_TRIGGER::CLOSER_UNTIL_TP: // Will hold TP to close a SC, but WS immediately once specified value is reached.
             {
-                if (tp_value <= 1500) // If the value provided by the script is missing or too low
+                // Minimum WS TP in FFXI is 1000; do not force 1500 or trusts sit at 1000–1499 with no SC window forever.
+                if (tp_value < 1000)
                 {
-                    tp_value = 1500; // Apply the minimum TP Hold Threshold
+                    tp_value = 1000;
                 }
                 if (POwner->health.tp >= tp_value) // tp_value reached
                 {
@@ -1193,6 +1249,10 @@ bool CGambitsContainer::TryTrustSkill()
                         }
                     }
                 }
+                if (!chosen_skill)
+                {
+                    chosen_skill = xirand::GetRandomElement(tp_skills);
+                }
                 break;
             }
             case G_SELECT::HIGHEST: // Form the best possible skillchain
@@ -1231,6 +1291,10 @@ bool CGambitsContainer::TryTrustSkill()
                             chosen_skillchain = possible_skillchain;
                         }
                     }
+                }
+                if (!chosen_skill)
+                {
+                    chosen_skill = tp_skills.at(tp_skills.size() - 1);
                 }
                 break;
             }
@@ -1271,8 +1335,99 @@ bool CGambitsContainer::TryTrustSkill()
 
                 break;
             }
+            case G_SELECT::PARTY_SKILLCHAIN:
+            {
+                auto* PSCEffect = target->StatusEffectContainer->GetStatusEffect(EFFECT_SKILLCHAIN);
+
+                const bool closerWindow = PSCEffect && PSCEffect->GetStartTime() + 3s < timer::now() && PSCEffect->GetTier() == 0;
+
+                if (closerWindow)
+                {
+                    for (auto& skill : tp_skills)
+                    {
+                        std::list<SKILLCHAIN_ELEMENT> resonanceProperties;
+                        if (uint16 power = PSCEffect->GetPower())
+                        {
+                            resonanceProperties.emplace_back((SKILLCHAIN_ELEMENT)(power & 0xF));
+                            resonanceProperties.emplace_back((SKILLCHAIN_ELEMENT)(power >> 4 & 0xF));
+                            resonanceProperties.emplace_back((SKILLCHAIN_ELEMENT)(power >> 8));
+                        }
+
+                        std::list<SKILLCHAIN_ELEMENT> skillProperties;
+                        skillProperties.emplace_back((SKILLCHAIN_ELEMENT)skill.primary);
+                        skillProperties.emplace_back((SKILLCHAIN_ELEMENT)skill.secondary);
+                        skillProperties.emplace_back((SKILLCHAIN_ELEMENT)skill.tertiary);
+                        if (SKILLCHAIN_ELEMENT possible_skillchain = battleutils::FormSkillchain(resonanceProperties, skillProperties);
+                            possible_skillchain != SC_NONE)
+                        {
+                            if (possible_skillchain >= chosen_skillchain)
+                            {
+                                chosen_skill      = skill;
+                                chosen_skillchain = possible_skillchain;
+                            }
+                        }
+                    }
+                }
+
+                if (!chosen_skill)
+                {
+                    // Same geometry as SPECIAL_AYAME: our WS properties continue party member's last WS.
+                    static_cast<CCharEntity*>(POwner->PMaster)->ForPartyWithTrusts([&](CBattleEntity* PMember)
+                    {
+                        if (PMember == POwner || PMember->objtype != TYPE_PC)
+                        {
+                            return;
+                        }
+
+                        auto* PController = dynamic_cast<CPlayerController*>(PMember->PAI->GetController());
+                        if (PController == nullptr)
+                        {
+                            return;
+                        }
+
+                        auto* PPartyLastWS = PController->getLastWeaponSkill();
+                        if (PPartyLastWS == nullptr)
+                        {
+                            return;
+                        }
+
+                        for (auto& skill : tp_skills)
+                        {
+                            std::list<SKILLCHAIN_ELEMENT> resonanceProperties;
+                            resonanceProperties.emplace_back((SKILLCHAIN_ELEMENT)skill.primary);
+                            resonanceProperties.emplace_back((SKILLCHAIN_ELEMENT)skill.secondary);
+                            resonanceProperties.emplace_back((SKILLCHAIN_ELEMENT)skill.tertiary);
+
+                            std::list<SKILLCHAIN_ELEMENT> skillProperties;
+                            skillProperties.emplace_back((SKILLCHAIN_ELEMENT)PPartyLastWS->getPrimarySkillchain());
+                            skillProperties.emplace_back((SKILLCHAIN_ELEMENT)PPartyLastWS->getSecondarySkillchain());
+                            skillProperties.emplace_back((SKILLCHAIN_ELEMENT)PPartyLastWS->getTertiarySkillchain());
+                            if (SKILLCHAIN_ELEMENT possible_skillchain = battleutils::FormSkillchain(resonanceProperties, skillProperties);
+                                possible_skillchain != SC_NONE)
+                            {
+                                if (possible_skillchain >= chosen_skillchain)
+                                {
+                                    chosen_skill      = skill;
+                                    chosen_skillchain = possible_skillchain;
+                                }
+                            }
+                        }
+                    });
+                }
+
+                if (!chosen_skill)
+                {
+                    chosen_skill = tp_skills.at(tp_skills.size() - 1);
+                }
+                break;
+            }
             default:
             {
+                // Stale map binary with newer script (unknown tp_select id): still weapon skill.
+                if (!tp_skills.empty())
+                {
+                    chosen_skill = tp_skills.at(tp_skills.size() - 1);
+                }
                 break;
             }
         }
@@ -1298,7 +1453,12 @@ bool CGambitsContainer::TryTrustSkill()
             {
                 target = POwner->GetBattleTarget();
             }
-            controller->WeaponSkill(target->targid, PWeaponSkill->getID());
+            if (target == nullptr)
+            {
+                return false;
+            }
+            // WeaponSkill returns false if state change fails (LOS, range, CanChangeState, etc.); must not consume the tick as success.
+            return controller->WeaponSkill(target->targid, PWeaponSkill->getID());
         }
         else // Mobskill
         {
@@ -1310,9 +1470,12 @@ bool CGambitsContainer::TryTrustSkill()
             {
                 target = POwner->GetBattleTarget();
             }
-            controller->MobSkill(target->targid, chosen_skill->skill_id, std::nullopt);
+            if (target == nullptr)
+            {
+                return false;
+            }
+            return controller->MobSkill(target->targid, chosen_skill->skill_id, std::nullopt);
         }
-        return true;
     }
     return false;
 }

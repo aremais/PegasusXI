@@ -33,7 +33,6 @@ return {
     ['Hinaree']           = { event = 580 },
     ['Icoua']             = { event = 674 },
     ['Ishwar']            = { text = ID.text.ISHWAR_DIALOG },
-    ['Jufaue']            = { event = 715 },
     ['Kasaroro']          = { event = 548 },
     ['Letterare']         = { event = 660 },
     ['Machella']          = { event = 672 },
@@ -64,7 +63,23 @@ return {
     ['Shakir']            = { event = 538 },
     ['Sochiene']          = { text = ID.text.SOCHIENE_DIALOG },
     ['Suspicious_Elvaan'] = { event = 881 },
-    ['Synergy_Engineer']  = { event = 11002 },
+    ['Synergy_Engineer'] = function(player, npc)
+        xi.synergy.engineerOnTrigger(player, npc, 11002)
+    end,
+
+    ['onEventFinish'] =
+    {
+        [11002] = function(player, csid, option, npc)
+            xi.synergy.engineerOnEventFinish(player, csid, option, npc)
+        end,
+    },
+
+    ['onEventUpdate'] =
+    {
+        [11002] = function(player, csid, option, npc)
+            xi.synergy.engineerOnEventUpdate(player, csid, option, npc)
+        end,
+    },
     ['Taurette']          = { event =   664 },
     ['Vamorcote']         = { event =   651 },
     ['Vavegallet']        = { event =   673 },

@@ -160,7 +160,8 @@ function InteractionLookup:addDefaultHandlers(zoneId, handlerTable)
     self.zoneDefaults[zoneId] = true
 
     for _, actionDef in pairs(handlerTable) do
-        if actionDef.prio == nil then
+        -- Shorthand may be a function (e.g. Synergy_Engineer); only tables accept .prio here.
+        if type(actionDef) == 'table' and actionDef.prio == nil then
             actionDef.prio = Action.Priority.Default
         end
     end

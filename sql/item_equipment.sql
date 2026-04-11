@@ -11632,7 +11632,7 @@ INSERT INTO `item_equipment` VALUES (23483,'horos_casaque_+3',99,119,262144,304,
 INSERT INTO `item_equipment` VALUES (23484,'peda._gown_+3',99,119,524288,217,0,0,32,0,0,0);
 INSERT INTO `item_equipment` VALUES (23485,'bagua_tunic_+3',99,119,1048576,310,0,0,32,0,0,0);
 INSERT INTO `item_equipment` VALUES (23486,'futhark_coat_+3',99,119,2097152,339,0,0,32,0,0,0);
-INSERT INTO `item_equipment` VALUES (23487,'boii_lorica_+3',99,0,0,0,0,0,32,0,0,0);        -- TODO: Not implemented
+INSERT INTO `item_equipment` VALUES (23487,'boii_lorica_+3',99,119,1,282,0,0,32,0,0,0); -- WAR (1<<0); Boii = reforged WAR empyrean, not RUN
 INSERT INTO `item_equipment` VALUES (23488,'bhikku_cyclas_+3',99,0,0,0,0,0,32,0,0,0);      -- TODO: Not implemented
 INSERT INTO `item_equipment` VALUES (23489,'ebers_bliaut_+3',99,0,0,0,0,0,32,0,0,0);       -- TODO: Not implemented
 INSERT INTO `item_equipment` VALUES (23490,'wicce_coat_+3',99,0,0,0,0,0,32,0,0,0);         -- TODO: Not implemented
@@ -11996,6 +11996,7 @@ INSERT INTO `item_equipment` VALUES (23857,'apathy_platemail',1,0,4194303,8682,0
 INSERT INTO `item_equipment` VALUES (23858,'apathy_gauntlets',1,0,4194303,12778,0,0,64,0,0,0);
 INSERT INTO `item_equipment` VALUES (23859,'apathy_brais',1,0,4194303,16874,0,0,128,0,0,0);
 INSERT INTO `item_equipment` VALUES (23860,'apathy_sabatons',1,0,4194303,20970,0,0,256,0,0,0);
+INSERT INTO `item_equipment` VALUES (24030,'pumm._cuisses_+4',99,119,1,64,0,0,128,0,0,0);
 INSERT INTO `item_equipment` VALUES (25414,'elite_royal_collar',99,0,4194303,0,0,0,512,0,0,0);
 INSERT INTO `item_equipment` VALUES (25415,'rep._plat._medal',99,0,4194303,0,0,0,512,0,0,0);
 INSERT INTO `item_equipment` VALUES (25416,'Sibyl_scarf',99,0,4194303,0,0,0,512,0,0,0);

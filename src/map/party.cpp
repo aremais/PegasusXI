@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -34,6 +34,9 @@
 #include "utils/charutils.h"
 #include "utils/jailutils.h"
 #include "utils/zoneutils.h"
+
+#include "common/database.h"
+
 #include <cstring>
 #include <vector>
 
@@ -47,6 +50,33 @@
 #include "packets/s2c/0x0b4_config.h"
 #include "packets/s2c/0x0c8_group_tbl.h"
 #include "packets/s2c/0x0dd_group_list.h"
+
+namespace
+{
+// accounts_parties.charid FK references accounts_sessions — insert only when the character is logged in.
+bool tryPersistPartyMember(uint32 charid, uint32 partyid, uint32 allianceid, uint16 partyflag)
+{
+    const auto sessionRset = db::preparedStmt("SELECT 1 FROM accounts_sessions WHERE charid = ? LIMIT 1", charid);
+    if (!sessionRset || sessionRset->rowsCount() == 0)
+    {
+        ShowWarning("tryPersistPartyMember: charid %u has no accounts_sessions row (accounts_parties FK)", charid);
+        return false;
+    }
+
+    const auto insertRset = db::preparedStmt(
+        "INSERT INTO accounts_parties (charid, partyid, allianceid, partyflag) VALUES (?, ?, ?, ?)",
+        charid,
+        partyid,
+        allianceid,
+        partyflag);
+    if (!insertRset)
+    {
+        ShowWarning("tryPersistPartyMember: INSERT accounts_parties failed for charid %u", charid);
+        return false;
+    }
+    return true;
+}
+} // namespace
 
 // should have brace-or-equal initializers when MSVC supports it
 struct CParty::partyInfo_t
@@ -642,11 +672,13 @@ void CParty::AddMember(CBattleEntity* PEntity)
             allianceid = m_PAlliance->m_AllianceID;
         }
 
-        db::preparedStmt("INSERT INTO accounts_parties (charid, partyid, allianceid, partyflag) VALUES (?, ?, ?, ?)",
-                         PChar->id,
-                         m_PartyID,
-                         allianceid,
-                         GetMemberFlags(PChar));
+        if (!tryPersistPartyMember(PChar->id, m_PartyID, allianceid, GetMemberFlags(PChar)))
+        {
+            members.pop_back();
+            PEntity->PParty = nullptr;
+            ShowWarning("CParty::AddMember: reverted in-memory party add for charid %u (accounts_parties insert failed)", PChar->id);
+            return;
+        }
 
         if (m_PAlliance)
         {
@@ -697,70 +729,73 @@ void CParty::AddMember(CBattleEntity* PEntity)
     }
 }
 
-void CParty::AddMember(uint32 id)
+bool CParty::AddMember(uint32 id)
 {
-    if (m_PartyType == PARTY_PCS)
+    if (m_PartyType != PARTY_PCS)
     {
-        if (IsFull())
-        {
-            ShowWarning("CParty::AddMember() - Party was full when trying to add a member from out of zone.");
-            return;
-        }
-
-        if (HasTrusts())
-        {
-            ShowWarning("CParty::AddMember() - Party had summoned trusts when trying to add a member.");
-            return;
-        }
-
-        uint32 allianceid = 0;
-        uint16 Flags      = 0;
-        if (m_PAlliance)
-        {
-            allianceid = m_PAlliance->m_AllianceID;
-            if (this->m_PartyNumber == 1)
-            {
-                Flags = PARTY_SECOND;
-            }
-            else if (this->m_PartyNumber == 2)
-            {
-                Flags = PARTY_THIRD;
-            }
-        }
-
-        db::preparedStmt("INSERT INTO accounts_parties (charid, partyid, allianceid, partyflag) VALUES (?, ?, ?, ?)",
-                         id,
-                         m_PartyID,
-                         allianceid,
-                         Flags);
-
-        if (m_PAlliance)
-        {
-            message::send(ipc::AllianceReload{
-                .allianceId = m_PAlliance->m_AllianceID,
-            });
-        }
-        else
-        {
-            message::send(ipc::PartyReload{
-                .partyId = m_PartyID,
-            });
-        }
-
-        /*if (PChar->nameflags.flags & FLAG_INVITE)
-        {
-            PChar->nameflags.flags ^= FLAG_INVITE;
-            PChar->updatemask |= UPDATE_HP;
-
-            charutils::SaveCharStats(PChar);
-
-            PChar->status = STATUS_UPDATE;
-            PChar->pushPacket<GP_SERV_COMMAND_CONFIG>(PChar);
-            PChar->pushPacket<CCharStatusPacket>(PChar);
-            PChar->pushPacket<CCharSyncPacket>(PChar);
-        }
-        PChar->PTreasurePool->UpdatePool(PChar);*/
+        return false;
     }
+
+    if (IsFull())
+    {
+        ShowWarning("CParty::AddMember() - Party was full when trying to add a member from out of zone.");
+        return false;
+    }
+
+    if (HasTrusts())
+    {
+        ShowWarning("CParty::AddMember() - Party had summoned trusts when trying to add a member.");
+        return false;
+    }
+
+    uint32 allianceid = 0;
+    uint16 Flags      = 0;
+    if (m_PAlliance)
+    {
+        allianceid = m_PAlliance->m_AllianceID;
+        if (this->m_PartyNumber == 1)
+        {
+            Flags = PARTY_SECOND;
+        }
+        else if (this->m_PartyNumber == 2)
+        {
+            Flags = PARTY_THIRD;
+        }
+    }
+
+    if (!tryPersistPartyMember(id, m_PartyID, allianceid, Flags))
+    {
+        return false;
+    }
+
+    if (m_PAlliance)
+    {
+        message::send(ipc::AllianceReload{
+            .allianceId = m_PAlliance->m_AllianceID,
+        });
+    }
+    else
+    {
+        message::send(ipc::PartyReload{
+            .partyId = m_PartyID,
+        });
+    }
+
+    /*if (PChar->nameflags.flags & FLAG_INVITE)
+    {
+        PChar->nameflags.flags ^= FLAG_INVITE;
+        PChar->updatemask |= UPDATE_HP;
+
+        charutils::SaveCharStats(PChar);
+
+        PChar->status = STATUS_UPDATE;
+        PChar->pushPacket<GP_SERV_COMMAND_CONFIG>(PChar);
+        PChar->pushPacket<CCharStatusPacket>(PChar);
+        PChar->pushPacket<CCharSyncPacket>(PChar);
+    }
+    PChar->PTreasurePool->UpdatePool(PChar);*/
+
+    return true;
 }
 
 void CParty::PushMember(CBattleEntity* PEntity)

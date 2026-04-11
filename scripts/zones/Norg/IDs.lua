@@ -39,7 +39,6 @@ zones[xi.zone.NORG] =
         AVATAR_UNLOCKED               = 10493, -- You are now able to summon [Ifrit/Titan/Leviathan/Garuda/Shiva/Ramuh].
         NOMAD_MOOGLE_DIALOG           = 10564, -- I'm a traveling moogle, kupo. I help adventurers in the Outlands access items they have stored in a Mog House elsewhere, kupo.
         FOUIVA_DIALOG                 = 10588, -- Oi 'av naw business wi' de likes av you.
-        SOLBYMAHOLBY_SHOP_DIALOG      = 10602, -- Hiya! My name's Solby-Maholby! I'm new here, so they put me on tooty-fruity shop duty. I'll give you a super-duper deal on unwanted items!
         LUCKY_ROLL_EXACT              = 10777, -- And because your roll put the running total at exactly 400, you receive a bonus prize!
         LUCKY_ROLL_CLOSE              = 10778, -- And for bringing the total so close to 400, here is your extra prize!
         LUCKY_ROLL_GAMEOVER           = 10779, -- I'm sorry, but that's it for today's game of Lucky Roll. Come by tomorrow, and maybe Lady Luck will be waiting for you!

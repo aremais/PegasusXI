@@ -25,7 +25,8 @@ entity.onTrigger = function(player, npc)
         { xi.item.SCROLL_OF_SUITON_SAN,    125212 },
     }
 
-    player:showText(npc, zones[xi.zone.NORG].text.SOLBYMAHOLBY_SHOP_DIALOG, 0, 0, 0, 0, true, false)
+    -- Do not showText 10602 here: on current clients that index is wyvern-rename UI (Fouvia / event 130), not this vendor,
+    -- and prints wyvern name lists into chat. Re-extract Solby's bark from ROM/252 if a greeting is required.
     xi.shop.general(player, stock)
 end
 

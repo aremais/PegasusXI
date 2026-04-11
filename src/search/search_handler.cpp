@@ -22,11 +22,13 @@
 #include "search_handler.h"
 
 #include "common/md52.h"
+#include "common/settings.h"
 #include "common/timer.h"
 #include "common/utils.h"
 
 #include "data_loader.h"
 
+#include <algorithm>
 #include <map>
 #include <unordered_set>
 
@@ -36,6 +38,10 @@
 #include "packets/party_list.h"
 #include "packets/search_comment.h"
 #include "packets/search_list.h"
+
+#include <asio/write.hpp>
+
+#include <chrono>
 
 SearchHandler::SearchHandler(Scheduler& scheduler, asio::ip::tcp::socket socket, SynchronizedShared<std::map<std::string, uint16_t>>& IPAddressesInUseList, SynchronizedShared<std::unordered_set<std::string>>& IPAddressWhitelist)
 : scheduler_(scheduler)
@@ -48,6 +54,7 @@ SearchHandler::SearchHandler(Scheduler& scheduler, asio::ip::tcp::socket socket,
 
     asio::error_code ec = {};
     socket_.lowest_layer().set_option(asio::socket_base::reuse_address(true));
+    socket_.lowest_layer().set_option(asio::socket_base::keep_alive(true));
     ipAddress_ = socket_.lowest_layer().remote_endpoint(ec).address().to_string();
 
     if (ec)
@@ -57,14 +64,17 @@ SearchHandler::SearchHandler(Scheduler& scheduler, asio::ip::tcp::socket socket,
     }
     else
     {
-        addToUsedIPAddresses(ipAddress_);
+        const auto maxConnectionsPerIp = std::max<uint16_t>(1, settings::get<uint16>("search.MAX_CONNECTIONS_PER_IP"));
 
-        if (getNumSessionsInUse(ipAddress_) > 5)
+        // Count existing sessions before registering this one (whitelist returns 0 and skips tracking).
+        if (getNumSessionsInUse(ipAddress_) >= maxConnectionsPerIp)
         {
-            ShowErrorFmt("More than 5 simultaneous connections from {}. Closing socket.", ipAddress_);
+            ShowErrorFmt("More than {} simultaneous connections from {}. Closing socket.", maxConnectionsPerIp, ipAddress_);
             socket_.lowest_layer().close();
             return;
         }
+
+        addToUsedIPAddresses(ipAddress_);
     }
 }
 
@@ -82,9 +92,12 @@ auto SearchHandler::run() -> Task<void>
     {
         while (socket_.lowest_layer().is_open() && !scheduler_.closeRequested())
         {
+            // Clients often send nothing while the AH UI is open (browsing, buying on map, etc.).
+            // A short idle timeout here drops the TCP session and the next AH action fails until
+            // reconnect — looks like intermittent "Search failed" after the first good request.
             auto result = co_await scheduler_.withTimeout(
                 socket_.async_read_some(asio::buffer(readBuffer_.data(), readBuffer_.size()), asio::use_awaitable),
-                10s);
+                std::chrono::minutes(15));
 
             if (!result.has_value()) // timed out
             {
@@ -140,7 +153,9 @@ auto SearchHandler::run() -> Task<void>
 
                 DebugSocketsFmt("Sending packet to IP {} ({} bytes)", ipAddress_, write_len);
 
-                co_await socket_.async_write_some(asio::buffer(buffer_.data(), write_len), asio::use_awaitable);
+                // Must send the full frame: async_write_some can truncate, which corrupts the stream and
+                // makes the client show "Search failed" (especially on large AH result sets).
+                co_await asio::async_write(socket_, asio::buffer(buffer_.data(), write_len), asio::use_awaitable);
             }
         }
     }
@@ -266,7 +281,17 @@ void SearchHandler::read_func(uint16_t length)
     {
         uint8 packetType = buffer_[0x0B];
 
-        ShowInfoFmt("Search Request: {} ({}), size: {}, ip: {}", searchTypeToString(packetType), packetType, length, ipAddress_);
+        // AH traffic is high volume; Info level here looks like failures and obscures real issues.
+        const bool isAhTraffic = packetType == TCP_AH_REQUEST || packetType == TCP_AH_REQUEST_MORE ||
+                                 packetType == TCP_AH_HISTORY_SINGLE || packetType == TCP_AH_HISTORY_STACK;
+        if (isAhTraffic)
+        {
+            ShowTraceFmt("Search Request: {} ({}), size: {}, ip: {}", searchTypeToString(packetType), packetType, length, ipAddress_);
+        }
+        else
+        {
+            ShowInfoFmt("Search Request: {} ({}), size: {}, ip: {}", searchTypeToString(packetType), packetType, length, ipAddress_);
+        }
 
         switch (packetType)
         {
@@ -289,6 +314,8 @@ void SearchHandler::read_func(uint16_t length)
             case TCP_AH_REQUEST:
             case TCP_AH_REQUEST_MORE:
             {
+                // MORE reuses the same payload layout but does not carry sort params at 0x12 (see below).
+                // Ignoring MORE leaves the client waiting for a reply and stalls the AH session.
                 HandleAuctionHouseRequest();
             }
             break;
@@ -486,11 +513,38 @@ void SearchHandler::HandleAuctionHouseRequest()
     // 8 - resistance
     // 9 - name
     std::string OrderByString = "ORDER BY";
-    uint8       paramCount    = ref<uint8>(buffer_.data(), 0x12);
+    const uint16 packetLen  = ref<uint16>(buffer_.data(), 0x00);
+    const uint8  packetType = buffer_[0x0B];
+
+    // Only TCP_AH_REQUEST (0x15) carries sort param count at 0x12. TCP_AH_REQUEST_MORE (0x10) is a
+    // small continuation packet (~76 bytes); that offset is not paramCount — reading it produced
+    // garbage (e.g. 247) and spammed "clamp" warnings.
+    uint8 paramCount = 0;
+    if (packetType == TCP_AH_REQUEST)
+    {
+        paramCount = ref<uint8>(buffer_.data(), 0x12);
+
+        if (packetLen >= 0x1C)
+        {
+            // Last sort param i = paramCount-1 reads uint32 ending at 0x18 + 8*(paramCount-1) + 3
+            const uint8 maxParams = static_cast<uint8>((packetLen - 0x1C) / 8 + 1);
+            if (paramCount > maxParams)
+            {
+                ShowTraceFmt("AH_REQUEST paramCount {} exceeds safe count {} for packet size {}; clamping.",
+                             paramCount, maxParams, packetLen);
+                paramCount = maxParams;
+            }
+        }
+        else
+        {
+            paramCount = 0;
+        }
+    }
+
     for (uint8 i = 0; i < paramCount; ++i) // Item sort options
     {
         uint8 param = ref<uint32>(buffer_.data(), 0x18 + 8 * i);
-        ShowInfoFmt(" Param{}: {}", i, param);
+        ShowTraceFmt(" Param{}: {}", i, param);
         switch (param)
         {
             case 2:
@@ -508,22 +562,26 @@ void SearchHandler::HandleAuctionHouseRequest()
         }
     }
 
-    OrderByString.append(" item_basic.itemid");
+    // Outer query aliases aggregated rows as "ah" (see CDataLoader::GetAHItemsToCategory).
+    OrderByString.append(" ah.itemid");
     const char* OrderByArray = OrderByString.data();
 
     CDataLoader          PDataLoader;
     std::vector<ahItem*> ItemList = PDataLoader.GetAHItemsToCategory(AHCatID, OrderByArray);
 
-    uint8 PacketsCount = (uint8)((ItemList.size() / 20) + (ItemList.size() % 20 != 0) + (ItemList.empty()));
+    const std::size_t nItems = ItemList.size();
+    const std::size_t PacketsCount =
+        (nItems / 20) + ((nItems % 20) != 0 ? 1U : 0U) + (nItems == 0 ? 1U : 0U);
 
-    for (uint8 i = 0; i < PacketsCount; ++i)
+    for (std::size_t i = 0; i < PacketsCount; ++i)
     {
-        CAHItemsListPacket PAHPacket(20 * i);
+        CAHItemsListPacket PAHPacket(static_cast<uint16>(20 * i));
         uint16             itemListSize = static_cast<uint16>(ItemList.size());
 
         PAHPacket.SetItemCount(itemListSize);
 
-        for (uint16 y = 20 * i; (y != 20 * (i + 1)) && (y < itemListSize); ++y)
+        const std::size_t chunkEnd = std::min(20 * (i + 1), nItems);
+        for (std::size_t y = 20 * i; y < chunkEnd; ++y)
         {
             PAHPacket.AddItem(ItemList.at(y));
         }

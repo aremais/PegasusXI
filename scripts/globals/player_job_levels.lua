@@ -16,7 +16,7 @@ xi = xi or {}
 xi.player_job_levels = xi.player_job_levels or {}
 
 --- Set all jobs (WAR through MON) to the given level.
---- Tries setJobLevel if available, else setMainJob+setLevel, else only current job.
+--- Tries setJobLevel if available, else changeJob+setLevel, else setMainJob+setLevel, else only current job.
 ---@param player userdata Player entity
 ---@param level number Level to set (1-99)
 ---@return boolean success True if all jobs were set
@@ -35,7 +35,18 @@ function xi.player_job_levels.setAllJobLevels(player, level)
         return true
     end
 
-    -- Fallback: set main job then level for each job (if setMainJob exists)
+    -- Fallback: switch to each job then set level (persists per-job levels).
+    if player.changeJob then
+        local originalJob = player:getMainJob()
+        for jobId = xi.job.WAR, xi.job.MON do
+            player:changeJob(jobId)
+            player:setLevel(level)
+        end
+        player:changeJob(originalJob)
+        return true
+    end
+
+    -- Legacy fallback: set main job then level for each job (if setMainJob exists)
     if player.setMainJob then
         for jobId = xi.job.WAR, xi.job.MON do
             player:setMainJob(jobId)

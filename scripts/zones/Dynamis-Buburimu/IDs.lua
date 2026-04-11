@@ -161,19 +161,19 @@ zones[xi.zone.DYNAMIS_BUBURIMU] =
     {
         QM =
         {
-            -- [16941677] =
-            -- {
-            --     param = { 3457, 3474, 3475, 3476, 3477, 3478 },
-            --     trade =
-            --     {
-            --         { item = 3457,                             mob = 16941057 }, -- Apocalyptic Beast
-            --         { item = { 3474, 3475, 3476, 3477, 3478 }, mob = 16941368 }, -- Arch Apocalyptic Beast
-            --     }
-            -- },
-            -- [16941678] = { trade = { { item = 3463, mob = 16941552 } } }, -- Lost Stihi
-            -- [16941679] = { trade = { { item = 3464, mob = 16941520 } } }, -- Lost Barong
-            -- [16941680] = { trade = { { item = 3465, mob = 16941576 } } }, -- Lost Alklha
-            -- [16941681] = { trade = { { item = 3466, mob = 16941666 } } }, -- Lost Aitvaras
+            [16941677] =
+            {
+                param = { 3457, 3474, 3475, 3476, 3477, 3478 },
+                trade =
+                {
+                    { item = 3457,                             mob = 16941057 }, -- Apocalyptic Beast (revelatory juju)
+                    { item = { 3474, 3475, 3476, 3477, 3478 }, mob = 16941368 }, -- Arch Apocalyptic Beast (Fiendish Tome II ch.5–9)
+                },
+            },
+            [16941678] = { trade = { { item = 3463, mob = 16941552 } } }, -- Lost Stihi (nightmare shank)
+            [16941679] = { trade = { { item = 3464, mob = 16941520 } } }, -- Lost Barong (nightmare roast)
+            [16941680] = { trade = { { item = 3465, mob = 16941576 } } }, -- Lost Alklha (nightmare loin)
+            [16941681] = { trade = { { item = 3466, mob = 16941666 } } }, -- Lost Aitvaras (nightmare chop)
         },
     },
 }

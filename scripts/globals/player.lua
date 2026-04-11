@@ -225,6 +225,13 @@ xi.player.onGameIn = function(player, firstLogin, zoning)
         player:setGMHidden(true)
     end
 
+    -- Persist custom movement speed override configured by @aremais.
+    local permMoveSpeed = player:getCharVar('AremaisPermMoveSpeed')
+    if permMoveSpeed > 0 then
+        player:setMod(xi.mod.MOVE_SPEED_OVERRIDE, permMoveSpeed)
+        player:recalculateStats()
+    end
+
     -- remember time player zoned in (e.g., to support zone-in delays)
     player:setLocalVar('ZoneInTime', GetSystemTime())
     player:setLocalVar('ZoningIn', 1)

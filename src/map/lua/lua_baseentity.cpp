@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -226,7 +226,7 @@ void CLuaBaseEntity::showText(CLuaBaseEntity* entity, uint16 messageID, const so
     }
     else if (m_PBaseEntity->loc.zone)
     {
-        m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUMWORK>(PBaseEntity, messageID, param0, param1, param3, showName));
+        m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUMWORK>(PBaseEntity, messageID, param0, param1, param2, param3, showName));
     }
 }
 
@@ -476,11 +476,11 @@ void CLuaBaseEntity::messageBasic(uint16 messageID, const sol::object& p0, const
 /************************************************************************
  *  Function: messageName()
  *  Purpose : Message displayed with an entity's name in it
- *  Example : target:messageName(messageID, entity, param0, param1, param2, param3, chatType);
- *  Notes   : Used in Doom countdown messages, as an example
+ *  Example : target:messageName(messageID, entity, param0, param1, param2, param3, chatType, showSender);
+ *  Notes   : Used in Doom countdown messages, as an example. showSender=true sends raw MesNum (no 0x8000) for zone text with a name prefix.
  ************************************************************************/
 
-void CLuaBaseEntity::messageName(uint16 messageID, const sol::object& entity, const sol::object& p0, const sol::object& p1, const sol::object& p2, const sol::object& p3, const sol::object& chat)
+void CLuaBaseEntity::messageName(uint16 messageID, const sol::object& entity, const sol::object& p0, const sol::object& p1, const sol::object& p2, const sol::object& p3, const sol::object& chat, const sol::object& showSender)
 {
     CLuaBaseEntity* PLuaEntity  = (entity != sol::lua_nil) ? entity.as<CLuaBaseEntity*>() : nullptr;
     CBaseEntity*    PNameEntity = PLuaEntity ? PLuaEntity->m_PBaseEntity : nullptr;
@@ -491,14 +491,15 @@ void CLuaBaseEntity::messageName(uint16 messageID, const sol::object& entity, co
     int32 param3 = (p3 != sol::lua_nil) ? p3.as<int32>() : 0;
 
     int32 chatType = (chat != sol::lua_nil) ? chat.as<int32>() : 4;
+    bool  useRawMesNum = (showSender != sol::lua_nil) && showSender.as<bool>();
 
     if (CCharEntity* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
     {
-        PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK2>(PChar, messageID, PNameEntity, param0, param1, param2, param3, chatType);
+        PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK2>(PChar, messageID, PNameEntity, param0, param1, param2, param3, chatType, useRawMesNum);
     }
     else if (m_PBaseEntity->loc.zone)
     {
-        m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUMWORK2>(m_PBaseEntity, messageID, PNameEntity, param0, param1, param2, param3, chatType));
+        m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUMWORK2>(m_PBaseEntity, messageID, PNameEntity, param0, param1, param2, param3, chatType, useRawMesNum));
     }
 }
 
@@ -671,6 +672,11 @@ void CLuaBaseEntity::setCharVar(const std::string& varName, int32 value, const s
     {
         uint32 varTimestamp = expiry.is<uint32>() ? expiry.as<uint32>() : 0;
 
+        if (value != 0 && varName == "CONQUEST_RING_RECHARGE" && varTimestamp == 0)
+        {
+            varTimestamp = luautils::NextJstWeek();
+        }
+
         if (varTimestamp > 0 && varTimestamp <= earth_time::timestamp())
         {
             ShowWarning(fmt::format("Attempting to set variable '{}' with an expired time: {}", varName, varTimestamp));
@@ -731,6 +737,11 @@ void CLuaBaseEntity::setVolatileCharVar(const std::string& varName, int32 value,
     if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
     {
         uint32 varTimestamp = expiry.is<uint32>() ? expiry.as<uint32>() : 0;
+
+        if (value != 0 && varName == "CONQUEST_RING_RECHARGE" && varTimestamp == 0)
+        {
+            varTimestamp = luautils::NextJstWeek();
+        }
 
         if (varTimestamp > 0 && varTimestamp <= earth_time::timestamp())
         {
@@ -11046,6 +11057,14 @@ uint32 CLuaBaseEntity::canLearnSpell(uint16 spellID)
     if (charutils::hasSpell(PChar, spellID))
     {
         Message = 96;
+    }
+    // Inundation (879): CanUseSpell(SpellID) bails out when PSpellList entry is missing (nullptr).
+    // Allow scroll / NPC learn when retail requirements are met anyway; addSpell has matching logic.
+    else if (spellID == static_cast<uint16>(SpellID::Inundation) &&
+             ((PChar->GetMJob() == JOB_RDM && PChar->GetMLevel() >= 64) ||
+              (PChar->GetSJob() == JOB_RDM && PChar->GetSLevel() >= 64)))
+    {
+        Message = 0;
     }
     else if (!spell::CanUseSpell(PChar, static_cast<SpellID>(spellID)))
     {

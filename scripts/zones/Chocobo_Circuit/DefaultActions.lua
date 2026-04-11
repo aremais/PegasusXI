@@ -25,7 +25,23 @@ return {
     ['Raquel']             = { event = 354 },
     ['Rodrigo']            = { event = 347 },
     ['Russel']             = { event = 227 },
-    ['Synergy_Engineer']   = { event = 11001 },
+    ['Synergy_Engineer'] = function(player, npc)
+        xi.synergy.engineerOnTrigger(player, npc, 11001)
+    end,
+
+    ['onEventFinish'] =
+    {
+        [11001] = function(player, csid, option, npc)
+            xi.synergy.engineerOnEventFinish(player, csid, option, npc)
+        end,
+    },
+
+    ['onEventUpdate'] =
+    {
+        [11001] = function(player, csid, option, npc)
+            xi.synergy.engineerOnEventUpdate(player, csid, option, npc)
+        end,
+    },
     ['Synergy_Enthusiast'] = { event = 12001 },
     ['Timothy']            = { event = 349 },
     ['Vaihilique']         = { event = 243 },

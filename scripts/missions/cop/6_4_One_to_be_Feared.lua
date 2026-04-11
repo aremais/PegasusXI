@@ -79,7 +79,7 @@ mission.sections =
 
             onEventUpdate =
             {
-                [15] = function(player, csid, option, npc)
+                [31] = function(player, csid, option, npc)
                     if option == 0 then
                         player:updateEvent(0, 0, 0, 0, 32, 2, 0, 0)
                     end

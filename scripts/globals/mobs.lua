@@ -48,7 +48,12 @@ local function getMobLuaPathObject(mob)
         return nil
     end
 
-    return xi.zones[mob:getZoneName()].mobs[mob:getName()]
+    local zoneData = xi.zones[mob:getZoneName()]
+    if zoneData == nil or zoneData.mobs == nil then
+        return nil
+    end
+
+    return zoneData.mobs[mob:getName()]
 end
 
 -- - mobParam can either be a mobid or a mob entity object
@@ -104,6 +109,17 @@ end
 ---@param params table?
 xi.mob.phOnDespawn = function(ph, phNmId, chance, cooldown, params)
     params = params or {}
+
+    if type(phNmId) ~= 'number' then
+        return false
+    end
+
+    -- Lottery scripts need the NM entity in the zone; without it, phList cannot be resolved.
+    local nmForScript = GetMobByID(phNmId)
+    if nmForScript == nil then
+        return false
+    end
+
     --[[
         params.immediate          = true    pop NM without waiting for next PH pop time
         params.dayOnly            = true    spawn NM only at day time
@@ -117,7 +133,7 @@ xi.mob.phOnDespawn = function(ph, phNmId, chance, cooldown, params)
     local nmId = nil
     local nm = nil
     local phList = nil
-    local mobEntityObj = getMobLuaPathObject(GetMobByID(phNmId))
+    local mobEntityObj = getMobLuaPathObject(nmForScript)
     if mobEntityObj then
         phList = mobEntityObj.phList
         nmId   = phList and phList[phId]

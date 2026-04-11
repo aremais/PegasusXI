@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2025 LandSandBoat Dev Teams
@@ -125,6 +125,7 @@ enum class G_SELECT : uint16
     HELIX_MOB_WEAKNESS  = 15,
     DEF_BAR_ELEMENT     = 16,
     RUNE_DAY            = 17,
+    PARTY_SKILLCHAIN    = 18, // Prefer mob SC closer, else best WS vs any party PC last WS, else strongest opener
 };
 
 enum class G_TP_TRIGGER : uint16

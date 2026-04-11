@@ -25,6 +25,9 @@ zones[xi.zone.DYNAMIS_JEUNO] =
     },
     mob =
     {
+        -- Classic Dynamis - Jeuno (zone 188), not Dynamis - Jeuno [D] / Divergence (separate zone in this project).
+        -- Primary reference: https://www.bg-wiki.com/ffxi/Dynamis_-_Jeuno (odious job mapping, forced pops, chapters).
+        -- Mob positions/ids: sql/mob_spawn_points.sql (Dynamis - Jeuno block).
         TIME_EXTENSION =
         {
             { minutes = 10, ki = xi.ki.CRIMSON_GRANULES_OF_TIME,   mob = { 17547301, 17547302, 17547303 } },
@@ -61,24 +64,27 @@ zones[xi.zone.DYNAMIS_JEUNO] =
             },
         },
 
-        GABBLOX_MAGPIETONGUE    = GetFirstID('Gabblox_Magpietongue'),
-        TUFFLIX_LOGLIMBS        = GetFirstID('Tufflix_Loglimbs'),
-        CLOKTIX_LONGNAIL        = GetFirstID('Cloktix_Longnail'),
-        HERMITRIX_TOOTHROT      = GetFirstID('Hermitrix_Toothrot'),
-        WYRMWIX_SNAKESPECS      = GetFirstID('Wyrmwix_Snakespecs'),
-        MORTILOX_WARTPAWS       = GetFirstID('Mortilox_Wartpaws'),
-        RUTRIX_HAMGAMS          = GetFirstID('Rutrix_Hamgams'),
-        ANVILIX_SOOTWRISTS      = GetFirstID('Anvilix_Sootwrists'),
-        BOOTRIX_JAGGEDELBOW     = GetFirstID('Bootrix_Jaggedelbow'),
-        MOBPIX_MUCOUSMOUTH      = GetFirstID('Mobpix_Mucousmouth'),
-        DISTILIX_STICKYTOES     = GetFirstID('Distilix_Stickytoes'),
-        EREMIX_SNOTTYNOSTRIL    = GetFirstID('Eremix_Snottynostril'),
-        JABBROX_GRANNYGUISE     = GetFirstID('Jabbrox_Grannyguise'),
-        PROWLOX_BARRELBELLY     = GetFirstID('Prowlox_Barrelbelly'),
-        SCRUFFIX_SHAGGYCHEST    = GetFirstID('Scruffix_Shaggychest'),
-        TYMEXOX_NINEFINGERS     = GetFirstID('Tymexox_Ninefingers'),
-        BLAZOX_BONEYBOD         = GetFirstID('Blazox_Boneybod'),
-        SLYSTIX_MEGAPEEPERS     = GetFirstID('Slystix_Megapeepers'),
+        -- Fallback mobids match sql/mob_spawn_points (Dynamis-Jeuno). PopulateIDLookups only lists rows
+        -- where ((mobid >> 12) & 0xFFF) = 188; if mobids are off-by-4096 in DB, GetFirstID returns nil
+        -- and lottery NM scripts (phOnDespawn) never run; see sql/fix_spire_of_vahzl_mob_spawn_ids.sql.
+        GABBLOX_MAGPIETONGUE    = GetFirstID('Gabblox_Magpietongue')    or 17547277,
+        TUFFLIX_LOGLIMBS        = GetFirstID('Tufflix_Loglimbs')        or 17547291,
+        CLOKTIX_LONGNAIL        = GetFirstID('Cloktix_Longnail')        or 17547294,
+        HERMITRIX_TOOTHROT      = GetFirstID('Hermitrix_Toothrot')      or 17547311,
+        WYRMWIX_SNAKESPECS      = GetFirstID('Wyrmwix_Snakespecs')      or 17547312,
+        MORTILOX_WARTPAWS       = GetFirstID('Mortilox_Wartpaws')        or 17547438,
+        RUTRIX_HAMGAMS          = GetFirstID('Rutrix_Hamgams')          or 17547454,
+        ANVILIX_SOOTWRISTS      = GetFirstID('Anvilix_Sootwrists')      or 17547472,
+        BOOTRIX_JAGGEDELBOW     = GetFirstID('Bootrix_Jaggedelbow')     or 17547473,
+        MOBPIX_MUCOUSMOUTH      = GetFirstID('Mobpix_Mucousmouth')      or 17547474,
+        DISTILIX_STICKYTOES     = GetFirstID('Distilix_Stickytoes')     or 17547478,
+        EREMIX_SNOTTYNOSTRIL    = GetFirstID('Eremix_Snottynostril')    or 17547479,
+        JABBROX_GRANNYGUISE     = GetFirstID('Jabbrox_Grannyguise')     or 17547480,
+        PROWLOX_BARRELBELLY     = GetFirstID('Prowlox_Barrelbelly')     or 17547490,
+        SCRUFFIX_SHAGGYCHEST    = GetFirstID('Scruffix_Shaggychest')    or 17547485,
+        TYMEXOX_NINEFINGERS     = GetFirstID('Tymexox_Ninefingers')     or 17547486,
+        BLAZOX_BONEYBOD         = GetFirstID('Blazox_Boneybod')         or 17547487,
+        SLYSTIX_MEGAPEEPERS     = GetFirstID('Slystix_Megapeepers')     or 17547492,
     },
     npc =
     {

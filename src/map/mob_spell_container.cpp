@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -189,15 +189,24 @@ Maybe<SpellID> CMobSpellContainer::GetBestAvailable(SPELLFAMILY family)
 
 Maybe<SpellID> CMobSpellContainer::GetBestIndiSpell(CBattleEntity* PTarget)
 {
-    auto mJob          = PTarget->GetMJob();
-    auto mTarget       = PTarget->GetBattleTarget();
-    auto hitrate       = battleutils::GetHitRate(PTarget, mTarget);
+    auto mJob    = PTarget->GetMJob();
+    auto mTarget = PTarget->GetBattleTarget();
+
+    // No battle target (e.g. player idle at vendor): GetHitRate and defender mods must not run.
+    uint8 hitrate = 100;
+    int32 tInt    = 0;
+    int32 tMaeva  = 0;
+    if (mTarget != nullptr)
+    {
+        hitrate = battleutils::GetHitRate(PTarget, mTarget);
+        tInt    = mTarget->getMod(Mod::INT);
+        tMaeva  = mTarget->getMod(Mod::MEVA);
+    }
+
     bool accBuffNeeded = hitrate < 65 ? true : false;
     auto mInt          = PTarget->getMod(Mod::INT);
-    auto tInt          = mTarget->getMod(Mod::INT);
     auto intDiff       = mInt - tInt + 10;
     auto macc          = PTarget->getMod(Mod::MACC);
-    auto tMaeva        = mTarget->getMod(Mod::MEVA);
     auto mSkill        = PTarget->GetSkill(SKILL_ELEMENTAL_MAGIC);
     auto maccFromInt   = mInt;
 

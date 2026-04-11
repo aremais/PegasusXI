@@ -221,6 +221,9 @@ void init()
 
     logging::SetPattern(get<std::string>("logging.PATTERN"));
 
+    // Settings paths are relative to the process working directory (not the executable path).
+    ShowInfo(fmt::format("Settings loaded with cwd: {}", std::filesystem::current_path().string()));
+
     // Test to ensure requires aren't trampling changes, and that the user's settings aren't reverting
     // to the defaults:
     //

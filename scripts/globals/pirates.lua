@@ -316,7 +316,8 @@ local function spawnPirateWave(zone)
 
     for _, mobId in ipairs(spawnList) do
         if mobId and mobId > 0 then
-            local mob = GetMobByID(mobId)
+            -- Use silent lookup: missing mob rows (e.g. DB not migrated to 177152xx IDs) should not spam GetMobByID warnings.
+            local mob = GetEntityByID(mobId, nil, true)
             if mob and not mob:isSpawned() then
                 SpawnMob(mobId)
             end
@@ -346,7 +347,7 @@ local function despawnPirateWave(zone)
 
     for _, mobId in ipairs(despawnList) do
         if mobId and mobId > 0 then
-            local mob = GetMobByID(mobId)
+            local mob = GetEntityByID(mobId, nil, true)
             if mob and mob:isSpawned() and not mob:isEngaged() then
                 DespawnMob(mobId)
             end

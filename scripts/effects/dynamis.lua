@@ -1,6 +1,8 @@
 -----------------------------------
 -- xi.effect.DYNAMIS
 -----------------------------------
+require('scripts/globals/dynamis')
+
 ---@type TEffect
 local effectObject = {}
 
@@ -34,11 +36,7 @@ effectObject.onEffectTick = function(target, effect)
                 time = time / 60
             end
 
-            if time == 1 then
-                target:messageSpecial(zones[target:getZoneID()].text.DYNAMIS_TIME_UPDATE_1, time, minutes)
-            else
-                target:messageSpecial(zones[target:getZoneID()].text.DYNAMIS_TIME_UPDATE_2, time, minutes)
-            end
+            xi.dynamis.printTimeExpireWarningEnglish(target, time, minutes)
 
             target:setLocalVar('dynamis_lasttimeupdate', message)
         end
@@ -55,7 +53,7 @@ effectObject.onEffectLose = function(target, effect)
     target:delKeyItem(xi.ki.OBSIDIAN_GRANULES_OF_TIME)
     if target:getCurrentRegion() == xi.region.DYNAMIS then
         if effect:getTimeRemaining() == 0 then
-            target:messageSpecial(zones[target:getZoneID()].text.DYNAMIS_TIME_EXPIRED)
+            xi.dynamis.printTimeExpiredEnglish(target)
             target:disengage()
             target:startCutscene(100)
         end

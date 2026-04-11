@@ -6,7 +6,6 @@ return {
     ['Ailee']            = { event = 91 },
     ['Andrause']         = { event = 239 },
     ['Atmacite Refiner'] = { event = 264 },
-    ['Colleraie']        = { event = 175 },
     ['Comitiolus']       = { event = 72 },
     ['Corlotte']         = { event = 73 },
     ['Deigoff']          = { event = 86 },

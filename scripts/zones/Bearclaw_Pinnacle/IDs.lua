@@ -36,6 +36,10 @@ zones[xi.zone.BEARCLAW_PINNACLE] =
     {
         SNOW_DEVIL        = GetFirstID('Snow_Devil_war'),
         SNOLL_TZAR_OFFSET = GetFirstID('Snoll_Tzar'),
+        -- Follow the White Rabbit: base id for first arena (sql/mob_spawn_points "Bearclaw Rabbit").
+        -- Not using GetFirstID: those rows decode as zone 5 in ((mobid >> 12) & 0xFFF) while this zone is 6,
+        -- so PopulateIDLookups never lists them under Bearclaw Pinnacle.
+        BEARCLAW_RABBIT = 16801796,
     },
     npc =
     {

@@ -68,6 +68,7 @@ CREATE TABLE `char_points` (
   `obsidian_fragment` int(10) unsigned NOT NULL DEFAULT '0',
   `lebondopt_wing` smallint(5) unsigned NOT NULL DEFAULT '0',
   `pulchridopt_wing` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `mellidopt_wing` smallint(5) unsigned NOT NULL DEFAULT '0',
   `mweya_plasm` int(10) unsigned NOT NULL DEFAULT '0',
   `cruor` int(10) unsigned NOT NULL DEFAULT '0',
   `resistance_credit` int(10) unsigned NOT NULL DEFAULT '0',

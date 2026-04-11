@@ -555,3 +555,71 @@ xi.synergy.synergyFurnaceOnEventFinish = function(player, csid, option, npc)
         furnaceNpc:setLocalVar(vars.SYNERGY_FURNACE_STATE, furnaceStates.COMPLETED)
     end
 end
+
+-----------------------------------
+-- Synergy Engineer (CS 11001 / 11002)
+-- Param 1: 1 if player has {Synergy crucible}, else 0. Do not pass getGil() here: any non-zero was
+--          treated as owning the crucible, so the client opened fewell refill instead of the intro menu.
+-- Param 2: Item ID for evolith / composition review (0 = none). Item 5000 is {Knight's Minne IV}.
+-- Param 3: Player gil (client compares this to param 4 for the 100-gil purchase; same order as ferry CS).
+-- Param 4: Gil cost for {Synergy crucible}. If these are reversed, the client thinks you have 100 gil and
+--          the price is ~32k → perpetual "requisite gil."
+--          Cap gil in param 3 for int16 sign-extension (huge wallets else read as negative).
+-----------------------------------
+
+xi.synergy.CRUCIBLE_PRICE = 100
+
+local function engineerGilParam(player)
+    return math.min(math.max(player:getGil(), 0), 32767)
+end
+
+xi.synergy.engineerOnTrigger = function(player, _, eventId)
+    local hasCrucible = player:hasKeyItem(xi.ki.SYNERGY_CRUCIBLE) and 1 or 0
+    player:startEvent(eventId, hasCrucible, 0, engineerGilParam(player), xi.synergy.CRUCIBLE_PRICE)
+end
+
+-- Keep event params in sync with the client during the CS (otherwise gil can stay 0 and "Deal!" fails).
+xi.synergy.engineerOnEventUpdate = function(player, csid, _option, _npc)
+    if csid ~= 11001 and csid ~= 11002 then
+        return
+    end
+
+    local hasCrucible = player:hasKeyItem(xi.ki.SYNERGY_CRUCIBLE) and 1 or 0
+    player:updateEvent(hasCrucible, 0, engineerGilParam(player), xi.synergy.CRUCIBLE_PRICE)
+end
+
+xi.synergy.engineerOnEventFinish = function(player, csid, option, _npc)
+    if csid ~= 11001 and csid ~= 11002 then
+        return
+    end
+
+    local upper = bit.band(bit.rshift(option, 16), 0xFFFF)
+    local lower = bit.band(option, 0xFF)
+
+    -- 3 / 333: single-step. (upper==3 and lower==1): main menu line 3 then "Deal!" (e.g. 0x30001 = 196609).
+    local buysCrucible =
+        option == 333 or
+        option == 3 or
+        (upper == 3 and lower == 1)
+
+    if not buysCrucible then
+        return
+    end
+
+    if player:hasKeyItem(xi.ki.SYNERGY_CRUCIBLE) then
+        return
+    end
+
+    local price = xi.synergy.CRUCIBLE_PRICE
+    if player:getGil() < price then
+        local z = zones[player:getZoneID()]
+        if z and z.text and z.text.NOT_HAVE_ENOUGH_GIL then
+            player:messageSpecial(z.text.NOT_HAVE_ENOUGH_GIL)
+        end
+
+        return
+    end
+
+    player:delGil(price)
+    npcUtil.giveKeyItem(player, xi.ki.SYNERGY_CRUCIBLE)
+end

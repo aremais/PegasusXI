@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -473,16 +473,28 @@ timer::duration CMagicState::GetRecast()
 
 void CMagicState::ApplyEnmity(CBattleEntity* PTarget, int ce, int ve)
 {
-    bool enmityApplied = false;
-
-    if (m_PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_TRANQUILITY) && m_PSpell->getSpellGroup() == SPELLGROUP_WHITE)
+    // Defensive guard for edge-cases where cast teardown races with state updates.
+    if (m_PEntity == nullptr || m_PEntity->StatusEffectContainer == nullptr || !m_PSpell)
     {
-        m_PEntity->addModifier(Mod::ENMITY, -m_PEntity->StatusEffectContainer->GetStatusEffect(EFFECT_TRANQUILITY)->GetPower());
+        return;
     }
 
-    if (m_PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_EQUANIMITY) && m_PSpell->getSpellGroup() == SPELLGROUP_BLACK)
+    bool enmityApplied = false;
+
+    if (m_PSpell->getSpellGroup() == SPELLGROUP_WHITE)
     {
-        m_PEntity->addModifier(Mod::ENMITY, -m_PEntity->StatusEffectContainer->GetStatusEffect(EFFECT_EQUANIMITY)->GetPower());
+        if (auto* tranquility = m_PEntity->StatusEffectContainer->GetStatusEffect(EFFECT_TRANQUILITY))
+        {
+            m_PEntity->addModifier(Mod::ENMITY, -tranquility->GetPower());
+        }
+    }
+
+    if (m_PSpell->getSpellGroup() == SPELLGROUP_BLACK)
+    {
+        if (auto* equanimity = m_PEntity->StatusEffectContainer->GetStatusEffect(EFFECT_EQUANIMITY))
+        {
+            m_PEntity->addModifier(Mod::ENMITY, -equanimity->GetPower());
+        }
     }
 
     if (m_PSpell->isNa())
@@ -504,10 +516,13 @@ void CMagicState::ApplyEnmity(CBattleEntity* PTarget, int ce, int ve)
         ve = 480;
     }
 
-    if (m_PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_DIVINE_EMBLEM) && m_PSpell->getSkillType() == SKILL_DIVINE_MAGIC)
+    if (m_PSpell->getSkillType() == SKILL_DIVINE_MAGIC)
     {
-        ve = ve * (1.0f + (m_PEntity->StatusEffectContainer->GetStatusEffect(EFFECT_DIVINE_EMBLEM)->GetPower() / 100.0f));
-        ce = ce * (1.0f + (m_PEntity->StatusEffectContainer->GetStatusEffect(EFFECT_DIVINE_EMBLEM)->GetPower() / 100.0f));
+        if (auto* divineEmblem = m_PEntity->StatusEffectContainer->GetStatusEffect(EFFECT_DIVINE_EMBLEM))
+        {
+            ve = ve * (1.0f + (divineEmblem->GetPower() / 100.0f));
+            ce = ce * (1.0f + (divineEmblem->GetPower() / 100.0f));
+        }
     }
 
     if (PTarget != nullptr)
@@ -537,11 +552,16 @@ void CMagicState::ApplyEnmity(CBattleEntity* PTarget, int ce, int ve)
                         return;
                     }
 
-                    mob->PEnmityContainer->UpdateEnmity(m_PEntity, ce, ve);
-                    enmityApplied = true;
-                    if (PTarget->isDead() && (!isMob || (isMob && m_PEntity->isCharmed)))
-                    { // claim mob only on death (for aoe)
-                        battleutils::ClaimMob(PTarget, m_PEntity);
+                    // PEnmityContainer is normally always constructed for CMobEntity; guard matches
+                    // battleutils::TransferEnmity and prevents AV if the mob is in a bad/teardown state.
+                    if (mob->PEnmityContainer != nullptr)
+                    {
+                        mob->PEnmityContainer->UpdateEnmity(m_PEntity, ce, ve);
+                        enmityApplied = true;
+                        if (PTarget->isDead() && (!isMob || (isMob && m_PEntity->isCharmed)))
+                        { // claim mob only on death (for aoe)
+                            battleutils::ClaimMob(PTarget, m_PEntity);
+                        }
                     }
                     battleutils::DirtyExp(PTarget, m_PEntity);
                 }
@@ -554,21 +574,29 @@ void CMagicState::ApplyEnmity(CBattleEntity* PTarget, int ce, int ve)
         }
     }
 
-    if (m_PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_TRANQUILITY) && m_PSpell->getSpellGroup() == SPELLGROUP_WHITE)
+    if (m_PSpell->getSpellGroup() == SPELLGROUP_WHITE)
     {
-        m_PEntity->delModifier(Mod::ENMITY, -m_PEntity->StatusEffectContainer->GetStatusEffect(EFFECT_TRANQUILITY)->GetPower());
+        auto* tranquility = m_PEntity->StatusEffectContainer->GetStatusEffect(EFFECT_TRANQUILITY);
+        if (tranquility)
+        {
+            m_PEntity->delModifier(Mod::ENMITY, -tranquility->GetPower());
+        }
 
-        if (enmityApplied)
+        if (enmityApplied && tranquility)
         {
             m_PEntity->StatusEffectContainer->DelStatusEffect(EFFECT_TRANQUILITY);
         }
     }
 
-    if (m_PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_EQUANIMITY) && m_PSpell->getSpellGroup() == SPELLGROUP_BLACK)
+    if (m_PSpell->getSpellGroup() == SPELLGROUP_BLACK)
     {
-        m_PEntity->delModifier(Mod::ENMITY, -m_PEntity->StatusEffectContainer->GetStatusEffect(EFFECT_EQUANIMITY)->GetPower());
+        auto* equanimity = m_PEntity->StatusEffectContainer->GetStatusEffect(EFFECT_EQUANIMITY);
+        if (equanimity)
+        {
+            m_PEntity->delModifier(Mod::ENMITY, -equanimity->GetPower());
+        }
 
-        if (enmityApplied)
+        if (enmityApplied && equanimity)
         {
             m_PEntity->StatusEffectContainer->DelStatusEffect(EFFECT_EQUANIMITY);
         }
@@ -579,9 +607,9 @@ void CMagicState::ApplyEnmity(CBattleEntity* PTarget, int ce, int ve)
         m_PEntity->delModifier(Mod::ENMITY, -(m_PEntity->getMod(Mod::DIVINE_BENISON) >> 1)); // Half of divine benison mod amount = -enmity
     }
 
-    if (m_PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_DIVINE_EMBLEM) &&
-        m_PSpell->getSkillType() == SKILL_DIVINE_MAGIC &&
-        enmityApplied)
+    if (m_PSpell->getSkillType() == SKILL_DIVINE_MAGIC &&
+        enmityApplied &&
+        m_PEntity->StatusEffectContainer->GetStatusEffect(EFFECT_DIVINE_EMBLEM))
     {
         m_PEntity->StatusEffectContainer->DelStatusEffect(EFFECT_DIVINE_EMBLEM);
     }
@@ -609,5 +637,9 @@ void CMagicState::TryInterrupt(CBattleEntity* PAttacker)
 
 void CMagicState::ApplyMagicCoverEnmity(CBattleEntity* PCoverAbilityTarget, CBattleEntity* PCoverAbilityUser, CMobEntity* PMob)
 {
+    if (PMob == nullptr || PMob->PEnmityContainer == nullptr)
+    {
+        return;
+    }
     PMob->PEnmityContainer->UpdateEnmityFromCover(PCoverAbilityTarget, PCoverAbilityUser);
 }

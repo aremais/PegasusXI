@@ -24,7 +24,7 @@ local settings =
     ANNOUNCE = false, -- Announce settings on load
     -- Set to 1 to run the event outside START/FINISH (same idea as HALLOWEEN_YEAR_ROUND).
     YEAR_ROUND = 0,
-    START  = { DAY   = 1, MONTH = 3 },
+    START  = { DAY   = 4, MONTH = 4 },
     FINISH = { DAY   = 20, MONTH = 4 },
 
     VAR =
@@ -37,16 +37,16 @@ local settings =
     },
 
     -- Default era is 2005
-    ERA_2006 = false, -- Orphic Egg
-    ERA_2007 = false, -- Jeweled Egg and Egg Helm
-    ERA_2008 = false, -- Tier 2 nation eggs, allows trading Hard-Boiled Eggs
-    ERA_2009 = false, -- Egg Buffet set
+    ERA_2006 = true, -- Orphic Egg
+    ERA_2007 = true, -- Jeweled Egg and Egg Helm
+    ERA_2008 = true, -- Tier 2 nation eggs, allows trading Hard-Boiled Eggs
+    ERA_2009 = true, -- Egg Buffet set
     -- 2009, 2010, 2011 and 2012 are identical
-    ERA_2013 = false, -- Prinseggstarta
-    ERA_2014 = false, -- Hatchling Shield, Copse Candy, Cracker
-    ERA_2015 = false, -- Rabbit Cap, show Rabbit Cap wearing NPCs
-    ERA_2018 = false, -- Allows trading Sairui-Ran x99 and Imperial Egg
-    ERA_2019 = false, -- Allows trading Apkallu Egg
+    ERA_2013 = true, -- Prinseggstarta
+    ERA_2014 = true, -- Hatchling Shield, Copse Candy, Cracker
+    ERA_2015 = true, -- Rabbit Cap, show Rabbit Cap wearing NPCs
+    ERA_2018 = true, -- Allows trading Sairui-Ran x99 and Imperial Egg
+    ERA_2019 = true, -- Allows trading Apkallu Egg
 
     -- Consolation prizes for repeating combinations where
     -- the player has already received the relevant reward

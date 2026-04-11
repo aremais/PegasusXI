@@ -1760,17 +1760,17 @@ INSERT INTO `item_usable` VALUES (5891,'seafood_pitaru',1,1,28,0,0,0,0,0);
 INSERT INTO `item_usable` VALUES (5892,'b.e.w._pitaru',1,1,28,0,0,0,0,0);
 INSERT INTO `item_usable` VALUES (5893,'marine_stewpot',1,1,0,0,0,0,0,0);            -- TODO: Not implemented
 INSERT INTO `item_usable` VALUES (5894,'prime_marine_stewpot',1,1,0,0,0,0,0,0);      -- TODO: Not implemented
-INSERT INTO `item_usable` VALUES (5895,'odorless_fungus',1,1,0,0,0,0,0,0);           -- TODO: Not implemented
-INSERT INTO `item_usable` VALUES (5896,'clump_of_absorbent_moss',1,1,0,0,0,0,0,0);   -- TODO: Not implemented
-INSERT INTO `item_usable` VALUES (5897,'redolent_root',1,1,0,0,0,0,0,0);             -- TODO: Not implemented
-INSERT INTO `item_usable` VALUES (5898,'shadescale_skull',1,1,0,0,0,0,0,0);          -- TODO: Not implemented
-INSERT INTO `item_usable` VALUES (5899,'shadescale_femur',1,1,0,0,0,0,0,0);          -- TODO: Not implemented
-INSERT INTO `item_usable` VALUES (5900,'shadescale_talon',1,1,0,0,0,0,0,0);          -- TODO: Not implemented
-INSERT INTO `item_usable` VALUES (5901,'shadescale_heart',1,1,0,0,0,0,0,0);          -- TODO: Not implemented
+INSERT INTO `item_usable` VALUES (5895,'odorless_fungus',4,1,0,0,0,0,0,0);           -- Dynamis-Valkurm: Cirrate Christelle (enemy target)
+INSERT INTO `item_usable` VALUES (5896,'clump_of_absorbent_moss',4,1,0,0,0,0,0,0);   -- Dynamis-Valkurm: Cirrate Christelle (enemy target)
+INSERT INTO `item_usable` VALUES (5897,'redolent_root',4,1,0,0,0,0,0,0);             -- Dynamis-Valkurm: Cirrate Christelle (enemy target)
+INSERT INTO `item_usable` VALUES (5898,'shadescale_skull',4,1,55,0,0,0,0,0);          -- Dynamis-Buburimu: Apocalyptic Beast / Arch (enemy target)
+INSERT INTO `item_usable` VALUES (5899,'shadescale_femur',4,1,55,0,0,0,0,0);           -- Dynamis-Buburimu: Apocalyptic Beast / Arch (enemy target)
+INSERT INTO `item_usable` VALUES (5900,'shadescale_talon',4,1,55,0,0,0,0,0);          -- Dynamis-Buburimu: Apocalyptic Beast / Arch (enemy target)
+INSERT INTO `item_usable` VALUES (5901,'shadescale_heart',4,1,55,0,0,0,0,0);          -- Dynamis-Buburimu: Apocalyptic Beast / Arch (enemy target)
 INSERT INTO `item_usable` VALUES (5902,'vial_of_cagebeast_blood',1,1,0,0,0,0,0,0);   -- TODO: Not implemented
-INSERT INTO `item_usable` VALUES (5903,'vial_of_sea_monk_venom',1,1,0,0,0,0,0,0);    -- TODO: Not implemented
-INSERT INTO `item_usable` VALUES (5904,'perforated_wing',1,1,0,0,0,0,0,0);           -- TODO: Not implemented
-INSERT INTO `item_usable` VALUES (5905,'undying_moiety',1,1,0,0,0,0,0,0);            -- TODO: Not implemented
+INSERT INTO `item_usable` VALUES (5903,'vial_of_sea_monk_venom',4,1,55,0,0,0,0,0);    -- Dynamis-Qufim: Antaeus / Arch Antaeus (enemy target)
+INSERT INTO `item_usable` VALUES (5904,'perforated_wing',4,1,55,0,0,0,0,0);           -- Dynamis-Qufim: Antaeus / Arch Antaeus (enemy target)
+INSERT INTO `item_usable` VALUES (5905,'undying_moiety',4,1,55,0,0,0,0,0);            -- Dynamis-Qufim: Antaeus / Arch Antaeus (enemy target)
 INSERT INTO `item_usable` VALUES (5906,'page_from_abdhaljs_on_war',1,1,0,0,0,0,0,0); -- TODO: Not implemented
 INSERT INTO `item_usable` VALUES (5907,'winterflower',1,1,28,0,0,0,0,0);
 INSERT INTO `item_usable` VALUES (5908,'butterpear',1,1,28,0,0,0,0,0);

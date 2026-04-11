@@ -342,11 +342,14 @@ xi.darkixion.zoneOnInit = function(zone)
         return
     end
 
-    local ixionZoneID = GetServerVariable('DarkIxion_ZoneID')
+    local ixionZoneID  = GetServerVariable('DarkIxion_ZoneID')
+    local ixionPopTime = GetServerVariable('DarkIxion_PopTime')
+    local systemTime   = GetSystemTime()
+
     -- check this on only one zone to catch when ixion has no zone assignment
     if
         xi.darkixion.zoneinfo[ixionZoneID] == nil or
-        (GetServerVariable('DarkIxion_PopTime') < GetSystemTime() and ixionZoneID == zone:getID())
+        (ixionPopTime < systemTime and ixionZoneID == zone:getID())
     then
         -- reset zone ID but let him spawn next game hour
         if xi.darkixion.zoneinfo[ixionZoneID] == nil then
@@ -354,14 +357,14 @@ xi.darkixion.zoneOnInit = function(zone)
         end
 
         -- 'If Dark Ixion is due to spawn or is already spawned during maintenance, he will spawn shortly after server comes back online.'
-        SetServerVariable('DarkIxion_PopTime', GetSystemTime() + 10)
+        SetServerVariable('DarkIxion_PopTime', systemTime + 10)
     elseif
-        GetServerVariable('DarkIxion_PopTime') > GetSystemTime() and
+        ixionPopTime > systemTime and
         ixionZoneID == zone:getID()
     then
         -- leave zone alone, push back repop ... since zone was already randomized, implied by PopTime being in the future
         -- 'If he was not due to spawn during this time frame (after maintenance), his spawn window will reset to 21 hours after servers come online.'
-        SetServerVariable('DarkIxion_PopTime', GetSystemTime() + 21 * 60 * 60)
+        SetServerVariable('DarkIxion_PopTime', systemTime + 21 * 60 * 60)
     end
 end
 

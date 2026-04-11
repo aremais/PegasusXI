@@ -54,6 +54,7 @@ entity.onEventFinish = function(player, csid, option, npc)
         end
 
         player:setNation(newNation)
+        player:setRank(1) -- New citizen rank; was missing and left conquest UI / purchases inconsistent
         player:setGil(player:getGil() - cost)
         player:setRankPoints(0)
     end

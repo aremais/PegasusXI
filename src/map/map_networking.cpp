@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2025 LandSandBoat Dev Teams
@@ -359,13 +359,9 @@ int32 MapNetworking::recv_parse(uint8* buff, size_t* buffsize, MapSession* map_s
 
             PChar->PSession = map_session_data;
 
-            // If we're a new char on a new instance and prevzone != zone
-            if (map_session_data->blowfish.status == BLOWFISH_WAITING && PChar->loc.destination != PChar->loc.prevzone)
-            {
-                message::send(ipc::KillSession{
-                    .victimId = packetCharID,
-                });
-            }
+            // NOTE: Do not KillSession when pos_zone (destination) != pos_prevzone (prevzone).
+            // That is the normal case after zoning; killing here ran ForceLogout before 0x00A,
+            // clearing destination to 0xFFFF and breaking login (GP_CLI_COMMAND_LOGIN).
         }
 
         map_session_data->client_packet_id = 0;

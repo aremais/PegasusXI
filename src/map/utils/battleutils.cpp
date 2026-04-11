@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -603,7 +603,12 @@ int32 CalculateEnspellDamage(CBattleEntity* PAttacker, CBattleEntity* PDefender,
     {
         // see https://www.ffxiah.com/forum/topic/56613/rune-enhancement-damage-formula-testing/ for data and comments
         double       runeDPS = 0.0;
-        CItemWeapon* PWeapon = static_cast<CItemWeapon*>(static_cast<CCharEntity*>(PAttacker)->getEquip(SLOT_MAIN));
+        CItemWeapon* PWeapon = nullptr;
+        // Only PCs have real inventory equip; trusts/mobs/pets must use m_Weapons (static_cast<CCharEntity*> on them is UB).
+        if (PChar != nullptr)
+        {
+            PWeapon = static_cast<CItemWeapon*>(PChar->getEquip(SLOT_MAIN));
+        }
 
         // If no player equip, try the entity's internal weapon slot (used by mobs/trusts)
         if (PWeapon == nullptr)

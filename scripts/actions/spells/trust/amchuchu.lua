@@ -20,7 +20,7 @@ spellObject.onMobSpawn = function(mob)
     mob:addMod(xi.mod.INSPIRATION_FAST_CAST, 50)
 
     -----------------------------------
-    -- Gambits
+    -- Gambits (aligned with LandSandBoat / retail trust AI)
     -----------------------------------
     -- 1 condition
     mob:addGambit(ai.t.SELF,    { ai.c.NOT_HAS_TOP_ENMITY, 0                    }, { ai.r.JA, ai.s.SPECIFIC,        xi.ja.PROVOKE                })
@@ -42,7 +42,7 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.TARGET,  { ai.c.CAST_ELE_MA_SELF,   xi.effect.VALLATION  }, { ai.r.JA, ai.s.SPECIFIC,        xi.ja.VALLATION              })
 
     -- 2 conditions
-    mob:addGambit(ai.t.TARGET,  { { ai.c.CAST_ELE_MA_SELF, 0                    }, { ai.c.NEED_ELE_BAREFFECT,  0 }, }, { ai.r.MA, ai.s.DEF_BAR_ELEMENT, 0                           })
+    mob:addGambit(ai.t.TARGET,  { { ai.c.CAST_ELE_MA_SELF, 0 }, { ai.c.NEED_ELE_BAREFFECT, 0 }, }, { ai.r.MA, ai.s.DEF_BAR_ELEMENT, 0 })
     mob:addGambit(ai.t.SELF,    { { ai.c.NOT_STATUS,       xi.effect.REGEN      }, { ai.c.HPP_LT,             75 }, }, { ai.r.MA, ai.s.HIGHEST,         xi.magic.spellFamily.REGEN  })
     mob:addGambit(ai.t.SELF,    { { ai.c.NOT_STATUS,       xi.effect.REFRESH    }, { ai.c.MPP_LT,             75 }, }, { ai.r.MA, ai.s.SPECIFIC,        xi.magic.spell.REFRESH      })
 
@@ -53,10 +53,12 @@ spellObject.onMobSpawn = function(mob)
         { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.STONESKIN }
     )
 
-    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.HIGHEST, 3000)
+    -- CLOSER_UNTIL_TP + 1000: as soon as she has min WS TP, she may WS; below that threshold only if mob has an opening SC window.
+    -- PARTY_SKILLCHAIN: prefer closing mob SC, then chain after party PCs' last WS, else strongest in list (Dimidiation last in mob_skill_lists).
+    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.PARTY_SKILLCHAIN, 1000)
 
     mob:addListener('WEAPONSKILL_USE', 'AMCHUCHU_WEAPONSKILL_USE', function(mobArg, target, skill, tp, action)
-        if skill:getID() == 61 then -- Dimidation
+        if skill:getID() == xi.weaponskill.DIMIDIATION then
             -- Nothing-wothing wrong with a little mad science now and again!
             xi.trust.message(mobArg, xi.trust.messageOffset.SPECIAL_MOVE_1)
         end

@@ -4,15 +4,13 @@
 -- Notes: Tells ship ETA time
 -- !pos 0.340 -12.232 -4.120 58
 -----------------------------------
-local ID = zones[xi.zone.SILVER_SEA_ROUTE_TO_NASHMAU]
------------------------------------
 ---@type TNpcEntity
 local entity = {}
 
 local messages =
 {
-    [xi.transport.message.NEARING] = ID.text.NEARING_NASHMAU,
-    [xi.transport.message.DOCKING] = ID.text.DOCKING_IN_NASHMAU
+    [xi.transport.message.NEARING] = 'We are nearing Nashmau.',
+    [xi.transport.message.DOCKING] = 'We are now docking in Nashmau.',
 }
 
 entity.onSpawn = function(npc)
@@ -25,7 +23,7 @@ entity.onTimeTrigger = function(npc, triggerID)
 end
 
 entity.onTrigger = function(player, npc)
-    xi.transport.onBoatTimekeeperTrigger(player, xi.transport.routes.SILVER_SEA, ID.text.ON_WAY_TO_NASHMAU, ID.text.ARRIVING_SOON_NASHMAU)
+    xi.transport.onBoatTimekeeperTrigger(player, npc, xi.transport.routes.SILVER_SEA, 'Nashmau')
 end
 
 return entity

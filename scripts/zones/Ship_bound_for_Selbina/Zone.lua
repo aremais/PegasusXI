@@ -22,7 +22,7 @@ zoneObject.onZoneIn = function(player, prevZone)
     end
 
     -- Enagakure pop mechanics.
-    local enagakure = GetMobByID(ID.mob.ENAGAKURE)
+    local enagakure = GetEntityByID(ID.mob.ENAGAKURE, nil, true)
     local hour      = VanadielHour()
 
     if
@@ -55,7 +55,7 @@ end
 
 zoneObject.onGameHour = function(zone)
     -- Enagakure pop mechanics.
-    local enagakure = GetMobByID(ID.mob.ENAGAKURE)
+    local enagakure = GetEntityByID(ID.mob.ENAGAKURE, nil, true)
     local hour      = VanadielHour()
 
     if enagakure then

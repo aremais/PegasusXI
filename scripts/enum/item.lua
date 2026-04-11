@@ -9900,6 +9900,7 @@ xi.item =
     BAGUA_MITAINES_P3                   = 23552,
     FUTHARK_MITONS_P3                   = 23553,
     PUMMELERS_CUISSES_P3                = 23576,
+    PUMMELERS_CUISSES_P4                = 24030,
     ANCHORITES_HOSE_P3                  = 23577,
     THEOPHANY_PANTALOONS_P3             = 23578,
     SPAEKONAS_TONBAN_P3                 = 23579,

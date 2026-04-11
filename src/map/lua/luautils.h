@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -240,6 +240,7 @@ void DespawnMob(uint32 mobid, const sol::object& arg2);                         
 auto GetPlayerByName(const std::string& name) -> CBaseEntity*;
 auto GetPlayerByID(uint32 pid) -> CBaseEntity*;
 bool PlayerHasValidSession(uint32 playerId);
+auto KickSessionsByClientIP(const std::string& ipStr) -> uint32;
 void SendToJailOffline(uint32 playerId, int8 cellId, float posX, float posY, float posZ, uint8 rot);
 void DrawIn(CLuaBaseEntity* PLuaBaseEntity, const sol::table& table, float offset, float degrees);
 

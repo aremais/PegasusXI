@@ -19,7 +19,6 @@ return {
     ['Horuni-Mawoni']        = { event = 303 },
     ['Ignaz']                = { event = 274 },
     ['Juna_Moshal']          = { event = 327 },
-    ['Juvillie']             = { event = 406 },
     ['Kaaya_Majiad']         = { event = 323 },
     ['Karija-Marija']        = { event = 317 },
     ['Karola']               = { event = 335 },

@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -231,7 +231,19 @@ void ValidatedPacketHandler(MapSession* const PSession, CCharEntity* const PChar
     }
     else
     {
-        ShowWarningFmt("Invalid {} packet from {}: {} ", packet->getName(), PChar->name, result.errorString());
+        const auto packetName = packet->getName();
+        const auto error      = result.errorString();
+
+        // Duplicate 0x00A after successful zone/login can happen on client retry.
+        // Keep validation strict, but avoid warning spam for this known benign case.
+        if (packetName == "GP_CLI_COMMAND_LOGIN" && error == "Player already logged in.")
+        {
+            ShowDebugFmt("Invalid {} packet from {}: {}", packetName, PChar->name, error);
+        }
+        else
+        {
+            ShowWarningFmt("Invalid {} packet from {}: {}", packetName, PChar->name, error);
+        }
     }
 }
 

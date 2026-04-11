@@ -3551,9 +3551,10 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Adelheid',1083,3466); -- Paralyzing
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Adelheid',1083,3467); -- Silencing Microtube
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Adelheid',1083,3468); -- Binding Microtube
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Adelheid',1083,3469); -- Twirling Dervish
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Amchuchu',1084,61); -- Dimidiation
+-- Order weakest → strongest: TryTrustSkill HIGHEST uses .back() as opener / fallback
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Amchuchu',1084,49); -- Power Slash
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Amchuchu',1084,54); -- Sickle Moon
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Amchuchu',1084,61); -- Dimidiation
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Brygid',1085,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Mildaurion',1086,3470); -- Great Wheel
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Mildaurion',1086,3471); -- Light Blade
@@ -3878,10 +3879,21 @@ INSERT INTO `mob_skill_lists` VALUES ('Fairy_Ring_TP',2009,314);  -- silence Gas
 INSERT INTO `mob_skill_lists` VALUES ('Fairy_Ring_TP',2009,315);  -- dark Spore
 INSERT INTO `mob_skill_lists` VALUES ('Fairy_Ring_TP',2009,1621); -- frogkick
 
+INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1604); -- miasmic_breath (weaker tier, timed NM defeated)
 INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1605); -- miasmic_breath
+INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1606); -- fragrant_breath (weaker tier)
 INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1607); -- fragrant_breath
+INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1608); -- putrid_breath (weaker tier)
 INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1609); -- putrid_breath
+INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1610); -- extremely_bad_breath
 INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1611); -- vampiric_lash
+INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1337); -- charm
+
+INSERT INTO `mob_skill_lists` VALUES ('Arch_Christelle',2099,316); -- Impale
+INSERT INTO `mob_skill_lists` VALUES ('Arch_Christelle',2099,317); -- Vampiric Lash
+INSERT INTO `mob_skill_lists` VALUES ('Arch_Christelle',2099,319); -- Bad Breath
+INSERT INTO `mob_skill_lists` VALUES ('Arch_Christelle',2099,320); -- Sweet Breath
+INSERT INTO `mob_skill_lists` VALUES ('Arch_Christelle',2099,1337); -- charm
 
 INSERT INTO `mob_skill_lists` VALUE ('Nantina',2011,1617); -- blow
 

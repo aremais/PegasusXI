@@ -21,6 +21,9 @@
 
 #include "zoneutils.h"
 
+#include "common/scheduler.h"
+#include "map_config.h"
+
 #include "ai/ai_container.h"
 #include "aman.h"
 #include "battlefield.h"
@@ -45,6 +48,8 @@
 #include <execution>
 #include <future>
 #include <ranges>
+#include <thread>
+#include <vector>
 
 std::map<uint16, CZone*> g_PZoneList; // Global array of pointers for zones
 
@@ -52,6 +57,12 @@ namespace zoneutils
 {
 
 detail::LazyLoadState lazyLoad;
+
+namespace
+{
+Scheduler*       g_loginScheduler     = nullptr;
+const MapConfig* g_loginMapConfig = nullptr;
+} // namespace
 
 /************************************************************************
  *                                                                       *
@@ -874,6 +885,77 @@ auto ProcessLoadQueue(Scheduler& scheduler, MapConfig config) -> Task<void>
 auto IsLazyLoadingEnabled() -> bool
 {
     return lazyLoad.enabled;
+}
+
+void SetLoginZoneLoadContext(Scheduler* scheduler, const MapConfig* config)
+{
+    g_loginScheduler = scheduler;
+    g_loginMapConfig = config;
+}
+
+void EnsureDestinationZoneLoaded(uint16 zoneId)
+{
+    if (zoneId >= MAX_ZONEID)
+    {
+        return;
+    }
+    if (GetZone(zoneId) != nullptr)
+    {
+        return;
+    }
+    if (!IsLazyLoadingEnabled())
+    {
+        return;
+    }
+    if (!lazyLoad.managedZones.contains(zoneId))
+    {
+        return;
+    }
+    if (g_loginScheduler == nullptr || g_loginMapConfig == nullptr)
+    {
+        ShowError("EnsureDestinationZoneLoaded: map runtime context not set");
+        return;
+    }
+
+    auto runLoad = [&]()
+    {
+        g_loginScheduler->blockOnMainThread(LoadZones(*g_loginScheduler, *g_loginMapConfig, std::vector<uint16>{ zoneId }));
+    };
+
+    try
+    {
+        if (std::this_thread::get_id() == g_loginScheduler->getMainThreadId())
+        {
+            runLoad();
+        }
+        else
+        {
+            std::promise<void> prom;
+            auto               fut = prom.get_future();
+            g_loginScheduler->postToMainThread(
+                [&]()
+                {
+                    try
+                    {
+                        runLoad();
+                        prom.set_value();
+                    }
+                    catch (...)
+                    {
+                        prom.set_exception(std::current_exception());
+                    }
+                });
+            fut.get();
+        }
+    }
+    catch (const std::exception& e)
+    {
+        ShowError("EnsureDestinationZoneLoaded: %s", e.what());
+    }
+    catch (...)
+    {
+        ShowError("EnsureDestinationZoneLoaded: unknown exception");
+    }
 }
 
 // Returns all zones managed by this process (ID and name)

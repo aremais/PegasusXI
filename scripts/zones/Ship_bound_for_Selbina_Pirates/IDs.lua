@@ -23,10 +23,12 @@ zones[xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES] =
     },
     mob =
     {
-        BLACKBEARD = GetFirstID('Blackbeard'),
-        ENAGAKURE  = GetFirstID('Enagakure'),
-        SHIP_WIGHT = GetFirstID('Ship_Wight'),
-        CROSSBONES = GetTableOfIDs('Crossbones'),
+        -- Literal mobids from sql/mob_spawn_points.sql (zone 227 encoding). If GetFirstID fails,
+        -- your DB still has old mobids: run sql/fix_ship_selbina_pirates_mob_spawn_ids.sql
+        BLACKBEARD = 17715217,
+        ENAGAKURE  = 17715218,
+        SHIP_WIGHT = 17715216,
+        CROSSBONES = { 17715212, 17715213, 17715214, 17715215 },
     },
     npc =
     {

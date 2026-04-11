@@ -25,9 +25,10 @@ zones[xi.zone.ORDELLES_CAVES] =
         SYS_OVERLOAD                  = 7351,  -- Warning! Sys...verload! Enterin...fety mode. ID eras...d.
         YOU_LOST_THE                  = 7356,  -- You lost the <item>.
         RUILLONT_INITIAL_DIALOG       = 7365,  -- Confound it! If I only had my sword, I'd cut through these fiends single-handedly...
-        PLACE_HANDS_IN_POOL           = 7376,  -- You place your hands into the pool.
-        DEW_SLIPS_THROUGH_FINGERS     = 7379,  -- The dew from the stalactite slips through your fingers.
-        ALREADY_OBTAINED_DEW          = 7380,  -- You have already obtained the dew.
+        -- Squire's Test II ??? messages; shifted +1 after Ruillont (Rescue Drill) text insert — 7376 is wrong-sword trade refusal.
+        PLACE_HANDS_IN_POOL           = 7377,  -- You place your hands into the pool.
+        DEW_SLIPS_THROUGH_FINGERS     = 7380,  -- The dew from the stalactite slips through your fingers.
+        ALREADY_OBTAINED_DEW          = 7381,  -- You have already obtained the dew.
         DRY_WIND                      = 7390,  -- It is dry here, probably because of the wind.
         CHEST_UNLOCKED                = 7412,  -- You unlock the chest!
         SENSE_A_FOUL_PRESENCE         = 7433,  -- You sense a foul presence.

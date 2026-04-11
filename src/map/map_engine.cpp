@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -207,6 +207,7 @@ auto MapEngine::init() -> Task<void>
     }
 
     co_await zoneutils::Initialize(scheduler_, config_);
+    zoneutils::SetLoginZoneLoadContext(&scheduler_, &config_);
 
     if (!config_.lazyZones)
     {

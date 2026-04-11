@@ -4,13 +4,11 @@
 -- Notes: Tells ship ETA time
 -- !pos 0.340 -12.232 -4.120 46
 -----------------------------------
-local ID = zones[xi.zone.OPEN_SEA_ROUTE_TO_AL_ZAHBI]
------------------------------------
 ---@type TNpcEntity
 local entity = {}
 
 entity.onTrigger = function(player, npc)
-    xi.transport.onBoatTimekeeperTrigger(player, xi.transport.routes.OPEN_SEA, ID.text.ON_WAY_TO_AL_ZAHBI, ID.text.ARRIVING_SOON_AL_ZAHBI)
+    xi.transport.onBoatTimekeeperTrigger(player, npc, xi.transport.routes.OPEN_SEA, 'Al Zahbi')
 end
 
 return entity

@@ -7,6 +7,9 @@
 local itemObject = {}
 
 itemObject.onItemCheck = function(target, item, param, caster)
+    -- Equip/unequip checks pass nil caster; treat user as target.
+    local user = caster or target
+
     if target:getNation() ~= xi.nation.SANDORIA then
         return xi.msg.basic.ITEM_CANNOT_USE_ON
     end
@@ -17,10 +20,10 @@ itemObject.onItemCheck = function(target, item, param, caster)
     end
 
     -- Can only use on targets within party or self
-    if target:getID() ~= caster:getID() then
+    if target:getID() ~= user:getID() then
         if
-            caster:getPartyLeader() == nil or
-            target:getPartyLeader():getID() ~= caster:getPartyLeader():getID()
+            user:getPartyLeader() == nil or
+            target:getPartyLeader():getID() ~= user:getPartyLeader():getID()
         then
             return xi.msg.basic.ITEM_CANNOT_USE_ON
         end

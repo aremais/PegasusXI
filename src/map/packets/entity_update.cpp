@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -267,6 +267,10 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         return;
     }
 
+    // Equipped/chocobo NPCs use a 20-byte look at 0x30; the short name slot at 0x34 collides with that data.
+    // Long layout (size 0x56, name at 0x44) matches the Fellow spawn path; see ref<uint8>(0x18) below.
+    bool useEquippedNpcLongNameLayout = false;
+
     auto packet = this->as<GP_SERV_CHAR_NPC>();
 
     packet->id = 0x0E;
@@ -338,6 +342,7 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         case TYPE_NPC:
         {
             auto* PNpc = static_cast<CNpcEntity*>(PEntity);
+            const bool npcIsEquippedLike = PNpc->look.size == MODEL_EQUIPPED || PNpc->look.size == MODEL_CHOCOBO;
 
             if (updatemask & UPDATE_HP)
             {
@@ -358,17 +363,30 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
             }
 
             // TODO: Unify name logic
-            if (updatemask & UPDATE_NAME)
+            const bool shouldSendNpcName = (updatemask & UPDATE_NAME) || (type == ENTITY_SPAWN && npcIsEquippedLike);
+            if (shouldSendNpcName)
             {
-                auto name = PNpc->getName();
+                auto name = PNpc->packetName.empty() ? PNpc->getName() : PNpc->packetName;
                 if (PNpc->look.size == MODEL_ELEVATOR || PNpc->look.size == MODEL_SHIP)
                 {
                     name = getTransportNPCName(PNpc);
                 }
 
-                // depending on size of name, this can be 0x20, 0x22, or 0x24
-                this->setSize(0x48);
-                std::memcpy(buffer_.data() + 0x34, name.c_str(), std::min<size_t>(name.size(), PacketNameLength));
+                if (npcIsEquippedLike)
+                {
+                    // For equipped/chocobo NPCs, write name through the long-name path so it never collides with look_t bytes.
+                    useEquippedNpcLongNameLayout = true;
+                    this->setSize(0x56);
+                    auto start = buffer_.data() + 0x44;
+                    std::memset(start, 0U, this->getSize() - 0x44);
+                    std::memcpy(start, name.c_str(), std::min<size_t>(name.size(), PacketNameLength));
+                }
+                else
+                {
+                    // depending on size of name, this can be 0x20, 0x22, or 0x24
+                    this->setSize(0x48);
+                    std::memcpy(buffer_.data() + 0x34, name.c_str(), std::min<size_t>(name.size(), PacketNameLength));
+                }
             }
         }
         break;
@@ -461,7 +479,10 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         case MODEL_EQUIPPED:
         case MODEL_CHOCOBO:
         {
-            this->setSize(0x48);
+            if (this->getSize() < 0x48)
+            {
+                this->setSize(0x48);
+            }
             std::memcpy(buffer_.data() + 0x30, &PEntity->look, sizeof(look_t));
         }
         break;
@@ -481,6 +502,12 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
             std::memcpy(buffer_.data() + 0x34, name.data(), name.size());
         }
         break;
+    }
+
+    if (type == ENTITY_SPAWN && useEquippedNpcLongNameLayout)
+    {
+        // Required for FUNC_Packet_Incoming_0x000E to use the long-name / full look layout (same as Fellow spawn).
+        ref<uint8>(0x18) = 0x01;
     }
 
     // TODO: Fill this in

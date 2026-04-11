@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -30,6 +30,8 @@
 class CBaseEntity;
 class CCharEntity;
 class CNpcEntity;
+class Scheduler;
+struct MapConfig;
 
 namespace zoneutils
 {
@@ -52,6 +54,10 @@ auto Initialize(Scheduler& scheduler, MapConfig config) -> Task<void>;
 auto ProcessLoadQueue(Scheduler& scheduler, MapConfig config) -> Task<void>;
 
 auto IsLazyLoadingEnabled() -> bool;
+
+// Set once from MapEngine after zone init; used to load lazy zones before 0x00A login completes.
+void SetLoginZoneLoadContext(Scheduler* scheduler, const MapConfig* config);
+void EnsureDestinationZoneLoaded(uint16 zoneId);
 
 // TODO:
 // This shouldn't have side effects, it should be const and the caller should be responsible
