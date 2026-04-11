@@ -184,7 +184,9 @@ def populate_settings():
 settings, default_settings = populate_settings()
 
 
-# These are the 'protected' files
+# These are the 'protected' files (never re-imported on update if the table already exists).
+# zone_settings.sql must stay protected: the repo dump is all 127.0.0.1; importing it wipes
+# production zoneip/zoneport and causes FFXI-3001 for every internet client.
 player_data = [
     "accounts.sql",
     "accounts_banned.sql",
@@ -230,6 +232,7 @@ player_data = [
     "linkshells.sql",
     "server_variables.sql",
     "unity_system.sql",
+    "zone_settings.sql",
 ]
 
 import_files = []

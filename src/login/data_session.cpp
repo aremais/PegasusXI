@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2023 LandSandBoat Dev Teams
@@ -23,6 +23,7 @@
 
 #include "common/database.h"
 #include "common/ipc.h"
+#include "common/settings.h"
 #include "common/utils.h"
 
 void data_session::read_func()
@@ -290,11 +291,42 @@ void data_session::read_func()
                 // TODO: is this and the above compatible?
                 key3[16] += session.incrementKeyValue;
 
-                ZoneIP   = str2ip(rset->get<std::string>("zoneip"));
-                ZonePort = rset->get<uint16>("zoneport");
+                const auto zoneIpStr = trim(rset->get<std::string>("zoneip"));
+                ZoneIP                 = str2ip(zoneIpStr);
+                ZonePort               = rset->get<uint16>("zoneport");
 
-                characterSelectionResponse.server_ip   = ZoneIP;
+                // Client-visible map address: optional WAN/NAT override (see network.MAP_PUBLIC_IP).
+                uint32 clientMapIP = ZoneIP;
+                if (const auto mapPublicIp = settings::get<std::string>("network.MAP_PUBLIC_IP");
+                    !mapPublicIp.empty())
+                {
+                    const auto overrideIp = str2ip(mapPublicIp);
+                    if (overrideIp != 0)
+                    {
+                        clientMapIP = overrideIp;
+                    }
+                    else
+                    {
+                        ShowWarning("network.MAP_PUBLIC_IP is set but is not a valid IPv4 address; using zone_settings.zoneip for client map IP");
+                    }
+                }
+
+                characterSelectionResponse.server_ip   = clientMapIP;
                 characterSelectionResponse.server_port = ZonePort;
+
+                // Remote client + loopback or invalid map IP => FFXI-3001 after character select.
+                const auto loopback = str2ip("127.0.0.1");
+                if (ZonePort > 0 && (clientMapIP == 0 || clientMapIP == loopback) && accountIP != loopback)
+                {
+                    ShowWarning(fmt::format(
+                        "data_session: char {} — client {} is being sent map {}:{} (localhost/invalid). "
+                        "Set xidb.zone_settings.zoneip to this host's public IPv4 and restart xi_connect, "
+                        "or set network.MAP_PUBLIC_IP / XI_NETWORK_MAP_PUBLIC_IP.",
+                        charid,
+                        ipAddress,
+                        ip2str(clientMapIP),
+                        ZonePort));
+                }
 
                 characterSelectionResponse.cache_ip   = session.serverIP; // search-server ip
                 characterSelectionResponse.cache_port = settings::get<uint16>("network.SEARCH_PORT");
@@ -310,9 +342,11 @@ void data_session::read_func()
                 characterSelectionResponse.ffxi_id_world = charid & 0xFFFF;
                 characterSelectionResponse.server_id     = (charid >> 16) & 0xFF; // TODO: Looks wrong? shouldn't this be a server index?
 
-                ShowInfo(fmt::format("data_session: zoneid: {}, zoneipp: {}:{}, searchipp: {}:{}, for charid: {}",
+                ShowInfo(fmt::format("data_session: zoneid: {}, zoneipp (db): {}:{}, client map ipp: {}:{}, searchipp: {}:{}, for charid: {}",
                                      ZoneID,
                                      ip2str(ZoneIP),
+                                     ZonePort,
+                                     ip2str(clientMapIP),
                                      ZonePort,
                                      ip2str(characterSelectionResponse.cache_ip),
                                      characterSelectionResponse.cache_port,
@@ -398,12 +432,13 @@ void data_session::read_func()
                         }
                     }
 
+                    // server_addr must match the IP the client uses for map UDP (same as server_ip in 0x0B).
                     if (!db::preparedStmt("INSERT INTO accounts_sessions(accid, charid, session_key, server_addr, server_port, client_addr, version_mismatch) "
                                           "VALUES(?, ?, ?, ?, ?, ?, ?)",
                                           session.accountID,
                                           charid,
                                           key3,
-                                          ZoneIP,
+                                          clientMapIP,
                                           ZonePort,
                                           accountIP,
                                           session.versionMismatch ? 1 : 0))

@@ -766,9 +766,12 @@ void CDataLoader::ExpireAHItems(uint16 expireAgeInDays)
 
     std::vector<ListingToExpire> listingsToExpire;
 
+    // Calendar-day age must match DATEDIFF(NOW(), FROM_UNIXTIME(date)) >= N, but without wrapping
+    // `date` in functions so the server can range-scan `date` (see idx_auction_house_buyer_date).
     const auto rset0 = db::preparedStmt(
         "SELECT T0.id, T0.itemid, T1.stackSize, T0.stack, T0.seller FROM auction_house T0 INNER JOIN item_basic T1 ON "
-        "T0.itemid = T1.itemid WHERE DATEDIFF(NOW(), FROM_UNIXTIME(T0.`date`)) >= ? AND T0.buyer_name IS NULL",
+        "T0.itemid = T1.itemid WHERE T0.buyer_name IS NULL AND T0.`date` < "
+        "UNIX_TIMESTAMP(DATE_ADD(DATE_SUB(CURDATE(), INTERVAL ? DAY), INTERVAL 1 DAY))",
         expireAgeInDays);
 
     if (!rset0)

@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2023 LandSandBoat Dev Teams
@@ -310,7 +310,9 @@ int32 createCharacter(session_t& session, uint8* buf)
 
 std::string getHashFromPacket(const std::string& ip_str, uint8* data)
 {
-    auto hash = asStringFromUntrustedSource(data + 12, 16);
+    // 16-byte MD5 at offset 12 (IXFF lobby header). Do not use strnlen-based helpers here:
+    // session hashes are binary and often contain 0x00 bytes; truncating breaks lookup vs. xiloader.
+    const std::string hash(reinterpret_cast<const char*>(data + 12), 16);
     if (authenticatedSessions_[ip_str].find(hash) == authenticatedSessions_[ip_str].end())
     {
         return "";
