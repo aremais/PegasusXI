@@ -12,8 +12,7 @@ spellObject.onSpellCast = function(caster, target, spell)
     return xi.trust.spawn(caster, spell)
 end
 
--- Assuming DEDICATION is already supported
-spellObject.onMobSpawn = function onSummon(t, player)
+spellObject.onMobSpawn = function(t, player)
     t:addStatusEffect(EFFECT_DEDICATION, 20, 0, 0) -- Grants 20% EXP bonus
 end
 
