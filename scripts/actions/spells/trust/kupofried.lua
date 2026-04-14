@@ -14,7 +14,7 @@ end
 
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
-    mob:addStatusEffect(xi.statusEffect.DEDICATION) -- Grants 20% EXP bonus and 10% capacity bonus(needs confirmation)
+    mob:addStatusEffect(xi.statusEffect.DEDICATION) -- Grants 20% EXP bonus and 10% capacity bonus
 end
 
 spellObject.onMobDespawn = function(mob)

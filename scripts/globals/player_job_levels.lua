@@ -1,3 +1,4 @@
+--Updating to fix sanity issues with player_job_levels. This file is used by both the !setalljoblevels command and by NPCs, so it should be careful about input validation and error handling.
 -- Shared logic: set all job levels on a player.
 -- Used by both the !setalljoblevels command and by NPCs.
 -- Returns: success (boolean), message (string)
