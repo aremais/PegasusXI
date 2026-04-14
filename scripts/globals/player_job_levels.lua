@@ -23,7 +23,7 @@ xi.player_job_levels = xi.player_job_levels or {}
 function xi.player_job_levels.setAllJobLevels(player, level)
     level = level or 99
     if level < 1 or level > 99 then
-        return false, "Level must be between 1 and 99."
+        return false, 'Level must be between 1 and 99.'
     end
 
     local originalJob = player:getMainJob()
