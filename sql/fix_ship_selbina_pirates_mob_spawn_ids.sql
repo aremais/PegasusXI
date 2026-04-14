@@ -1,8 +1,8 @@
 -- Ship bound for Selbina *Pirates* (zone 227): mobids must satisfy ((mobid >> 12) & 0xFFF) = 227.
--- Older dumps used IDs that decode as zone 225 (Windurst–Jeuno airship). Add 8192 per row
--- (increments zone nibble 225 -> 227) for that block only.
--- Safe to re-run: rows already at 177152xx no longer match the WHERE and are skipped.
+-- Rows at 17715201-17715218 decode as zone 229, so mob_groups.zoneid = 227 never matches and NO mobs load.
+-- Correct range is 17707009-17707026 (same as a clean mob_spawn_points dump).
+-- Safe to re-run: rows already corrected no longer match the WHERE.
 
 UPDATE `mob_spawn_points`
-SET `mobid` = `mobid` + 8192
-WHERE `mobid` >= 17707009 AND `mobid` <= 17707026;
+SET `mobid` = `mobid` - 8192
+WHERE `mobid` >= 17715201 AND `mobid` <= 17715218;

@@ -30,6 +30,9 @@ return {
     ['Komomo']               = { event = 290 },
     ['Koru-Moru']            = { event = 193 },
     ['Lala_Gohma']           = { event = 328 },
+    ['Linkshell_Concierge'] = function(player, npc)
+        xi.linkshellConcierge.onTrigger(player, npc)
+    end,
     ['Luuh_Koplehn']         = { event = 322 },
     ['Maan-Pokuun']          = { event = 293 },
     ['Malmi-Monmi']          = { event = 295 },

@@ -35,6 +35,9 @@ return {
     ['Ishwar']            = { text = ID.text.ISHWAR_DIALOG },
     ['Kasaroro']          = { event = 548 },
     ['Letterare']         = { event = 660 },
+    ['Linkshell_Concierge'] = function(player, npc)
+        xi.linkshellConcierge.onTrigger(player, npc)
+    end,
     ['Machella']          = { event = 672 },
     ['Malfine']           = { text = ID.text.MALFINE_DIALOG },
     ['Matildie']          = { event = 587 },

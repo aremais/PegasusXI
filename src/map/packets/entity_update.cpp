@@ -315,6 +315,27 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         }
     }
 
+    // Static NPCs (targid < 1024): the 0x00E name field only fits 15 displayable characters (16 bytes; see XiPackets).
+    // Sending a longer polutils_name truncates badly (e.g. "Linkshell Conci"). Omit the name so the client keeps the
+    // full string from zone DAT files, matching retail behavior for unmolested static entities.
+    if (PEntity->objtype == TYPE_NPC)
+    {
+        auto* PNpc                 = static_cast<CNpcEntity*>(PEntity);
+        const bool isTransportLook = PNpc->look.size == MODEL_ELEVATOR || PNpc->look.size == MODEL_SHIP;
+        if (!isTransportLook && PNpc->targid < 1024 && !PEntity->isRenamed)
+        {
+            const std::string& displayName = PNpc->packetName.empty() ? PNpc->getName() : PNpc->packetName;
+            if (displayName.size() > PacketNameLength - 1)
+            {
+                updatemask &= static_cast<uint8>(~UPDATE_NAME);
+                ref<uint8>(0x0A) &= static_cast<uint8>(~UPDATE_NAME);
+                // Reused entity-update packets can still carry a previous truncated name at 0x34; clear it so
+                // clients that read the field even without the Name flag do not show stale text.
+                std::memset(buffer_.data() + 0x34, 0, PacketNameLength);
+            }
+        }
+    }
+
     if (updatemask & UPDATE_POS)
     {
         ref<uint8>(0x0B)  = PEntity->loc.p.rotation;
@@ -370,6 +391,14 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
                 if (PNpc->look.size == MODEL_ELEVATOR || PNpc->look.size == MODEL_SHIP)
                 {
                     name = getTransportNPCName(PNpc);
+                }
+
+                // 0x00E fits at most 15 displayable characters in the standard name slot (PacketNameLength includes a
+                // terminator slot; see utils.h). Longer names truncate badly (e.g. "Linkshell Conci"). Known NPCs get
+                // a readable short label; DB polutils_name should also be kept within this limit.
+                if (name.size() > PacketNameLength - 1 && PNpc->getName() == "Linkshell_Concierge")
+                {
+                    name = "LS Concierge";
                 }
 
                 if (npcIsEquippedLike)

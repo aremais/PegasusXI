@@ -12,6 +12,10 @@ local vermCloakPirateChance = 10
 -- At least this many Crossbones alive during the encounter; all zone Crossbones IDs may be up (e.g. 4) if available.
 local CROSSBONES_MIN_ALIVE = 3
 
+-- music106.bgw Ship; music170.bgw Buccaneers (retail pirate ferry encounter)
+local shipAmbientBgm   = 106
+local pirateEncounterBgm = 170
+
 local actions =
 {
     ARRIVING        = 0,
@@ -152,6 +156,54 @@ local function maybeSummonCrossboneOnPirateCastComplete(zone)
             return
         end
     end
+end
+
+xi.pirates.applyEncounterBgm = function(zone, usePirateTheme)
+    if not zone then
+        return
+    end
+
+    local zoneId = zone:getID()
+    if
+        zoneId ~= xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES and
+        zoneId ~= xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES
+    then
+        return
+    end
+
+    local song = usePirateTheme and pirateEncounterBgm or shipAmbientBgm
+    zone:setBackgroundMusicDay(song)
+    zone:setBackgroundMusicNight(song)
+
+    for _, player in pairs(zone:getPlayers()) do
+        player:changeMusic(0, song)
+        player:changeMusic(1, song)
+    end
+end
+
+-- Match currPiratesAction with PIRATES_ARRIVE (2) / MOBS_SPAWN (3) for zone-in after the event starts.
+xi.pirates.syncEncounterBgmForPlayer = function(player)
+    if not player then
+        return
+    end
+
+    local zone = player:getZone()
+    if not zone then
+        return
+    end
+
+    local zoneId = zone:getID()
+    if
+        zoneId ~= xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES and
+        zoneId ~= xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES
+    then
+        return
+    end
+
+    local a    = zone:getLocalVar('currPiratesAction')
+    local song = (a == 2 or a == 3) and pirateEncounterBgm or shipAmbientBgm
+    player:changeMusic(0, song)
+    player:changeMusic(1, song)
 end
 
 -- True from MOBS_SPAWN until PIRATES_RETREAT (currPiratesAction is not advanced between those triggers).
@@ -304,12 +356,20 @@ local function spawnPirateWave(zone)
     end
 
     if zoneId == xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES then
-        spawnList[#spawnList + 1] = ID.mob.SHIP_WIGHT
-        spawnList[#spawnList + 1] = ID.mob.BLACKBEARD
+        -- Middle pirate Vermillion Cloak sets nmCanSpawn; NM replaces Ship Wight placeholder.
+        if zone:getLocalVar('nmCanSpawn') == 1 then
+            spawnList[#spawnList + 1] = ID.mob.BLACKBEARD
+        else
+            spawnList[#spawnList + 1] = ID.mob.SHIP_WIGHT
+        end
+
         -- Enagakure uses night / key item logic in Zone.lua; not spawned by the pirate wave
     elseif zoneId == xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES then
-        spawnList[#spawnList + 1] = ID.mob.WIGHT
-        spawnList[#spawnList + 1] = ID.mob.SILVERHOOK
+        if zone:getLocalVar('nmCanSpawn') == 1 then
+            spawnList[#spawnList + 1] = ID.mob.SILVERHOOK
+        else
+            spawnList[#spawnList + 1] = ID.mob.WIGHT
+        end
     else
         return
     end
@@ -321,6 +381,29 @@ local function spawnPirateWave(zone)
             if mob and not mob:isSpawned() then
                 SpawnMob(mobId)
             end
+        end
+    end
+end
+
+-- Death during MOBS_SPAWN sets a short respawn; cancel those timers once the encounter ends.
+local function haltCrossbonesRespawns(zone)
+    local zoneId = zone:getID()
+    if
+        zoneId ~= xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES and
+        zoneId ~= xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES
+    then
+        return
+    end
+
+    local ID = zones[zoneId]
+    if not ID or not ID.mob or not ID.mob.CROSSBONES then
+        return
+    end
+
+    for _, mobId in ipairs(ID.mob.CROSSBONES) do
+        local mob = GetEntityByID(mobId, nil, true)
+        if mob and not mob:isSpawned() and mob:getRespawnTime() > 0 then
+            mob:setRespawnTime(0)
         end
     end
 end
@@ -364,6 +447,13 @@ xi.pirates.zoneStateChange = function(zone, action)
             spawnPirateWave(zone)
         elseif action == actions.PIRATES_RETREAT then
             despawnPirateWave(zone)
+            haltCrossbonesRespawns(zone)
+        end
+
+        if action == actions.PIRATES_ARRIVE or action == actions.MOBS_SPAWN then
+            xi.pirates.applyEncounterBgm(zone, true)
+        elseif action == actions.PIRATES_RETREAT or action == actions.ARRIVING then
+            xi.pirates.applyEncounterBgm(zone, false)
         end
     end
 end

@@ -73855,25 +73855,25 @@ INSERT INTO `mob_spawn_points` VALUES (17686576,0,'Wazir','Wazir',8,99,99,0.000,
 -- ------------------------------------------------------------
 
 -- Fished
-INSERT INTO `mob_spawn_points` VALUES (17715201,0,'Sea_Pugil','Sea Pugil',1,10,14,1.000,1.000,1.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17715202,0,'Ocean_Crab','Ocean Crab',2,10,14,1.000,1.000,1.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17715203,0,'Ocean_Pugil','Ocean Pugil',3,15,19,1.000,1.000,1.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17715204,0,'Pirate_Pugil','Pirate Pugil',4,20,22,1.000,1.000,1.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17715205,0,'Sea_Monk','Sea Monk',5,21,29,1.000,1.000,1.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17707009,0,'Sea_Pugil','Sea Pugil',1,10,14,1.000,1.000,1.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17707010,0,'Ocean_Crab','Ocean Crab',2,10,14,1.000,1.000,1.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17707011,0,'Ocean_Pugil','Ocean Pugil',3,15,19,1.000,1.000,1.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17707012,0,'Pirate_Pugil','Pirate Pugil',4,20,22,1.000,1.000,1.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17707013,0,'Sea_Monk','Sea Monk',5,21,29,1.000,1.000,1.000,0);
 
-INSERT INTO `mob_spawn_points` VALUES (17715206,0,'Sea_Crab','Sea Crab',6,10,20,1.698,-7.268,21.497,139);
-INSERT INTO `mob_spawn_points` VALUES (17715207,0,'Sea_Crab','Sea Crab',6,10,20,-1.870,-7.270,3.210,130);
-INSERT INTO `mob_spawn_points` VALUES (17715208,0,'Sea_Pugil','Sea Pugil',7,10,14,-7.699,-7.663,7.549,0);
-INSERT INTO `mob_spawn_points` VALUES (17715209,0,'Sea_Pugil','Sea Pugil',7,10,14,0.200,-7.270,6.870,60);
-INSERT INTO `mob_spawn_points` VALUES (17715210,0,'Sea_Monk','Sea Monk',8,21,29,-4.000,-7.270,8.900,69);
-INSERT INTO `mob_spawn_points` VALUES (17715211,0,'Phantom','Phantom',9,22,25,-7.629,-7.663,3.749,0);
-INSERT INTO `mob_spawn_points` VALUES (17715212,0,'Crossbones','Crossbones',10,28,31,-1.093,-7.288,20.947,228);
-INSERT INTO `mob_spawn_points` VALUES (17715213,0,'Crossbones','Crossbones',10,28,31,0.492,-7.268,14.328,108);
-INSERT INTO `mob_spawn_points` VALUES (17715214,0,'Crossbones','Crossbones',11,28,31,-7.737,-7.279,11.354,155);
-INSERT INTO `mob_spawn_points` VALUES (17715215,0,'Crossbones','Crossbones',11,28,31,7.177,-7.309,17.648,54);
-INSERT INTO `mob_spawn_points` VALUES (17715216,0,'Ship_Wight','Ship Wight',12,36,39,-0.725,-7.312,23.111,60);
-INSERT INTO `mob_spawn_points` VALUES (17715217,0,'Blackbeard','Blackbeard',13,67,68,-6.387,-11.662,-13.986,56);
-INSERT INTO `mob_spawn_points` VALUES (17715218,0,'Enagakure','Enagakure',14,55,55,1.000,-7.000,13.000,60);
+INSERT INTO `mob_spawn_points` VALUES (17707014,0,'Sea_Crab','Sea Crab',6,10,20,1.698,-7.268,21.497,139);
+INSERT INTO `mob_spawn_points` VALUES (17707015,0,'Sea_Crab','Sea Crab',6,10,20,-1.870,-7.270,3.210,130);
+INSERT INTO `mob_spawn_points` VALUES (17707016,0,'Sea_Pugil','Sea Pugil',7,10,14,-7.699,-7.663,7.549,0);
+INSERT INTO `mob_spawn_points` VALUES (17707017,0,'Sea_Pugil','Sea Pugil',7,10,14,0.200,-7.270,6.870,60);
+INSERT INTO `mob_spawn_points` VALUES (17707018,0,'Sea_Monk','Sea Monk',8,21,29,-4.000,-7.270,8.900,69);
+INSERT INTO `mob_spawn_points` VALUES (17707019,0,'Phantom','Phantom',9,22,25,-7.629,-7.663,3.749,0);
+INSERT INTO `mob_spawn_points` VALUES (17707020,0,'Crossbones','Crossbones',10,28,31,-1.093,-7.288,20.947,228);
+INSERT INTO `mob_spawn_points` VALUES (17707021,0,'Crossbones','Crossbones',10,28,31,0.492,-7.268,14.328,108);
+INSERT INTO `mob_spawn_points` VALUES (17707022,0,'Crossbones','Crossbones',11,28,31,-7.737,-7.279,11.354,155);
+INSERT INTO `mob_spawn_points` VALUES (17707023,0,'Crossbones','Crossbones',11,28,31,7.177,-7.309,17.648,54);
+INSERT INTO `mob_spawn_points` VALUES (17707024,0,'Ship_Wight','Ship Wight',12,36,39,-0.725,-7.312,23.111,60);
+INSERT INTO `mob_spawn_points` VALUES (17707025,0,'Blackbeard','Blackbeard',13,67,68,-6.387,-11.662,-13.986,56);
+INSERT INTO `mob_spawn_points` VALUES (17707026,0,'Enagakure','Enagakure',14,55,55,1.000,-7.000,13.000,60);
 
 -- ------------------------------------------------------------
 -- Ship Bound for Mhaura Pirates (Zone 228)

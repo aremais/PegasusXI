@@ -26,6 +26,34 @@
 #include "common/settings.h"
 #include "common/utils.h"
 
+#include <unordered_set>
+
+namespace
+{
+    bool isIpExemptFromLoginLimit(uint32 accountIP)
+    {
+        static const std::unordered_set<uint32> exemptIps = []
+        {
+            std::unordered_set<uint32> out;
+            const auto                list = settings::get<std::string>("login.LOGIN_LIMIT_EXEMPT_IPS");
+            for (const auto& part : split(list, ","))
+            {
+                const auto t = trim(part);
+                if (!t.empty())
+                {
+                    const auto ip = str2ip(t);
+                    if (ip != 0U)
+                    {
+                        out.insert(ip);
+                    }
+                }
+            }
+            return out;
+        }();
+        return exemptIps.contains(accountIP);
+    }
+} // namespace
+
 void data_session::read_func()
 {
     auto sessionHash = loginHelpers::getHashFromPacket(ipAddress, buffer_.data());
@@ -391,7 +419,8 @@ void data_session::read_func()
                 const auto isNotMaint   = !settings::get<bool>("login.MAINT_MODE");
                 const auto loginLimit   = settings::get<uint8>("login.LOGIN_LIMIT");
                 const auto excepted     = exceptionTime > currentTime;
-                const auto loginLimitOK = loginLimit == 0 || sessionCount < loginLimit || excepted;
+                const auto ipExempt     = isIpExemptFromLoginLimit(accountIP);
+                const auto loginLimitOK = loginLimit == 0 || sessionCount < loginLimit || excepted || ipExempt;
                 const auto isGM         = gmlevel > 0;
 
                 if (!loginLimitOK)
