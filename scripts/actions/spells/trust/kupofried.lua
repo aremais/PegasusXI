@@ -13,7 +13,7 @@ spellObject.onSpellCast = function(caster, target, spell)
 end
 
 spellObject.onMobSpawn = function(t, player)
-    t:addStatusEffect(EFFECT_DEDICATION, 20, 0, 0) -- Grants 20% EXP bonus
+    t:addStatusEffect(249, 20, 0, 0) -- Grants 20% EXP bonus
 end
 
 
