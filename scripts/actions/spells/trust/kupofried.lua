@@ -12,9 +12,9 @@ spellObject.onSpellCast = function(caster, target, spell)
     return xi.trust.spawn(caster, spell)
 end
 
-spellObject.onMobSpawn = function(t, mob)
+spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
-    t:addStatusEffect(249) -- Grants 20% EXP bonus and 10% capacity bonus
+    mob:addStatusEffect(249) -- Grants 20% EXP bonus and 10% capacity bonus
 end
 
 
