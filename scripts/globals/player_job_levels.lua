@@ -1,4 +1,3 @@
------------------------------------
 -- Shared logic: set all job levels on a player.
 -- Used by both the !setalljoblevels command and by NPCs.
 -- Returns: success (boolean), message (string)
@@ -32,7 +31,7 @@ function xi.player_job_levels.setAllJobLevels(player, level)
         player:changeJob(jobId)
         player:setLevel(level)
     end
-    
+
     player:changeJob(originalJob)
     return true
 end
