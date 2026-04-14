@@ -14,6 +14,8 @@ end
 
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
+    mob:addStatusEffect(xi.effect.DEDICATION)
+    mob:setAutoAttackEnabled(false)
 end
 
 spellObject.onMobDespawn = function(mob)
