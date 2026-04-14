@@ -12,9 +12,11 @@ spellObject.onSpellCast = function(caster, target, spell)
     return xi.trust.spawn(caster, spell)
 end
 
-spellObject.onMobSpawn = function(mob)
-    xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
+-- Assuming DEDICATION is already supported
+spellObject.onMobSpawn = function onSummon(t, player)
+    t:addStatusEffect(EFFECT_DEDICATION, 20, 0, 0) -- Grants 20% EXP bonus
 end
+
 
 spellObject.onMobDespawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.DESPAWN)
