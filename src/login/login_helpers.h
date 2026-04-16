@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2023 LandSandBoat Dev Teams
@@ -63,7 +63,8 @@ enum EXPANSION_DISPLAY : uint16
     UNUSED_EXPANSION_4      = 0x8000,
 };
 
-// Displays features on main menu // May be a 32 bit integer on the client.
+// Sent to the client as lobby key packet excode_server2 (not only login UI).
+// Mog wardrobe bits control visibility of Mog Wardrobe pages 3–8 in-game; pages 1–2 are always shown.
 enum FEATURE_DISPLAY : uint16
 {
     SECURE_TOKEN     = 0x0001,

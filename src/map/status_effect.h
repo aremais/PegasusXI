@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -751,12 +751,13 @@ enum EFFECT : uint16
     EFFECT_HYSTERIA            = 804, // Used for Hysteroanima to stop after readying a weaponskill with no msg.
     EFFECT_TOMAHAWK            = 805, // Silent status effect inflicted by a Warrior using the "Tomahawk" job ability
     EFFECT_NUKE_WALL           = 806, // Custom effect for NM type mobs only. Applied by elemental magic damage sources
+    EFFECT_KUPOFRIED_AURA      = 807, // Tracks party members in Trust: Kupofried's COLURE_ACTIVE aura (EXP/CP bonus)
 
     // 789
-    // 807-1022
+    // 808-1022
     // EFFECT_PLACEHOLDER           = 1023 // The client dat file seems to have only this many "slots", results of exceeding that are untested.
 };
-#define MAX_EFFECTID 807 // 768 real + 39 custom
+#define MAX_EFFECTID 808 // 768 real + 40 custom
 DECLARE_FORMAT_AS_UNDERLYING(EFFECT);
 
 /************************************************************************

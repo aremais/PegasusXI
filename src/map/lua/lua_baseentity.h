@@ -260,6 +260,7 @@ public:
     auto getCurrentGPItem(uint8 guildId) const -> std::tuple<uint16, uint16>;
     bool breakLinkshell(const std::string& lsname);
     bool addLinkpearl(const std::string& lsname, bool equip);
+    bool addLinkshellHolder(const std::string& lsname, sol::optional<uint8> equipSlot);
 
     auto addSoulPlate(const std::string& name, uint32 interestData, uint8 zeni, uint16 skillIndex, uint8 fp) -> CItem*;
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -29,7 +29,10 @@
 #include "instance.h"
 #include "los/zone_los.h"
 #include "navmesh.h"
+#include "utils/zoneutils.h"
 #include "zone.h"
+
+#include "common/logging.h"
 
 #include <cstring>
 
@@ -94,7 +97,16 @@ const std::string& CBaseEntity::getPacketName()
 
 uint16 CBaseEntity::getZone() const
 {
-    return loc.zone != nullptr ? (uint16)loc.zone->GetID() : (uint16)loc.destination;
+    if (loc.zone != nullptr && zoneutils::IsRegisteredZone(loc.zone))
+    {
+        return static_cast<uint16>(loc.zone->GetID());
+    }
+    if (loc.zone != nullptr)
+    {
+        ShowWarningFmt("CBaseEntity::getZone: entity {} (id {}) has non-null loc.zone that is not a live zone; using destination {}",
+                       name, id, loc.destination);
+    }
+    return static_cast<uint16>(loc.destination);
 }
 
 float CBaseEntity::GetXPos() const

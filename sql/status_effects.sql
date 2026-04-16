@@ -706,7 +706,10 @@ INSERT INTO `status_effects` VALUES (801,'meditate',@FLAG_DEATH | @FLAG_ON_ZONE,
 INSERT INTO `status_effects` VALUES (802,'elemental_resistance_down',@FLAG_DEATH | @FLAG_ON_ZONE | @FLAG_NO_LOSS_MESSAGE | @FLAG_NO_CANCEL,0,0,0,0,0,0,0,0,NULL);
 INSERT INTO `status_effects` VALUES (803,'full_speed_ahead',@FLAG_ON_ZONE | @FLAG_NO_LOSS_MESSAGE,0,0,0,0,0,0,0,0,NULL);
 INSERT INTO `status_effects` VALUES (805,'tomahawk',@FLAG_DEATH | @FLAG_NO_LOSS_MESSAGE,0,0,0,0,0,0,0,0,NULL);
-INSERT INTO 'status_effects' VALUES (806, 'kupofried_aura', @FLAG_DEATH | @FLAG_ON_ZONE, 247,0,0,0,0,0,0,0,NULL);
+INSERT INTO `status_effects` VALUES (806,'nuke_wall',@FLAG_DEATH | @FLAG_ON_ZONE,0,0,0,0,0,0,0,0,NULL);
+INSERT INTO `status_effects` VALUES (807,'kupofried_aura',@FLAG_DEATH | @FLAG_ON_ZONE,247,0,0,0,0,0,0,0,NULL);
+
+
 /*!40000 ALTER TABLE `status_effects` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
