@@ -4902,7 +4902,7 @@ bool CLuaBaseEntity::addLinkpearl(const std::string& lsname, bool equip)
                     PChar->equipLoc[SLOT_LINK2] = LOC_INVENTORY;
                     PChar->pushPacket<GP_SERV_COMMAND_ITEM_LIST>(PItemLinkPearl, ItemLockFlg::Linkshell);
                     charutils::SaveCharEquip(PChar);
-                    PChar->pushPacket<GP_SERV_COMMAND_GROUP_COMLINK>(PChar, PItemLinkPearl->GetLSID());
+                    PChar->pushPacket<GP_SERV_COMMAND_GROUP_COMLINK>(PChar, 2);
                     PChar->pushPacket<GP_SERV_COMMAND_ITEM_ATTR>(PItemLinkPearl, LOC_INVENTORY, PItemLinkPearl->getSlotID());
                     PChar->pushPacket<GP_SERV_COMMAND_ITEM_SAME>(PChar);
                     charutils::LoadInventory(PChar);
@@ -4917,6 +4917,90 @@ bool CLuaBaseEntity::addLinkpearl(const std::string& lsname, bool equip)
         }
     }
     return false;
+}
+
+/************************************************************************
+ *  Function: addLinkshellHolder()
+ *  Purpose : Grants the physical linkshell item (513) for an existing shell in `linkshells`,
+ *            optionally equipping it to LS1 or LS2 (default 1). This is the "owner" item.
+ *  Example : player:addLinkshellHolder("PegasusXI", 1)
+ ************************************************************************/
+
+bool CLuaBaseEntity::addLinkshellHolder(const std::string& lsname, sol::optional<uint8> equipSlot)
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowWarning("Invalid entity type calling addLinkshellHolder (%s).", m_PBaseEntity->getName());
+        return false;
+    }
+
+    uint8 lsNum = equipSlot.value_or(1);
+    if (lsNum < 1 || lsNum > 2)
+    {
+        lsNum = 1;
+    }
+
+    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
+
+    const auto rset = db::preparedStmt("SELECT linkshellid, color FROM linkshells WHERE name = ? AND broken = 0", lsname);
+    if (!rset || !rset->rowsCount() || !rset->next())
+    {
+        ShowWarning("addLinkshellHolder: linkshell '%s' not found or broken.", lsname.c_str());
+        return false;
+    }
+
+    CItemLinkshell* PItemShell = static_cast<CItemLinkshell*>(itemutils::GetItem(ITEMID::LINKSHELL));
+    if (PItemShell == nullptr)
+    {
+        return false;
+    }
+
+    char EncodedString[LinkshellStringLength]{};
+    std::memset(EncodedString, 0, sizeof(EncodedString));
+    EncodeStringLinkshell(lsname, EncodedString);
+    PItemShell->setSignature(EncodedString);
+    PItemShell->SetLSID(rset->get<uint32>("linkshellid"));
+    PItemShell->SetLSColor(rset->get<uint16>("color"));
+    PItemShell->SetLSType(LSTYPE_LINKSHELL);
+    PItemShell->setQuantity(1);
+
+    const SLOTTYPE lsEquipSlot = (lsNum == 1) ? SLOT_LINK1 : SLOT_LINK2;
+
+    if (auto* POldItem = PChar->getEquip(lsEquipSlot))
+    {
+        if (auto* POldLs = dynamic_cast<CItemLinkshell*>(POldItem);
+            POldLs != nullptr && POldLs->isType(ITEM_LINKSHELL))
+        {
+            linkshell::DelOnlineMember(PChar, POldLs);
+            POldLs->setSubType(ITEM_UNLOCKED);
+            PChar->pushPacket<GP_SERV_COMMAND_ITEM_LIST>(POldLs, ItemLockFlg::Normal);
+        }
+    }
+
+    if (charutils::AddItem(PChar, LOC_INVENTORY, PItemShell) == ERROR_SLOTID)
+    {
+        ShowWarning("addLinkshellHolder: could not add linkshell item for '%s' (inventory full, duplicate rare linkshell item, etc.).", PChar->getName().c_str());
+        return false;
+    }
+
+    linkshell::AddOnlineMember(PChar, PItemShell, lsNum);
+    PItemShell->setSubType(ITEM_LOCKED);
+    PChar->equip[lsEquipSlot]    = PItemShell->getSlotID();
+    PChar->equipLoc[lsEquipSlot] = LOC_INVENTORY;
+
+    PChar->pushPacket<GP_SERV_COMMAND_ITEM_LIST>(PItemShell, ItemLockFlg::Linkshell);
+    charutils::SaveCharEquip(PChar);
+    PChar->pushPacket<GP_SERV_COMMAND_GROUP_COMLINK>(PChar, lsNum);
+    PChar->pushPacket<GP_SERV_COMMAND_ITEM_ATTR>(PItemShell, LOC_INVENTORY, PItemShell->getSlotID());
+    PChar->pushPacket<GP_SERV_COMMAND_ITEM_SAME>(PChar);
+    charutils::LoadInventory(PChar);
+
+    if (lsNum == 1)
+    {
+        PChar->updatemask |= UPDATE_HP;
+        PChar->pushPacket<CCharStatusPacket>(PChar);
+    }
+    return true;
 }
 
 auto CLuaBaseEntity::addSoulPlate(const std::string& name, uint32 interestData, uint8 zeni, uint16 skillIndex, uint8 fp) -> CItem*
@@ -19879,6 +19963,7 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("getCurrentGPItem", CLuaBaseEntity::getCurrentGPItem);
     SOL_REGISTER("breakLinkshell", CLuaBaseEntity::breakLinkshell);
     SOL_REGISTER("addLinkpearl", CLuaBaseEntity::addLinkpearl);
+    SOL_REGISTER("addLinkshellHolder", CLuaBaseEntity::addLinkshellHolder);
 
     SOL_REGISTER("addSoulPlate", CLuaBaseEntity::addSoulPlate);
 

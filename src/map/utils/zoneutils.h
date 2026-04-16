@@ -76,6 +76,8 @@ auto GetCurrentContinent(uint16 zoneId) -> CONTINENT_TYPE;
 auto GetWeatherElement(Weather weather) -> int;
 
 auto GetZone(uint16 zoneId) -> CZone*;
+// True if `zone` is non-null and matches a live zone in this process (guards against stale loc.zone).
+auto IsRegisteredZone(const CZone* zone) -> bool;
 auto GetEntity(uint32 id, uint8 filter = -1) -> CBaseEntity*;
 auto GetCharByName(const std::string& name) -> CCharEntity*;
 auto GetCharFromWorld(uint32 charId, uint16 targId) -> CCharEntity*;  // returns pointer to character by id and target id

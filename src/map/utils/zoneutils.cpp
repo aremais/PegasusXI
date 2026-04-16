@@ -128,6 +128,22 @@ auto GetZone(uint16 zoneId) -> CZone*
     return nullptr;
 }
 
+auto IsRegisteredZone(const CZone* zone) -> bool
+{
+    if (zone == nullptr)
+    {
+        return false;
+    }
+    for (const auto* PZone : g_PZoneList | std::views::values)
+    {
+        if (PZone == zone)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 auto GetEntity(const uint32 id, const uint8 filter) -> CBaseEntity*
 {
     const uint16 DynamicEntityStart = 0x700;
