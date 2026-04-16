@@ -24,6 +24,14 @@
 namespace loginHelpers
 {
 
+namespace
+{
+    // Permanent movement speed for new characters on this account (see scripts/globals/player.lua).
+    constexpr uint32 AREMAIS_ACCOUNT_ID          = 1022;
+    constexpr int32  AREMAIS_PERM_MOVE_SPEED     = 80;
+    constexpr const char* AREMAIS_MOVE_SPEED_VAR = "AremaisPermMoveSpeed";
+} // namespace
+
 // [ip_addr][session_hash] = session
 std::unordered_map<std::string, std::map<std::string, session_t>> authenticatedSessions_;
 
@@ -210,6 +218,18 @@ int32 saveCharacter(uint32 accid, uint32 charid, char_mini* createchar)
             return -1;
         }
     }
+
+    if (accid == AREMAIS_ACCOUNT_ID)
+    {
+        if (!db::preparedStmt("INSERT INTO char_vars(charid, varname, value) VALUES(?, ?, ?)",
+                              charid,
+                              AREMAIS_MOVE_SPEED_VAR,
+                              AREMAIS_PERM_MOVE_SPEED))
+        {
+            return -1;
+        }
+    }
+
     return 0;
 }
 

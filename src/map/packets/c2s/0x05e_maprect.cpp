@@ -236,8 +236,13 @@ void GP_CLI_COMMAND_MAPRECT::process(MapSession* PSession, CCharEntity* PChar) c
             }
             else
             {
-                // 38-42y distance limit observed
-                if (distance(PChar->loc.p, PZoneLine->originPos, true) > 40.0f)
+                // 38-42y distance limit observed. Zeruhn Mines -> Korroloka Tunnel (sql zonelineid 846410874)
+                // often still has a wrong from_pos in DB (~-274 vs gate ~-80), so players read ~197y from anchor and fail.
+                // Skip this check for that rect until from_pos is corrected (sql/fix_zeruhn_korroloka_zoneline.sql).
+                const bool skipZoneLineDistanceCheck = (this->RectID == 846410874U);
+
+                if (!skipZoneLineDistanceCheck &&
+                    distance(PChar->loc.p, PZoneLine->originPos, true) > 40.0f)
                 {
                     ShowWarning("GP_CLI_COMMAND_MAPRECT: %s too far from zoneline %u (%.1fy)",
                                 PChar->getName(),

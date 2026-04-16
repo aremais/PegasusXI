@@ -1054,6 +1054,13 @@ end
 function CBaseEntity:addLinkpearl(lsname, equip)
 end
 
+--- Grants item 513 (physical linkshell) for an existing `linkshells` row; optional equip slot 1 or 2 (default 1).
+---@param lsname string
+---@param equipSlot? integer
+---@return boolean
+function CBaseEntity:addLinkshellHolder(lsname, equipSlot)
+end
+
 ---@nodiscard
 ---@param name string
 ---@param interestData integer

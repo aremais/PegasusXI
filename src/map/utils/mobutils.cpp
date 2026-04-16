@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -1249,13 +1249,22 @@ uint8 JobSkillRankToBaseEvaRank(JOBTYPE mjob, JOBTYPE sjob)
     // Pick the best rank between the two jobs
     // Lower is better
     uint8 mainEvasionSkillRank = battleutils::GetSkillRank(SKILL_EVASION, mjob);
-    uint8 subEvasionSkillRank  = battleutils::GetSkillRank(SKILL_EVASION, sjob);
+    uint8 evasionSkillRank     = mainEvasionSkillRank;
 
-    switch (std::min(mainEvasionSkillRank, subEvasionSkillRank))
+    // JOB_NON (and MON) are not loaded in skill_ranks; g_SkillRanks[*][0] reads as 0 and must not be mixed into min().
+    if (sjob != JOB_NON && sjob != JOB_MON)
     {
+        uint8 subEvasionSkillRank = battleutils::GetSkillRank(SKILL_EVASION, sjob);
+        evasionSkillRank          = std::min(mainEvasionSkillRank, subEvasionSkillRank);
+    }
+
+    switch (evasionSkillRank)
+    {
+        case 0:
+            return 1; // A- (skill_caps r0)
         case 1:
         case 2:
-            return 1; // A, A+; A- doesnt exist anymore
+            return 1; // A, A+
         case 3:
         case 4:
         case 5:
@@ -1267,9 +1276,10 @@ uint8 JobSkillRankToBaseEvaRank(JOBTYPE mjob, JOBTYPE sjob)
         case 9:
             return 4; // D
         case 10:
-            return 5; // E
+        case 11:
+            return 5; // E, F
         default:
-            ShowError("JobSkillRankToBaseEvaRank: rank not implemented. Job SKILL_EVASION rank is likely not valid or no longer exists (A- rank in particular.)");
+            ShowError("JobSkillRankToBaseEvaRank: SKILL_EVASION rank %u not mapped for mjob=%u sjob=%u", evasionSkillRank, mjob, sjob);
     }
 
     return 3; // Give them C rank as a fallback.
