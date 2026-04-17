@@ -18,6 +18,7 @@ spellObject.onMobSpawn = function(mob)
     mob:addMobMod(xi.mobMod.CAN_PARRY, 3)
 
     mob:addMod(xi.mod.INSPIRATION_FAST_CAST, 50)
+    mob:addMod(xi.mod.ABSORB_PHYSDMG_TO_MP, 5)
 
     -----------------------------------
     -- Gambits (aligned with LandSandBoat / retail trust AI)
