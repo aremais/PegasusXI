@@ -70,8 +70,8 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.SELF,    { ai.c.NOT_STATUS,         xi.effect.MIGAWARI   }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.MIGAWARI_ICHI               })
     mob:addGambit(ai.t.SELF,    { ai.c.NOT_STATUS,         xi.effect.COPY_IMAGE }, { ai.r.MA, ai.s.HIGHEST,  xi.magic.spellFamily.UTSUSEMI              })
     mob:addGambit(ai.t.TARGET,  { ai.c.ALWAYS,             0                    }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.PROVOKE                              })
-    mob:addGambit(ai.t.TARGET,  { ai.c.HAS_TOP_ENMITY, 0                    }, { ai.r.MA, ai.s.HIGHEST,  xi.magic.spellFamily.HOJO                  }, 45)
-    mob:addGambit(ai.t.TARGET,  { ai.c.HAS_TOP_ENMITY, 0                    }, { ai.r.MA, ai.s.HIGHEST,  xi.magic.spellFamily.KURAYAMI              }, 45)
+    mob:addGambit(ai.t.TARGET,  { ai.c.NOT_HAS_TOP_ENMITY, 0                    }, { ai.r.MA, ai.s.HIGHEST,  xi.magic.spellFamily.HOJO                  }, 45)
+    mob:addGambit(ai.t.TARGET,  { ai.c.NOT_HAS_TOP_ENMITY, 0                    }, { ai.r.MA, ai.s.HIGHEST,  xi.magic.spellFamily.KURAYAMI              }, 45)
 
     -- 2 conditions
     mob:addGambit(ai.t.SELF,    { { ai.c.PT_HAS_TANK,      0                    }, { ai.c.NOT_STATUS, xi.effect.INNIN   }, }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.INNIN   })
