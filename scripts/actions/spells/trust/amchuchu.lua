@@ -18,12 +18,13 @@ spellObject.onMobSpawn = function(mob)
     mob:addMobMod(xi.mobMod.CAN_PARRY, 3)
 
     mob:addMod(xi.mod.INSPIRATION_FAST_CAST, 50)
+    mob:addMod(xi.mod.ABSORB_PHYSDMG_TO_MP, 5)
 
     -----------------------------------
     -- Gambits (aligned with LandSandBoat / retail trust AI)
     -----------------------------------
     -- 1 condition
-    mob:addGambit(ai.t.SELF,    { ai.c.NOT_HAS_TOP_ENMITY, 0                    }, { ai.r.JA, ai.s.SPECIFIC,        xi.ja.PROVOKE                })
+    mob:addGambit(ai.t.SELF,    { ai.c.ALWAYS, 0                                }, { ai.r.JA, ai.s.SPECIFIC,        xi.ja.PROVOKE                })
     mob:addGambit(ai.t.TARGET,  { ai.c.CASTING_ELE_MA_AOE, 0                    }, { ai.r.JA, ai.s.SPECIFIC,        xi.ja.ONE_FOR_ALL            })
     mob:addGambit(ai.t.TARGET,  { ai.c.CASTING_ELE_MA_AOE, 0                    }, { ai.r.JA, ai.s.SPECIFIC,        xi.ja.VALIANCE               })
     mob:addGambit(ai.t.TARGET,  { ai.c.NOT_STATUS,         xi.effect.FLASH      }, { ai.r.MA, ai.s.SPECIFIC,        xi.magic.spell.FLASH         })

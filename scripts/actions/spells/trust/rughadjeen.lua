@@ -51,6 +51,8 @@ spellObject.onMobSpawn = function(mob)
 
     mob:addGambit(ai.t.SELF, { ai.c.MPP_LT, 50 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.CHIVALRY })
 
+    mob:addGambit(ai.t.PARTY_DEAD, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.RAISE })
+
     -- TODO: Add Trust Synergy for Serpent Generals
 
     mob:addListener('WEAPONSKILL_USE', 'RUGHADJEEN_WEAPONSKILL_USE', function(mobArg, target, skill, tp, action, damage)

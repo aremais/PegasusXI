@@ -677,7 +677,6 @@ xi.effect =
     HYSTERIA                 = 804, -- Used for Hysteroanima to stop after readying a weaponskill with no msg.
     TOMAHAWK                 = 805, -- Silent status effect inflicted by a Warrior using the "Tomahawk" job ability
     NUKE_WALL                = 806, -- Custom effect for NM type mobs only.
-    KUPOFRIED_AURA           = 807, -- Custom effect for Kupofried's aura, used to track which party members are affected by it.
     -- 789
     -- 807-1022
     -- PLACEHOLDER           = 1023 -- The client dat file seems to have only this many "slots", results of exceeding that are untested.
