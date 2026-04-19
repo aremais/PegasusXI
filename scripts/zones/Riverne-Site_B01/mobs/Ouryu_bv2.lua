@@ -1,10 +1,11 @@
 -----------------------------------
--- Area: Riverne - Site A01
+-- Area: Riverne - Site B01
 -- Mob: Ouryu
--- Notes: in Ouryu Cometh (Cloud Evoker)
+-- Notes: The Wyrmking Descends
 -- !pos 184 0 344 30
+-- Summons adds in a random order, these adds are not pets, but may be aggrod through usual methods like magic/sound.
 -----------------------------------
-local ID = zones[xi.zone.RIVERNE_SITE_A01]
+local ID = zones[xi.zone.RIVERNE_SITE_B01]
 -----------------------------------
 mixins = { require('scripts/mixins/job_special') }
 -----------------------------------
@@ -12,23 +13,17 @@ mixins = { require('scripts/mixins/job_special') }
 local entity = {}
 
 -----------------------------------
--- The adds spawn based off this priority list - when it is time to spawn a add, we will try to spawn the highest priority based off what is alive.
+-- Adds in the Wyrmking Descends are summoned in a random order.
 -----------------------------------
 local addTable =
 {
-    [1] = ID.mob.OURYU - 2, -- Water Elemental
-    [2] = ID.mob.OURYU + 1, -- Ziryu
-    [3] = ID.mob.OURYU + 2, -- Ziryu
-    [4] = ID.mob.OURYU - 1, -- Earth Elemental
-    [5] = ID.mob.OURYU + 3, -- Ziryu
-    [6] = ID.mob.OURYU + 4, -- Ziryu
+    [1] = ID.mob.BAHAMUT_V2 + 5, -- Ziryu
+    [2] = ID.mob.BAHAMUT_V2 + 6, -- Ziryu
+    [3] = ID.mob.BAHAMUT_V2 + 7, -- Ziryu
+    [4] = ID.mob.BAHAMUT_V2 + 8, -- Ziryu
+    [5] = ID.mob.BAHAMUT_V2 + 9, -- Water Elemental
+    [6] = ID.mob.BAHAMUT_V2 + 10, -- Earth Elemental
 }
-
------------------------------------
--- Idle (Wings Down)          (AnimationSub(0))
--- Airborne                   (AnimationSub(1))
--- Grounded (Wings Up)        (AnimationSub(2))
------------------------------------
 
 -----------------------------------
 -- Enter/Exit Flight Functions
@@ -55,8 +50,9 @@ local function executeMistmelt(mob)
     if mob:getAnimationSub() == 1 then
         local currentTime = GetSystemTime()
         mob:setLocalVar('phaseChangeTime', currentTime + 120)
-        mob:setLocalVar('phaseChangeHP', math.max(0, mob:getHP() - 6000))
+        mob:setLocalVar('phaseChangeHP', math.max(0, mob:getHP() - 2500))
         mob:injectActionPacket(mob:getID(), 11, 974, 0, 0x18, 0, 0, 0)
+        mob:setBehavior(bit.bor(mob:getBehavior(), xi.behavior.NO_TURN))
         mob:setAnimationSub(2)
         mob:delStatusEffect(xi.effect.ALL_MISS)
         mob:setMobSkillAttack(0)
@@ -67,25 +63,25 @@ end
 
 entity.onMobInitialize = function(mob)
     mob:addImmunity(xi.immunity.SLOW)
-    mob:addImmunity(xi.immunity.ELEGY)
     mob:addImmunity(xi.immunity.TERROR)
     mob:addImmunity(xi.immunity.STUN)
     mob:addImmunity(xi.immunity.PLAGUE)
+    mob:addImmunity(xi.immunity.ELEGY)
     mob:addImmunity(xi.immunity.PETRIFY)
+    mob:addImmunity(xi.immunity.DARK_SLEEP)
+    mob:addImmunity(xi.immunity.LIGHT_SLEEP)
 end
 
 entity.onMobSpawn = function(mob)
     mob:setMobSkillAttack(0)
     mob:setAnimationSub(0)
-
-    -- Level 90 + 2 + 53 = 145 Base Weapon Damage
     mob:setMod(xi.mod.UDMGRANGE, -5000)
     mob:setMod(xi.mod.UDMGMAGIC, -5000)
     mob:setMod(xi.mod.UDMGBREATH, -5000)
     mob:setMod(xi.mod.UFASTCAST, 80)
     mob:setMod(xi.mod.DOUBLE_ATTACK, 15)
     mob:setMod(xi.mod.REFRESH, 200)
-    mob:setMobMod(xi.mobMod.WEAPON_BONUS, 53)
+    mob:setMobMod(xi.mobMod.WEAPON_BONUS, 52)
     mob:setMobMod(xi.mobMod.DETECTION, bit.bor(xi.detects.SIGHT, xi.detects.HEARING))
     mob:setMobMod(xi.mobMod.SIGHT_RANGE, 20)
     mob:setMobMod(xi.mobMod.SOUND_RANGE, 15)
@@ -93,7 +89,21 @@ entity.onMobSpawn = function(mob)
     mob:setMobMod(xi.mobMod.ADD_EFFECT, 1)
     mob:setMobMod(xi.mobMod.NO_STANDBACK, 1)
 
-    mob:setLocalVar('phaseChangeHP', math.max(0, mob:getHP() - 6000))
+    mob:setLocalVar('phaseChangeHP', math.max(0, mob:getHP() - 2500))
+
+    local battlefield = mob:getBattlefield()
+
+    if not battlefield then
+        return
+    end
+
+    local players = battlefield:getPlayers()
+    for _, player in pairs(players) do
+        if player:isAlive() then
+            mob:updateEnmity(player)
+            break
+        end
+    end
 
     -----------------------------------
     -- May use Invincible every 10 minutes starting at 85% HP
@@ -113,28 +123,11 @@ entity.onMobEngage = function(mob)
 end
 
 entity.onMobFight = function(mob, target)
-    local currentTime = GetSystemTime()
-
-    local drawInTable =
-    {
-        conditions =
-        {
-            mob:checkDistance(target) >= 15,
-        },
-        position = mob:getPos(),
-    }
-    utils.drawIn(target, drawInTable)
-
-    if
-        mob:getAnimationSub() == 1 and
-        mob:hasStatusEffect(xi.effect.SLEEP_I)
-    then
-        mob:wakeUp()
-    end
-
     if xi.combat.behavior.isEntityBusy(mob) then
         return
     end
+
+    local currentTime = GetSystemTime()
 
     if mob:getLocalVar('mistmeltUsed') == 1 then
         executeMistmelt(mob)
@@ -146,7 +139,7 @@ entity.onMobFight = function(mob, target)
         mob:getHP() <= mob:getLocalVar('phaseChangeHP')
     then
         mob:setLocalVar('phaseChangeTime', currentTime + 120)
-        mob:setLocalVar('phaseChangeHP', math.max(0, mob:getHP() - 6000))
+        mob:setLocalVar('phaseChangeHP', math.max(0, mob:getHP() - 2500))
         if mob:getAnimationSub() == 1 then
             exitFlight(mob)
         else
@@ -156,9 +149,9 @@ entity.onMobFight = function(mob, target)
 
     if currentTime >= mob:getLocalVar('addSpawnTime') then
         mob:setLocalVar('addSpawnTime', currentTime + math.random(60, 90))
-        for i = 1, #addTable do
-            local addId = addTable[i]
-            local addToSpawn = GetMobByID(addId)
+
+        for _, randomAdd in ipairs(utils.shuffle(addTable)) do
+            local addToSpawn = GetMobByID(randomAdd)
             if addToSpawn and addToSpawn:isDead() then
                 addToSpawn:spawn()
                 break
@@ -203,21 +196,9 @@ entity.onMobSpellChoose = function(mob, target, spellId)
     return xi.combat.behavior.chooseAction(mob, target, nil, spellList)
 end
 
-entity.onMobDisengage = function(mob)
-    if mob:getAnimationSub() == 1 then
-        mob:setMobSkillAttack(0)
-        mob:injectActionPacket(mob:getID(), 11, 974, 0, 0x18, 0, 0, 0)
-        mob:delStatusEffect(xi.effect.ALL_MISS)
-        mob:setBehavior(bit.bor(mob:getBehavior(), xi.behavior.NO_TURN))
-    end
-
-    mob:setAnimationSub(0)
-end
-
 entity.onAdditionalEffect = function(mob, target, damage)
     local pTable =
     {
-        chance         = 10,
         attackType     = xi.attackType.MAGICAL,
         magicalElement = xi.element.EARTH,
         basePower      = math.floor(damage / 2),
@@ -227,17 +208,15 @@ entity.onAdditionalEffect = function(mob, target, damage)
     return xi.combat.action.executeAddEffectDamage(mob, target, pTable)
 end
 
-entity.onMobDeath = function(mob, player, optParams)
-    if player then
-        player:addTitle(xi.title.OURYU_OVERWHELMER)
+entity.onMobDisengage = function(mob)
+    if mob:getAnimationSub() == 1 then
+        mob:setMobSkillAttack(0)
+        mob:injectActionPacket(mob:getID(), 11, 974, 0, 0x18, 0, 0, 0)
+        mob:delStatusEffect(xi.effect.ALL_MISS)
+        mob:setBehavior(bit.bor(mob:getBehavior(), xi.behavior.NO_TURN))
     end
 
-    if optParams.isKiller or optParams.noKiller then
-        local battlefield = mob:getBattlefield()
-        if battlefield then
-            battlefield:setStatus(xi.battlefield.status.WON)
-        end
-    end
+    mob:setAnimationSub(0)
 end
 
 return entity
