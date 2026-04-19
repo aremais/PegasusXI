@@ -41,7 +41,8 @@ void GP_CLI_COMMAND_CHARREQ::process(MapSession* PSession, CCharEntity* PChar) c
         return;
     }
 
-    CBaseEntity* PEntity = PChar->GetEntity(this->ActIndex, TYPE_NPC | TYPE_PC);
+    // Targids below 0x400 may be mobs, NPCs, or ships; mobs are only resolved when TYPE_MOB is set (see CZoneEntities::GetEntity).
+    CBaseEntity* PEntity = PChar->GetEntity(this->ActIndex, TYPE_NPC | TYPE_PC | TYPE_MOB);
     if (!PEntity)
     {
         const auto fullId = ((4096 + PChar->getZone()) << 12) + this->ActIndex;
