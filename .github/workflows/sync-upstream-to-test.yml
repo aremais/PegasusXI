@@ -37,17 +37,17 @@ jobs:
 
           git fetch upstream --tags
 
-      - name: Merge upstream into test
+      - name: Merge upstream, preserve settings, and stop on all other conflicts
         run: |
           git checkout test
+
           git merge upstream/base --no-commit --no-ff
+          $mergeExit = $LASTEXITCODE
 
-      - name: Always preserve settings files from test
-        run: |
-          git restore --source=HEAD --staged --worktree -- settings settings/default
+          Write-Host "Restoring test version of settings/ and settings/default/"
+          git restore --source=HEAD --staged --worktree -- settings settings/default 2>$null
+          $global:LASTEXITCODE = 0
 
-      - name: Stop if any non-settings conflicts remain
-        run: |
           $remainingConflicts = git diff --name-only --diff-filter=U
 
           if ($remainingConflicts) {
@@ -56,15 +56,11 @@ jobs:
             throw "Merge conflicts remain outside settings/. Resolve them manually."
           }
 
-      - name: Skip if nothing changed
-        run: |
           git diff --cached --quiet
           if ($LASTEXITCODE -eq 0) {
             Write-Host "No changes to commit."
             exit 0
           }
 
-      - name: Commit and push merged changes
-        run: |
           git commit -m "Sync upstream/base into test (preserve settings)"
           git push origin test
