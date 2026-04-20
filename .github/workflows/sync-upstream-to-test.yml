@@ -47,7 +47,7 @@ jobs:
 
           git fetch upstream --tags
 
-      - name: Merge upstream, preserve settings/workflows, and handle remaining conflicts
+      - name: Merge upstream, preserve settings, block workflow-file changes, and handle remaining conflicts
         run: |
           git checkout test
 
@@ -62,9 +62,37 @@ jobs:
           git merge upstream/base --no-commit --no-ff
           $mergeExit = $LASTEXITCODE
 
-          Write-Host "Restoring test version of settings/, settings/default/, and .github/workflows/"
-          git restore --source=HEAD --staged --worktree -- settings settings/default .github/workflows 2>$null
+          Write-Host "Restoring test version of settings/ and settings/default/"
+          git restore --source=HEAD --staged --worktree -- settings settings/default 2>$null
           $global:LASTEXITCODE = 0
+
+          Write-Host "Removing any staged workflow-file changes before commit"
+          $workflowChanges = @(git diff --name-only --cached -- .github/workflows)
+
+          if ($workflowChanges.Count -gt 0) {
+            foreach ($file in $workflowChanges) {
+              Write-Host "Reverting workflow file: $file"
+
+              git show "HEAD:$file" > $null 2>&1
+              if ($LASTEXITCODE -eq 0) {
+                git checkout HEAD -- "$file"
+              } else {
+                git rm --cached --force -- "$file" 2>$null
+                if (Test-Path $file) {
+                  Remove-Item -Force "$file"
+                }
+              }
+
+              $global:LASTEXITCODE = 0
+            }
+          }
+
+          $stillWorkflowChanges = @(git diff --name-only --cached -- .github/workflows)
+          if ($stillWorkflowChanges.Count -gt 0) {
+            Write-Host "Workflow files still staged:"
+            $stillWorkflowChanges | ForEach-Object { Write-Host " - $_" }
+            throw "Workflow file changes are still staged. Stopping before push."
+          }
 
           $remainingConflicts = @(git diff --name-only --diff-filter=U)
 
@@ -127,5 +155,5 @@ jobs:
             exit 0
           }
 
-          git commit -m "Sync upstream/base into test (preserve settings/workflows; strategy: $strategy)"
+          git commit -m "Sync upstream/base into test (preserve settings; strategy: $strategy)"
           git push origin test
