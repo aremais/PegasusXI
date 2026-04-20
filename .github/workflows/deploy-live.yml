@@ -1,25 +1,103 @@
 name: Deploy live branch
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - live
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-live
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: self-hosted
     environment: production
 
-    steps:
-      - name: Checkout live branch
-        uses: actions/checkout@v6
+    defaults:
+      run:
+        shell: pwsh
 
-      - name: Deploy placeholder
-        shell: powershell
+    steps:
+      - name: Stop LSB processes
         run: |
-          Write-Host "Replace this with your real deployment steps."
-          Write-Host "Examples:"
-          Write-Host "- stop services"
-          Write-Host "- update files"
-          Write-Host "- build if needed"
-          Write-Host "- start services"
+          $procNames = @('xi_connect','xi_world','xi_map','xi_search')
+
+          foreach ($name in $procNames) {
+            $procs = Get-Process -Name $name -ErrorAction SilentlyContinue
+            if ($procs) {
+              $procs | Stop-Process -Force
+              Write-Host "Stopped $name"
+            } else {
+              Write-Host "$name was not running"
+            }
+          }
+
+          Start-Sleep -Seconds 3
+
+      - name: Update live working copy
+        run: |
+          $RepoPath = 'D:\server'
+
+          git -C $RepoPath fetch origin
+          git -C $RepoPath checkout live
+          git -C $RepoPath reset --hard origin/live
+          git -C $RepoPath submodule update --init --recursive
+
+      - name: Build live branch
+        run: |
+          $RepoPath = 'D:\server'
+
+          cmake -S $RepoPath -B "$RepoPath\build" -A x64
+          cmake --build "$RepoPath\build" --config Release --parallel
+
+      - name: Start LSB processes
+        run: |
+          $RepoPath = 'D:\server'
+          $candidateDirs = @(
+            "$RepoPath\build\bin\Release",
+            "$RepoPath\build\Release",
+            $RepoPath
+          )
+
+          function Find-Exe([string]$exeName) {
+            foreach ($dir in $candidateDirs) {
+              $path = Join-Path $dir $exeName
+              if (Test-Path $path) {
+                return $path
+              }
+            }
+            throw "Could not find $exeName in expected locations."
+          }
+
+          $connect = Find-Exe 'xi_connect.exe'
+          $world   = Find-Exe 'xi_world.exe'
+          $search  = Find-Exe 'xi_search.exe'
+          $map     = Find-Exe 'xi_map.exe'
+
+          Start-Process -FilePath $connect -WorkingDirectory (Split-Path $connect)
+          Start-Sleep -Seconds 2
+
+          Start-Process -FilePath $world -WorkingDirectory (Split-Path $world)
+          Start-Sleep -Seconds 2
+
+          Start-Process -FilePath $search -WorkingDirectory (Split-Path $search)
+          Start-Sleep -Seconds 2
+
+          Start-Process -FilePath $map -WorkingDirectory (Split-Path $map)
+
+      - name: Verify processes started
+        run: |
+          $required = @('xi_connect','xi_world','xi_search','xi_map')
+
+          foreach ($name in $required) {
+            if (-not (Get-Process -Name $name -ErrorAction SilentlyContinue)) {
+              throw "$name did not start successfully."
+            }
+          }
+
+          Write-Host "Live deployment completed successfully."
