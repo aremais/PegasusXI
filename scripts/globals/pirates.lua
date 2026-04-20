@@ -9,6 +9,10 @@ xi.pirates = xi.pirates or {}
 -- chance for encounter to have a special middle NPC, which indicates a chance for NM to spawn
 local vermCloakPirateChance = 10
 
+-- Background music while pirate assault is active (matches pirates_chart.lua / pirate battle theme)
+local pirateEventMusic = 136
+local shipZoneMusic      = 106
+
 local actions =
 {
     ARRIVING        = 0,
@@ -190,17 +194,121 @@ xi.pirates.pirateNPCTimeTrigger = function(npc, triggerId, zoneKey)
     xi.pirates.zoneStateChange(pirateZone, triggerId)
 end
 
+local function setShipPirateMusic(zone, musicId)
+    zone:setBackgroundMusicDay(musicId)
+    zone:setBackgroundMusicNight(musicId)
+
+    for _, player in pairs(zone:getPlayers()) do
+        player:changeMusic(0, musicId)
+        player:changeMusic(1, musicId)
+    end
+end
+
+local function getPirateAssaultMobIds(zoneId)
+    local mobTable = zones[zoneId].mob
+    local list     = {}
+
+    if mobTable.PHANTOM and mobTable.PHANTOM > 0 then
+        table.insert(list, mobTable.PHANTOM)
+    end
+
+    if mobTable.CROSSBONES then
+        for _, mobId in ipairs(mobTable.CROSSBONES) do
+            if mobId and mobId > 0 then
+                table.insert(list, mobId)
+            end
+        end
+    end
+
+    if zoneId == xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES then
+        if mobTable.SHIP_WIGHT and mobTable.SHIP_WIGHT > 0 then
+            table.insert(list, mobTable.SHIP_WIGHT)
+        end
+
+        if mobTable.BLACKBEARD and mobTable.BLACKBEARD > 0 then
+            table.insert(list, mobTable.BLACKBEARD)
+        end
+    elseif zoneId == xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES then
+        if mobTable.WIGHT and mobTable.WIGHT > 0 then
+            table.insert(list, mobTable.WIGHT)
+        end
+
+        if mobTable.SILVERHOOK and mobTable.SILVERHOOK > 0 then
+            table.insert(list, mobTable.SILVERHOOK)
+        end
+    end
+
+    return list
+end
+
+local function spawnPirateAssaultMobs(zone)
+    local zoneId = zone:getID()
+    local mobIds   = getPirateAssaultMobIds(zoneId)
+
+    for i, mobId in ipairs(mobIds) do
+        if mobId and mobId > 0 then
+            -- Last entry is the zone NM (Blackbeard / Silverhook); only pop when flagged by middle pirate NPC.
+            local skipNm = i == #mobIds and zone:getLocalVar('nmCanSpawn') ~= 1
+            if not skipNm then
+                DisallowRespawn(mobId, false)
+
+                local mob = GetMobByID(mobId)
+                if mob and not mob:isSpawned() then
+                    SpawnMob(mobId)
+                end
+            end
+        end
+    end
+end
+
+local function despawnPirateAssaultMobs(zone)
+    local zoneId = zone:getID()
+    local mobIds   = getPirateAssaultMobIds(zoneId)
+
+    for _, mobId in ipairs(mobIds) do
+        if mobId and mobId > 0 then
+            local mob = GetMobByID(mobId)
+            if mob and mob:isSpawned() and not mob:isEngaged() then
+                DespawnMob(mobId)
+            end
+
+            DisallowRespawn(mobId, true)
+        end
+    end
+end
+
+--- Called from pirate ship zones' onZoneIn so music matches the timed assault state.
+xi.pirates.onZoneIn = function(player)
+    local zone = player:getZone()
+    if not zone then
+        return
+    end
+
+    local zid = zone:getID()
+    if
+        zid ~= xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES and
+        zid ~= xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES
+    then
+        return
+    end
+
+    if zone:getLocalVar('currPiratesAction') == actions.MOBS_SPAWN then
+        player:changeMusic(0, pirateEventMusic)
+        player:changeMusic(1, pirateEventMusic)
+    end
+end
+
 xi.pirates.zoneStateChange = function(zone, action)
     -- change the zone's state once per action cycle (this function is called by each NPC)
     if zone:getLocalVar('currPiratesAction') ~= action then
         zone:setLocalVar('currPiratesAction', action)
 
         if action == actions.MOBS_SPAWN then
-            -- TODO enable mob spawns (and NM spawns if nmCanSpawn is set to 1)
-            -- set them to setRespawn(1s), then set normal respawnTime in onMobSpawn
+            setShipPirateMusic(zone, pirateEventMusic)
+            spawnPirateAssaultMobs(zone)
         elseif action == actions.PIRATES_RETREAT then
-            -- TODO disable all spawns and despawn any not in combat
-            -- mobs in combat do not despawn when the ship leaves
+            setShipPirateMusic(zone, shipZoneMusic)
+            despawnPirateAssaultMobs(zone)
         end
     end
 end

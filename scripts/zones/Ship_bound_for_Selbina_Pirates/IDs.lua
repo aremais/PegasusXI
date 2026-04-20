@@ -23,6 +23,9 @@ zones[xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES] =
     },
     mob =
     {
+        -- mob_spawn_points uses shared name "Crossbones" for both BLM and WAR pools (groups 10 and 11)
+        PHANTOM    = GetFirstID('Phantom'),
+        CROSSBONES = GetTableOfIDs('Crossbones'),
         BLACKBEARD = GetFirstID('Blackbeard'),
         ENAGAKURE  = GetFirstID('Enagakure'),
         SHIP_WIGHT = GetFirstID('Ship_Wight'),

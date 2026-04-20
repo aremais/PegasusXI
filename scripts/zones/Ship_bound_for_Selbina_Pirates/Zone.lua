@@ -21,6 +21,8 @@ zoneObject.onZoneIn = function(player, prevZone)
         player:setPos(position, -2.100, 3.250, 64)
     end
 
+    xi.pirates.onZoneIn(player)
+
     -- Enagakure pop mechanics.
     local enagakure = GetMobByID(ID.mob.ENAGAKURE)
     local hour      = VanadielHour()
@@ -29,8 +31,7 @@ zoneObject.onZoneIn = function(player, prevZone)
         enagakure and
         not enagakure:isSpawned() and
         VanadielUniqueDay() > enagakure:getLocalVar('despawnDay') and
-        hour < 4 and
-        hour >= 20 and
+        (hour >= 20 or hour < 4) and
         player:hasKeyItem(xi.ki.SEANCE_STAFF) and
         player:getCharVar('Enagakure_Killed') == 0
     then
@@ -71,7 +72,7 @@ zoneObject.onGameHour = function(zone)
             end
         else
             if
-                hour < 4 and hour >= 20 and                               -- Night-time.
+                (hour >= 20 or hour < 4) and                                -- Night-time.
                 VanadielUniqueDay() > enagakure:getLocalVar('despawnDay') -- Can spawn today.
             then
                 for _, player in pairs(zone:getPlayers()) do
