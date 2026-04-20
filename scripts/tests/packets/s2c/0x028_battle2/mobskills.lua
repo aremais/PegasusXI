@@ -54,7 +54,8 @@ local packets =
             local bats = player.entities:moveTo('Incubus_Bats') -- Incubus Bats
             bats:addTP(3000)
             bats:useMobAbility(xi.mobSkill.SONIC_BOOM_1, player, 0)
-            xi.test.world:tickEntity(bats) -- Tick the AI so the skill gets readied
+            xi.test.world:skipTime(4)
+            xi.test.world:tickEntity(bats) -- Tick the AI so the skill finishes
         end,
 
         expected =
@@ -94,7 +95,7 @@ local packets =
         test = function(player, mob)
             player:gotoZone(xi.zone.DYNAMIS_SAN_DORIA)
             local thfMob = player.entities:moveTo('Vanguard_Pillager')
-            thfMob:useMobAbility(xi.mobSkill.PERFECT_DODGE_1)
+            thfMob:useMobAbility(xi.mobSkill.PERFECT_DODGE_1, thfMob)
             xi.test.world:tickEntity(thfMob)
         end,
 
