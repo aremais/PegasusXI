@@ -3,14 +3,14 @@ name: Sync upstream into test
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 10 * * *"   # optional: every day at 10:00 UTC
+    - cron: "0 10 * * *"
 
 permissions:
   contents: write
 
 jobs:
   sync:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout test branch
@@ -20,20 +20,27 @@ jobs:
           fetch-depth: 0
 
       - name: Configure Git
+        shell: pwsh
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Add upstream remote
+      - name: Add upstream remote if missing
+        shell: pwsh
         run: |
-          git remote add upstream https://github.com/LandSandBoat/server || true
+          $remotes = git remote
+          if ($remotes -notcontains "upstream") {
+            git remote add upstream https://github.com/LandSandBoat/server.git
+          }
           git fetch upstream --tags
 
       - name: Merge upstream into test
+        shell: pwsh
         run: |
           git checkout test
           git merge upstream/base --no-edit
 
       - name: Push updated test branch
+        shell: pwsh
         run: |
           git push origin test
