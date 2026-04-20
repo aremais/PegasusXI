@@ -37,54 +37,34 @@ jobs:
 
           git fetch upstream --tags
 
-      - name: Merge upstream and preserve files modified on test
+      - name: Merge upstream into test
         run: |
           git checkout test
-
-          $mergeBase = git merge-base test upstream/base
-          if (-not $mergeBase) {
-            throw "Could not determine merge base between test and upstream/base."
-          }
-
-          $protectedFileList = Join-Path $env:RUNNER_TEMP "protected-files.txt"
-          $protectedFiles = git diff --name-only $mergeBase test
-
-          if ($protectedFiles) {
-            Write-Host "Files changed on test that will be preserved:"
-            $protectedFiles | ForEach-Object { Write-Host " - $_" }
-            $protectedFiles | Set-Content -Path $protectedFileList
-          } else {
-            Write-Host "No files changed on test since merge base."
-          }
-
           git merge upstream/base --no-commit --no-ff
 
-          if (Test-Path $protectedFileList) {
-            Get-Content $protectedFileList | ForEach-Object {
-              $file = $_.Trim()
+      - name: Always preserve settings files from test
+        run: |
+          git restore --source=HEAD --staged --worktree -- settings settings/default
 
-              if ($file) {
-                Write-Host "Restoring test version of $file"
-                git restore --source=HEAD --staged --worktree -- "$file" 2>$null
-
-                if ($LASTEXITCODE -ne 0) {
-                  Write-Host "Could not restore $file cleanly; continuing"
-                  $global:LASTEXITCODE = 0
-                }
-              }
-            }
-          }
-
+      - name: Stop if any non-settings conflicts remain
+        run: |
           $remainingConflicts = git diff --name-only --diff-filter=U
+
           if ($remainingConflicts) {
-            throw "Unresolved conflicts remain:`n$($remainingConflicts -join "`n")"
+            Write-Host "Manual review is required for these conflicted files:"
+            $remainingConflicts | ForEach-Object { Write-Host " - $_" }
+            throw "Merge conflicts remain outside settings/. Resolve them manually."
           }
 
+      - name: Skip if nothing changed
+        run: |
           git diff --cached --quiet
           if ($LASTEXITCODE -eq 0) {
             Write-Host "No changes to commit."
             exit 0
           }
 
-          git commit -m "Sync upstream/base into test (preserve files modified on test)"
+      - name: Commit and push merged changes
+        run: |
+          git commit -m "Sync upstream/base into test (preserve settings)"
           git push origin test
