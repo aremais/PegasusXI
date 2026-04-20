@@ -2,6 +2,16 @@ name: Sync upstream into test
 
 on:
   workflow_dispatch:
+    inputs:
+      conflict_strategy:
+        description: "How should non-settings conflicts be handled?"
+        required: true
+        type: choice
+        options:
+          - manual
+          - ours
+          - theirs
+        default: manual
   schedule:
     - cron: "0 10 * * *"
 
@@ -37,23 +47,78 @@ jobs:
 
           git fetch upstream --tags
 
-      - name: Merge upstream, preserve settings, and stop on all other conflicts
+      - name: Merge upstream, preserve settings/workflows, and handle remaining conflicts
         run: |
           git checkout test
+
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $strategy = "${{ github.event.inputs.conflict_strategy }}"
+          } else {
+            $strategy = "manual"
+          }
+
+          Write-Host "Conflict strategy: $strategy"
 
           git merge upstream/base --no-commit --no-ff
           $mergeExit = $LASTEXITCODE
 
-          Write-Host "Restoring test version of settings/ and settings/default/"
-          git restore --source=HEAD --staged --worktree -- settings settings/default 2>$null
+          Write-Host "Restoring test version of settings/, settings/default/, and .github/workflows/"
+          git restore --source=HEAD --staged --worktree -- settings settings/default .github/workflows 2>$null
           $global:LASTEXITCODE = 0
 
-          $remainingConflicts = git diff --name-only --diff-filter=U
+          $remainingConflicts = @(git diff --name-only --diff-filter=U)
 
-          if ($remainingConflicts) {
-            Write-Host "Manual review is required for these conflicted files:"
+          if ($remainingConflicts.Count -gt 0) {
+            Write-Host "Remaining non-settings conflicts detected:"
             $remainingConflicts | ForEach-Object { Write-Host " - $_" }
-            throw "Merge conflicts remain outside settings/. Resolve them manually."
+
+            switch ($strategy) {
+              "manual" {
+                Add-Content $env:GITHUB_STEP_SUMMARY "## Merge conflicts need your decision"
+                Add-Content $env:GITHUB_STEP_SUMMARY ""
+                Add-Content $env:GITHUB_STEP_SUMMARY "The following non-settings files still conflict:"
+                Add-Content $env:GITHUB_STEP_SUMMARY ""
+
+                foreach ($file in $remainingConflicts) {
+                  Add-Content $env:GITHUB_STEP_SUMMARY "- $file"
+                }
+
+                Add-Content $env:GITHUB_STEP_SUMMARY ""
+                Add-Content $env:GITHUB_STEP_SUMMARY "### Your choices"
+                Add-Content $env:GITHUB_STEP_SUMMARY "- Re-run this workflow with **conflict_strategy = ours** to keep the current **test** version of the conflicted files."
+                Add-Content $env:GITHUB_STEP_SUMMARY "- Re-run this workflow with **conflict_strategy = theirs** to keep the **upstream** version of the conflicted files."
+                Add-Content $env:GITHUB_STEP_SUMMARY "- Or resolve the conflicts manually in Git and push the result to **test**."
+
+                throw "Manual decision required. Re-run with conflict_strategy=ours or conflict_strategy=theirs."
+              }
+
+              "ours" {
+                foreach ($file in $remainingConflicts) {
+                  Write-Host "Keeping TEST version of $file"
+                  git checkout --ours -- "$file"
+                  git add "$file"
+                }
+              }
+
+              "theirs" {
+                foreach ($file in $remainingConflicts) {
+                  Write-Host "Keeping UPSTREAM version of $file"
+                  git checkout --theirs -- "$file"
+                  git add "$file"
+                }
+              }
+
+              default {
+                throw "Unknown conflict strategy: $strategy"
+              }
+            }
+          }
+
+          $stillConflicted = @(git diff --name-only --diff-filter=U)
+          if ($stillConflicted.Count -gt 0) {
+            Write-Host "Unresolved conflicts still remain:"
+            $stillConflicted | ForEach-Object { Write-Host " - $_" }
+            throw "Unable to fully resolve merge conflicts."
           }
 
           git diff --cached --quiet
@@ -62,5 +127,5 @@ jobs:
             exit 0
           }
 
-          git commit -m "Sync upstream/base into test (preserve settings)"
+          git commit -m "Sync upstream/base into test (preserve settings/workflows; strategy: $strategy)"
           git push origin test
