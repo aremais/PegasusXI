@@ -1,0 +1,22 @@
+name: Validate test branch
+
+on:
+  push:
+    branches:
+      - test
+  pull_request:
+    branches:
+      - live
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Validation placeholder
+        run: |
+          echo "Replace this with your real validation steps."
+          echo "Examples: linting, config checks, build, smoke tests, packaging, etc."
