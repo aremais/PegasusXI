@@ -18,3 +18,8 @@ jobs:
         shell: powershell
         run: |
           Write-Host "Replace this with your real deployment steps."
+          Write-Host "Examples:"
+          Write-Host "- stop services"
+          Write-Host "- update files"
+          Write-Host "- build if needed"
+          Write-Host "- start services"
