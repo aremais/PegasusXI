@@ -1,12 +1,16 @@
 name: Validate test branch
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - test
   pull_request:
     branches:
       - live
+
+permissions:
+  contents: read
 
 jobs:
   validate:
