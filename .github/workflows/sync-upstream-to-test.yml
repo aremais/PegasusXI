@@ -26,13 +26,13 @@ jobs:
 
       - name: Add upstream remote
         run: |
-          git remote add upstream <UPSTREAM_REPO_URL> || true
+          git remote add upstream https://github.com/LandSandBoat/server || true
           git fetch upstream --tags
 
       - name: Merge upstream into test
         run: |
           git checkout test
-          git merge upstream/<UPSTREAM_BRANCH> --no-edit
+          git merge upstream/base --no-edit
 
       - name: Push updated test branch
         run: |
