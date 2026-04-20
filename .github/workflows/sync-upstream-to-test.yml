@@ -1,0 +1,39 @@
+name: Sync upstream into test
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 10 * * *"   # optional: every day at 10:00 UTC
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout test branch
+        uses: actions/checkout@v6
+        with:
+          ref: test
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream <UPSTREAM_REPO_URL> || true
+          git fetch upstream --tags
+
+      - name: Merge upstream into test
+        run: |
+          git checkout test
+          git merge upstream/<UPSTREAM_BRANCH> --no-edit
+
+      - name: Push updated test branch
+        run: |
+          git push origin test
