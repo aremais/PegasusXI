@@ -208,6 +208,8 @@ void CacheLuaObjectFromFile(const std::string& filename, bool overwriteCurrentEn
 auto GetCacheEntryFromFilename(const std::string& filename) -> sol::table;
 void OnEntityLoad(CBaseEntity* PEntity);
 
+void LoadExpDifficultyCurves(const sol::table& expToDifficultyTable, const uint8 incrediblyEasyPreyLevel, const uint16 incrediblyEasyPreyMinExp);
+
 void PopulateIDLookupsByFilename(Maybe<std::string> maybeFilename = std::nullopt);
 void PopulateIDLookupsByZone(Maybe<uint16> maybeZoneId = std::nullopt);
 
@@ -330,7 +332,7 @@ void OnUpdateAttachment(CBattleEntity* PEntity, CItemPuppet* attachment, uint8 m
 
 int32 OnItemUse(CBaseEntity* PUser, CBaseEntity* PTarget, CItem* PItem, action_t& action);
 auto  OnItemCheck(CBaseEntity* PTarget, CItem* PItem, ITEMCHECK param = ITEMCHECK::NONE, CBaseEntity* PCaster = nullptr) -> std::tuple<int32, int32, int32>;
-void  OnItemDrop(CBaseEntity* PUser, CItem* PItem);
+void  OnItemDrop(CBaseEntity* PUser, CItem* PItem, IsRecycleBin recycleBin = IsRecycleBin::No);
 void  OnItemEquip(CBaseEntity* PUser, CItem* PItem);
 void  OnItemUnequip(CBaseEntity* PUser, CItem* PItem);
 void  CheckForGearSet(CBaseEntity* PTarget);

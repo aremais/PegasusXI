@@ -324,6 +324,7 @@ void init(IPP mapIPP, bool isRunningInCI)
     lua.set_function("GetSynergyRecipeByID", &luautils::GetSynergyRecipeByID);
     lua.set_function("GetSynergyRecipeByTrade", &luautils::GetSynergyRecipeByTrade);
     lua.set_function("ReloadSynthRecipes", &synthutils::LoadSynthRecipes);
+    lua.set_function("LoadExpDifficultyCurves", &luautils::LoadExpDifficultyCurves);
 
     // Fishing Contest Functions
     lua.set_function("GetFishingContest", &luautils::GetFishingContest);
@@ -1006,6 +1007,32 @@ void OnEntityLoad(CBaseEntity* PEntity)
         }
         break;
     }
+}
+
+void LoadExpDifficultyCurves(const sol::table& expToDifficultyTable, const uint8 incrediblyEasyPreyLevel, const uint16 incrediblyEasyPreyMinExp)
+{
+    std::vector<std::pair<uint16, EMobDifficulty>> expDifficultyTable;
+
+    for (auto& [expObj, difficultyObj] : expToDifficultyTable)
+    {
+        uint16         exp        = expObj.as<uint16>();
+        EMobDifficulty difficulty = static_cast<EMobDifficulty>(difficultyObj.as<uint8>());
+
+        expDifficultyTable.emplace_back(exp, difficulty);
+    }
+
+    // Sort highest to lowest
+    std::sort(
+        expDifficultyTable.begin(),
+        expDifficultyTable.end(),
+        [](std::pair<uint16, EMobDifficulty> const& a, std::pair<uint16, EMobDifficulty> const& b)
+        {
+            return a.first > b.first;
+        });
+
+    std::pair<uint16, uint8> iep = { incrediblyEasyPreyLevel, incrediblyEasyPreyMinExp };
+
+    charutils::SetExpDifficultyCurve(expDifficultyTable, iep);
 }
 
 void PopulateIDLookups(uint16 zoneId, const std::string& zoneName)
@@ -2745,7 +2772,7 @@ int32 OnItemUse(CBaseEntity* PUser, CBaseEntity* PTarget, CItem* PItem, action_t
 }
 
 // Trigger Code on an item when it has been dropped
-void OnItemDrop(CBaseEntity* PUser, CItem* PItem)
+void OnItemDrop(CBaseEntity* PUser, CItem* PItem, IsRecycleBin recycleBin)
 {
     TracyZoneScoped;
 
@@ -2757,7 +2784,7 @@ void OnItemDrop(CBaseEntity* PUser, CItem* PItem)
         return;
     }
 
-    auto result = onItemDrop(PUser, PItem);
+    auto result = onItemDrop(PUser, PItem, static_cast<bool>(recycleBin));
     if (!result.valid())
     {
         sol::error err = result;

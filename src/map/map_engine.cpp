@@ -44,8 +44,6 @@
 #include "map_statistics.h"
 #include "mob_spell_list.h"
 #include "monstrosity.h"
-#include "packet_guard.h"
-#include "packet_system.h"
 #include "roe.h"
 #include "spell.h"
 #include "status_effect_container.h"
@@ -148,8 +146,6 @@ auto MapEngine::init() -> Task<void>
 
     luautils::init(mapIPP, config_.inCI); // Also calls moduleutils::LoadLuaModules();
 
-    PacketParserInitialize();
-
     // Delete sessions that are associated with this map process, but leave others alone
     db::preparedStmt("DELETE FROM accounts_sessions WHERE IF(? = 0 AND ? = 0, true, server_addr = ? AND server_port = ?)",
                      mapIPP.getIP(),
@@ -242,6 +238,7 @@ auto MapEngine::init() -> Task<void>
 
         persistVolatileServerVarsToken_ = scheduler_.intervalOnMainThread(kPersistVolatileServerVarsInterval, serverutils::PersistVolatileServerVars);
         pumpIPCToken_                   = scheduler_.intervalOnMainThread(kIPCPumpInterval, message::handle_incoming);
+        flushStatisticsToken_           = scheduler_.intervalOnMainThread(kTimeServerTickInterval, std::bind(&MapNetworking::flushStatistics, networking_.get()));
     }
 
     zoneutils::TOTDChange(vanadiel_time::get_totd()); // This tells the zones to spawn stuff based on time of day conditions (such as undead at night)
@@ -250,8 +247,6 @@ auto MapEngine::init() -> Task<void>
     uint32 currentTimestamp = earth_time::timestamp();
     db::preparedStmt("DELETE FROM char_vars WHERE expiry > 0 AND expiry <= ?", currentTimestamp);
     db::preparedStmt("DELETE FROM server_variables WHERE expiry > 0 AND expiry <= ?", currentTimestamp);
-
-    PacketGuard::Init();
 
     moduleutils::OnInit();
 

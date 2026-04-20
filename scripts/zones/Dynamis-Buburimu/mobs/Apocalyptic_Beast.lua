@@ -9,6 +9,7 @@ require('scripts/globals/dynamis_buburimu_apocalyptic')
 local entity = {}
 
 entity.onMobSpawn = function(mob)
+    xi.dynamis.mobInfo(mob)
     mob:addImmunity(xi.immunity.GRAVITY)
 end
 
