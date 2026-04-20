@@ -33,10 +33,11 @@ spellObject.onMobSpawn = function(mob)
 
     mob:setMod(xi.mod.SHIELD_MASTERY_TP, shieldMasteryPower)
     mob:setMod(xi.mod.SHIELDBLOCKRATE, 45) -- 45% base block rate
-    mob:addMod(xi.mod.FASTCAST, 30)
+    mob:addMod(xi.mod.FASTCAST, 50)
     mob:addMod(xi.mod.CURE_POTENCY, 50)
     mob:addMod(xi.mod.DMG, -10)
     mob:addMod(xi.mod.HPP, 20)
+    mob:addMod(xi.mod.MPP, 50)
     mob:addMod(xi.mod.ABSORB_PHYSDMG_TO_MP, 5)
     local lastSynergyBonus = 0
 

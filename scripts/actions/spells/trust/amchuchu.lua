@@ -19,6 +19,8 @@ spellObject.onMobSpawn = function(mob)
 
     mob:addMod(xi.mod.INSPIRATION_FAST_CAST, 50)
 
+    mob:addMod(xi.mod.ABSORB_PHYSDMG_TO_MP, 5)
+
     -----------------------------------
     -- Gambits
     -----------------------------------
