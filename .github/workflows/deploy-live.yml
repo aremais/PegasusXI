@@ -1,0 +1,20 @@
+name: Deploy live branch
+
+on:
+  push:
+    branches:
+      - live
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    environment: production
+
+    steps:
+      - name: Checkout live branch
+        uses: actions/checkout@v6
+
+      - name: Deploy placeholder
+        shell: powershell
+        run: |
+          Write-Host "Replace this with your real deployment steps."
