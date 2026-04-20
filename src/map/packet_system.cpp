@@ -171,6 +171,33 @@ uint8 PacketSize[512];
 
 std::function<void(MapSession* const, CCharEntity* const, CBasicPacket&)> PacketParser[512];
 
+void PacketSystem::dispatch(uint16 packetId, MapSession* PSession, CCharEntity* PChar, CBasicPacket& data)
+{
+    TracyZoneScoped;
+
+    if (PSession == nullptr || PChar == nullptr)
+    {
+        ShowWarning("PacketSystem::dispatch: null session or character");
+        return;
+    }
+
+    const uint16 idx = packetId & 0x1FF;
+
+    if (rateLimiter_.isLimited(PChar, idx))
+    {
+        ShowDebug("PacketSystem::dispatch: rate-limited packet %03hX from %s", idx, PChar->getName());
+        return;
+    }
+
+    if (!PacketParser[idx])
+    {
+        ShowWarning("PacketSystem::dispatch: no handler for packet %03hX from %s", idx, PChar->getName());
+        return;
+    }
+
+    PacketParser[idx](PSession, PChar, data);
+}
+
 /************************************************************************
  *                                                                       *
  *  Display the contents of the incoming packet to the console.          *
@@ -231,18 +258,18 @@ void ValidatedPacketHandler(MapSession* const PSession, CCharEntity* const PChar
     }
     else
     {
-        const auto packetName = packet->getName();
-        const auto error      = result.errorString();
+        const uint16 packetType = data.ref<uint16>(0) & 0x1FF;
+        const auto   error      = result.errorString();
 
         // Duplicate 0x00A after successful zone/login can happen on client retry.
         // Keep validation strict, but avoid warning spam for this known benign case.
-        if (packetName == "GP_CLI_COMMAND_LOGIN" && error == "Player already logged in.")
+        if (packetType == 0x00A && error == "Player already logged in.")
         {
-            ShowDebugFmt("Invalid {} packet from {}: {}", packetName, PChar->name, error);
+            ShowDebugFmt("Invalid 0x{:03X} packet from {}: {}", packetType, PChar->name, error);
         }
         else
         {
-            ShowWarningFmt("Invalid {} packet from {}: {}", packetName, PChar->name, error);
+            ShowWarningFmt("Invalid 0x{:03X} packet from {}: {}", packetType, PChar->name, error);
         }
     }
 }

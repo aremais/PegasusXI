@@ -28,7 +28,7 @@
 
 auto GP_CLI_COMMAND_CHARREQ::validate(MapSession* PSession, const CCharEntity* PChar) const -> PacketValidationResult
 {
-    return PacketValidator();
+    return PacketValidator(PChar);
 }
 
 void GP_CLI_COMMAND_CHARREQ::process(MapSession* PSession, CCharEntity* PChar) const

@@ -96,6 +96,8 @@ public:
     void entityVisualPacket(const std::string& command, const sol::object& entity) const;
     void entityAnimationPacket(const char* command, const sol::object& target);
     void sendDebugPacket(const sol::table& packetData);
+    void addPacketMod(uint16 packetId, uint16 offset, uint8 value);
+    void clearPacketMods();
 
     void       StartEventHelper(int32 EventID, sol::variadic_args va, EVENT_TYPE eventType);
     EventInfo* ParseEvent(int32 EventID, sol::variadic_args va, EventPrep* eventPreparation, EVENT_TYPE eventType);
@@ -245,14 +247,14 @@ public:
     bool   hasEquipped(uint16 equipmentID); // Returns true if item is equipped in any slot
     bool   hasItem(uint16 itemID, const sol::object& location);
     uint32 getItemCount(uint16 itemID);
-    auto   addItem(sol::variadic_args va) const -> CItem*;
+    bool   addItem(sol::variadic_args va);
     bool   delItem(uint16 itemID, int32 quantity, const sol::object& containerID);
     bool   delItemAt(uint16 itemID, int32 quantity, uint8 containerId, uint8 slotId);
     bool   delContainerItems(const sol::object& containerID);
     bool   addUsedItem(uint16 itemID);
     bool   addTempItem(uint16 itemID, const sol::object& arg1);
-    auto   getWornUses(uint16 itemID) const -> uint8;                      // Check if the item is already worn
-    auto   incrementItemWear(uint16 itemID) const -> uint8;                // Increment the item's worn value and returns it
+    uint8  getWornUses(uint16 itemID);                      // Check if the item is already worn
+    uint8  incrementItemWear(uint16 itemID);               // Increment the item's worn value and returns it
     auto   findItem(uint16 itemID, const sol::object& location) -> CItem*; // Like hasItem, but returns the item object (nil if not found)
     auto   findItems(uint16 itemID, const sol::object& location) -> sol::table;
     auto   getItems(const sol::object& location) -> sol::table;
@@ -263,6 +265,7 @@ public:
     bool breakLinkshell(const std::string& lsname);
     bool addLinkpearl(const std::string& lsname, bool equip);
     bool addLinkshellHolder(const std::string& lsname, sol::optional<uint8> equipSlot);
+    auto addSoulPlate(const std::string& name, uint32 interestData, uint8 zeni, uint16 skillIndex, uint8 fp) -> CItem*;
 
     // Trading
     uint8 getContainerSize(uint8 locationID);
