@@ -10,13 +10,27 @@ on:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          fetch-depth: 0
 
-      - name: Validation placeholder
+      - name: Show tool versions
+        shell: pwsh
         run: |
-          echo "Replace this with your real validation steps."
-          echo "Examples: linting, config checks, build, smoke tests, packaging, etc."
+          git --version
+          cmake --version
+
+      - name: Configure CMake
+        shell: pwsh
+        run: |
+          cmake -S . -B build -A x64
+
+      - name: Build Release
+        shell: pwsh
+        run: |
+          cmake --build build --config Release --parallel
