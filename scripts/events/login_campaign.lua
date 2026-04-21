@@ -16,19 +16,23 @@ local loginCampaignRedeem = { year = 2025, month = 7, day = 10, hour = 0 }
 
 -- Checks if a Login Campaign is active.
 xi.events.loginCampaign.canEarnPoints = function()
-    if xi.settings.main.ENABLE_LOGIN_CAMPAIGN == 1 then
-        local jstNow  = { year = JstYear(), month = JstMonth(), day = JstDayOfTheMonth(), hour = JstHour() }
-        return utils.timeIsAfterOrEqual(jstNow, loginCampaignStart) and
-            utils.timeIsBefore(jstNow, loginCampaignEnd)
+    if xi.settings.main.ENABLE_LOGIN_CAMPAIGN ~= 1 then
+        return false
     end
+
+    local jstNow = { year = JstYear(), month = JstMonth(), day = JstDayOfTheMonth(), hour = JstHour() }
+    return utils.timeIsAfterOrEqual(jstNow, loginCampaignStart) and
+        utils.timeIsBefore(jstNow, loginCampaignEnd)
 end
 
 xi.events.loginCampaign.canExchangePoints = function()
-    if xi.settings.main.ENABLE_LOGIN_CAMPAIGN == 1 then
-        local jstNow  = { year = JstYear(), month = JstMonth(), day = JstDayOfTheMonth(), hour = JstHour() }
-        return utils.timeIsAfterOrEqual(jstNow, loginCampaignStart) and
-            utils.timeIsBefore(jstNow, loginCampaignRedeem)
+    if xi.settings.main.ENABLE_LOGIN_CAMPAIGN ~= 1 then
+        return false
     end
+
+    local jstNow = { year = JstYear(), month = JstMonth(), day = JstDayOfTheMonth(), hour = JstHour() }
+    return utils.timeIsAfterOrEqual(jstNow, loginCampaignStart) and
+        utils.timeIsBefore(jstNow, loginCampaignRedeem)
 end
 
 -- Gives Login Points once a day.
