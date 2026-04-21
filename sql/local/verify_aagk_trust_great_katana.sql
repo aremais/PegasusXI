@@ -1,5 +1,5 @@
 -- =============================================================================
--- LOCAL verification — run after patch + map SQL load.
+-- LOCAL verification - run after patch + map SQL load.
 -- Expect: AAGK pool row with cmbSkill=10 and skill_list_id=1111.
 -- =============================================================================
 
