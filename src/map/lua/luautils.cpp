@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -23,6 +23,7 @@
 
 #include <common/application.h>
 #include <common/database.h>
+#include <common/scheduler.h>
 #include <common/filewatcher.h>
 #include <common/ipp.h>
 #include <common/ipc.h>
@@ -35,7 +36,11 @@
 #include <common/version.h>
 
 #include <algorithm>
+#include <asio/this_coro.hpp>
+#include <asio/steady_timer.hpp>
+#include <asio/use_awaitable.hpp>
 #include <cctype>
+#include <functional>
 
 #include "lua_action.h"
 #include "lua_battlefield.h"
@@ -142,6 +147,42 @@ namespace luautils
 
 std::unique_ptr<Filewatcher>           filewatcher;
 std::unordered_map<uint32, sol::table> customMenuContext;
+
+namespace
+{
+Scheduler* g_mapScheduler = nullptr;
+
+// Deferred ZoningIn clear + login campaign (was PAI::QueueAction; some MSVC builds hit std::bad_function_call
+// from the mixed sol::function / std::function action queue after reorder).
+Task<void> delayedOnGameInFollowup(uint32 charId)
+{
+    try
+    {
+        const auto executor = co_await asio::this_coro::executor;
+        asio::steady_timer    timer(executor);
+        timer.expires_after(std::chrono::milliseconds(2500));
+        co_await timer.async_wait(asio::use_awaitable);
+
+        CCharEntity* PChar = zoneutils::GetChar(charId);
+        if (PChar != nullptr && PChar->objtype == TYPE_PC && PChar->id == charId)
+        {
+            PChar->SetLocalVar("ZoningIn", 0);
+            callGlobal<void>("xi.events.loginCampaign.onGameIn", PChar);
+        }
+    }
+    catch (const std::exception& e)
+    {
+        ShowError("luautils::delayedOnGameInFollowup: %s", e.what());
+    }
+
+    co_return;
+}
+} // namespace
+
+void setMapScheduler(Scheduler* scheduler)
+{
+    g_mapScheduler = scheduler;
+}
 
 namespace detail
 {
@@ -496,6 +537,7 @@ void init(IPP mapIPP, bool isRunningInCI)
 
     void cleanup()
     {
+        g_mapScheduler = nullptr;
         moduleutils::CleanupLuaModules();
     }
 
@@ -2017,6 +2059,20 @@ void OnGameIn(CCharEntity* PChar, bool zoning)
     ShowTraceFmt("luautils::OnGameIn: {}", PChar->getName());
 
     callGlobal<void>("xi.player.onGameIn", PChar, PChar->GetPlayTime(false) == 0s, zoning);
+
+    // Previously: player:timer(2500) in Lua, then PAI::QueueAction(std::function). The entity action queue
+    // stores both sol::function and std::function; heap reordering on some Windows builds could invoke an
+    // empty std::function (std::bad_function_call). Run the same deferred work on the map scheduler instead.
+    if (g_mapScheduler != nullptr)
+    {
+        g_mapScheduler->postToMainThread(delayedOnGameInFollowup(PChar->id));
+    }
+    else
+    {
+        ShowWarning("luautils::OnGameIn: map scheduler not set; running login campaign follow-up immediately.");
+        PChar->SetLocalVar("ZoningIn", 0);
+        callGlobal<void>("xi.events.loginCampaign.onGameIn", PChar);
+    }
 }
 
 void OnZoneIn(CCharEntity* PChar)

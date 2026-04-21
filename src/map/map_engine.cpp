@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -38,6 +38,7 @@
 #include "ability.h"
 #include "daily_system.h"
 #include "ipc_client.h"
+#include "lua/luautils.h"
 #include "job_points.h"
 #include "latent_effect_container.h"
 #include "map_networking.h"
@@ -145,6 +146,7 @@ auto MapEngine::init() -> Task<void>
     db::checkTriggers();
 
     luautils::init(mapIPP, config_.inCI); // Also calls moduleutils::LoadLuaModules();
+    luautils::setMapScheduler(&scheduler_);
 
     // Delete sessions that are associated with this map process, but leave others alone
     db::preparedStmt("DELETE FROM accounts_sessions WHERE IF(? = 0 AND ? = 0, true, server_addr = ? AND server_port = ?)",

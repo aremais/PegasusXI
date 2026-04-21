@@ -660,6 +660,28 @@ auto CLuaBaseEntity::getCharVarsWithPrefix(const std::string& prefix) -> sol::ta
 }
 
 /************************************************************************
+ *  Function: getCharVarsWithSuffix()
+ *  Purpose : Returns all char_vars whose names end with the given suffix (SQL LIKE %suffix).
+ *  Example : local vars = player:getCharVarsWithSuffix(']mustZone')
+ *  Notes   :
+ ************************************************************************/
+
+auto CLuaBaseEntity::getCharVarsWithSuffix(const std::string& suffix) -> sol::table
+{
+    sol::table table = lua.create_table();
+
+    if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    {
+        for (const auto& [varName, value] : PChar->getCharVarsWithSuffix(suffix))
+        {
+            table[varName] = value;
+        }
+    }
+
+    return table;
+}
+
+/************************************************************************
  *  Function: setCharVar()
  *  Purpose : Updates PC's variable to an explicit value
  *  Example : player:setCharVar("[ZM]Status", 4)
@@ -12790,7 +12812,33 @@ void CLuaBaseEntity::disengage()
 
 void CLuaBaseEntity::timer(int ms, sol::function func)
 {
-    m_PBaseEntity->PAI->QueueAction(queueAction_t(ms, false, std::move(func)));
+    if (!func.valid())
+    {
+        ShowWarning("CLuaBaseEntity::timer: invalid lua function (%s).", m_PBaseEntity->getName().c_str());
+        return;
+    }
+
+    // Never pass sol::function into queueAction_t's (int, bool, sol::function) ctor: the action queue
+    // also holds std::function callbacks, and MSVC / heap reordering can end up invoking an empty
+    // std::function (std::bad_function_call). Always enqueue a native std::function wrapper.
+    sol::function luaCallback = std::move(func);
+    m_PBaseEntity->PAI->QueueAction(queueAction_t(
+        std::chrono::milliseconds(ms),
+        false,
+        [luaCallback = std::move(luaCallback)](CBaseEntity* PEntity) mutable
+        {
+            if (!luaCallback.valid())
+            {
+                return;
+            }
+
+            const auto result = luaCallback(PEntity);
+            if (!result.valid())
+            {
+                sol::error err = result;
+                ShowError("CLuaBaseEntity::timer: %s", err.what());
+            }
+        }));
 }
 
 /************************************************************************
@@ -12805,7 +12853,30 @@ void CLuaBaseEntity::timer(int ms, sol::function func)
 
 void CLuaBaseEntity::queue(int ms, sol::function func)
 {
-    m_PBaseEntity->PAI->QueueAction(queueAction_t(ms, true, std::move(func)));
+    if (!func.valid())
+    {
+        ShowWarning("CLuaBaseEntity::queue: invalid lua function (%s).", m_PBaseEntity->getName().c_str());
+        return;
+    }
+
+    sol::function luaCallback = std::move(func);
+    m_PBaseEntity->PAI->QueueAction(queueAction_t(
+        std::chrono::milliseconds(ms),
+        true,
+        [luaCallback = std::move(luaCallback)](CBaseEntity* PEntity) mutable
+        {
+            if (!luaCallback.valid())
+            {
+                return;
+            }
+
+            const auto result = luaCallback(PEntity);
+            if (!result.valid())
+            {
+                sol::error err = result;
+                ShowError("CLuaBaseEntity::queue: %s", err.what());
+            }
+        }));
 }
 
 /************************************************************************
@@ -19798,6 +19869,7 @@ void CLuaBaseEntity::Register()
     // Variables
     SOL_REGISTER("getCharVar", CLuaBaseEntity::getCharVar);
     SOL_REGISTER("getCharVarsWithPrefix", CLuaBaseEntity::getCharVarsWithPrefix);
+    SOL_REGISTER("getCharVarsWithSuffix", CLuaBaseEntity::getCharVarsWithSuffix);
     SOL_REGISTER("setCharVar", CLuaBaseEntity::setCharVar);
     SOL_REGISTER("setCharVarExpiration", CLuaBaseEntity::setCharVarExpiration);
     SOL_REGISTER("getVar", CLuaBaseEntity::getCharVar); // Compatibility binding

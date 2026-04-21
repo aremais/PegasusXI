@@ -28,9 +28,9 @@ xi.settings.network =
 
     MAP_PORT = 54230,
 
-    -- If non-empty, login tells clients to use this IP for map UDP (fixes FFXI-3001 when zone_settings.zoneip
-    -- is 127.0.0.1 or a LAN address but players connect from the internet). Ports still come from zone_settings.
-    -- accounts_sessions keeps database zoneip so map/session checks stay correct. Override via XI_NETWORK_MAP_PUBLIC_IP.
+    -- If non-empty, login and zone changes (0x00B) tell clients to use this IP for map UDP (fixes FFXI-3001 when
+    -- zone_settings.zoneip is 127.0.0.1 or a LAN address but players connect from the internet). Ports still come
+    -- from zone_settings. Override via XI_NETWORK_MAP_PUBLIC_IP.
     MAP_PUBLIC_IP = '',
 
     SEARCH_PORT = 54002,

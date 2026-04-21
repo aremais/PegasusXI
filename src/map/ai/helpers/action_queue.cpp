@@ -21,9 +21,12 @@
 
 #include "action_queue.h"
 #include "ai/ai_container.h"
+#include "common/logging.h"
 #include "entities/baseentity.h"
 #include "lua/lua_baseentity.h"
 #include "lua/luautils.h"
+
+#include <exception>
 
 CAIActionQueue::CAIActionQueue(CBaseEntity* _PEntity)
 : PEntity(_PEntity)
@@ -76,19 +79,30 @@ void CAIActionQueue::checkAction(timer::time_point tick)
 
 void CAIActionQueue::handleAction(queueAction_t& action)
 {
-    if (action.lua_func.valid())
+    try
     {
-        auto result = action.lua_func(PEntity);
-        if (!result.valid())
+        // Prefer native callback when set; never run both (avoids edge cases with mixed sol::function + std::function).
+        if (action.func)
         {
-            sol::error err = result;
-            ShowError("CAIActionQueue::handleAction for %s (%i): %s", PEntity->name, PEntity->id, err.what());
+            action.func(PEntity);
+        }
+        else if (action.lua_func.valid())
+        {
+            auto result = action.lua_func(PEntity);
+            if (!result.valid())
+            {
+                sol::error err = result;
+                ShowError("CAIActionQueue::handleAction for %s (%i): %s", PEntity->name, PEntity->id, err.what());
+            }
         }
     }
-
-    if (action.func)
+    catch (const std::exception& e)
     {
-        action.func(PEntity);
+        ShowError("CAIActionQueue::handleAction for %s (%u): %s", PEntity->name, PEntity->id, e.what());
+    }
+    catch (...)
+    {
+        ShowError("CAIActionQueue::handleAction for %s (%u): unknown exception", PEntity->name, PEntity->id);
     }
 }
 
