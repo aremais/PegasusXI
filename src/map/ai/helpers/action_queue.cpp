@@ -23,8 +23,6 @@
 #include "ai/ai_container.h"
 #include "common/logging.h"
 #include "entities/baseentity.h"
-#include "lua/lua_baseentity.h"
-#include "lua/luautils.h"
 
 #include <exception>
 
@@ -81,19 +79,13 @@ void CAIActionQueue::handleAction(queueAction_t& action)
 {
     try
     {
-        // Prefer native callback when set; never run both (avoids edge cases with mixed sol::function + std::function).
         if (action.func)
         {
             action.func(PEntity);
         }
-        else if (action.lua_func.valid())
+        else
         {
-            auto result = action.lua_func(PEntity);
-            if (!result.valid())
-            {
-                sol::error err = result;
-                ShowError("CAIActionQueue::handleAction for %s (%i): %s", PEntity->name, PEntity->id, err.what());
-            }
+            ShowError("CAIActionQueue::handleAction for %s (%u): empty action callback", PEntity->name, PEntity->id);
         }
     }
     catch (const std::exception& e)

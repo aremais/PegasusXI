@@ -4903,12 +4903,8 @@ bool CLuaBaseEntity::addLinkpearl(const std::string& lsname, bool equip)
         const auto rset = db::preparedStmt("SELECT linkshellid, color FROM linkshells WHERE name = ? AND broken = 0", lsname);
         if (rset && rset->rowsCount() && rset->next())
         {
-            // build linkpearl
-            char EncodedString[LinkshellStringLength];
-
-            std::memset(&EncodedString, 0, sizeof(EncodedString));
-            EncodeStringLinkshell(lsname, EncodedString);
-            ((CItem*)PItemLinkPearl)->setSignature(EncodedString);
+            // setSignature() expects decoded name; it encodes into exdata.
+            ((CItem*)PItemLinkPearl)->setSignature(lsname);
             PItemLinkPearl->SetLSID(rset->get<uint32>("linkshellid"));
             PItemLinkPearl->SetLSColor(rset->get<uint16>("color"));
             PItemLinkPearl->SetLSType(lstype);
@@ -4977,10 +4973,7 @@ bool CLuaBaseEntity::addLinkshellHolder(const std::string& lsname, sol::optional
         return false;
     }
 
-    char EncodedString[LinkshellStringLength]{};
-    std::memset(EncodedString, 0, sizeof(EncodedString));
-    EncodeStringLinkshell(lsname, EncodedString);
-    PItemShell->setSignature(EncodedString);
+    PItemShell->setSignature(lsname);
     PItemShell->SetLSID(rset->get<uint32>("linkshellid"));
     PItemShell->SetLSColor(rset->get<uint16>("color"));
     PItemShell->SetLSType(LSTYPE_LINKSHELL);
@@ -12818,9 +12811,7 @@ void CLuaBaseEntity::timer(int ms, sol::function func)
         return;
     }
 
-    // Never pass sol::function into queueAction_t's (int, bool, sol::function) ctor: the action queue
-    // also holds std::function callbacks, and MSVC / heap reordering can end up invoking an empty
-    // std::function (std::bad_function_call). Always enqueue a native std::function wrapper.
+    // Wrap Lua in a native std::function so the action queue only stores std::function (no mixed sol state).
     sol::function luaCallback = std::move(func);
     m_PBaseEntity->PAI->QueueAction(queueAction_t(
         std::chrono::milliseconds(ms),

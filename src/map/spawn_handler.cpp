@@ -51,7 +51,12 @@ void SpawnHandler::registerForRespawn(CMobEntity* PMob, const Maybe<timer::durat
 
     if (auto slot = PMob->GetSpawnSlot())
     {
-        const auto specificMobId   = respawnTime.has_value() ? Maybe<uint32>(PMob->id) : std::nullopt;
+        // Pin a mob only when a non-zero respawn override is used (e.g. deaggro 60s). Zone init passes 0s for
+        // time/weather-conditioned slotted mobs so TrySpawn can pick any pool member once conditions match; using
+        // 0s with a specific id would lock the slot to one mob and skip the day partner entirely.
+        const auto specificMobId = respawnTime.has_value() && respawnTime.value() > timer::duration::zero()
+                                       ? Maybe<uint32>(PMob->id)
+                                       : std::nullopt;
         pendingSlotRespawns_[slot] = { respawnAt, specificMobId };
     }
     else

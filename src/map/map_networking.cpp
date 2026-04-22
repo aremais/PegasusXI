@@ -40,6 +40,8 @@
 #include "map_statistics.h"
 #include "packet_guard.h"
 #include "packet_system.h"
+
+#include <functional>
 #include "roe.h"
 #include "status_effect_container.h"
 #include "transport.h"
@@ -69,6 +71,9 @@ MapNetworking::MapNetworking(Scheduler& scheduler, MapStatistics& mapStatistics,
 , config_(config)
 {
     TracyZoneScoped;
+
+    // Must run before any incoming packet can reach PacketSystem::dispatch (UDP recv can start immediately).
+    PacketParserInitialize();
 
     // Embedded map server for testing does not actually need to open a socket
     if (config_.isTestServer)
@@ -505,7 +510,18 @@ int32 MapNetworking::parse(uint8* buff, size_t* buffsize, MapSession* map_sessio
                 //     : instead of creating a new packet here.
                 auto basicPacket = CBasicPacket::createFromBuffer(reinterpret_cast<uint8*>(SmallPD_ptr));
                 ShowTraceFmt("map::parse: Char: {} ({}): {}", PChar->getName(), PChar->id, hex16ToString(basicPacket->getType()));
-                PacketParser[SmallPD_Type](map_session_data, PChar, *basicPacket);
+                try
+                {
+                    packetSystem().dispatch(static_cast<uint16>(SmallPD_Type), map_session_data, PChar, *basicPacket);
+                }
+                catch (const std::bad_function_call& e)
+                {
+                    ShowCriticalFmt(
+                        "Packet dispatch std::bad_function_call for packet {:03X} from {}: {} (check PacketParser entry / custom modules)",
+                        SmallPD_Type,
+                        PChar->getName(),
+                        e.what());
+                }
             }
         }
         else

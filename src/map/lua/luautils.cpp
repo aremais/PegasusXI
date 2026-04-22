@@ -36,10 +36,8 @@
 #include <common/version.h>
 
 #include <algorithm>
-#include <asio/this_coro.hpp>
-#include <asio/steady_timer.hpp>
-#include <asio/use_awaitable.hpp>
 #include <cctype>
+#include <chrono>
 #include <functional>
 
 #include "lua_action.h"
@@ -152,27 +150,29 @@ namespace
 {
 Scheduler* g_mapScheduler = nullptr;
 
-// Deferred ZoningIn clear + login campaign (was PAI::QueueAction; some MSVC builds hit std::bad_function_call
-// from the mixed sol::function / std::function action queue after reorder).
-Task<void> delayedOnGameInFollowup(uint32 charId)
+// Defer ZoningIn clear + login campaign (was PAI::timer). Use Scheduler::yieldFor inside one detached
+// coroutine instead of nested co_spawn + steady_timer; catch everything so std::bad_function_call
+// (or any throw) from this path cannot stop mainContext_.run().
+Task<void> delayedLoginCampaignFollowup(uint32 charId)
 {
     try
     {
-        const auto executor = co_await asio::this_coro::executor;
-        asio::steady_timer    timer(executor);
-        timer.expires_after(std::chrono::milliseconds(2500));
-        co_await timer.async_wait(asio::use_awaitable);
+        co_await Scheduler::yieldFor(std::chrono::milliseconds(2500));
 
-        CCharEntity* PChar = zoneutils::GetChar(charId);
-        if (PChar != nullptr && PChar->objtype == TYPE_PC && PChar->id == charId)
+        CCharEntity* PC = zoneutils::GetChar(charId);
+        if (PC != nullptr && PC->objtype == TYPE_PC && PC->id == charId)
         {
-            PChar->SetLocalVar("ZoningIn", 0);
-            callGlobal<void>("xi.events.loginCampaign.onGameIn", PChar);
+            PC->SetLocalVar("ZoningIn", 0);
+            callGlobal<void>("xi.events.loginCampaign.onGameIn", PC);
         }
     }
     catch (const std::exception& e)
     {
-        ShowError("luautils::delayedOnGameInFollowup: %s", e.what());
+        ShowError("luautils::OnGameIn delayed follow-up: %s", e.what());
+    }
+    catch (...)
+    {
+        ShowError("luautils::OnGameIn delayed follow-up: unknown exception");
     }
 
     co_return;
@@ -2060,12 +2060,13 @@ void OnGameIn(CCharEntity* PChar, bool zoning)
 
     callGlobal<void>("xi.player.onGameIn", PChar, PChar->GetPlayTime(false) == 0s, zoning);
 
-    // Previously: player:timer(2500) in Lua, then PAI::QueueAction(std::function). The entity action queue
-    // stores both sol::function and std::function; heap reordering on some Windows builds could invoke an
-    // empty std::function (std::bad_function_call). Run the same deferred work on the map scheduler instead.
+    // Previously: player:timer(2500) in Lua; defer on the map scheduler (not PAI) for a single detached coroutine.
+    //
+    // NOTE: delayOnMainThread() returns a Token that cancels the work when destroyed; do not use it here.
+    // Use a single detached coroutine (postToMainThread(Task)) with Scheduler::yieldFor for the delay.
     if (g_mapScheduler != nullptr)
     {
-        g_mapScheduler->postToMainThread(delayedOnGameInFollowup(PChar->id));
+        g_mapScheduler->postToMainThread(delayedLoginCampaignFollowup(PChar->id));
     }
     else
     {
