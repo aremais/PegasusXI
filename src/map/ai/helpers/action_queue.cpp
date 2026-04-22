@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -48,9 +48,9 @@ void CAIActionQueue::checkAction(timer::time_point tick)
     while (!timerQueue.empty())
     {
         const auto& topaction = timerQueue.top();
-        if (tick > topaction.start_time + topaction.delay)
+        if (tick >= topaction.start_time + topaction.delay)
         {
-            queueAction_t action = timerQueue.top();
+            auto action = timerQueue.top();
             timerQueue.pop();
             handleAction(action);
         }
@@ -59,10 +59,14 @@ void CAIActionQueue::checkAction(timer::time_point tick)
             break;
         }
     }
+
     while (!actionQueue.empty())
     {
         const auto& topaction = actionQueue.top();
-        if (tick > topaction.start_time + topaction.delay && (!topaction.checkState || PEntity->PAI->CanChangeState()))
+        if (
+            tick >= topaction.start_time + topaction.delay &&
+            (!topaction.checkState || (PEntity && PEntity->PAI && PEntity->PAI->CanChangeState()))
+        )
         {
             auto action = actionQueue.top();
             actionQueue.pop();
@@ -75,26 +79,54 @@ void CAIActionQueue::checkAction(timer::time_point tick)
     }
 }
 
-void CAIActionQueue::handleAction(queueAction_t& action)
+void CAIActionQueue::handleAction(const queueAction_t& action)
 {
     try
     {
+        // Prefer native callback when set; never run both.
         if (action.func)
         {
             action.func(PEntity);
         }
+        else if (action.lua_func.valid())
+        {
+            auto result = action.lua_func(PEntity);
+            if (!result.valid())
+            {
+                sol::error err = result;
+                ShowError(
+                    "CAIActionQueue::handleAction for %s (%u): %s",
+                    PEntity->name,
+                    PEntity->id,
+                    err.what()
+                );
+            }
+        }
         else
         {
-            ShowError("CAIActionQueue::handleAction for %s (%u): empty action callback", PEntity->name, PEntity->id);
+            ShowError(
+                "CAIActionQueue::handleAction for %s (%u): empty action callback",
+                PEntity->name,
+                PEntity->id
+            );
         }
     }
     catch (const std::exception& e)
     {
-        ShowError("CAIActionQueue::handleAction for %s (%u): %s", PEntity->name, PEntity->id, e.what());
+        ShowError(
+            "CAIActionQueue::handleAction for %s (%u): %s",
+            PEntity->name,
+            PEntity->id,
+            e.what()
+        );
     }
     catch (...)
     {
-        ShowError("CAIActionQueue::handleAction for %s (%u): unknown exception", PEntity->name, PEntity->id);
+        ShowError(
+            "CAIActionQueue::handleAction for %s (%u): unknown exception",
+            PEntity->name,
+            PEntity->id
+        );
     }
 }
 

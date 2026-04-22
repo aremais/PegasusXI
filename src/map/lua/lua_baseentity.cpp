@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -239,9 +239,9 @@ void CLuaBaseEntity::showText(CLuaBaseEntity* entity, uint16 messageID, const so
 
 void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageID, const sol::object& arg2, const sol::object& arg3)
 {
-    if (PLuaBaseEntity == nullptr)
+    if (PLuaBaseEntity == nullptr || PLuaBaseEntity->m_PBaseEntity == nullptr)
     {
-        ShowError("CLuaBaseEntity::messageText() - argument 1 of CLuaBaseEntity* was nullptr");
+        ShowError("CLuaBaseEntity::messageText() - target entity was nullptr");
         return;
     }
 
@@ -252,7 +252,8 @@ void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageI
     bool  faceGiven = false;
     uint8 face      = 0;
 
-    // TODO: Clean this up.  We could potentially accept two int vals for optional args, which could cause unexpected showName behavior.
+    // TODO: Clean this up. We could potentially accept two int vals for optional args,
+    // which could cause unexpected showName behavior.
     if (arg2 != sol::lua_nil)
     {
         if (arg2.is<bool>())
@@ -267,19 +268,16 @@ void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageI
         {
             auto table   = arg2.as<sol::table>();
             auto faceArg = table.get<sol::object>("face");
-            faceGiven    = true;
 
             if (faceArg.get_type() == sol::type::number)
             {
                 face = faceArg.as<uint8>();
+                faceGiven = true;
             }
-            else if (faceArg.get_type() == sol::type::number)
+            else if (faceArg.get_type() == sol::type::boolean && faceArg.as<bool>())
             {
                 face = worldAngle(PTarget->loc.p, m_PBaseEntity->loc.p);
-            }
-            else
-            {
-                faceGiven = false;
+                faceGiven = true;
             }
 
             showName = table.get_or("showName", true);
@@ -299,13 +297,14 @@ void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageI
         PTarget->updatemask |= UPDATE_POS;
     }
 
-    if (auto player = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    if (auto* player = dynamic_cast<CCharEntity*>(m_PBaseEntity))
     {
         player->gotMessage = true;
         player->pushPacket<GP_SERV_COMMAND_TALKNUM>(PTarget, messageID, showName, mode);
     }
-    else
-    { // broadcast in range
+    else if (m_PBaseEntity->loc.zone)
+    {
+        // Broadcast in range
         m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUM>(PTarget, messageID, showName, mode));
     }
 }
@@ -460,7 +459,17 @@ void CLuaBaseEntity::messageBasic(uint16 messageID, const sol::object& p0, const
     uint32 param0 = (p0 != sol::lua_nil) ? p0.as<uint32>() : 0;
     uint32 param1 = (p1 != sol::lua_nil) ? p1.as<uint32>() : 0;
 
-    auto* PTarget = (target != sol::lua_nil) ? target.as<CLuaBaseEntity*>()->m_PBaseEntity : m_PBaseEntity;
+    CBaseEntity* PTarget = m_PBaseEntity;
+    if (target != sol::lua_nil)
+    {
+        if (auto* luaTarget = target.as<CLuaBaseEntity*>())
+        {
+            if (luaTarget->m_PBaseEntity)
+            {
+                PTarget = luaTarget->m_PBaseEntity;
+            }
+        }
+    }
 
     if (m_PBaseEntity->objtype == TYPE_PC)
     {
@@ -1174,8 +1183,8 @@ EventInfo* CLuaBaseEntity::ParseEvent(int32 EventID, sol::variadic_args va, Even
             currentIndex++;
         }
 
-        // Finally parse out an optional last argument as text_table
-        eventToStart->textTable = va.get_type(8) == sol::type::number ? va.get<int16>(8) : -1;
+        // Finally parse out an optional last argument as text_table.
+        eventToStart->textTable = va.get_type(currentIndex) == sol::type::number ? va.get<int16>(currentIndex) : -1;
     }
 
     if (eventType == OPTIONAL_CUTSCENE)
@@ -1679,7 +1688,10 @@ void CLuaBaseEntity::initNpcAi()
 
 void CLuaBaseEntity::resetAI()
 {
-    m_PBaseEntity->PAI->Reset();
+    if (m_PBaseEntity->PAI)
+    {
+        m_PBaseEntity->PAI->Reset();
+    }
 }
 
 /************************************************************************
@@ -1723,6 +1735,12 @@ uint8 CLuaBaseEntity::getCurrentAction()
         return 0;
     }
 
+    if (m_PBaseEntity->PAI == nullptr)
+    {
+        ShowWarning("getCurrentAction: PAI was nullptr for %s", m_PBaseEntity->getName());
+        return 0;
+    }
+
     uint8 action = 0;
 
     if (m_PBaseEntity->PAI->IsStateStackEmpty())
@@ -1757,6 +1775,10 @@ uint8 CLuaBaseEntity::getCurrentAction()
     {
         action = 27;
     }
+    else if (m_PBaseEntity->PAI->IsCurrentState<CDeathState>() && m_PBaseEntity->objtype == TYPE_PC && static_cast<CCharEntity*>(m_PBaseEntity)->m_hasRaise)
+    {
+        action = 37;
+    }
     else if (m_PBaseEntity->PAI->IsCurrentState<CDeathState>())
     {
         action = 22;
@@ -1764,10 +1786,6 @@ uint8 CLuaBaseEntity::getCurrentAction()
     else if (m_PBaseEntity->PAI->IsCurrentState<CDespawnState>())
     {
         action = 24;
-    }
-    else if (m_PBaseEntity->PAI->IsCurrentState<CDeathState>() && m_PBaseEntity->objtype == TYPE_PC && static_cast<CCharEntity*>(m_PBaseEntity)->m_hasRaise)
-    {
-        action = 37;
     }
     else if (m_PBaseEntity->PAI->IsCurrentState<CMobSkillState>())
     {
@@ -1801,6 +1819,11 @@ bool CLuaBaseEntity::canUseAbilities()
 {
     if (auto* PEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity))
     {
+        if (m_PBaseEntity->PAI == nullptr)
+        {
+            return false;
+        }
+
         return !(PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_SLEEP) ||
                  PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_IMPAIRMENT) ||
                  PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_SLEEP_II) ||
@@ -1825,21 +1848,38 @@ bool CLuaBaseEntity::canUseAbilities()
 
 void CLuaBaseEntity::lookAt(const sol::object& arg0, const sol::object& arg1, const sol::object& arg2)
 {
-    position_t point;
+    position_t point{};
 
-    if ((arg0 != sol::lua_nil) && (arg0.is<double>()))
+    if ((arg0 != sol::lua_nil) && arg0.is<double>())
     {
+        if (!(arg1.is<double>() && arg2.is<double>()))
+        {
+            ShowError("CLuaBaseEntity::lookAt() requires x, y, z when first argument is numeric");
+            return;
+        }
+
         point.x = arg0.as<float>();
         point.y = arg1.as<float>();
         point.z = arg2.as<float>();
     }
-    else
+    else if (arg0.get_type() == sol::type::table)
     {
         auto position = arg0.as<std::map<std::string, float>>();
+
+        if (!position.contains("x") || !position.contains("y") || !position.contains("z"))
+        {
+            ShowError("CLuaBaseEntity::lookAt() table argument must contain x, y, z");
+            return;
+        }
 
         point.x = position["x"];
         point.y = position["y"];
         point.z = position["z"];
+    }
+    else
+    {
+        ShowError("CLuaBaseEntity::lookAt() received invalid arguments");
+        return;
     }
 
     // Avoid unpredictable results if we're too close.
@@ -12811,7 +12851,8 @@ void CLuaBaseEntity::timer(int ms, sol::function func)
         return;
     }
 
-    // Wrap Lua in a native std::function so the action queue only stores std::function (no mixed sol state).
+
+
     sol::function luaCallback = std::move(func);
     m_PBaseEntity->PAI->QueueAction(queueAction_t(
         std::chrono::milliseconds(ms),
