@@ -35,6 +35,7 @@
 #include "conquest_system.h"
 #include "ipc_client.h"
 #include "item_container.h"
+#include "items/exdata/linkshell.h"
 #include "items/item_linkshell.h"
 #include "linkshell.h"
 
@@ -413,8 +414,10 @@ auto LoadLinkshell(uint32 id) -> CLinkshell*
         PLinkshell->setColor(color);
         char EncodedName[LinkshellStringLength] = {};
 
-        EncodeStringLinkshell(name.c_str(), EncodedName);
-        PLinkshell->setName(EncodedName);
+        EncodeStringLinkshell(name, EncodedName);
+        // m_name is treated as the packed exdata blob (see DecodeStringLinkshell in chat); must not use a
+        // null-terminated string ctor — encoded bytes can contain 0x00.
+        PLinkshell->setName(std::string(EncodedName, sizeof(Exdata::Linkshell{}.Name)));
         PLinkshell->setPostRights(postrights);
 
         LinkshellList[id] = std::move(PLinkshell);

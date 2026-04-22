@@ -29,8 +29,6 @@
 #include <memory>
 #include <queue>
 
-#include "sol/sol.hpp"
-
 class CBaseEntity;
 
 struct queueAction_t
@@ -40,15 +38,7 @@ struct queueAction_t
     timer::time_point start_time{ timer::now() };
     timer::duration   delay{ 0ms };
     bool              checkState{ false };
-    sol::function     lua_func{};
     EntityFunc_t      func{};
-
-    queueAction_t(int _ms, bool _checkstate, sol::function _lua_func)
-    : delay(std::chrono::milliseconds(_ms))
-    , checkState(_checkstate)
-    , lua_func(_lua_func)
-    {
-    }
 
     queueAction_t(timer::duration _ms, bool _checkstate, std::function<void(CBaseEntity*)> _func)
     : delay(_ms)

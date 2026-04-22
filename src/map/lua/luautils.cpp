@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -40,6 +40,7 @@
 #include <asio/steady_timer.hpp>
 #include <asio/use_awaitable.hpp>
 #include <cctype>
+#include <chrono>
 #include <functional>
 
 #include "lua_action.h"
@@ -152,14 +153,14 @@ namespace
 {
 Scheduler* g_mapScheduler = nullptr;
 
-// Deferred ZoningIn clear + login campaign (was PAI::QueueAction; some MSVC builds hit std::bad_function_call
-// from the mixed sol::function / std::function action queue after reorder).
+// Deferred ZoningIn clear + login campaign (was player:timer / PAI::QueueAction). Run the delayed
+// follow-up on the map scheduler so this path does not depend on the entity action queue.
 Task<void> delayedOnGameInFollowup(uint32 charId)
 {
     try
     {
         const auto executor = co_await asio::this_coro::executor;
-        asio::steady_timer    timer(executor);
+        asio::steady_timer timer(executor);
         timer.expires_after(std::chrono::milliseconds(2500));
         co_await timer.async_wait(asio::use_awaitable);
 
@@ -173,6 +174,10 @@ Task<void> delayedOnGameInFollowup(uint32 charId)
     catch (const std::exception& e)
     {
         ShowError("luautils::delayedOnGameInFollowup: %s", e.what());
+    }
+    catch (...)
+    {
+        ShowError("luautils::delayedOnGameInFollowup: unknown exception");
     }
 
     co_return;
@@ -2060,9 +2065,8 @@ void OnGameIn(CCharEntity* PChar, bool zoning)
 
     callGlobal<void>("xi.player.onGameIn", PChar, PChar->GetPlayTime(false) == 0s, zoning);
 
-    // Previously: player:timer(2500) in Lua, then PAI::QueueAction(std::function). The entity action queue
-    // stores both sol::function and std::function; heap reordering on some Windows builds could invoke an
-    // empty std::function (std::bad_function_call). Run the same deferred work on the map scheduler instead.
+    // Previously this was delayed through the player timer / entity action queue path.
+    // Run the same follow-up on the map scheduler instead.
     if (g_mapScheduler != nullptr)
     {
         g_mapScheduler->postToMainThread(delayedOnGameInFollowup(PChar->id));
