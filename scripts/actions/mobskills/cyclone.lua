@@ -1,9 +1,8 @@
 -----------------------------------
--- Frostbite
--- Family: Humanoid Greatsword Weaponskill
--- Description: Delivers an ice elemental attack. Damage varies with TP.
+-- Cyclone
+-- Family: Humanoid Dagger Weaponskill
+-- Description: Delivers an area of effect wind elemental attack. Damage varies with TP.
 -----------------------------------
-
 ---@type TMobSkill
 local mobskillObject = {}
 
@@ -15,13 +14,13 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
     params.baseDamage       = mob:getMainLvl() + 2
-    params.fTP              = { 1.0, 2.0, 2.5 }
-    -- params.str_wSC       = 0.2 -- TODO: Capture if mobskill weaponskills have wSC.
-    -- params.int_wSC       = 0.2 -- TODO: Capture if mobskill weaponskills have wSC.
-    params.element          = xi.element.ICE
+    params.fTP              = { 1.0, 2.375, 2.875 }
+    -- params.dex_wSC       = 0.3  -- TODO: Capture if mobskill weaponskills have wSC.
+    -- params.int_wSC       = 0.25 -- TODO: Capture if mobskill weaponskills have wSC.
+    params.element          = xi.element.WIND
     params.attackType       = xi.attackType.MAGICAL
-    params.damageType       = xi.damageType.ICE
-    params.shadowBehavior   = xi.mobskills.shadowBehavior.WIPE_SHADOWS
+    params.damageType       = xi.damageType.WIND
+    params.shadowBehavior   = xi.mobskills.shadowBehavior.IGNORE_SHADOWS
     params.dStatMultiplier  = 1
     params.dStatAttackerMod = xi.mod.INT
     params.dStatDefenderMod = xi.mod.INT

@@ -1,7 +1,7 @@
 -----------------------------------
--- Evisceration
--- Family: Humanoid Dagger Weaponskill
--- Description: Delivers a fivefold attack
+-- Spinning Slash
+-- Family: Humanoid Great Sword Weaponskill
+-- Description: Damage varies with TP.
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -14,14 +14,14 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
     params.baseDamage     = mob:getWeaponDmg()
-    params.numHits        = 5
-    params.fTP            = { 1.0, 1.0, 1.0 } -- TODO: Capture fTPs
-    -- params.dex_wSC     = 0.3 -- TODO: Capture if mobskill weaponskills have wSC.
+    params.numHits        = 1
+    params.fTP            = { 2.5, 3.0, 3.5 }
+    -- params.str_wSC     = 0.3 -- TODO: Capture if mobskill weaponskills have wSC.
+    -- params.int_wSC     = 0.3 -- TODO: Capture if mobskill weaponskills have wSC.
     params.attackType     = xi.attackType.PHYSICAL
-    params.damageType     = xi.damageType.PIERCING
-    params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_5
-    params.canCrit        = true
-    params.criticalChance = { 0.10, 0.25, 0.50 }
+    params.damageType     = xi.damageType.SLASHING
+    params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1
+    params.attackMultiplier = { 1.5, 1.5, 1.5 }
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 
