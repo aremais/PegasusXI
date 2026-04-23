@@ -27,7 +27,6 @@ zones[xi.zone.SAUROMUGUE_CHAMPAIGN] =
         DIG_THROW_AWAY                = 7271,  -- You dig up <item>, but your inventory is full. You regretfully throw the <item> away.
         FIND_NOTHING                  = 7273,  -- You dig and you dig, but find nothing.
         FOUND_ITEM_WITH_EASE          = 7348,  -- It appears your chocobo found this item with ease.
-        THF_AF_MOB                    = 7435,  -- Something has come down from the tower!
         THF_AF_WALL_OFFSET            = 7454,  -- It is impossible to climb this wall with your bare hands.
         PLAYER_OBTAINS_ITEM           = 7517,  -- <name> obtains <item>!
         UNABLE_TO_OBTAIN_ITEM         = 7518,  -- You were unable to obtain the item.
@@ -42,6 +41,9 @@ zones[xi.zone.SAUROMUGUE_CHAMPAIGN] =
         VOIDWALKER_MOB_TOO_FAR        = 11000, -- The <keyitem> quivers ever so slightly and emits a faint light. There seem to be no monsters in the immediate vicinity.
         VOIDWALKER_MOB_HINT           = 11001, -- The <keyitem> resonates [feebly/softly/solidly/strongly/very strongly/furiously], sending a radiant beam of light lancing towards a spot roughly <number> [yalm/yalms] [east/southeast/south/southwest/west/northwest/north/northeast] of here.
         VOIDWALKER_SPAWN_MOB          = 11002, -- A monster materializes out of nowhere!
+        -- THF AF2 (Climbpix): retail uses 7435 for "Something has come down from the tower!" but that slot is a
+        -- JP developer/debug string on common client DATs (BUG-0101). Reuse VOIDWALKER_SPAWN_MOB message ID.
+        THF_AF_MOB                    = 11002, -- (same ID as VOIDWALKER_SPAWN_MOB)
         VOIDWALKER_UPGRADE_KI_1       = 11004, -- The <keyitem> takes on a slightly deeper hue and becomes <keyitem>!
         VOIDWALKER_UPGRADE_KI_2       = 11005, -- The <keyitem> takes on a deeper, richer hue and becomes <keyitem>!
         VOIDWALKER_BREAK_KI           = 11006, -- The <keyitem> shatters into tiny fragments.

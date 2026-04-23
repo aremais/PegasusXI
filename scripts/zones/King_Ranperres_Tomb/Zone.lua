@@ -10,6 +10,12 @@ zoneObject.onInitialize = function(zone)
     zone:registerCuboidTriggerArea(1, -84.302, 6.5, -120.997, -77, 7.5, -114) -- Used for stairs teleport -85.1, 7, -119.9
 
     xi.treasure.initZone(zone)
+
+    -- M6-2 cutscene actor: DB name was historically "blank"; override packet name so the client shows Leaute.
+    local leauteActor = GetNPCByID(ID.npc.LEAUTE_CS_ACTOR_ID)
+    if leauteActor then
+        leauteActor:renameEntity('Leaute', true)
+    end
 end
 
 zoneObject.onZoneIn = function(player, prevZone)

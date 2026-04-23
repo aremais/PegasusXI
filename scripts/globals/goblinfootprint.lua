@@ -363,10 +363,11 @@ local cutscene = -- add cutscenes to this table
     },
     [xi.zone.KING_RANPERRES_TOMB] =
     {
-        [1] = { 4 },                        -- Bat Hunt
-        [2] = { 8, 'Leaute', '', '', '' },  -- Ranperre's Final Rest (pt.1) — tomb / book
-        [3] = { 5, 'Leaute', '', '', '' },  -- Ranperre's Final Rest (pt.2) — final at heavy door
-        [4] = { 14 },                       -- The Heir to the Light
+        [1] = { 4 }, -- Bat Hunt
+        -- Event id first, then param table: strings must not follow a number in startEvent (ParseEvent ignores them).
+        [2] = { 8, { strings = { [0] = 'Leaute', [1] = 'Leaute' } } }, -- Ranperre's Final Rest (pt.1)
+        [3] = { 5, { strings = { [0] = 'Leaute', [1] = 'Leaute' } } }, -- Ranperre's Final Rest (pt.2)
+        [4] = { 14 }, -- The Heir to the Light
     },
 }
 

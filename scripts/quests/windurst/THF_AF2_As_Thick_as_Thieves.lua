@@ -61,16 +61,17 @@ local towerOnTrigger = function(player, npc)
     end
 end
 
+-- Params must match Sniggnix dice events: (0, xi.item.REGAL_DIE, roll1, roll2) or the client shows blank rolls.
 local function handleDangrufMinigame(player, winEventId, loseEventId, itemPlaced)
     local rand1 = math.random(1, 999)
     local rand2 = math.random(1, 999)
 
     if rand1 > rand2 then
         player:messageSpecial(dangrufID.text.YOU_PLACE_ITEM, 0, itemPlaced)
-        return quest:progressEvent(winEventId, xi.item.REGAL_DIE, 0, rand1, rand2)
+        return quest:progressEvent(winEventId, 0, xi.item.REGAL_DIE, rand1, rand2)
     else
         player:messageSpecial(dangrufID.text.YOU_PLACE_ITEM, 0, itemPlaced)
-        return quest:progressEvent(loseEventId, 0, 0, rand1, rand2)
+        return quest:progressEvent(loseEventId, 0, xi.item.REGAL_DIE, rand1, rand2)
     end
 end
 
