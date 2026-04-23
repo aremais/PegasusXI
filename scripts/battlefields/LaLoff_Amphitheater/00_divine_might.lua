@@ -1,6 +1,12 @@
 -----------------------------------
 -- Area: LaLoff Amphitheater
 -- Name: Divine Might
+--
+-- NOTE: This file is prefixed so it loads before ark_angels_*.lua. Otherwise
+-- Battlefield:register() skips entry NPC hooks when another BF already uses
+-- the same qm1_* NPC, and Divine Might lists all five circles—so no hooks
+-- would be registered here. Loading first attaches trade/trigger on every
+-- entrance; solo Ark Angel BFs still register after and skip duplicates.
 -----------------------------------
 local laLoffID = zones[xi.zone.LALOFF_AMPHITHEATER]
 -----------------------------------
@@ -20,8 +26,21 @@ local content = Battlefield:new({
 })
 
 function content:entryRequirement(player, npc, isRegistrant, trade)
-    return player:getQuestStatus(xi.questLog.OUTLANDS, xi.quest.id.outlands.DIVINE_MIGHT) == xi.questStatus.QUEST_ACCEPTED or
+    if
+        player:getQuestStatus(xi.questLog.OUTLANDS, xi.quest.id.outlands.DIVINE_MIGHT) == xi.questStatus.QUEST_ACCEPTED or
         player:getQuestStatus(xi.questLog.OUTLANDS, xi.quest.id.outlands.DIVINE_MIGHT_REPEAT) == xi.questStatus.QUEST_ACCEPTED
+    then
+        return true
+    end
+
+    if
+        player:getCurrentMission(xi.mission.log_id.ZILART) == xi.mission.id.zilart.ARK_ANGELS and
+        player:getMissionStatus(xi.mission.log_id.ZILART) == 1
+    then
+        return true
+    end
+
+    return false
 end
 
 content.groups =

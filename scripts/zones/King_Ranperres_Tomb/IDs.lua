@@ -53,7 +53,9 @@ zones[xi.zone.KING_RANPERRES_TOMB] =
     },
     npc =
     {
-        TREASURE_CHEST = GetFirstID('Treasure_Chest'),
+        TREASURE_CHEST       = GetFirstID('Treasure_Chest'),
+        -- Cutscene dragoon (San d'Oria M6-2); must match sql/npc_list.sql for zone 190
+        LEAUTE_CS_ACTOR_ID = 17556002,
     },
 }
 

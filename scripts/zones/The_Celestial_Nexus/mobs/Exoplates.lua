@@ -25,11 +25,10 @@ entity.onMobSpawn = function(mob)
 end
 
 entity.onMobFight = function(mob, target)
-    -- Early return: Entity can't act.
-    if
-        xi.combat.behavior.isEntityBusy(mob) or
-        mob:getTP() < 600
-    then
+    -- Scripted phase shifts must not wait on TP: other TP moves from the skill list
+    -- spend TP to zero, so the 600 TP gate can soft-lock the mob at 1% (unkillable)
+    -- while Eald'narche keeps his shields.
+    if xi.combat.behavior.isEntityBusy(mob) then
         return
     end
 
