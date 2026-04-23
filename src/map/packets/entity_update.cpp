@@ -322,10 +322,13 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
     {
         auto* PNpc                 = static_cast<CNpcEntity*>(PEntity);
         const bool isTransportLook = PNpc->look.size == MODEL_ELEVATOR || PNpc->look.size == MODEL_SHIP;
-        if (!isTransportLook && PNpc->targid < 1024 && !PEntity->isRenamed)
+        if (!isTransportLook && !PEntity->isRenamed)
         {
             const std::string& displayName = PNpc->packetName.empty() ? PNpc->getName() : PNpc->packetName;
-            if (displayName.size() > PacketNameLength - 1)
+            // Cutscene bodies in npc_list use internal name csnpc with empty polutils_name; the slot is often
+            // targid >= 1024. Omit the label so the client does not show the developer string over the model.
+            const bool omitCsnpcPlaceholder = (PNpc->getName() == "csnpc" && PNpc->packetName.empty());
+            if ((PNpc->targid < 1024 && displayName.size() > PacketNameLength - 1) || omitCsnpcPlaceholder)
             {
                 updatemask &= static_cast<uint8>(~UPDATE_NAME);
                 ref<uint8>(0x0A) &= static_cast<uint8>(~UPDATE_NAME);
@@ -393,6 +396,13 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
                     name = getTransportNPCName(PNpc);
                 }
 
+                // db name "csnpc" with empty polutils: the early omit strips UPDATE_NAME, but ENTITY_SPAWN for
+                // equipped/chocobo look still takes this path and would write "csnpc" at 0x44 (long layout).
+                if (PNpc->getName() == "csnpc" && PNpc->packetName.empty() && !PEntity->isRenamed)
+                {
+                    name.clear();
+                }
+
                 // 0x00E fits at most 15 displayable characters in the standard name slot (PacketNameLength includes a
                 // terminator slot; see utils.h). Longer names truncate badly (e.g. "Linkshell Conci"). Known NPCs get
                 // a readable short label; DB polutils_name should also be kept within this limit.
@@ -414,7 +424,14 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
                 {
                     // depending on size of name, this can be 0x20, 0x22, or 0x24
                     this->setSize(0x48);
-                    std::memcpy(buffer_.data() + 0x34, name.c_str(), std::min<size_t>(name.size(), PacketNameLength));
+                    if (name.empty())
+                    {
+                        std::memset(buffer_.data() + 0x34, 0, PacketNameLength);
+                    }
+                    else
+                    {
+                        std::memcpy(buffer_.data() + 0x34, name.c_str(), std::min<size_t>(name.size(), PacketNameLength));
+                    }
                 }
             }
         }
