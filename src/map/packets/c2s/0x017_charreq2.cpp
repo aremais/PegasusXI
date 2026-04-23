@@ -26,10 +26,17 @@
 auto GP_CLI_COMMAND_CHARREQ2::validate(MapSession* PSession, const CCharEntity* PChar) const -> PacketValidationResult
 {
     // Not implemented.
-    return PacketValidator();
+    return PacketValidator(PChar)
+        .blockedBy({ BlockedState::InEvent });
 }
 
 void GP_CLI_COMMAND_CHARREQ2::process(MapSession* PSession, CCharEntity* PChar) const
 {
-    ShowWarning("GP_CLI_COMMAND_CHARREQ2: Incorrect NPC(%u,%u) type(%u)", ActIndex, UniqueNo2, Flg);
+    // Client probes entities during zoning; we do not emulate retail NPC state here. Keep at debug to avoid warning spam.
+    ShowDebugFmt("GP_CLI_COMMAND_CHARREQ2: unhandled NPC target ActIndex={} UniqueNo2={} Flg={} ({})",
+                  this->ActIndex,
+                  this->UniqueNo2,
+                  this->Flg,
+                  PChar ? PChar->getName() : "?");
+    (void)PSession;
 }

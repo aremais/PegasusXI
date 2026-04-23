@@ -1,7 +1,7 @@
-﻿/*
+/*
 ===========================================================================
 
-  Copyright (c) 2010-2015 Darkstar Dev Teams
+  Copyright (c) 2026 LandSandBoat Dev Teams
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,21 +19,28 @@
 ===========================================================================
 */
 
-#ifndef _PACKETSYSTEM_H
-#define _PACKETSYSTEM_H
+#pragma once
 
 #include "common/cbasetypes.h"
 #include "packets/basic.h"
+#include "packets/c2s/rate_limiter.h"
 
 #include "entities/charentity.h"
 
+#include <functional>
+
 struct MapSession;
 
+// C2S packet dispatch table (defined in packet_system.cpp)
 extern uint8 PacketSize[512];
-
 extern std::function<void(MapSession* const, CCharEntity* const, CBasicPacket&)> PacketParser[512];
-
-void PrintPacket(CBasicPacket& data);
 void PacketParserInitialize();
 
-#endif
+class PacketSystem
+{
+public:
+    void dispatch(uint16 packetId, MapSession* PSession, CCharEntity* PChar, CBasicPacket& data);
+
+private:
+    PacketRateLimiter rateLimiter_;
+};

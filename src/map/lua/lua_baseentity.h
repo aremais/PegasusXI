@@ -33,6 +33,7 @@ enum class QuestLog : uint8_t;
 enum class POSMODE : uint8;
 enum class MusicSlot : uint16_t;
 enum class ChocoboColor : uint8_t;
+enum class TerrainType : uint8;
 class CBaseEntity;
 class CCharEntity;
 class CLuaBattlefield;
@@ -76,6 +77,7 @@ public:
     // Variables
     int32  getCharVar(const std::string& varName);
     auto   getCharVarsWithPrefix(const std::string& prefix) -> sol::table;
+    auto   getCharVarsWithSuffix(const std::string& suffix) -> sol::table;
     void   setCharVar(const std::string& varname, int32 value, const sol::object& expiry);
     void   setCharVarExpiration(const std::string& varName, uint32 expiry); // Sets character variable expiration timestamp
     void   incrementCharVar(const std::string& varname, int32 value);       // Increments/decrements/sets a character variable
@@ -94,6 +96,8 @@ public:
     void entityVisualPacket(const std::string& command, const sol::object& entity) const;
     void entityAnimationPacket(const char* command, const sol::object& target);
     void sendDebugPacket(const sol::table& packetData);
+    void addPacketMod(uint16 packetId, uint16 offset, uint8 value);
+    void clearPacketMods();
 
     void       StartEventHelper(int32 EventID, sol::variadic_args va, EVENT_TYPE eventType);
     EventInfo* ParseEvent(int32 EventID, sol::variadic_args va, EventPrep* eventPreparation, EVENT_TYPE eventType);
@@ -249,8 +253,8 @@ public:
     bool   delContainerItems(const sol::object& containerID);
     bool   addUsedItem(uint16 itemID);
     bool   addTempItem(uint16 itemID, const sol::object& arg1);
-    uint8  getWornUses(uint16 itemID);                                     // Check if the item is already worn
-    uint8  incrementItemWear(uint16 itemID);                               // Increment the item's worn value and returns it
+    uint8  getWornUses(uint16 itemID);                      // Check if the item is already worn
+    uint8  incrementItemWear(uint16 itemID);               // Increment the item's worn value and returns it
     auto   findItem(uint16 itemID, const sol::object& location) -> CItem*; // Like hasItem, but returns the item object (nil if not found)
     auto   findItems(uint16 itemID, const sol::object& location) -> sol::table;
     auto   getItems(const sol::object& location) -> sol::table;
@@ -261,7 +265,6 @@ public:
     bool breakLinkshell(const std::string& lsname);
     bool addLinkpearl(const std::string& lsname, bool equip);
     bool addLinkshellHolder(const std::string& lsname, sol::optional<uint8> equipSlot);
-
     auto addSoulPlate(const std::string& name, uint32 interestData, uint8 zeni, uint16 skillIndex, uint8 fp) -> CItem*;
 
     // Trading
@@ -962,9 +965,6 @@ public:
     auto   getContestRewardStatus() -> sol::table;
     auto   getContestRankHistory() -> sol::table;
     void   claimContestReward();
-
-    void addPacketMod(uint16 packetId, uint16 offset, uint8 value);
-    void clearPacketMods();
 
     bool operator==(const CLuaBaseEntity& other) const
     {

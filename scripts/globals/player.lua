@@ -169,6 +169,34 @@ xi.player.onGameIn = function(player, firstLogin, zoning)
         end
     end
 
+    local zoneID    = player:getZoneID()
+    local questVars = {}
+
+    -- Clear mustZone char vars when the player is in a different zone than recorded.
+    -- Names look like Quest[a][b]mustZone, Mission[a][b]mustZone, or legacy [a][b]mustZone / [qm1]mustZone.
+    -- Use prefix scans only: avoids depending on getCharVarsWithSuffix (some builds lacked the Lua binding).
+    local function addVarsEndingInMustZone(source)
+        if not source then
+            return
+        end
+
+        for tag, value in pairs(source) do
+            if type(tag) == 'string' and tag:sub(-9) == ']mustZone' then
+                questVars[tag] = value
+            end
+        end
+    end
+
+    addVarsEndingInMustZone(player:getCharVarsWithPrefix('Quest['))
+    addVarsEndingInMustZone(player:getCharVarsWithPrefix('Mission['))
+    addVarsEndingInMustZone(player:getCharVarsWithPrefix('['))
+
+    for tag, value in pairs(questVars) do
+        if value ~= zoneID then
+            player:setCharVar(tag, 0)
+        end
+    end
+
     -- Abyssea starting quest should be flagged when expansion is active
     if
         xi.settings.main.ENABLE_ABYSSEA == 1 and
@@ -236,12 +264,8 @@ xi.player.onGameIn = function(player, firstLogin, zoning)
     player:setLocalVar('ZoneInTime', GetSystemTime())
     player:setLocalVar('ZoningIn', 1)
 
-    -- Slight delay to ensure player is fully logged in
-    player:timer(2500, function(playerArg)
-        player:setLocalVar('ZoningIn', 0)
-        -- Login Campaign rewards points once daily
-        xi.events.loginCampaign.onGameIn(playerArg)
-    end)
+    -- Clearing ZoningIn + login campaign after 2.5s is scheduled from C++ (luautils::OnGameIn) to avoid
+    -- sol::function timer crashes on some environments.
 
     -- Enforce that gameLogin is always set to 0 once this method exits
     -- This assists with ensuring Abyssea visitant status is handled properly on logins

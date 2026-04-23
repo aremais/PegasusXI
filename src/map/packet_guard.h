@@ -1,7 +1,7 @@
-﻿/*
+/*
 ===========================================================================
 
-  Copyright (c) 2025 LandSandBoat Dev Teams
+  Copyright (c) 2026 LandSandBoat Dev Teams
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,20 +22,27 @@
 #pragma once
 
 #include "common/cbasetypes.h"
-#include "packet_system.h"
-#include "packets/basic.h"
 
 class CCharEntity;
 
-namespace PacketGuard
+struct PacketGuard
 {
+    static bool IsRateLimitedPacket(CCharEntity* /*PChar*/, uint16 /*packetType*/)
+    {
+        return false;
+    }
 
-void Init();
-bool PacketIsValidForPlayerState(CCharEntity* PChar, uint16 SmallPD_Type);
-bool IsRateLimitedPacket(CCharEntity* PChar, uint16 SmallPD_Type);
-bool PacketsArrivingInCorrectOrder(CCharEntity* PChar, uint16 SmallPD_Type);
-void PrintPacketList(CCharEntity* PChar);
+    static bool PacketIsValidForPlayerState(CCharEntity* /*PChar*/, uint16 /*packetType*/)
+    {
+        return true;
+    }
 
-auto GetPacketAllowList() -> std::unordered_map<CHAR_SUBSTATE, std::unordered_map<uint16, bool>>&;
+    static bool PacketsArrivingInCorrectOrder(CCharEntity* /*PChar*/, uint16 /*packetType*/)
+    {
+        return true;
+    }
 
-} // namespace PacketGuard
+    static void PrintPacketList(CCharEntity* /*PChar*/)
+    {
+    }
+};

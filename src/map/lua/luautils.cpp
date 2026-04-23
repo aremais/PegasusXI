@@ -23,6 +23,7 @@
 
 #include <common/application.h>
 #include <common/database.h>
+#include <common/scheduler.h>
 #include <common/filewatcher.h>
 #include <common/ipp.h>
 #include <common/ipc.h>
@@ -35,7 +36,12 @@
 #include <common/version.h>
 
 #include <algorithm>
+#include <asio/this_coro.hpp>
+#include <asio/steady_timer.hpp>
+#include <asio/use_awaitable.hpp>
 #include <cctype>
+#include <chrono>
+#include <functional>
 
 #include "lua_action.h"
 #include "lua_battlefield.h"
@@ -142,6 +148,46 @@ namespace luautils
 
 std::unique_ptr<Filewatcher>           filewatcher;
 std::unordered_map<uint32, sol::table> customMenuContext;
+
+namespace
+{
+Scheduler* g_mapScheduler = nullptr;
+
+// Deferred ZoningIn clear + login campaign (was player:timer / PAI::QueueAction). Run the delayed
+// follow-up on the map scheduler so this path does not depend on the entity action queue.
+Task<void> delayedOnGameInFollowup(uint32 charId)
+{
+    try
+    {
+        const auto executor = co_await asio::this_coro::executor;
+        asio::steady_timer timer(executor);
+        timer.expires_after(std::chrono::milliseconds(2500));
+        co_await timer.async_wait(asio::use_awaitable);
+
+        CCharEntity* PChar = zoneutils::GetChar(charId);
+        if (PChar != nullptr && PChar->objtype == TYPE_PC && PChar->id == charId)
+        {
+            PChar->SetLocalVar("ZoningIn", 0);
+            callGlobal<void>("xi.events.loginCampaign.onGameIn", PChar);
+        }
+    }
+    catch (const std::exception& e)
+    {
+        ShowError("luautils::delayedOnGameInFollowup: %s", e.what());
+    }
+    catch (...)
+    {
+        ShowError("luautils::delayedOnGameInFollowup: unknown exception");
+    }
+
+    co_return;
+}
+} // namespace
+
+void setMapScheduler(Scheduler* scheduler)
+{
+    g_mapScheduler = scheduler;
+}
 
 namespace detail
 {
@@ -324,6 +370,7 @@ void init(IPP mapIPP, bool isRunningInCI)
     lua.set_function("GetSynergyRecipeByID", &luautils::GetSynergyRecipeByID);
     lua.set_function("GetSynergyRecipeByTrade", &luautils::GetSynergyRecipeByTrade);
     lua.set_function("ReloadSynthRecipes", &synthutils::LoadSynthRecipes);
+    lua.set_function("LoadExpDifficultyCurves", &luautils::LoadExpDifficultyCurves);
 
     // Fishing Contest Functions
     lua.set_function("GetFishingContest", &luautils::GetFishingContest);
@@ -495,6 +542,7 @@ void init(IPP mapIPP, bool isRunningInCI)
 
     void cleanup()
     {
+        g_mapScheduler = nullptr;
         moduleutils::CleanupLuaModules();
     }
 
@@ -1006,6 +1054,32 @@ void OnEntityLoad(CBaseEntity* PEntity)
         }
         break;
     }
+}
+
+void LoadExpDifficultyCurves(const sol::table& expToDifficultyTable, const uint8 incrediblyEasyPreyLevel, const uint16 incrediblyEasyPreyMinExp)
+{
+    std::vector<std::pair<uint16, EMobDifficulty>> expDifficultyTable;
+
+    for (auto& [expObj, difficultyObj] : expToDifficultyTable)
+    {
+        uint16         exp        = expObj.as<uint16>();
+        EMobDifficulty difficulty = static_cast<EMobDifficulty>(difficultyObj.as<uint8>());
+
+        expDifficultyTable.emplace_back(exp, difficulty);
+    }
+
+    // Sort highest to lowest
+    std::sort(
+        expDifficultyTable.begin(),
+        expDifficultyTable.end(),
+        [](std::pair<uint16, EMobDifficulty> const& a, std::pair<uint16, EMobDifficulty> const& b)
+        {
+            return a.first > b.first;
+        });
+
+    std::pair<uint16, uint8> iep = { incrediblyEasyPreyLevel, incrediblyEasyPreyMinExp };
+
+    charutils::SetExpDifficultyCurve(expDifficultyTable, iep);
 }
 
 void PopulateIDLookups(uint16 zoneId, const std::string& zoneName)
@@ -1990,6 +2064,19 @@ void OnGameIn(CCharEntity* PChar, bool zoning)
     ShowTraceFmt("luautils::OnGameIn: {}", PChar->getName());
 
     callGlobal<void>("xi.player.onGameIn", PChar, PChar->GetPlayTime(false) == 0s, zoning);
+
+    // Previously this was delayed through the player timer / entity action queue path.
+    // Run the same follow-up on the map scheduler instead.
+    if (g_mapScheduler != nullptr)
+    {
+        g_mapScheduler->postToMainThread(delayedOnGameInFollowup(PChar->id));
+    }
+    else
+    {
+        ShowWarning("luautils::OnGameIn: map scheduler not set; running login campaign follow-up immediately.");
+        PChar->SetLocalVar("ZoningIn", 0);
+        callGlobal<void>("xi.events.loginCampaign.onGameIn", PChar);
+    }
 }
 
 void OnZoneIn(CCharEntity* PChar)
@@ -2745,7 +2832,7 @@ int32 OnItemUse(CBaseEntity* PUser, CBaseEntity* PTarget, CItem* PItem, action_t
 }
 
 // Trigger Code on an item when it has been dropped
-void OnItemDrop(CBaseEntity* PUser, CItem* PItem)
+void OnItemDrop(CBaseEntity* PUser, CItem* PItem, IsRecycleBin recycleBin)
 {
     TracyZoneScoped;
 
@@ -2757,7 +2844,7 @@ void OnItemDrop(CBaseEntity* PUser, CItem* PItem)
         return;
     }
 
-    auto result = onItemDrop(PUser, PItem);
+    auto result = onItemDrop(PUser, PItem, static_cast<bool>(recycleBin));
     if (!result.valid())
     {
         sol::error err = result;

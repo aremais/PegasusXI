@@ -18,6 +18,7 @@ local gobCS = -- add the goblin cs to this table
     [xi.zone.BOSTAUNIEUX_OUBLIETTE] = 100,
     [xi.zone.MAZE_OF_SHAKHRAMI]     = 67,
     [xi.zone.GARLAIGE_CITADEL]      = 61,
+    [xi.zone.KING_RANPERRES_TOMB]   = 2,
 }
 
 local csReq = -- add checks to this table
@@ -260,6 +261,25 @@ local csReq = -- add checks to this table
             return player:hasCompletedQuest(xi.questLog.SANDORIA, xi.quest.id.sandoria.PEACE_FOR_THE_SPIRIT)
         end,
     },
+
+    [xi.zone.KING_RANPERRES_TOMB] =
+    {
+        [1] = function(player)
+            return player:hasCompletedMission(xi.mission.log_id.SANDORIA, xi.mission.id.sandoria.BAT_HUNT)
+        end,
+
+        [2] = function(player)
+            return player:hasCompletedMission(xi.mission.log_id.SANDORIA, xi.mission.id.sandoria.RANPERRES_FINAL_REST)
+        end,
+
+        [3] = function(player)
+            return player:hasCompletedMission(xi.mission.log_id.SANDORIA, xi.mission.id.sandoria.RANPERRES_FINAL_REST)
+        end,
+
+        [4] = function(player)
+            return player:hasCompletedMission(xi.mission.log_id.SANDORIA, xi.mission.id.sandoria.THE_HEIR_TO_THE_LIGHT)
+        end,
+    },
 }
 
 local cutscene = -- add cutscenes to this table
@@ -340,6 +360,14 @@ local cutscene = -- add cutscenes to this table
     {
         [1] = { 60 },             -- Escort for Hire (Windurst)
         [2] = { 14 },             -- Peace for the Spirit
+    },
+    [xi.zone.KING_RANPERRES_TOMB] =
+    {
+        [1] = { 4 }, -- Bat Hunt
+        -- Event id first, then param table: strings must not follow a number in startEvent (ParseEvent ignores them).
+        [2] = { 8, { strings = { [0] = 'Leaute', [1] = 'Leaute' } } }, -- Ranperre's Final Rest (pt.1)
+        [3] = { 5, { strings = { [0] = 'Leaute', [1] = 'Leaute' } } }, -- Ranperre's Final Rest (pt.2)
+        [4] = { 14 }, -- The Heir to the Light
     },
 }
 

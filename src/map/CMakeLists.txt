@@ -99,7 +99,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/map_session_container.h
     ${CMAKE_CURRENT_SOURCE_DIR}/map_session.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/map_session.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/map_socket.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/_map_socket_patched.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/map_socket.h
     ${CMAKE_CURRENT_SOURCE_DIR}/map_statistics.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/map_statistics.h
@@ -118,10 +118,11 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/monstrosity.h
     ${CMAKE_CURRENT_SOURCE_DIR}/navmesh.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/navmesh.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/zone_mesh.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/zone_mesh.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/ximesh.h
     ${CMAKE_CURRENT_SOURCE_DIR}/notoriety_container.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/notoriety_container.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/packet_guard.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/packet_guard.h
     ${CMAKE_CURRENT_SOURCE_DIR}/packet_system.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/packet_system.h
     ${CMAKE_CURRENT_SOURCE_DIR}/party.cpp

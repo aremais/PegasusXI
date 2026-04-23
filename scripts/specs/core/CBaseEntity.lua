@@ -951,6 +951,7 @@ end
 
 -- TODO: This one is going to be really messy, might be better to create multiple definitions
 -- for readability.
+---@return CItem?
 function CBaseEntity:addItem(...)
 end
 
@@ -1059,16 +1060,6 @@ end
 ---@param equipSlot? integer
 ---@return boolean
 function CBaseEntity:addLinkshellHolder(lsname, equipSlot)
-end
-
----@nodiscard
----@param name string
----@param interestData integer
----@param zeni integer
----@param skillIndex integer
----@param fp integer
----@return CItem?
-function CBaseEntity:addSoulPlate(name, interestData, zeni, skillIndex, fp)
 end
 
 ---@nodiscard
@@ -2905,7 +2896,7 @@ function CBaseEntity:getStatusEffectBySource(StatusID, SourceType, SourceTypePar
 end
 
 ---@nodiscard
----@return table
+---@return CStatusEffect[]
 function CBaseEntity:getStatusEffects()
 end
 
@@ -3679,7 +3670,6 @@ end
 function CBaseEntity:getModelSize()
 end
 
----@nodiscard
 ---@param newSize number
 ---@return nil
 function CBaseEntity:setModelSize(newSize)
@@ -3690,7 +3680,6 @@ end
 function CBaseEntity:getHitboxSize()
 end
 
----@nodiscard
 ---@param newSize number
 ---@return nil
 function CBaseEntity:setHitboxSize(newSize)

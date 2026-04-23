@@ -68,8 +68,7 @@ const auto createLinkshell = [](CCharEntity* PChar, CItemLinkshell* PItemLinkshe
     uint32_t       linkshellId    = 0;
     const uint16_t linkshellColor = (data.a << 12) | (data.b << 8) | (data.g << 4) | data.r;
 
-    char DecodedName[DecodeStringLength]    = {};
-    char EncodedName[LinkshellStringLength] = {};
+    char DecodedName[DecodeStringLength] = {};
 
     const auto encodedRawName = asStringFromUntrustedSource(data.sComLinkName, sizeof(data.sComLinkName));
 
@@ -88,8 +87,6 @@ const auto createLinkshell = [](CCharEntity* PChar, CItemLinkshell* PItemLinkshe
         return;
     }
 
-    EncodeStringLinkshell(decodedNameStr, EncodedName);
-
     const auto safeName = db::escapeString(decodedNameStr);
     linkshellId         = linkshell::RegisterNewLinkshell(safeName, linkshellColor);
 
@@ -106,7 +103,8 @@ const auto createLinkshell = [](CCharEntity* PChar, CItemLinkshell* PItemLinkshe
         PChar->getStorage(data.Category)->InsertItem(PItemLinkshell, data.ItemIndex);
         PItemLinkshell->SetLSID(linkshellId);
         PItemLinkshell->SetLSType(LSTYPE_LINKSHELL);
-        PItemLinkshell->setSignature(EncodedName); // because apparently the format from the packet isn't right, and is missing terminators
+        // setSignature() expects the decoded display name and encodes into item exdata (not raw packet bytes).
+        PItemLinkshell->setSignature(decodedNameStr);
         PItemLinkshell->SetLSColor(linkshellColor);
 
         const auto rset = db::preparedStmt("UPDATE char_inventory SET signature = ?, extra = ?, itemId = 513 WHERE charid = ? AND location = ? AND slot = ? LIMIT 1",
@@ -218,7 +216,7 @@ const auto unequipLinkshell = [](CCharEntity* PChar, CItemLinkshell* PItemLinksh
 
 auto GP_CLI_COMMAND_GROUP_COMLINK_ACTIVE::validate(MapSession* PSession, const CCharEntity* PChar) const -> PacketValidationResult
 {
-    return PacketValidator()
+    return PacketValidator(PChar)
         .range("r", r, 0, 15)
         .range("g", g, 0, 15)
         .range("b", b, 0, 15)

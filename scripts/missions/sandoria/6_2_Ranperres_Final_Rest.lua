@@ -132,11 +132,11 @@ mission.sections =
                         (missionStatus == 2 or missionStatus == 3) and
                         player:getXPos() > -39.019
                     then
-                        return mission:progressEvent(6)
+                        return mission:progressCutscene(6, { strings = { [0] = 'Leaute', [1] = 'Leaute' } })
                     elseif missionStatus == 3 and player:getXPos() <= -39.019 then
-                        return mission:progressEvent(7)
+                        return mission:progressCutscene(7, { strings = { [0] = 'Leaute', [1] = 'Leaute' } })
                     elseif missionStatus == 6 then
-                        return mission:progressEvent(5)
+                        return mission:progressCutscene(5, { strings = { [0] = 'Leaute', [1] = 'Leaute' } })
                     end
                 end,
             },
@@ -187,7 +187,7 @@ mission.sections =
                         player:getMissionStatus(mission.areaId) == 3 and
                         not player:hasKeyItem(xi.ki.ANCIENT_SAN_DORIAN_BOOK)
                     then
-                        return mission:progressEvent(8)
+                        return mission:progressCutscene(8, { strings = { [0] = 'Leaute', [1] = 'Leaute' } })
                     elseif player:hasKeyItem(xi.ki.ANCIENT_SAN_DORIAN_BOOK) then
                         return mission:messageSpecial(krtID.text.FINAL_RESTING_PLACE)
                     end

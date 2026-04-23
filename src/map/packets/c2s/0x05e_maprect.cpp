@@ -84,7 +84,7 @@ const auto denyZone = [](CCharEntity* PChar)
 
 auto GP_CLI_COMMAND_MAPRECT::validate(MapSession* PSession, const CCharEntity* PChar) const -> PacketValidationResult
 {
-    return PacketValidator()
+    return PacketValidator(PChar)
         .oneOf<GP_CLI_COMMAND_MAPRECT_MYROOMEXITBIT>(this->MyRoomExitBit)
         .oneOf<GP_CLI_COMMAND_MAPRECT_MYROOMEXITMODE>(this->MyRoomExitMode);
 }

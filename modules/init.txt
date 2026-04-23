@@ -38,4 +38,4 @@
 
 custom/commands/
 custom/lua/test_npcs_in_gm_home.lua
-custom/lua/new_player_linkshell.lua
+# custom/lua/new_player_linkshell.lua -- disabled: add PegasusXI row to linkshells + uncomment to re-enable

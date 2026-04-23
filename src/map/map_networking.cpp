@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
   Copyright (c) 2025 LandSandBoat Dev Teams
@@ -40,6 +40,8 @@
 #include "map_statistics.h"
 #include "packet_guard.h"
 #include "packet_system.h"
+
+#include <functional>
 #include "roe.h"
 #include "status_effect_container.h"
 #include "transport.h"
@@ -53,10 +55,6 @@ std::unordered_map<uint32, std::unordered_map<uint16, std::vector<std::pair<uint
 
 namespace
 {
-
-NetworkBuffer PBuff;          // Global packet clipboard
-NetworkBuffer PBuffCopy;      // Copy of above, used to decrypt a second time if necessary.
-NetworkBuffer PScratchBuffer; // Temporary packet clipboard
 
 // Runtime statistics
 // TODO: Move these to MapStatistics
@@ -73,6 +71,9 @@ MapNetworking::MapNetworking(Scheduler& scheduler, MapStatistics& mapStatistics,
 , config_(config)
 {
     TracyZoneScoped;
+
+    // Must run before any incoming packet can reach PacketSystem::dispatch (UDP recv can start immediately).
+    PacketParserInitialize();
 
     // Embedded map server for testing does not actually need to open a socket
     if (config_.isTestServer)
@@ -93,7 +94,7 @@ MapNetworking::MapNetworking(Scheduler& scheduler, MapStatistics& mapStatistics,
     }
 }
 
-void MapNetworking::tapStatistics()
+void MapNetworking::flushStatistics()
 {
     // Collect statistics
     // TODO: Collect these inline
@@ -134,7 +135,7 @@ void MapNetworking::tapStatistics()
     TotalPacketsDelayedPerTick = 0U;
 }
 
-void MapNetworking::handle_incoming_packet(const std::error_code& ec, std::span<uint8> buffer, const IPP& ipp)
+void MapNetworking::handle_incoming_packet(const std::error_code& ec, ByteSpan buffer, const IPP& ipp)
 {
     TracyZoneScoped;
 
@@ -163,7 +164,7 @@ void MapNetworking::handle_incoming_packet(const std::error_code& ec, std::span<
                 // and send the previous packet again
                 if (!parse(PBuff.data(), &size, map_session_data))
                 {
-                    send_parse(PBuff.data(), &size, map_session_data, false);
+                    send_parse(PBuff.data(), &size, map_session_data, UsePreviousKey{ false });
                 }
             }
             else if (decryptCount == 1 && map_session_data->blowfish.status == BLOWFISH_PENDING_ZONE)
@@ -174,7 +175,7 @@ void MapNetworking::handle_incoming_packet(const std::error_code& ec, std::span<
 
                 // Client failed to receive 0x00B, resend it
                 GP_SERV_COMMAND_LOGOUT zonePacket(map_session_data->zone_type, map_session_data->zone_ipp);
-                sendSinglePacketNoPChar(PBuff.data(), &size, map_session_data, true, &zonePacket);
+                sendSinglePacketNoPChar(PBuff.data(), &size, map_session_data, UsePreviousKey{ true }, &zonePacket);
 
                 // Increment sync count with every packet
                 // TODO: match incoming with a new parse that only cares about sync count
@@ -509,7 +510,18 @@ int32 MapNetworking::parse(uint8* buff, size_t* buffsize, MapSession* map_sessio
                 //     : instead of creating a new packet here.
                 auto basicPacket = CBasicPacket::createFromBuffer(reinterpret_cast<uint8*>(SmallPD_ptr));
                 ShowTraceFmt("map::parse: Char: {} ({}): {}", PChar->getName(), PChar->id, hex16ToString(basicPacket->getType()));
-                PacketParser[SmallPD_Type](map_session_data, PChar, *basicPacket);
+                try
+                {
+                    packetSystem().dispatch(static_cast<uint16>(SmallPD_Type), map_session_data, PChar, *basicPacket);
+                }
+                catch (const std::bad_function_call& e)
+                {
+                    ShowCriticalFmt(
+                        "Packet dispatch std::bad_function_call for packet {:03X} from {}: {} (check PacketParser entry / custom modules)",
+                        SmallPD_Type,
+                        PChar->getName(),
+                        e.what());
+                }
             }
         }
         else
@@ -566,7 +578,7 @@ int32 MapNetworking::parse(uint8* buff, size_t* buffsize, MapSession* map_sessio
     return 0;
 }
 
-int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_session_data, bool usePreviousKey)
+int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_session_data, UsePreviousKey usePreviousKey)
 {
     TracyZoneScoped;
 
@@ -588,7 +600,7 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
 
     std::unique_ptr<CBasicPacket> PSmallPacket = nullptr;
 
-    uint32 PacketSize               = UINT32_MAX;
+    uint32 cryptoPayloadSize         = UINT32_MAX;
     size_t PacketCount              = std::clamp<size_t>(PChar->getPacketCount(), 0, kMaxPacketPerCompression);
     uint8  packets                  = 0;
     bool   incrementKeyAfterEncrypt = false;
@@ -624,11 +636,11 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
                         {
                             auto offset = entry.first;
                             auto value  = entry.second;
-                            ShowInfo(fmt::format("Packet Mod ({}): {}: {}: {}",
-                                                 PChar->name,
-                                                 hex16ToString(type),
-                                                 hex16ToString(offset),
-                                                 hex8ToString(value)));
+                            ShowInfoFmt("Packet Mod ({}): {}: {}: {}",
+                                        PChar->name,
+                                        hex16ToString(type),
+                                        hex16ToString(offset),
+                                        hex8ToString(value));
                             PSmallPacket->ref<uint8>(offset) = value;
                         }
                     }
@@ -659,22 +671,22 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
 
             // Compress the data without regard to the header
             // The returned size is 8 times the real data
-            PacketSize = zlib_compress((int8*)(buff + FFXI_HEADER_SIZE), (uint32)(*buffsize - FFXI_HEADER_SIZE), (int8*)PScratchBuffer.data(), kMaxBufferSize);
+            cryptoPayloadSize = zlib_compress((int8*)(buff + FFXI_HEADER_SIZE), (uint32)(*buffsize - FFXI_HEADER_SIZE), (int8*)PScratchBuffer.data(), kMaxBufferSize);
 
             // handle compression error
-            if (PacketSize == static_cast<uint32>(-1))
+            if (cryptoPayloadSize == static_cast<uint32>(-1))
             {
                 ShowError("zlib compression error");
                 continue;
             }
 
-            ref<uint32>(PScratchBuffer.data(), zlib_compressed_size(PacketSize)) = PacketSize;
+            ref<uint32>(PScratchBuffer.data(), zlib_compressed_size(cryptoPayloadSize)) = cryptoPayloadSize;
 
-            PacketSize = (uint32)zlib_compressed_size(PacketSize) + 4;
+            cryptoPayloadSize = (uint32)zlib_compressed_size(cryptoPayloadSize) + 4;
 
-        } while (PacketCount > 0 && PacketSize > 1300 - FFXI_HEADER_SIZE - 16); // max size for client to accept
+        } while (PacketCount > 0 && cryptoPayloadSize > 1300 - FFXI_HEADER_SIZE - 16); // max size for client to accept
 
-        if (PacketSize == static_cast<uint32>(-1))
+        if (cryptoPayloadSize == static_cast<uint32>(-1))
         {
             if (PChar->getPacketCount() > 0)
             {
@@ -687,7 +699,7 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
                 return -1;
             }
         }
-    } while (PacketSize == static_cast<uint32>(-1));
+    } while (cryptoPayloadSize == static_cast<uint32>(-1));
 
     PChar->erasePackets(packets);
     TotalPacketsSentPerTick += packets;
@@ -695,23 +707,23 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
 
     // Record data size excluding header
     uint8 hash[16];
-    md5(PScratchBuffer.data(), hash, PacketSize);
-    std::memcpy(PScratchBuffer.data() + PacketSize, hash, 16);
-    PacketSize += 16;
+    md5(PScratchBuffer.data(), hash, cryptoPayloadSize);
+    std::memcpy(PScratchBuffer.data() + cryptoPayloadSize, hash, 16);
+    cryptoPayloadSize += 16;
 
-    if (PacketSize > kMaxBufferSize)
+    if (cryptoPayloadSize > kMaxBufferSize)
     {
-        ShowCritical("Network: PScratchBuffer is overflowed (%u) by %s", PacketSize, PChar->name);
+        ShowCritical("Network: PScratchBuffer is overflowed (%u) by %s", cryptoPayloadSize, PChar->name);
     }
 
     // Making total outgoing packet
-    std::memcpy(buff + FFXI_HEADER_SIZE, PScratchBuffer.data(), PacketSize);
+    std::memcpy(buff + FFXI_HEADER_SIZE, PScratchBuffer.data(), cryptoPayloadSize);
 
-    uint32 CypherSize = (PacketSize / 4) & -2;
+    uint32 CypherSize = (cryptoPayloadSize / 4) & -2;
 
     blowfish_t* pbfkey = nullptr;
 
-    if (map_session_data->blowfish.status == BLOWFISH_PENDING_ZONE && usePreviousKey)
+    if (map_session_data->blowfish.status == BLOWFISH_PENDING_ZONE && static_cast<bool>(usePreviousKey))
     {
         pbfkey = &map_session_data->prev_blowfish;
     }
@@ -732,7 +744,7 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
     // in case of a similar situation, display a warning message and
     // decrease the size of BuffMaxSize in 4 byte increments until it is removed (manually)
 
-    *buffsize = PacketSize + FFXI_HEADER_SIZE;
+    *buffsize = cryptoPayloadSize + FFXI_HEADER_SIZE;
 
     auto remainingPackets = PChar->getPacketCount();
     TotalPacketsDelayedPerTick += static_cast<uint32>(remainingPackets);
@@ -743,15 +755,15 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
         {
             if (PChar->loc.zone == nullptr)
             {
-                ShowWarning(fmt::format("Packet backlog exists for char {} with a nullptr zone. Clearing packet list.", PChar->name));
+                ShowWarningFmt("Packet backlog exists for char {} with a nullptr zone. Clearing packet list.", PChar->name);
                 PChar->clearPacketList();
                 return 0;
             }
-            ShowWarning(fmt::format("Packet backlog for char {} in {} is {}! Limit is: {}",
-                                    PChar->name,
-                                    PChar->loc.zone->getName(),
-                                    remainingPackets,
-                                    kMaxPacketBacklogSize));
+            ShowWarningFmt("Packet backlog for char {} in {} is {}! Limit is: {}",
+                           PChar->name,
+                           PChar->loc.zone->getName(),
+                           remainingPackets,
+                           kMaxPacketBacklogSize);
         }
     }
 
@@ -781,7 +793,7 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
     return 0;
 }
 
-int32 MapNetworking::sendSinglePacketNoPChar(uint8* buff, size_t* buffsize, MapSession* map_session_data, bool usePreviousKey, CBasicPacket* packet)
+int32 MapNetworking::sendSinglePacketNoPChar(uint8* buff, size_t* buffsize, MapSession* map_session_data, UsePreviousKey usePreviousKey, CBasicPacket* packet)
 {
     TracyZoneScoped;
 
@@ -797,7 +809,7 @@ int32 MapNetworking::sendSinglePacketNoPChar(uint8* buff, size_t* buffsize, MapS
     // save the current time (32 BIT!)
     ref<uint32>(buff, 8) = earth_time::timestamp();
 
-    uint32 PacketSize = UINT32_MAX;
+    uint32 cryptoPayloadSize = UINT32_MAX;
     uint8  packets    = 0;
 
     TotalPacketsToSendPerTick += static_cast<size_t>(1);
@@ -817,11 +829,11 @@ int32 MapNetworking::sendSinglePacketNoPChar(uint8* buff, size_t* buffsize, MapS
             {
                 auto offset = entry.first;
                 auto value  = entry.second;
-                ShowInfo(fmt::format("Packet Mod (char ID {}): {}: {}: {}",
-                                     map_session_data->charID,
-                                     hex16ToString(type),
-                                     hex16ToString(offset),
-                                     hex8ToString(value)));
+                ShowInfoFmt("Packet Mod (char ID {}): {}: {}: {}",
+                            map_session_data->charID,
+                            hex16ToString(type),
+                            hex16ToString(offset),
+                            hex8ToString(value));
                 packet->ref<uint8>(offset) = value;
             }
         }
@@ -833,20 +845,20 @@ int32 MapNetworking::sendSinglePacketNoPChar(uint8* buff, size_t* buffsize, MapS
 
     // Compress the data without regard to the header
     // The returned size is 8 times the real data
-    PacketSize = zlib_compress((int8*)(buff + FFXI_HEADER_SIZE), (uint32)(*buffsize - FFXI_HEADER_SIZE), (int8*)PScratchBuffer.data(), kMaxBufferSize);
+    cryptoPayloadSize = zlib_compress((int8*)(buff + FFXI_HEADER_SIZE), (uint32)(*buffsize - FFXI_HEADER_SIZE), (int8*)PScratchBuffer.data(), kMaxBufferSize);
 
     // handle compression error
-    if (PacketSize == static_cast<uint32>(-1))
+    if (cryptoPayloadSize == static_cast<uint32>(-1))
     {
         ShowError("zlib compression error");
         return -1;
     }
 
-    ref<uint32>(PScratchBuffer.data(), zlib_compressed_size(PacketSize)) = PacketSize;
+    ref<uint32>(PScratchBuffer.data(), zlib_compressed_size(cryptoPayloadSize)) = cryptoPayloadSize;
 
-    PacketSize = (uint32)zlib_compressed_size(PacketSize) + 4;
+    cryptoPayloadSize = (uint32)zlib_compressed_size(cryptoPayloadSize) + 4;
 
-    if (PacketSize == static_cast<uint32>(-1))
+    if (cryptoPayloadSize == static_cast<uint32>(-1))
     {
         *buffsize = 0;
         return -1;
@@ -857,23 +869,23 @@ int32 MapNetworking::sendSinglePacketNoPChar(uint8* buff, size_t* buffsize, MapS
 
     // Record data size excluding header
     uint8 hash[16];
-    md5(PScratchBuffer.data(), hash, PacketSize);
-    std::memcpy(PScratchBuffer.data() + PacketSize, hash, 16);
-    PacketSize += 16;
+    md5(PScratchBuffer.data(), hash, cryptoPayloadSize);
+    std::memcpy(PScratchBuffer.data() + cryptoPayloadSize, hash, 16);
+    cryptoPayloadSize += 16;
 
-    if (PacketSize > kMaxBufferSize)
+    if (cryptoPayloadSize > kMaxBufferSize)
     {
-        ShowCritical("Network: PScratchBuffer is overflowed (%u) by char id %s", PacketSize, map_session_data->charID);
+        ShowCritical("Network: PScratchBuffer is overflowed (%u) by char id %s", cryptoPayloadSize, map_session_data->charID);
     }
 
     // Making total outgoing packet
-    std::memcpy(buff + FFXI_HEADER_SIZE, PScratchBuffer.data(), PacketSize);
+    std::memcpy(buff + FFXI_HEADER_SIZE, PScratchBuffer.data(), cryptoPayloadSize);
 
-    uint32 CypherSize = (PacketSize / 4) & -2;
+    uint32 CypherSize = (cryptoPayloadSize / 4) & -2;
 
     blowfish_t* pbfkey = nullptr;
 
-    if (map_session_data->blowfish.status == BLOWFISH_PENDING_ZONE && usePreviousKey)
+    if (map_session_data->blowfish.status == BLOWFISH_PENDING_ZONE && static_cast<bool>(usePreviousKey))
     {
         pbfkey = &map_session_data->prev_blowfish;
     }
@@ -887,7 +899,7 @@ int32 MapNetworking::sendSinglePacketNoPChar(uint8* buff, size_t* buffsize, MapS
         blowfish_encipher((uint32*)(buff) + j + 7, (uint32*)(buff) + j + 8, pbfkey->P, pbfkey->S[0]);
     }
 
-    *buffsize = PacketSize + FFXI_HEADER_SIZE;
+    *buffsize = cryptoPayloadSize + FFXI_HEADER_SIZE;
 
     return 0;
 }
@@ -910,4 +922,9 @@ auto MapNetworking::scheduler() -> Scheduler&
 auto MapNetworking::socket() -> MapSocket&
 {
     return *mapSocket_;
+}
+
+auto MapNetworking::packetSystem() -> PacketSystem&
+{
+    return packetSystem_;
 }

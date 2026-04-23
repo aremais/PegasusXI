@@ -109,6 +109,8 @@ struct action_result_t;
 enum ConquestUpdate : uint8;
 enum class Emote : uint8;
 
+class Scheduler;
+
 namespace luautils
 {
 namespace detail
@@ -132,6 +134,9 @@ void init(IPP mapIPP, bool isRunningInCI);
 void garbageCollectStep();
 void garbageCollectFull();
 void cleanup();
+
+// Map process main scheduler (asio). Used for deferred OnGameIn follow-up; set from MapEngine::init.
+void setMapScheduler(Scheduler* scheduler);
 
 // Find and call a global function in Lua from C++.
 //
@@ -207,6 +212,8 @@ auto getEntityCachedFunction(CBaseEntity* PEntity, std::string funcName) -> sol:
 void CacheLuaObjectFromFile(const std::string& filename, bool overwriteCurrentEntry = false);
 auto GetCacheEntryFromFilename(const std::string& filename) -> sol::table;
 void OnEntityLoad(CBaseEntity* PEntity);
+
+void LoadExpDifficultyCurves(const sol::table& expToDifficultyTable, const uint8 incrediblyEasyPreyLevel, const uint16 incrediblyEasyPreyMinExp);
 
 void PopulateIDLookupsByFilename(Maybe<std::string> maybeFilename = std::nullopt);
 void PopulateIDLookupsByZone(Maybe<uint16> maybeZoneId = std::nullopt);
@@ -330,7 +337,7 @@ void OnUpdateAttachment(CBattleEntity* PEntity, CItemPuppet* attachment, uint8 m
 
 int32 OnItemUse(CBaseEntity* PUser, CBaseEntity* PTarget, CItem* PItem, action_t& action);
 auto  OnItemCheck(CBaseEntity* PTarget, CItem* PItem, ITEMCHECK param = ITEMCHECK::NONE, CBaseEntity* PCaster = nullptr) -> std::tuple<int32, int32, int32>;
-void  OnItemDrop(CBaseEntity* PUser, CItem* PItem);
+void  OnItemDrop(CBaseEntity* PUser, CItem* PItem, IsRecycleBin recycleBin = IsRecycleBin::No);
 void  OnItemEquip(CBaseEntity* PUser, CItem* PItem);
 void  OnItemUnequip(CBaseEntity* PUser, CItem* PItem);
 void  CheckForGearSet(CBaseEntity* PTarget);

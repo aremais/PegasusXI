@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -127,6 +127,23 @@
 static constexpr int32                               ExpTableRowCount = 60;
 std::array<std::array<uint16, 20>, ExpTableRowCount> g_ExpTable;
 std::array<uint16, 100>                              g_ExpPerLevel;
+
+std::vector<std::pair<uint16, EMobDifficulty>> ExpToDifficultyTable = {};
+// Eventually loaded as something like...
+/*
+    //  { EXP value, check result }
+    { 400, EMobDifficulty::IncrediblyTough },
+    { 350, EMobDifficulty::VeryTough },
+    { 220, EMobDifficulty::Tough },
+    { 200, EMobDifficulty::EvenMatch },
+    { 160, EMobDifficulty::DecentChallenge },
+    { 60, EMobDifficulty::EasyPrey },
+*/
+
+std::pair<uint16, uint8> IncrediblyEasyPreyCheck = { 1, 56 };
+// { EXP value, mob level }
+// { 1, 56 }
+// Must gain more than 1 exp but less than the lowest of ExpToDifficultyTable and greater than or equal to mob level
 
 namespace
 {
@@ -1093,15 +1110,11 @@ void LoadInventory(CCharEntity* PChar)
                     {
                         static_cast<CItemLinkshell*>(PItem)->SetLSType((LSTYPE)(PItem->getID() - 0x200));
                     }
-                    char EncodedString[LinkshellStringLength] = {};
-                    EncodeStringLinkshell(rset->get<std::string>("signature").c_str(), EncodedString);
-                    PItem->setSignature(EncodedString);
+                    PItem->setSignature(rset->get<std::string>("signature"));
                 }
-                else if (PItem->getFlag() & (ITEM_FLAG_INSCRIBABLE))
+                else if (PItem->hasFlag(ItemFlag::Inscribable))
                 {
-                    char EncodedString[SignatureStringLength] = {};
-                    EncodeStringSignature(rset->get<std::string>("signature").c_str(), EncodedString);
-                    PItem->setSignature(EncodedString);
+                    PItem->setSignature(rset->get<std::string>("signature"));
                 }
 
                 if (auto PItemUsable = dynamic_cast<CItemUsable*>(PItem))
@@ -1724,7 +1737,7 @@ uint8 AddItem(CCharEntity* PChar, uint8 LocationID, CItem* PItem, bool silence)
         return 0;
     }
 
-    if (PItem->getFlag() & ITEM_FLAG_RARE)
+    if (PItem->hasFlag(ItemFlag::Rare))
     {
         if (HasItem(PChar, PItem->getID()))
         {
@@ -1752,17 +1765,7 @@ uint8 AddItem(CCharEntity* PChar, uint8 LocationID, CItem* PItem, bool silence)
                             "VALUES(?, ?, ?, ?, ?, ?, ?) "
                             "LIMIT 1";
 
-        char signature[DecodeStringLength];
-        if (PItem->isType(ITEM_LINKSHELL))
-        {
-            DecodeStringLinkshell(PItem->getSignature().c_str(), signature);
-        }
-        else
-        {
-            DecodeStringSignature(PItem->getSignature().c_str(), signature);
-        }
-
-        if (!db::preparedStmt(Query, PChar->id, LocationID, SlotID, PItem->getID(), PItem->getQuantity(), signature, PItem->m_extra))
+        if (!db::preparedStmt(Query, PChar->id, LocationID, SlotID, PItem->getID(), PItem->getQuantity(), PItem->getSignature(), PItem->m_extra))
         {
             ShowError("AddItem: Cannot insert item to database");
             PChar->getStorage(LocationID)->InsertItem(nullptr, SlotID);
@@ -2043,7 +2046,7 @@ bool CanTrade(CCharEntity* PChar, CCharEntity* PTarget)
     {
         CItem* PItem = PChar->UContainer->GetItem(slotid);
 
-        if (PItem != nullptr && PItem->getFlag() & ITEM_FLAG_RARE)
+        if (PItem != nullptr && PItem->hasFlag(ItemFlag::Rare))
         {
             if (HasItem(PTarget, PItem->getID()))
             {
@@ -2949,6 +2952,7 @@ void AddItemToRecycleBin(CCharEntity* PChar, uint32 container, uint8 slotID, uin
             PChar->pushPacket<GP_SERV_COMMAND_ITEM_ATTR>(nullptr, static_cast<CONTAINER_ID>(container), slotID);
             PChar->pushPacket<GP_SERV_COMMAND_ITEM_ATTR>(PItem, LOC_RECYCLEBIN, NewSlotID);
             PChar->pushPacket<GP_SERV_COMMAND_MESSAGE>(nullptr, PItem->getID(), quantity, MsgStd::ThrowAway);
+            luautils::OnItemDrop(PChar, PItem, IsRecycleBin::Yes);
         }
         else
         {
@@ -2960,11 +2964,18 @@ void AddItemToRecycleBin(CCharEntity* PChar, uint32 container, uint8 slotID, uin
     else // Bin is full
     {
         // Evict recycle bin slot 1
+        CItem* PEvictedItem = RecycleBin->GetItem(1);
         RecycleBin->InsertItem(nullptr, 1);
         db::preparedStmt("DELETE FROM char_inventory WHERE charid = ? AND location = ? AND slot = ? LIMIT 1",
                          PChar->id,
                          LOC_RECYCLEBIN,
                          1);
+
+        if (PEvictedItem)
+        {
+            luautils::OnItemDrop(PChar, PEvictedItem);
+            destroy(PEvictedItem);
+        }
 
         // Move everything around to accomodate
         for (int i = 2; i <= 10; ++i)
@@ -3005,6 +3016,7 @@ void AddItemToRecycleBin(CCharEntity* PChar, uint32 container, uint8 slotID, uin
             PChar->pushPacket<GP_SERV_COMMAND_ITEM_ATTR>(PUpdatedItem, LOC_RECYCLEBIN, i);
         }
         PChar->pushPacket<GP_SERV_COMMAND_MESSAGE>(nullptr, PItem->getID(), quantity, MsgStd::ThrowAway);
+        luautils::OnItemDrop(PChar, PItem, IsRecycleBin::Yes);
     }
     PChar->pushPacket<GP_SERV_COMMAND_ITEM_SAME>(PChar);
 }
@@ -3014,6 +3026,15 @@ void EmptyRecycleBin(CCharEntity* PChar)
     TracyZoneScoped;
 
     CItemContainer* recycleBin = PChar->getStorage(LOC_RECYCLEBIN);
+
+    for (uint8 slotID = 1; slotID <= recycleBin->GetSize(); ++slotID)
+    {
+        if (CItem* PItem = recycleBin->GetItem(slotID))
+        {
+            luautils::OnItemDrop(PChar, PItem);
+        }
+    }
+
     db::preparedStmt("DELETE FROM char_inventory WHERE charid = ? AND location = 17", PChar->id);
     recycleBin->Clear();
 }
@@ -3157,7 +3178,72 @@ void EquipItem(CCharEntity* PChar, uint8 slotID, uint8 equipSlotID, uint8 contai
         return;
     }
 
-    // if player attempts to change thier ranged weapon during a ranged state then prevent equip
+    // slotID of zero = unequip
+    if (slotID > 0)
+    {
+        // skip the rest of the function if we are trying to equip the same item to a different slot
+        switch (static_cast<SLOTTYPE>(equipSlotID))
+        {
+            case SLOT_MAIN:
+            {
+                auto PSub = PChar->getEquip(SLOT_SUB);
+                if (PItem == PSub)
+                {
+                    return;
+                }
+                break;
+            }
+            case SLOT_SUB:
+            {
+                auto PMain = PChar->getEquip(SLOT_MAIN);
+                if (PItem == PMain)
+                {
+                    return;
+                }
+                break;
+            }
+            case SLOT_EAR1:
+            {
+                auto PEar2 = PChar->getEquip(SLOT_EAR2);
+                if (PItem == PEar2)
+                {
+                    return;
+                }
+                break;
+            }
+            case SLOT_EAR2:
+            {
+                auto PEar1 = PChar->getEquip(SLOT_EAR1);
+                if (PItem == PEar1)
+                {
+                    return;
+                }
+                break;
+            }
+            case SLOT_RING1:
+            {
+                auto PRing2 = PChar->getEquip(SLOT_RING2);
+                if (PItem == PRing2)
+                {
+                    return;
+                }
+                break;
+            }
+            case SLOT_RING2:
+            {
+                auto PRing1 = PChar->getEquip(SLOT_RING1);
+                if (PItem == PRing1)
+                {
+                    return;
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    // if player attempts to change their ranged weapon during a ranged state then prevent equip
     // this prevents players from starting a RA with short delay x-bow and ending with high dmg longbow
     if (equipSlotID == SLOT_RANGED || (equipSlotID == SLOT_AMMO && !PChar->getEquip(SLOT_RANGED)))
     {
@@ -3171,10 +3257,28 @@ void EquipItem(CCharEntity* PChar, uint8 slotID, uint8 equipSlotID, uint8 contai
     {
         auto PItemWeapon = dynamic_cast<CItemWeapon*>(PItem);
         auto PMainItem   = dynamic_cast<CItemWeapon*>(PChar->getEquip(SLOT_MAIN));
+
         if (PItemWeapon && PItemWeapon->getSkillType() == SKILL_NONE && (!PMainItem || !PMainItem->isTwoHanded()))
         {
             PChar->pushPacket<GP_SERV_COMMAND_BATTLE_MESSAGE>(PChar, PChar, 0, 0, MsgBasic::Requires2HForGrip);
             return;
+        }
+
+        if (PItemWeapon && PItemWeapon->getSkillType() != SKILL_NONE)
+        {
+            // Don't attempt to equip item in equip menu if you don't have dual wield trait (client sees BLU, THF, DNC, NIN, /DNC or /NIN etc as able to equip sub weapons even if sub is too low or no trait on BLU)
+            if (!PChar->hasTrait(TRAIT_DUAL_WIELD))
+            {
+                PChar->pushPacket<GP_SERV_COMMAND_BATTLE_MESSAGE>(PChar, PChar, PItemWeapon->getID(), 0, MsgBasic::NeedDualWield);
+                return;
+            }
+
+            // Don't allow Dual Wield injections to offhand when you dont have a mainahdn (this was visual only)
+            // Don't allow non-shields in offhand with no weapon
+            if ((PMainItem && PMainItem->isTwoHanded()) || !PMainItem)
+            {
+                return;
+            }
         }
 
         // Disallow everything but shields if you're using H2H
@@ -4523,8 +4627,29 @@ void LoadExpTable()
             g_ExpPerLevel[level] = rset->get<uint16>("exp");
         }
     }
+
+    // run the function to fetch the /check difficulty curve.
+    auto expDifficultyCurveFunction = lua["xi"]["expDifficultyCurve"]["loadExpDifficultyCurve"];
+
+    if (!expDifficultyCurveFunction.valid())
+    {
+        ShowCritical("xi.expDifficultyCurve.loadExpDifficultyCurve function is not valid. Terminating.");
+        std::terminate();
+    }
+
+    auto res = expDifficultyCurveFunction();
+    if (!res.valid())
+    {
+        ShowCritical("xi.expDifficultyCurve.loadExpDifficultyCurve function failed to execute. Terminating.");
+        std::terminate();
+    }
 }
 
+void SetExpDifficultyCurve(std::vector<std::pair<uint16, EMobDifficulty>>& curve, std::pair<uint16, uint8>& incrediblyEasyPreyData)
+{
+    ExpToDifficultyTable    = curve;
+    IncrediblyEasyPreyCheck = incrediblyEasyPreyData;
+}
 /************************************************************************
  *                                                                       *
  *  Return mob difficulty according to level difference                  *
@@ -4537,31 +4662,29 @@ EMobDifficulty CheckMob(uint8 charlvl, CBattleEntity* PMob)
 
     uint32 baseExp = GetBaseExp(charlvl, moblvl);
 
-    if (baseExp >= 400)
+    if (baseExp == 0)
     {
-        return EMobDifficulty::IncrediblyTough;
+        return EMobDifficulty::TooWeak;
     }
-    if (baseExp >= 350)
+
+    // Iterate over exp  difficulty table, populated similarly to
+    // { 400, EMobDifficulty::IncrediblyTough }
+    // { 350, EMobDifficulty::EMobDifficulty::VeryTough }
+    for (auto& entry : ExpToDifficultyTable)
     {
-        return EMobDifficulty::VeryTough;
+        auto exp = entry.first;
+
+        if (baseExp >= exp)
+        {
+            auto difficulty = entry.second;
+            return difficulty;
+        }
     }
-    if (baseExp >= 220)
-    {
-        return EMobDifficulty::Tough;
-    }
-    if (baseExp >= 200)
-    {
-        return EMobDifficulty::EvenMatch;
-    }
-    if (baseExp >= 160)
-    {
-        return EMobDifficulty::DecentChallenge;
-    }
-    if (baseExp >= 60)
-    {
-        return EMobDifficulty::EasyPrey;
-    }
-    if (baseExp >= 1 && moblvl > 55)
+
+    auto IEPLevel = IncrediblyEasyPreyCheck.first;
+    auto IEPExp   = IncrediblyEasyPreyCheck.second;
+
+    if (baseExp >= IEPExp && moblvl >= IEPLevel)
     {
         return EMobDifficulty::IncrediblyEasyPrey;
     }
@@ -6069,7 +6192,7 @@ void SaveCharStats(CCharEntity* PChar)
                      PChar->health.mp,
                      PChar->profile.mhflag,
                      PChar->GetMJob(),
-                     PChar->GetSJob(),
+                     PChar->GetSJob(true),
                      PChar->petZoningInfo.petID,
                      static_cast<uint8>(PChar->petZoningInfo.petType),
                      PChar->petZoningInfo.petHP,
@@ -7157,12 +7280,30 @@ void SendToZone(CCharEntity* PChar, uint16 zoneId)
         return;
     }
 
-    auto ip   = ipp.getIP();
-    auto port = ipp.getPort();
+    const auto ip   = ipp.getIP();
+    const auto port = ipp.getPort();
+
+    // Match login (data_session): WAN clients must get network.MAP_PUBLIC_IP for map UDP, or they
+    // receive zone_settings.loopback here and hit FFXI-3001 on every zone-including warp.
+    uint32 clientMapIP = ip;
+    if (const auto mapPublicIp = settings::get<std::string>("network.MAP_PUBLIC_IP");
+        !mapPublicIp.empty())
+    {
+        const auto overrideIp = str2ip(mapPublicIp);
+        if (overrideIp != 0)
+        {
+            clientMapIP = overrideIp;
+        }
+        else
+        {
+            ShowWarning("network.MAP_PUBLIC_IP is set but is not a valid IPv4 address; using zone_settings.zoneip for zone change");
+        }
+    }
+
     db::preparedStmt("UPDATE accounts_sessions "
                      "SET server_addr = ?, server_port = ? "
                      "WHERE charid = ?",
-                     ip,
+                     clientMapIP,
                      port,
                      PChar->id);
 
@@ -7200,7 +7341,7 @@ void SendToZone(CCharEntity* PChar, uint16 zoneId)
     PChar->requestedWarp       = false; // a previous warp can get us here, which could infinitely loop. So un-request warp.
 
     PChar->PSession->zone_ipp = {};
-    PChar->pushPacket<GP_SERV_COMMAND_LOGOUT>(GP_GAME_LOGOUT_STATE::ZONECHANGE, IPP(ipp));
+    PChar->pushPacket<GP_SERV_COMMAND_LOGOUT>(GP_GAME_LOGOUT_STATE::ZONECHANGE, IPP(clientMapIP, port));
 
     PChar->status = STATUS_TYPE::DISAPPEAR;
 
@@ -7299,12 +7440,6 @@ bool AddWeaponSkillPoints(CCharEntity* PChar, SLOTTYPE slotid, int wspoints)
             PChar->pushPacket<GP_SERV_COMMAND_CLISTATUS>(PChar);
             PChar->pushPacket<GP_SERV_COMMAND_COMMAND_DATA>(PChar);
         }
-
-        db::preparedStmt("UPDATE char_inventory SET extra = ? WHERE charid = ? AND location = ? AND slot = ? LIMIT 1",
-                         PWeapon->m_extra,
-                         PChar->id,
-                         PWeapon->getLocationID(),
-                         PWeapon->getSlotID());
 
         return true;
     }
@@ -7967,18 +8102,6 @@ void loadDeathTimestamp(CCharEntity* PChar)
     }
 }
 
-void loadZoningFlag(CCharEntity* PChar)
-{
-    const auto rset = db::preparedStmt("SELECT pos_prevzone FROM chars WHERE charid = ? LIMIT 1", PChar->id);
-    if (rset && rset->rowsCount() && rset->next())
-    {
-        if (PChar->getZone() == rset->get<uint16>("pos_prevzone"))
-        {
-            PChar->loc.zoning = true;
-        }
-    }
-}
-
 bool isOrchestrionPlaced(CCharEntity* PChar)
 {
     for (auto safeContainerId : { LOC_MOGSAFE, LOC_MOGSAFE2 })
@@ -8003,30 +8126,6 @@ bool isOrchestrionPlaced(CCharEntity* PChar)
 
 void updateMannequins(CCharEntity* PChar)
 {
-    // Build Mannequin model id list
-    auto getModelIdFromStorageSlot = [](CCharEntity* PChar, uint8 slot) -> uint16
-    {
-        uint16 modelId = 0x0000;
-
-        if (slot == 0)
-        {
-            return modelId;
-        }
-
-        auto* PItem = PChar->getStorage(LOC_STORAGE)->GetItem(slot);
-        if (PItem == nullptr)
-        {
-            return modelId;
-        }
-
-        if (auto* PItemEquipment = dynamic_cast<CItemEquipment*>(PItem))
-        {
-            modelId = PItemEquipment->getModelId();
-        }
-
-        return modelId;
-    };
-
     for (auto safeContainerId : { LOC_MOGSAFE, LOC_MOGSAFE2 })
     {
         CItemContainer* PContainer = PChar->getStorage(safeContainerId);
@@ -8038,27 +8137,14 @@ void updateMannequins(CCharEntity* PChar)
                 auto* PFurnishing = static_cast<CItemFurnishing*>(PContainerItem);
                 if (PFurnishing->isInstalled() && PFurnishing->isMannequin())
                 {
-                    auto* PMannequin = PFurnishing;
+                    auto& mannequin = PFurnishing->exdata<Exdata::Mannequin>();
 
-                    uint16 mainId  = getModelIdFromStorageSlot(PChar, PMannequin->m_extra[10 + 0]);
-                    uint16 subId   = getModelIdFromStorageSlot(PChar, PMannequin->m_extra[10 + 1]);
-                    uint16 rangeId = getModelIdFromStorageSlot(PChar, PMannequin->m_extra[10 + 2]);
-                    uint16 headId  = getModelIdFromStorageSlot(PChar, PMannequin->m_extra[10 + 3]);
-                    uint16 bodyId  = getModelIdFromStorageSlot(PChar, PMannequin->m_extra[10 + 4]);
-                    uint16 handsId = getModelIdFromStorageSlot(PChar, PMannequin->m_extra[10 + 5]);
-                    uint16 legId   = getModelIdFromStorageSlot(PChar, PMannequin->m_extra[10 + 6]);
-                    uint16 feetId  = getModelIdFromStorageSlot(PChar, PMannequin->m_extra[10 + 7]);
-                    uint8  race    = PMannequin->m_extra[10 + 8];
-                    uint8  pose    = PMannequin->m_extra[10 + 9];
-
-                    std::ignore = pose;
-
-                    if (race == 0)
+                    if (mannequin.Race == 0)
                     {
                         ShowWarning("Invalid Mannequin placed (race of 0 in exdata, when races start at 1). It will be unusable.");
                     }
 
-                    PChar->pushPacket<GP_SERV_COMMAND_ITEM_SUBCONTAINER>(safeContainerId, slotIndex, headId, bodyId, handsId, legId, feetId, mainId, subId, rangeId);
+                    PChar->pushPacket<GP_SERV_COMMAND_ITEM_SUBCONTAINER>(PChar, safeContainerId, slotIndex, mannequin);
                 }
             }
         }

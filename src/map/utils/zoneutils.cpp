@@ -811,7 +811,7 @@ auto LoadZones(Scheduler& scheduler, MapConfig config, const std::vector<uint16>
     }
 
     co_await Scheduler::TaskGroup(
-        zoneIds.size() * 2,
+        zoneIds.size() * 3,
         [&](auto& add)
         {
             for (const auto zoneId : zonesIdsToLoad)
@@ -820,6 +820,12 @@ auto LoadZones(Scheduler& scheduler, MapConfig config, const std::vector<uint16>
                     [zoneId]()
                     {
                         g_PZoneList[zoneId]->LoadNavMesh();
+                    }));
+
+                add(scheduler.spawnOnWorkerThread(
+                    [zoneId]()
+                    {
+                        g_PZoneList[zoneId]->LoadZoneMesh();
                     }));
 
                 add(scheduler.spawnOnWorkerThread(
