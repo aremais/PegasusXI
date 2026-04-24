@@ -19,23 +19,22 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.SELF, { ai.c.NOT_HAS_TOP_ENMITY, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.PROVOKE })
 
     -- Enmity spell
-    mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.FLASH }, { ai.r.MA, ai.s.SPECIFIC, 112 }) -- Flash
+    mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.FLASH }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLASH })
 
-    -- Self buffs (spell ids from spellList 1041)
-    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.PROTECT },   { ai.r.MA, ai.s.SPECIFIC, 46 })  -- Protect IV
-    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.SHELL },     { ai.r.MA, ai.s.SPECIFIC, 51 })  -- Shell IV
-    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.STONESKIN }, { ai.r.MA, ai.s.SPECIFIC, 54 })  -- Stoneskin
-    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.PHALANX },   { ai.r.MA, ai.s.SPECIFIC, 106 }) -- Phalanx
-    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.REGEN },     { ai.r.MA, ai.s.SPECIFIC, 477 }) -- Regen IV
+    -- Self buffs
+    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.PROTECT },   { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.PROTECT_IV })
+    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.SHELL },     { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.SHELL_IV })
+    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.STONESKIN }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.STONESKIN })
+    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.PHALANX },   { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.PHALANX })
+    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.REGEN },     { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.REGEN_IV })
 
     -- Cures
+    mob:addGambit(ai.t.SELF,  { ai.c.HPP_LT, 65 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.CURE })
     mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 50 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.CURE })
 
-    -- Spend TP (AAEV WS set you copied into skill_list_id 1041)
-    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 2000 }, { ai.r.WS, ai.s.SPECIFIC, 3710 }) -- arrogance_incarnate
-    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.WS, ai.s.SPECIFIC, 3713 }) -- chant_du_cygne
-    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.WS, ai.s.SPECIFIC, 3712 }) -- dominion_slash
-    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.WS, ai.s.SPECIFIC, 3711 }) -- vorpal_blade
+    -- Automaton weapon skills
+    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 2000 }, { ai.r.WS, ai.s.SPECIFIC, 1940 }) -- Chimera Ripper
+    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.WS, ai.s.SPECIFIC, 1941 }) -- String Clipper
 
     mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.MELEE)
 end
