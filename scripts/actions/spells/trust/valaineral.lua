@@ -15,10 +15,8 @@ end
 -- On Cast
 -----------------------------------
 spellObject.onSpellCast = function(caster, target, spell)
-    -- Adjust condition if your server uses a different RoE API for record 933
-    local eminenceProgress = caster:getEminenceProgress(933)
-    -- Some builds return nil when the player has no ROE/Eminence state yet.
-    if (eminenceProgress or 0) > 0 then
+    -- Records of Eminence: Alter Ego: Valaineral
+    if caster:getEminenceProgress(933) then
         xi.roe.onRecordTrigger(caster, 933)
     end
 
@@ -155,3 +153,4 @@ spellObject.onMobDeath = function(mob)
 end
 
 return spellObject
+
