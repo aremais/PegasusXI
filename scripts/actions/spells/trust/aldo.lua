@@ -12,12 +12,16 @@ spellObject.onSpellCast = function(caster, target, spell)
 end
 
 local function safeAddGambit(mob, t, cond, react, cooldown)
-    if not (mob and t and cond and react) then return end
+    if not (mob and t and cond and react) then
+        return
+    end
 
     local c1, c2 = cond[1], cond[2]
     local r1, r2, r3 = react[1], react[2], react[3]
 
-    if c1 == nil or c2 == nil or r1 == nil or r2 == nil or r3 == nil then return end
+    if c1 == nil or c2 == nil or r1 == nil or r2 == nil or r3 == nil then
+        return
+    end
 
     if cooldown ~= nil then
         mob:addGambit(t, cond, react, cooldown)
@@ -41,25 +45,33 @@ spellObject.onMobSpawn = function(mob)
     -- Enfeebles
     safeAddGambit(mob, ai.t.TARGET,
         { ai.c.NOT_STATUS, xi.effect.BLINDNESS },
-        { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.KURAYAMI_ICHI }, 25)
+        { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.KURAYAMI_ICHI },
+        25
+    )
 
     safeAddGambit(mob, ai.t.TARGET,
         { ai.c.NOT_STATUS, xi.effect.SLOW },
-        { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.HOJO_ICHI }, 25)
+        { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.HOJO_ICHI },
+        25
+    )
 
     safeAddGambit(mob, ai.t.TARGET,
         { ai.c.NOT_STATUS, xi.effect.PARALYSIS },
-        { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.JUBAKU_ICHI }, 30)
+        { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.JUBAKU_ICHI },
+        30
+    )
 
     safeAddGambit(mob, ai.t.TARGET,
         { ai.c.NOT_STATUS, xi.effect.POISON },
-        { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.DOKUMORI_ICHI }, 35)
+        { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.DOKUMORI_ICHI },
+        35
+    )
 
     -- Elemental wheel
-    safeAddGambit(mob, ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.KATON_ICHI  }, 25)
+    safeAddGambit(mob, ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.KATON_ICHI }, 25)
     safeAddGambit(mob, ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.HYOTON_ICHI }, 25)
-    safeAddGambit(mob, ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.HUTON_ICHI  }, 25)
-    safeAddGambit(mob, ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.DOTON_ICHI  }, 25)
+    safeAddGambit(mob, ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.HUTON_ICHI }, 25)
+    safeAddGambit(mob, ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.DOTON_ICHI }, 25)
     safeAddGambit(mob, ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.RAITON_ICHI }, 25)
     safeAddGambit(mob, ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.SUITON_ICHI }, 25)
 
