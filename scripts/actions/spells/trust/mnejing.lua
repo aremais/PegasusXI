@@ -16,7 +16,11 @@ spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
     -- Tank basics
-    mob:addGambit(ai.t.SELF, { ai.c.NOT_HAS_TOP_ENMITY, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.PROVOKE })
+    mob:addGambit(ai.t.TARGET,
+        { ai.c.ALWAYS, 0 },
+        { ai.r.JA, ai.s.SPECIFIC, xi.ja.PROVOKE },
+        30
+    )
 
     -- Enmity spell
     mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.FLASH }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLASH })
@@ -48,3 +52,4 @@ spellObject.onMobDeath = function(mob)
 end
 
 return spellObject
+
