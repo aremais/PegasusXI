@@ -9,6 +9,7 @@ zoneObject.onInitialize = function(zone)
     xi.chocobo.initZone(zone)
     xi.chocoboGame.clearRecord(zone)
     xi.conquest.toggleRegionalNPCs(zone)
+    xi.events.eggHunt.onZoneInitialize(zone)
 end
 
 zoneObject.onZoneIn = function(player, prevZone)

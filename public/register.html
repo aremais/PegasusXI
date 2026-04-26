@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register - PegasusXI | PegasusXI</title>
+  <meta name="description" content="Create your PegasusXI account" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Force header layout on live (overrides cached/different CSS) */
+    header .nav { display: flex !important; flex-wrap: nowrap !important; align-items: center !important; }
+    header .brand-wrap { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: center !important; gap: 8px !important; }
+    header .brand-icon { width: 48px !important; height: 48px !important; max-width: 48px !important; max-height: 48px !important; display: block !important; object-fit: contain !important; }
+    header nav ul { display: flex !important; flex-wrap: nowrap !important; flex-direction: row !important; align-items: center !important; }
+    header .nav-dropdown { display: flex !important; flex-direction: column !important; align-items: flex-start !important; }
+    header .nav-dropdown .dropdown-menu { display: block !important; position: absolute !important; top: 100% !important; left: 0 !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+    header .nav-dropdown:hover .dropdown-menu, header .nav-dropdown.open .dropdown-menu { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+    header .nav-dropdown .dropdown-menu li { display: block !important; width: 100% !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="nav">
+        <div class="brand-wrap">
+          <a class="brand" href="index.html" aria-label="PegasusXI Home">
+            <img src="images/icon.png" alt="PegasusXI" class="brand-icon" width="48" height="48" />
+          </a>
+          <a class="brand-play" href="play-now.html">Play Now</a>
+        </div>
+        <nav aria-label="Primary"><ul>
+          <li class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">About <span class="chevron" aria-hidden="true">▼</span></button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="server-info.html">Server Info</a></li>
+              <li><a href="addons.html">Addons</a></li>
+            </ul>
+          </li>
+          <li><a href="rules.html">Rules</a></li>
+          <li><a href="news.html">News</a></li>
+          <li class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">Tools <span class="chevron" aria-hidden="true">▼</span></button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="players.html">Players</a></li>
+              <li><a href="seeking.html">Seeking</a></li>
+              <li><a href="items.html">Items</a></li>
+              <li><a href="bazaar.html">Bazaar</a></li>
+              <li><a href="bcnm-ranking.html">BCNM Ranking</a></li>
+              <li><a href="wiki.html">Wiki</a></li>
+              <li><a href="yells.html">Yells</a></li>
+            </ul>
+          </li>
+        </ul></nav>
+        <div class="nav-right">
+          <div id="navStatus" class="nav-status" aria-live="polite">
+            <span class="dot ok"></span><span class="nav-status-text">— Online</span>
+          </div>
+          <span class="nav-game-icon" aria-hidden="true"></span>
+          <span class="nav-sep" aria-hidden="true"></span>
+          <a class="nav-link" href="login.html">Login</a>
+          <a class="nav-link" href="register.html">Register</a>
+          <button class="btn hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">Menu</button>
+        </div>
+      </div>
+      <div id="mobileMenu" class="mobile-menu" aria-label="Mobile navigation" style="display:none">
+        <a href="server-info.html">Server Info</a>
+        <a href="addons.html">Addons</a>
+        <a href="rules.html">Rules</a>
+        <a href="news.html">News</a>
+        <a href="players.html">Players</a>
+        <a href="seeking.html">Seeking</a>
+        <a href="items.html">Items</a>
+        <a href="bazaar.html">Bazaar</a>
+        <a href="bcnm-ranking.html">BCNM Ranking</a>
+        <a href="wiki.html">Wiki</a>
+        <a href="yells.html">Yells</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 18px 0 0;">
+    <section class="card pad register-page">
+      <h1 class="register-title">Register Account</h1>
+
+      <form class="form register-form" id="registerForm" action="#" method="post" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="reg-username">Username</label>
+          <input class="input" id="reg-username" name="username" type="text" placeholder="Username" minlength="4" maxlength="15" pattern="[A-Za-z]+" required autocomplete="username" />
+          <span class="form-hint">Username must be between 4 and 15 characters long and can only contain letters.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-password">Password</label>
+          <input class="input" id="reg-password" name="password" type="password" placeholder="Password" minlength="6" maxlength="15" required autocomplete="new-password" />
+          <span class="form-hint">Passwords must be between 6 and 15 characters long.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-confirm">Confirm password</label>
+          <input class="input" id="reg-confirm" name="confirm" type="password" placeholder="Confirm password" minlength="6" maxlength="15" required autocomplete="new-password" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-email">Email</label>
+          <input class="input" id="reg-email" name="email" type="email" placeholder="Email" required autocomplete="email" />
+        </div>
+
+        <p class="form-agree">
+          You agree to the <a href="rules.html">server rules</a> and the <a href="privacy.html">privacy policy</a>.
+        </p>
+
+        <button class="btn primary btn-register" type="submit">Register</button>
+      </form>
+
+      <p class="register-login">
+        <a href="login.html">Already have an account?</a>
+      </p>
+    </section>
+  </main>
+
+  <div id="siteFooter"></div>
+  <script src="api-config.js"></script>
+  <script src="app.js"></script>
+  <script>
+    (function() {
+      var form = document.getElementById("registerForm");
+      if (!form) return;
+      form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        var password = document.getElementById("reg-password");
+        var confirm = document.getElementById("reg-confirm");
+        if (password && confirm && password.value !== confirm.value) {
+          alert("Passwords do not match.");
+          confirm.focus();
+          return;
+        }
+        var username = document.getElementById("reg-username");
+        if (username && !/^[A-Za-z]{4,15}$/.test(username.value)) {
+          alert("Username must be 4–15 letters only.");
+          username.focus();
+          return;
+        }
+        var usernameVal = (form.querySelector("[name=username]") || {}).value || "";
+        var passwordVal = (form.querySelector("[name=password]") || {}).value || "";
+        var emailVal = (form.querySelector("[name=email]") || {}).value || "";
+        var btn = form.querySelector(".btn-register");
+        if (btn) { btn.disabled = true; btn.textContent = "Creating account…"; }
+        var base = (window.API_BASE || "").replace(/\/$/, "");
+        fetch(base + "/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: usernameVal.trim(), password: passwordVal, email: emailVal.trim() })
+        })
+          .then(function(r) {
+            if (!r.ok) return r.json().then(function(d) { throw new Error(d.error || "Registration failed"); });
+            return r.json();
+          })
+          .then(function() {
+            alert("Account created. You can log in now.");
+            window.location.href = "login.html";
+          })
+          .catch(function(err) {
+            alert(err.message || "Registration failed. Try again.");
+            if (btn) { btn.disabled = false; btn.textContent = "Register"; }
+          });
+      });
+    })();
+  </script>
+</body>
+</html>

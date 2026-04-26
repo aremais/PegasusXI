@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -35,6 +35,7 @@
 #include "conquest_system.h"
 #include "ipc_client.h"
 #include "item_container.h"
+#include "items/exdata/linkshell.h"
 #include "items/item_linkshell.h"
 #include "linkshell.h"
 
@@ -413,8 +414,10 @@ auto LoadLinkshell(uint32 id) -> CLinkshell*
         PLinkshell->setColor(color);
         char EncodedName[LinkshellStringLength] = {};
 
-        EncodeStringLinkshell(name.c_str(), EncodedName);
-        PLinkshell->setName(EncodedName);
+        EncodeStringLinkshell(name, EncodedName);
+        // m_name is treated as the packed exdata blob (see DecodeStringLinkshell in chat); must not use a
+        // null-terminated string ctor — encoded bytes can contain 0x00.
+        PLinkshell->setName(std::string(EncodedName, sizeof(Exdata::Linkshell{}.Name)));
         PLinkshell->setPostRights(postrights);
 
         LinkshellList[id] = std::move(PLinkshell);
@@ -490,28 +493,48 @@ bool DelOnlineMember(CCharEntity* PChar, CItemLinkshell* PItemLinkshell)
 bool IsValidLinkshellName(const std::string& name)
 {
     const auto rset = db::preparedStmt("SELECT linkshellid FROM linkshells WHERE name = ? AND broken != 1", name);
-    return !rset || rset->rowsCount() == 0;
+    if (!rset)
+    {
+        ShowErrorFmt("IsValidLinkshellName: database query failed for name '{}'.", name);
+        return false;
+    }
+    return rset->rowsCount() == 0;
 }
 
 uint32 RegisterNewLinkshell(const std::string& name, uint16 color)
 {
-    if (IsValidLinkshellName(name))
+    if (!IsValidLinkshellName(name))
     {
-        if (db::preparedStmt("INSERT INTO linkshells (name, color, postrights) VALUES (?, ?, ?)",
-                             name,
-                             color,
-                             static_cast<uint8>(LSTYPE_PEARLSACK)))
+        ShowWarningFmt("RegisterNewLinkshell: name '{}' is already used by a non-broken linkshell (or duplicate row). "
+                       "Remove/rename the existing row in table `linkshells` if this is unintended.",
+                       name);
+        return 0;
+    }
+
+    // postrights stores GP_CLI_COMMAND_SET_LSMSG_WRITELEVEL (who may edit the shell message), not LSTYPE.
+    const auto insertRset = db::preparedStmt("INSERT INTO linkshells (name, color, postrights) VALUES (?, ?, ?)",
+                                             name,
+                                             color,
+                                             static_cast<uint8>(GP_CLI_COMMAND_SET_LSMSG_WRITELEVEL::Linkshell));
+    if (!insertRset || insertRset->rowsAffected() == 0)
+    {
+        ShowErrorFmt("RegisterNewLinkshell: INSERT failed for name '{}'.", name);
+        return 0;
+    }
+
+    const auto rset = db::preparedStmt("SELECT linkshellid FROM linkshells WHERE name = ? AND broken != 1", name);
+    if (rset && rset->rowsCount() && rset->next())
+    {
+        const auto id = rset->get<uint32>("linkshellid");
+        if (auto* PLinkshell = LoadLinkshell(id))
         {
-            const auto rset = db::preparedStmt("SELECT linkshellid FROM linkshells WHERE name = ? AND broken != 1", name);
-            if (rset && rset->rowsCount() && rset->next())
-            {
-                const auto id = rset->get<uint32>("linkshellid");
-                if (auto* PLinkshell = LoadLinkshell(id))
-                {
-                    return PLinkshell->getID();
-                }
-            }
+            return PLinkshell->getID();
         }
+        ShowErrorFmt("RegisterNewLinkshell: LoadLinkshell failed for new id {} name '{}'.", id, name);
+    }
+    else
+    {
+        ShowErrorFmt("RegisterNewLinkshell: SELECT after INSERT found no row for name '{}'.", name);
     }
     return 0;
 }

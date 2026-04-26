@@ -39,7 +39,8 @@ local maxAreas =
             xi.zone.DYNAMIS_JEUNO,
             xi.zone.RIVERNE_SITE_B01,
             xi.zone.GHELSBA_OUTPOST,
-            xi.zone.THE_GARDEN_OF_RUHMET
+            xi.zone.THE_GARDEN_OF_RUHMET,
+            xi.zone.WALK_OF_ECHOES,
         },
     },
 }

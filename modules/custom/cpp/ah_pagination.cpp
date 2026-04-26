@@ -1,4 +1,4 @@
-﻿/************************************************************************
+/************************************************************************
  * Auction House Pagination
  *
  * This allows players to list and view more than the client-restricted 7
@@ -129,6 +129,12 @@ class AHPaginationModule : public CPPModule
 
             // Prepare Page 2 for next load
             PChar->SetLocalVar("AH_PAGE", currentAHPage + 1);
+        }
+
+        if (!rset)
+        {
+            ShowErrorFmt("[AH PAGES] Auction listing query failed for char id {} ({})", PChar->id, PChar->getName());
+            return true;
         }
 
         // TODO: Don't use totalPages_ here, use the actual number of pages of results.

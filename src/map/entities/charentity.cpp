@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -177,9 +177,9 @@ CCharEntity::CCharEntity()
         m_missionLog[i].current = 0xFFFF;
     }
 
-    m_missionLog[4].current = 0;   // MISSION_TOAU
-    m_missionLog[5].current = 0;   // MISSION_WOTG
-    m_missionLog[6].current = 101; // MISSION_COP
+    m_missionLog[4].current = 0; // MISSION_TOAU
+    m_missionLog[5].current = 0; // MISSION_WOTG
+    m_missionLog[6].current = 0; // MISSION_COP (0 = not started; scripts set 101+ when COP begins)
     for (auto& i : m_missionLog)
     {
         i.statusUpper = 0;
@@ -3361,6 +3361,12 @@ auto CCharEntity::getCharVar(const std::string& varName) const -> int32
         // database can be cleaned up.
         if (cachedVarData.second == 0 || cachedVarData.second > earth_time::timestamp())
         {
+            if (varName == "CONQUEST_RING_RECHARGE" && cachedVarData.first != 0 && cachedVarData.second == 0)
+            {
+                const_cast<CCharEntity*>(this)->setCharVar(varName, 0, 0);
+                return 0;
+            }
+
             return cachedVarData.first;
         }
     }
@@ -3387,6 +3393,13 @@ auto CCharEntity::getCharVarsWithPrefix(const std::string& prefix) -> std::vecto
             const auto varname = rset->get<std::string>("varname");
             const auto value   = rset->get<int32>("value");
             const auto expiry  = rset->get<uint32>("expiry");
+
+            if (varname == "CONQUEST_RING_RECHARGE" && value != 0 && expiry == 0)
+            {
+                db::preparedStmt("DELETE FROM char_vars WHERE charid = ? AND varname = ?", this->id, varname);
+                charVarCache.erase(varname);
+                continue;
+            }
 
             if (expiry == 0 || expiry > currentTimestamp)
             {

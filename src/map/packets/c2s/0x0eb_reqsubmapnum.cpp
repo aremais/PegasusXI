@@ -26,9 +26,9 @@
 
 auto GP_CLI_COMMAND_REQSUBMAPNUM::validate(MapSession* PSession, const CCharEntity* PChar) const -> PacketValidationResult
 {
-    // No parameter to validate.
-    return PacketValidator(PChar)
-        .blockedBy({ BlockedState::InEvent });
+    // Do not block InEvent: clients send this during zone load while event state may still
+    // be set (e.g. mission handoffs). process() only responds when isNpcLocked().
+    return PacketValidator(PChar);
 }
 
 void GP_CLI_COMMAND_REQSUBMAPNUM::process(MapSession* PSession, CCharEntity* PChar) const

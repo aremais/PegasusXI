@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -24,8 +24,6 @@
 #include "lua_battlefield.h"
 #include "lua_instance.h"
 #include "lua_item.h"
-
-#include "items/exdata/worn_item.h"
 #include "lua_spell.h"
 #include "lua_statuseffect.h"
 #include "lua_trade_container.h"
@@ -69,7 +67,6 @@
 #include "treasure_pool.h"
 #include "weapon_skill.h"
 #include "zone.h"
-#include "zone_mesh.h"
 
 #include "ai/ai_container.h"
 
@@ -101,7 +98,6 @@
 #include "enums/automaton.h"
 #include "enums/chat_message_area.h"
 #include "enums/item_lockflg.h"
-#include "items/exdata.h"
 #include "items/item_furnishing.h"
 #include "items/item_linkshell.h"
 
@@ -173,6 +169,8 @@
 
 #include <magic_enum/magic_enum.hpp>
 
+extern std::unordered_map<uint32, std::unordered_map<uint16, std::vector<std::pair<uint16, uint8>>>> PacketMods;
+
 //======================================================//
 
 CLuaBaseEntity::CLuaBaseEntity(CBaseEntity* PEntity)
@@ -228,7 +226,7 @@ void CLuaBaseEntity::showText(CLuaBaseEntity* entity, uint16 messageID, const so
     }
     else if (m_PBaseEntity->loc.zone)
     {
-        m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUMWORK>(PBaseEntity, messageID, param0, param1, param3, showName));
+        m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUMWORK>(PBaseEntity, messageID, param0, param1, param2, param3, showName));
     }
 }
 
@@ -241,9 +239,9 @@ void CLuaBaseEntity::showText(CLuaBaseEntity* entity, uint16 messageID, const so
 
 void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageID, const sol::object& arg2, const sol::object& arg3)
 {
-    if (PLuaBaseEntity == nullptr)
+    if (PLuaBaseEntity == nullptr || PLuaBaseEntity->m_PBaseEntity == nullptr)
     {
-        ShowError("CLuaBaseEntity::messageText() - argument 1 of CLuaBaseEntity* was nullptr");
+        ShowError("CLuaBaseEntity::messageText() - target entity was nullptr");
         return;
     }
 
@@ -254,7 +252,8 @@ void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageI
     bool  faceGiven = false;
     uint8 face      = 0;
 
-    // TODO: Clean this up.  We could potentially accept two int vals for optional args, which could cause unexpected showName behavior.
+    // TODO: Clean this up. We could potentially accept two int vals for optional args,
+    // which could cause unexpected showName behavior.
     if (arg2 != sol::lua_nil)
     {
         if (arg2.is<bool>())
@@ -269,19 +268,16 @@ void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageI
         {
             auto table   = arg2.as<sol::table>();
             auto faceArg = table.get<sol::object>("face");
-            faceGiven    = true;
 
             if (faceArg.get_type() == sol::type::number)
             {
                 face = faceArg.as<uint8>();
+                faceGiven = true;
             }
-            else if (faceArg.get_type() == sol::type::number)
+            else if (faceArg.get_type() == sol::type::boolean && faceArg.as<bool>())
             {
                 face = worldAngle(PTarget->loc.p, m_PBaseEntity->loc.p);
-            }
-            else
-            {
-                faceGiven = false;
+                faceGiven = true;
             }
 
             showName = table.get_or("showName", true);
@@ -301,13 +297,14 @@ void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageI
         PTarget->updatemask |= UPDATE_POS;
     }
 
-    if (auto player = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    if (auto* player = dynamic_cast<CCharEntity*>(m_PBaseEntity))
     {
         player->gotMessage = true;
         player->pushPacket<GP_SERV_COMMAND_TALKNUM>(PTarget, messageID, showName, mode);
     }
-    else
-    { // broadcast in range
+    else if (m_PBaseEntity->loc.zone)
+    {
+        // Broadcast in range
         m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUM>(PTarget, messageID, showName, mode));
     }
 }
@@ -462,7 +459,17 @@ void CLuaBaseEntity::messageBasic(uint16 messageID, const sol::object& p0, const
     uint32 param0 = (p0 != sol::lua_nil) ? p0.as<uint32>() : 0;
     uint32 param1 = (p1 != sol::lua_nil) ? p1.as<uint32>() : 0;
 
-    auto* PTarget = (target != sol::lua_nil) ? target.as<CLuaBaseEntity*>()->m_PBaseEntity : m_PBaseEntity;
+    CBaseEntity* PTarget = m_PBaseEntity;
+    if (target != sol::lua_nil)
+    {
+        if (auto* luaTarget = target.as<CLuaBaseEntity*>())
+        {
+            if (luaTarget->m_PBaseEntity)
+            {
+                PTarget = luaTarget->m_PBaseEntity;
+            }
+        }
+    }
 
     if (m_PBaseEntity->objtype == TYPE_PC)
     {
@@ -478,11 +485,11 @@ void CLuaBaseEntity::messageBasic(uint16 messageID, const sol::object& p0, const
 /************************************************************************
  *  Function: messageName()
  *  Purpose : Message displayed with an entity's name in it
- *  Example : target:messageName(messageID, entity, param0, param1, param2, param3, chatType);
- *  Notes   : Used in Doom countdown messages, as an example
+ *  Example : target:messageName(messageID, entity, param0, param1, param2, param3, chatType, showSender);
+ *  Notes   : Used in Doom countdown messages, as an example. showSender=true sends raw MesNum (no 0x8000) for zone text with a name prefix.
  ************************************************************************/
 
-void CLuaBaseEntity::messageName(uint16 messageID, const sol::object& entity, const sol::object& p0, const sol::object& p1, const sol::object& p2, const sol::object& p3, const sol::object& chat)
+void CLuaBaseEntity::messageName(uint16 messageID, const sol::object& entity, const sol::object& p0, const sol::object& p1, const sol::object& p2, const sol::object& p3, const sol::object& chat, const sol::object& showSender)
 {
     CLuaBaseEntity* PLuaEntity  = (entity != sol::lua_nil) ? entity.as<CLuaBaseEntity*>() : nullptr;
     CBaseEntity*    PNameEntity = PLuaEntity ? PLuaEntity->m_PBaseEntity : nullptr;
@@ -493,14 +500,15 @@ void CLuaBaseEntity::messageName(uint16 messageID, const sol::object& entity, co
     int32 param3 = (p3 != sol::lua_nil) ? p3.as<int32>() : 0;
 
     int32 chatType = (chat != sol::lua_nil) ? chat.as<int32>() : 4;
+    bool  useRawMesNum = (showSender != sol::lua_nil) && showSender.as<bool>();
 
     if (CCharEntity* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
     {
-        PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK2>(PChar, messageID, PNameEntity, param0, param1, param2, param3, chatType);
+        PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK2>(PChar, messageID, PNameEntity, param0, param1, param2, param3, chatType, useRawMesNum);
     }
     else if (m_PBaseEntity->loc.zone)
     {
-        m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUMWORK2>(m_PBaseEntity, messageID, PNameEntity, param0, param1, param2, param3, chatType));
+        m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUMWORK2>(m_PBaseEntity, messageID, PNameEntity, param0, param1, param2, param3, chatType, useRawMesNum));
     }
 }
 
@@ -662,8 +670,8 @@ auto CLuaBaseEntity::getCharVarsWithPrefix(const std::string& prefix) -> sol::ta
 
 /************************************************************************
  *  Function: getCharVarsWithSuffix()
- *  Purpose :
- *  Example : local vars = player:getCharVarsWithSuffix("]mustZone")
+ *  Purpose : Returns all char_vars whose names end with the given suffix (SQL LIKE %suffix).
+ *  Example : local vars = player:getCharVarsWithSuffix(']mustZone')
  *  Notes   :
  ************************************************************************/
 
@@ -694,6 +702,11 @@ void CLuaBaseEntity::setCharVar(const std::string& varName, int32 value, const s
     if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
     {
         uint32 varTimestamp = expiry.is<uint32>() ? expiry.as<uint32>() : 0;
+
+        if (value != 0 && varName == "CONQUEST_RING_RECHARGE" && varTimestamp == 0)
+        {
+            varTimestamp = luautils::NextJstWeek();
+        }
 
         if (varTimestamp > 0 && varTimestamp <= earth_time::timestamp())
         {
@@ -755,6 +768,11 @@ void CLuaBaseEntity::setVolatileCharVar(const std::string& varName, int32 value,
     if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
     {
         uint32 varTimestamp = expiry.is<uint32>() ? expiry.as<uint32>() : 0;
+
+        if (value != 0 && varName == "CONQUEST_RING_RECHARGE" && varTimestamp == 0)
+        {
+            varTimestamp = luautils::NextJstWeek();
+        }
 
         if (varTimestamp > 0 && varTimestamp <= earth_time::timestamp())
         {
@@ -1165,8 +1183,8 @@ EventInfo* CLuaBaseEntity::ParseEvent(int32 EventID, sol::variadic_args va, Even
             currentIndex++;
         }
 
-        // Finally parse out an optional last argument as text_table
-        eventToStart->textTable = va.get_type(8) == sol::type::number ? va.get<int16>(8) : -1;
+        // Finally parse out an optional last argument as text_table.
+        eventToStart->textTable = va.get_type(currentIndex) == sol::type::number ? va.get<int16>(currentIndex) : -1;
     }
 
     if (eventType == OPTIONAL_CUTSCENE)
@@ -1493,30 +1511,12 @@ void CLuaBaseEntity::setMoghouseFlag(uint16 flag)
 
 bool CLuaBaseEntity::needToZone(const sol::object& arg0)
 {
-    if (m_PBaseEntity->objtype != TYPE_PC)
+    if (arg0 != sol::lua_nil)
     {
-        ShowWarning("Attempting call needToZone from invalid entity type (%s).", m_PBaseEntity->getName());
-        return false;
+        m_PBaseEntity->loc.zoning = arg0.as<bool>();
     }
 
-    if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
-    {
-        bool writeZoning = false;
-        if (arg0 != sol::lua_nil)
-        {
-            writeZoning = arg0.as<bool>();
-        }
-
-        if (writeZoning)
-        {
-            PChar->setCharVar("[generic]mustZone", PChar->getZone());
-            return true;
-        }
-
-        return PChar->getCharVar("[generic]mustZone") != 0;
-    }
-
-    return false;
+    return m_PBaseEntity->loc.zoning;
 }
 
 /************************************************************************
@@ -1688,7 +1688,10 @@ void CLuaBaseEntity::initNpcAi()
 
 void CLuaBaseEntity::resetAI()
 {
-    m_PBaseEntity->PAI->Reset();
+    if (m_PBaseEntity->PAI)
+    {
+        m_PBaseEntity->PAI->Reset();
+    }
 }
 
 /************************************************************************
@@ -1732,6 +1735,12 @@ uint8 CLuaBaseEntity::getCurrentAction()
         return 0;
     }
 
+    if (m_PBaseEntity->PAI == nullptr)
+    {
+        ShowWarning("getCurrentAction: PAI was nullptr for %s", m_PBaseEntity->getName());
+        return 0;
+    }
+
     uint8 action = 0;
 
     if (m_PBaseEntity->PAI->IsStateStackEmpty())
@@ -1766,6 +1775,10 @@ uint8 CLuaBaseEntity::getCurrentAction()
     {
         action = 27;
     }
+    else if (m_PBaseEntity->PAI->IsCurrentState<CDeathState>() && m_PBaseEntity->objtype == TYPE_PC && static_cast<CCharEntity*>(m_PBaseEntity)->m_hasRaise)
+    {
+        action = 37;
+    }
     else if (m_PBaseEntity->PAI->IsCurrentState<CDeathState>())
     {
         action = 22;
@@ -1773,10 +1786,6 @@ uint8 CLuaBaseEntity::getCurrentAction()
     else if (m_PBaseEntity->PAI->IsCurrentState<CDespawnState>())
     {
         action = 24;
-    }
-    else if (m_PBaseEntity->PAI->IsCurrentState<CDeathState>() && m_PBaseEntity->objtype == TYPE_PC && static_cast<CCharEntity*>(m_PBaseEntity)->m_hasRaise)
-    {
-        action = 37;
     }
     else if (m_PBaseEntity->PAI->IsCurrentState<CMobSkillState>())
     {
@@ -1810,6 +1819,11 @@ bool CLuaBaseEntity::canUseAbilities()
 {
     if (auto* PEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity))
     {
+        if (m_PBaseEntity->PAI == nullptr)
+        {
+            return false;
+        }
+
         return !(PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_SLEEP) ||
                  PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_IMPAIRMENT) ||
                  PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_SLEEP_II) ||
@@ -1834,21 +1848,38 @@ bool CLuaBaseEntity::canUseAbilities()
 
 void CLuaBaseEntity::lookAt(const sol::object& arg0, const sol::object& arg1, const sol::object& arg2)
 {
-    position_t point;
+    position_t point{};
 
-    if ((arg0 != sol::lua_nil) && (arg0.is<double>()))
+    if ((arg0 != sol::lua_nil) && arg0.is<double>())
     {
+        if (!(arg1.is<double>() && arg2.is<double>()))
+        {
+            ShowError("CLuaBaseEntity::lookAt() requires x, y, z when first argument is numeric");
+            return;
+        }
+
         point.x = arg0.as<float>();
         point.y = arg1.as<float>();
         point.z = arg2.as<float>();
     }
-    else
+    else if (arg0.get_type() == sol::type::table)
     {
         auto position = arg0.as<std::map<std::string, float>>();
+
+        if (!position.contains("x") || !position.contains("y") || !position.contains("z"))
+        {
+            ShowError("CLuaBaseEntity::lookAt() table argument must contain x, y, z");
+            return;
+        }
 
         point.x = position["x"];
         point.y = position["y"];
         point.z = position["z"];
+    }
+    else
+    {
+        ShowError("CLuaBaseEntity::lookAt() received invalid arguments");
+        return;
     }
 
     // Avoid unpredictable results if we're too close.
@@ -4153,24 +4184,24 @@ uint32 CLuaBaseEntity::getItemCount(uint16 itemID)
  *  Notes   : See format and variable options below
  ************************************************************************/
 
-auto CLuaBaseEntity::addItem(sol::variadic_args va) const -> CItem*
+bool CLuaBaseEntity::addItem(sol::variadic_args va)
 {
     if (m_PBaseEntity->objtype != TYPE_PC)
     {
         ShowWarning("Invalid entity type calling function (%s).", m_PBaseEntity->getName());
-        return nullptr;
+        return false;
     }
 
-    uint8  SlotID    = ERROR_SLOTID;
-    CItem* AddedItem = nullptr;
+    uint8 SlotID = ERROR_SLOTID;
 
-    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
+    CCharEntity* PChar = (CCharEntity*)m_PBaseEntity;
 
     /* FORMAT 1:
     player:addItem({ id = itemID, quantity  = quantity               }) -- add quantity of itemID
     player:addItem({ id = itemID, silent    = true                   }) -- silently add 1 of itemID
     player:addItem({ id = itemID, signature = "Char"                 }) -- add 1 signed of itemID
-    player:addItem({ id = itemID, exdata    = { ... }                }) -- add 1 of itemID with typed exdata (falls back to raw byte indices)
+    player:addItem({ id = itemID, augments  = { [4] = 5, [10] = 10 } }) -- add 1 of itemID with augment id 4 and 10, with values of 5 and 10, respectively
+    player:addItem({ id = itemID, exdata    = { [10] = 10 }          }) -- add 1 item of itemID, with the exdata at index 10 (0-indexed!) set to 10
     */
 
     if (va.get_type(0) == sol::type::table)
@@ -4180,7 +4211,7 @@ auto CLuaBaseEntity::addItem(sol::variadic_args va) const -> CItem*
         if (!table["id"].valid())
         {
             ShowError("AddItem: id is nil");
-            return nullptr;
+            return false;
         }
         uint16 id = table.get<uint16>("id");
 
@@ -4208,7 +4239,10 @@ auto CLuaBaseEntity::addItem(sol::variadic_args va) const -> CItem*
 
                 if (!signature.empty())
                 {
-                    PItem->setSignature(signature);
+                    char encoded[SignatureStringLength];
+
+                    std::memset(&encoded, 0, sizeof(encoded));
+                    PItem->setSignature(EncodeStringSignature(signature, encoded));
                 }
 
                 sol::object appraisalObj = table["appraisal"];
@@ -4217,25 +4251,44 @@ auto CLuaBaseEntity::addItem(sol::variadic_args va) const -> CItem*
                     PItem->setAppraisalID(appraisalObj.as<uint8>());
                 }
 
+                if (PItem->isType(ITEM_EQUIPMENT))
+                {
+                    uint16 trial = table.get_or("trial", 0);
+                    if (trial != 0)
+                    {
+                        ((CItemEquipment*)PItem)->setTrialNumber(trial);
+                    }
+
+                    sol::object augmentsObj = table["augments"];
+                    if (augmentsObj.is<sol::table>())
+                    {
+                        auto augmentsTable = augmentsObj.as<sol::table>();
+                        for (const auto& entryPair : augmentsTable)
+                        {
+                            auto   pair   = entryPair.second.as<sol::table>();
+                            uint16 augid  = pair[0];
+                            uint8  augval = pair[1];
+                            ((CItemEquipment*)PItem)->PushAugment(augid, augval);
+                        }
+                    }
+                }
+
                 sol::object exdataObj = table["exdata"];
                 if (exdataObj.is<sol::table>())
                 {
                     auto exdataTable = exdataObj.as<sol::table>();
-                    if (!Exdata::fromTable(PItem, exdataTable))
+                    for (const auto& entryPair : exdataTable)
                     {
-                        for (const auto& [keyObj, valObj] : exdataTable)
-                        {
-                            uint8 index = keyObj.as<uint8>();
-                            uint8 value = valObj.as<uint8>();
+                        uint8 index = entryPair.first.as<uint8>();
+                        uint8 value = entryPair.second.as<uint8>();
 
-                            if (index < CItem::extra_size)
-                            {
-                                PItem->m_extra[index] = value;
-                            }
-                            else
-                            {
-                                ShowWarning("AddItem: Trying to write to invalid exdata index: <%i>", index);
-                            }
+                        if (index < CItem::extra_size)
+                        {
+                            PItem->m_extra[index] = value;
+                        }
+                        else
+                        {
+                            ShowWarning("AddItem: Trying to write to invalid exdata index: <%i>", index);
                         }
                     }
                 }
@@ -4245,7 +4298,6 @@ auto CLuaBaseEntity::addItem(sol::variadic_args va) const -> CItem*
                 {
                     break;
                 }
-                AddedItem = PItem;
             }
             else
             {
@@ -4281,6 +4333,16 @@ auto CLuaBaseEntity::addItem(sol::variadic_args va) const -> CItem*
             }
         }
 
+        uint16 augment0    = va.get_type(2) == sol::type::number ? va.get<uint16>(2) : 0;
+        uint8  augment0val = va.get_type(3) == sol::type::number ? va.get<uint8>(3) : 0;
+        uint16 augment1    = va.get_type(4) == sol::type::number ? va.get<uint16>(4) : 0;
+        uint8  augment1val = va.get_type(5) == sol::type::number ? va.get<uint8>(5) : 0;
+        uint16 augment2    = va.get_type(6) == sol::type::number ? va.get<uint16>(6) : 0;
+        uint8  augment2val = va.get_type(7) == sol::type::number ? va.get<uint8>(7) : 0;
+        uint16 augment3    = va.get_type(8) == sol::type::number ? va.get<uint16>(8) : 0;
+        uint8  augment3val = va.get_type(9) == sol::type::number ? va.get<uint8>(9) : 0;
+        uint16 trialNumber = va.get_type(10) == sol::type::number ? va.get<uint16>(10) : 0;
+
         while (PChar->getStorage(LOC_INVENTORY)->GetFreeSlotsCount() != 0 && quantity > 0)
         {
             if (CItem* PItem = itemutils::GetItem(itemID))
@@ -4288,6 +4350,29 @@ auto CLuaBaseEntity::addItem(sol::variadic_args va) const -> CItem*
                 PItem->setQuantity(quantity);
                 quantity -= PItem->getStackSize();
 
+                if (PItem->isType(ITEM_EQUIPMENT))
+                {
+                    if (augment0 != 0)
+                    {
+                        ((CItemEquipment*)PItem)->setAugment(0, augment0, augment0val);
+                    }
+                    if (augment1 != 0)
+                    {
+                        ((CItemEquipment*)PItem)->setAugment(1, augment1, augment1val);
+                    }
+                    if (augment2 != 0)
+                    {
+                        ((CItemEquipment*)PItem)->setAugment(2, augment2, augment2val);
+                    }
+                    if (augment3 != 0)
+                    {
+                        ((CItemEquipment*)PItem)->setAugment(3, augment3, augment3val);
+                    }
+                    if (trialNumber != 0)
+                    {
+                        ((CItemEquipment*)PItem)->setTrialNumber(trialNumber);
+                    }
+                }
                 SlotID = charutils::AddItem(PChar, LOC_INVENTORY, PItem, silence);
 
                 // Paranoid check
@@ -4295,7 +4380,6 @@ auto CLuaBaseEntity::addItem(sol::variadic_args va) const -> CItem*
                 {
                     break;
                 }
-                AddedItem = PItem;
             }
             else
             {
@@ -4305,7 +4389,7 @@ auto CLuaBaseEntity::addItem(sol::variadic_args va) const -> CItem*
         }
     }
 
-    return AddedItem;
+    return SlotID != ERROR_SLOTID;
 }
 
 /************************************************************************
@@ -4482,16 +4566,18 @@ bool CLuaBaseEntity::addUsedItem(uint16 itemID)
  *  Notes   : Used mainly for Testimonies and BCNM orbs
  ************************************************************************/
 
-auto CLuaBaseEntity::getWornUses(const uint16 itemID) const -> uint8
+uint8 CLuaBaseEntity::getWornUses(uint16 itemID)
 {
-    const auto* PChar  = static_cast<CCharEntity*>(m_PBaseEntity);
-    const uint8 slotID = PChar->getStorage(LOC_INVENTORY)->SearchItem(itemID);
+    auto* PChar  = static_cast<CCharEntity*>(m_PBaseEntity);
+    uint8 slotID = PChar->getStorage(LOC_INVENTORY)->SearchItem(itemID);
+
     if (slotID != ERROR_SLOTID)
     {
         CItem* PItem = PChar->getStorage(LOC_INVENTORY)->GetItem(slotID);
+
         if (PItem != nullptr)
         {
-            return PItem->exdata<Exdata::WornItem>().UseCount;
+            return PItem->m_extra[0];
         }
     }
 
@@ -4505,23 +4591,35 @@ auto CLuaBaseEntity::getWornUses(const uint16 itemID) const -> uint8
  *  Notes   : Prevent Orbs and Testimonies from being used again
  ************************************************************************/
 
-auto CLuaBaseEntity::incrementItemWear(const uint16 itemID) const -> uint8
+uint8 CLuaBaseEntity::incrementItemWear(uint16 itemID)
 {
-    const auto* PChar  = static_cast<CCharEntity*>(m_PBaseEntity);
-    const uint8 slotID = PChar->getStorage(LOC_INVENTORY)->SearchItem(itemID);
+    auto* PChar  = static_cast<CCharEntity*>(m_PBaseEntity);
+    uint8 slotID = PChar->getStorage(LOC_INVENTORY)->SearchItem(itemID);
+
     if (slotID != ERROR_SLOTID)
     {
         CItem* PItem = PChar->getStorage(LOC_INVENTORY)->GetItem(slotID);
+
         if (PItem == nullptr)
         {
             return 0;
         }
 
-        auto& useCount = PItem->exdata<Exdata::WornItem>().UseCount;
-        useCount       = std::min<uint8>(useCount + 1, UINT8_MAX);
-        PItem->setDirty(true);
+        if (PItem->m_extra[0] == UINT8_MAX)
+        {
+            return PItem->m_extra[0];
+        }
 
-        return useCount;
+        ++PItem->m_extra[0];
+
+        const char* Query = "UPDATE char_inventory "
+                            "SET extra = ? "
+                            "WHERE charid = ? AND location = ? AND slot = ? "
+                            "LIMIT 1";
+
+        db::preparedStmt(Query, PItem->m_extra, PChar->id, PItem->getLocationID(), PItem->getSlotID());
+
+        return PItem->m_extra[0];
     }
 
     return 0;
@@ -4845,8 +4943,8 @@ bool CLuaBaseEntity::addLinkpearl(const std::string& lsname, bool equip)
         const auto rset = db::preparedStmt("SELECT linkshellid, color FROM linkshells WHERE name = ? AND broken = 0", lsname);
         if (rset && rset->rowsCount() && rset->next())
         {
-            // build linkpearl
-            PItemLinkPearl->setSignature(lsname);
+            // setSignature() expects decoded name; it encodes into exdata.
+            ((CItem*)PItemLinkPearl)->setSignature(lsname);
             PItemLinkPearl->SetLSID(rset->get<uint32>("linkshellid"));
             PItemLinkPearl->SetLSColor(rset->get<uint16>("color"));
             PItemLinkPearl->SetLSType(lstype);
@@ -4862,7 +4960,7 @@ bool CLuaBaseEntity::addLinkpearl(const std::string& lsname, bool equip)
                     PChar->equipLoc[SLOT_LINK2] = LOC_INVENTORY;
                     PChar->pushPacket<GP_SERV_COMMAND_ITEM_LIST>(PItemLinkPearl, ItemLockFlg::Linkshell);
                     charutils::SaveCharEquip(PChar);
-                    PChar->pushPacket<GP_SERV_COMMAND_GROUP_COMLINK>(PChar, PItemLinkPearl->GetLSID());
+                    PChar->pushPacket<GP_SERV_COMMAND_GROUP_COMLINK>(PChar, 2);
                     PChar->pushPacket<GP_SERV_COMMAND_ITEM_ATTR>(PItemLinkPearl, LOC_INVENTORY, PItemLinkPearl->getSlotID());
                     PChar->pushPacket<GP_SERV_COMMAND_ITEM_SAME>(PChar);
                     charutils::LoadInventory(PChar);
@@ -4877,6 +4975,124 @@ bool CLuaBaseEntity::addLinkpearl(const std::string& lsname, bool equip)
         }
     }
     return false;
+}
+
+/************************************************************************
+ *  Function: addLinkshellHolder()
+ *  Purpose : Grants the physical linkshell item (513) for an existing shell in `linkshells`,
+ *            optionally equipping it to LS1 or LS2 (default 1). This is the "owner" item.
+ *  Example : player:addLinkshellHolder("PegasusXI", 1)
+ ************************************************************************/
+
+bool CLuaBaseEntity::addLinkshellHolder(const std::string& lsname, sol::optional<uint8> equipSlot)
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowWarning("Invalid entity type calling addLinkshellHolder (%s).", m_PBaseEntity->getName());
+        return false;
+    }
+
+    uint8 lsNum = equipSlot.value_or(1);
+    if (lsNum < 1 || lsNum > 2)
+    {
+        lsNum = 1;
+    }
+
+    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
+
+    const auto rset = db::preparedStmt("SELECT linkshellid, color FROM linkshells WHERE name = ? AND broken = 0", lsname);
+    if (!rset || !rset->rowsCount() || !rset->next())
+    {
+        ShowWarning("addLinkshellHolder: linkshell '%s' not found or broken.", lsname.c_str());
+        return false;
+    }
+
+    CItemLinkshell* PItemShell = static_cast<CItemLinkshell*>(itemutils::GetItem(ITEMID::LINKSHELL));
+    if (PItemShell == nullptr)
+    {
+        return false;
+    }
+
+    PItemShell->setSignature(lsname);
+    PItemShell->SetLSID(rset->get<uint32>("linkshellid"));
+    PItemShell->SetLSColor(rset->get<uint16>("color"));
+    PItemShell->SetLSType(LSTYPE_LINKSHELL);
+    PItemShell->setQuantity(1);
+
+    const SLOTTYPE lsEquipSlot = (lsNum == 1) ? SLOT_LINK1 : SLOT_LINK2;
+
+    if (auto* POldItem = PChar->getEquip(lsEquipSlot))
+    {
+        if (auto* POldLs = dynamic_cast<CItemLinkshell*>(POldItem);
+            POldLs != nullptr && POldLs->isType(ITEM_LINKSHELL))
+        {
+            linkshell::DelOnlineMember(PChar, POldLs);
+            POldLs->setSubType(ITEM_UNLOCKED);
+            PChar->pushPacket<GP_SERV_COMMAND_ITEM_LIST>(POldLs, ItemLockFlg::Normal);
+        }
+    }
+
+    if (charutils::AddItem(PChar, LOC_INVENTORY, PItemShell) == ERROR_SLOTID)
+    {
+        ShowWarning("addLinkshellHolder: could not add linkshell item for '%s' (inventory full, duplicate rare linkshell item, etc.).", PChar->getName().c_str());
+        return false;
+    }
+
+    linkshell::AddOnlineMember(PChar, PItemShell, lsNum);
+    PItemShell->setSubType(ITEM_LOCKED);
+    PChar->equip[lsEquipSlot]    = PItemShell->getSlotID();
+    PChar->equipLoc[lsEquipSlot] = LOC_INVENTORY;
+
+    PChar->pushPacket<GP_SERV_COMMAND_ITEM_LIST>(PItemShell, ItemLockFlg::Linkshell);
+    charutils::SaveCharEquip(PChar);
+    PChar->pushPacket<GP_SERV_COMMAND_GROUP_COMLINK>(PChar, lsNum);
+    PChar->pushPacket<GP_SERV_COMMAND_ITEM_ATTR>(PItemShell, LOC_INVENTORY, PItemShell->getSlotID());
+    PChar->pushPacket<GP_SERV_COMMAND_ITEM_SAME>(PChar);
+    charutils::LoadInventory(PChar);
+
+    if (lsNum == 1)
+    {
+        PChar->updatemask |= UPDATE_HP;
+        PChar->pushPacket<CCharStatusPacket>(PChar);
+    }
+    return true;
+}
+
+auto CLuaBaseEntity::addSoulPlate(const std::string& name, uint32 interestData, uint8 zeni, uint16 skillIndex, uint8 fp) -> CItem*
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowWarning("Invalid entity type calling function (%s).", m_PBaseEntity->getName());
+        return nullptr;
+    }
+
+    if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    {
+        // Deduct Blank Plate
+        battleutils::RemoveAmmo(PChar);
+
+        PChar->pushPacket<GP_SERV_COMMAND_ITEM_SAME>(PChar);
+
+        // Used Soul Plate
+        CItem* PItem = itemutils::GetItem(ITEMID::SOUL_PLATE);
+
+        if (PItem == nullptr)
+        {
+            ShowError("PItem was null for soulplate");
+            return nullptr;
+        }
+
+        PItem->setQuantity(1);
+        PItem->setSoulPlateData(name, interestData, zeni, skillIndex, fp);
+        auto SlotID = charutils::AddItem(PChar, LOC_INVENTORY, PItem, true);
+        if (SlotID == ERROR_SLOTID)
+        {
+            return nullptr;
+        }
+
+        return PItem;
+    }
+    return nullptr;
 }
 
 /************************************************************************
@@ -10981,6 +11197,14 @@ uint32 CLuaBaseEntity::canLearnSpell(uint16 spellID)
     {
         Message = 96;
     }
+    // Inundation (879): CanUseSpell(SpellID) bails out when PSpellList entry is missing (nullptr).
+    // Allow scroll / NPC learn when retail requirements are met anyway; addSpell has matching logic.
+    else if (spellID == static_cast<uint16>(SpellID::Inundation) &&
+             ((PChar->GetMJob() == JOB_RDM && PChar->GetMLevel() >= 64) ||
+              (PChar->GetSJob() == JOB_RDM && PChar->GetSLevel() >= 64)))
+    {
+        Message = 0;
+    }
     else if (!spell::CanUseSpell(PChar, static_cast<SpellID>(spellID)))
     {
         Message = 95;
@@ -12621,7 +12845,32 @@ void CLuaBaseEntity::disengage()
 
 void CLuaBaseEntity::timer(int ms, sol::function func)
 {
-    m_PBaseEntity->PAI->QueueAction(queueAction_t(ms, false, std::move(func)));
+    if (!func.valid())
+    {
+        ShowWarning("CLuaBaseEntity::timer: invalid lua function (%s).", m_PBaseEntity->getName().c_str());
+        return;
+    }
+
+
+
+    sol::function luaCallback = std::move(func);
+    m_PBaseEntity->PAI->QueueAction(queueAction_t(
+        std::chrono::milliseconds(ms),
+        false,
+        [luaCallback = std::move(luaCallback)](CBaseEntity* PEntity) mutable
+        {
+            if (!luaCallback.valid())
+            {
+                return;
+            }
+
+            const auto result = luaCallback(PEntity);
+            if (!result.valid())
+            {
+                sol::error err = result;
+                ShowError("CLuaBaseEntity::timer: %s", err.what());
+            }
+        }));
 }
 
 /************************************************************************
@@ -12636,7 +12885,30 @@ void CLuaBaseEntity::timer(int ms, sol::function func)
 
 void CLuaBaseEntity::queue(int ms, sol::function func)
 {
-    m_PBaseEntity->PAI->QueueAction(queueAction_t(ms, true, std::move(func)));
+    if (!func.valid())
+    {
+        ShowWarning("CLuaBaseEntity::queue: invalid lua function (%s).", m_PBaseEntity->getName().c_str());
+        return;
+    }
+
+    sol::function luaCallback = std::move(func);
+    m_PBaseEntity->PAI->QueueAction(queueAction_t(
+        std::chrono::milliseconds(ms),
+        true,
+        [luaCallback = std::move(luaCallback)](CBaseEntity* PEntity) mutable
+        {
+            if (!luaCallback.valid())
+            {
+                return;
+            }
+
+            const auto result = luaCallback(PEntity);
+            if (!result.valid())
+            {
+                sol::error err = result;
+                ShowError("CLuaBaseEntity::queue: %s", err.what());
+            }
+        }));
 }
 
 /************************************************************************
@@ -13117,10 +13389,9 @@ uint16 CLuaBaseEntity::getBaseRangedDelay()
     }
     else if (PBattleEntity)
     {
-        baseDelay = 360; // Tested using Fatso Fargann's TP Drainkiss @ 3000 TP after a mob landed a ranged attack.
-                         // TP Drainkiss is unaspected and is not affected by MDB or multipliers like shell.
-                         // Fatso's TP Drainkiss fTPs are 0.625~ @1000TP and 1.0~ @3000TP
-                         // TP Drained at 1.0 fTP was 93 on every normal non NM ranged mob no matter the family.
+        baseDelay = 260; // TODO: There does not seem to be a real way to get the delay of a ranged attack of a non-PC.
+                         // 260 delay is derived from a Goblin Hunter using a ranged attack, using Dark Seal Absorb TP to reverse the delay.
+                         // The cast gave back 40 TP, which is half of 80 TP due to 50% dAGI penalty being maxed out.
     }
 
     return baseDelay;
@@ -19343,7 +19614,8 @@ bool CLuaBaseEntity::setChocoboRaisingInfo(const sol::table& table)
                         "weather_preference = ?, "
                         "hunger = ?, "
                         "care_plan = ?, "
-                        "held_item = ? ";
+                        "held_item = ? "
+                        "LIMIT 1";
 
     const auto rset = db::preparedStmt(Query,
                                        m_PBaseEntity->id,
@@ -19581,6 +19853,31 @@ void CLuaBaseEntity::claimContestReward()
     }
 }
 
+void CLuaBaseEntity::addPacketMod(uint16 packetId, uint16 offset, uint8 value)
+{
+    TracyZoneScoped;
+
+    if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    {
+        ShowInfoFmt("Adding Packet Mod ({}): {}: {}: {}",
+                    PChar->name,
+                    hex16ToString(packetId),
+                    hex16ToString(offset),
+                    hex8ToString(value));
+        PacketMods[PChar->id][packetId].emplace_back(std::make_pair(offset, value));
+    }
+}
+
+void CLuaBaseEntity::clearPacketMods()
+{
+    TracyZoneScoped;
+
+    if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    {
+        PacketMods[PChar->id].clear();
+    }
+}
+
 //==========================================================//
 
 void CLuaBaseEntity::Register()
@@ -19770,6 +20067,9 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("getCurrentGPItem", CLuaBaseEntity::getCurrentGPItem);
     SOL_REGISTER("breakLinkshell", CLuaBaseEntity::breakLinkshell);
     SOL_REGISTER("addLinkpearl", CLuaBaseEntity::addLinkpearl);
+    SOL_REGISTER("addLinkshellHolder", CLuaBaseEntity::addLinkshellHolder);
+
+    SOL_REGISTER("addSoulPlate", CLuaBaseEntity::addSoulPlate);
 
     // Trading
     SOL_REGISTER("getContainerSize", CLuaBaseEntity::getContainerSize);
@@ -20480,6 +20780,9 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("getContestRewardStatus", CLuaBaseEntity::getContestRewardStatus);
     SOL_REGISTER("getContestRankHistory", CLuaBaseEntity::getContestRankHistory);
     SOL_REGISTER("claimContestReward", CLuaBaseEntity::claimContestReward);
+
+    SOL_REGISTER("addPacketMod", CLuaBaseEntity::addPacketMod);
+    SOL_REGISTER("clearPacketMods", CLuaBaseEntity::clearPacketMods);
 }
 
 std::ostream& operator<<(std::ostream& os, const CLuaBaseEntity& entity)

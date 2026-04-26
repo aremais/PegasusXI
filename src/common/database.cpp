@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2024 LandSandBoat Dev Teams
@@ -29,6 +29,7 @@
 #include "utils.h"
 
 #include <chrono>
+#include <mutex>
 using namespace std::chrono_literals;
 
 namespace
@@ -38,11 +39,21 @@ namespace
 // Each thread gets its own connection, so we don't need to worry about thread safety.
 thread_local Synchronized<db::detail::State> state;
 
+std::once_flag logDbTargetOnce;
+
+// Lowercase: matched against to_lower(exception.what()) so variants like
+// "MySQL server has gone away" are recognized (case-sensitive find missed these).
 const std::vector<std::string> connectionIssues = {
-    "Lost connection",
-    "Server has gone away",
-    "Connection refused",
-    "Can't connect to server",
+    "lost connection",
+    "server has gone away",
+    "connection refused",
+    "can't connect to server",
+    "communications link failure",
+    "broken pipe",
+    "connection reset",
+    "connection was killed",
+    "errno=2006", // CR_SERVER_GONE_ERROR (MySQL)
+    "errno=2013", // CR_SERVER_LOST
 };
 
 bool timersEnabled = false;
@@ -60,7 +71,19 @@ auto db::getConnection() -> std::unique_ptr<sql::Connection>
         const auto schema = settings::get<std::string>("network.SQL_DATABASE");
         const auto url    = fmt::format("tcp://{}:{}/{}", host, port, schema);
 
-        return std::unique_ptr<sql::Connection>(sql::mariadb::get_driver_instance()->connect(url.c_str(), login.c_str(), passwd.c_str()));
+        auto connection = std::unique_ptr<sql::Connection>(sql::mariadb::get_driver_instance()->connect(url.c_str(), login.c_str(), passwd.c_str()));
+
+        std::call_once(logDbTargetOnce,
+                       [&]()
+                       {
+                           const auto maxAttempts = 1U + settings::get<uint32>("network.SQL_QUERY_RETRY_COUNT");
+                           ShowInfo(fmt::format(
+                               "SQL connected successfully; using {}@{}:{}/{} (preparedStmt retries on transient connection loss: {}; XI_NETWORK_SQL_* env overrides apply). "
+                               "This line is normal startup info, not a database error.",
+                               login, host, port, schema, maxAttempts));
+                       });
+
+        return connection;
     }
     catch (const std::exception& e)
     {
@@ -75,7 +98,7 @@ auto db::getConnection() -> std::unique_ptr<sql::Connection>
 
 auto db::detail::isConnectionIssue(const std::exception& e) -> bool
 {
-    const auto str = fmt::format("{}", e.what());
+    const auto str = to_lower(fmt::format("{}", e.what()));
     for (const auto& issue : connectionIssues)
     {
         if (str.find(issue) != std::string::npos)
@@ -193,22 +216,38 @@ Synchronized<db::detail::State>& db::detail::getState()
     // NOTE: mariadb-connector-cpp doesn't seem to make any guarantees about whether or not isValid()
     //     : is const. So we're going to have to wrap calls to it as though they aren't.
 
-    if (state.read(
-            [&](auto& state)
+    const auto needFreshConnection = state.read(
+        [&](auto& s) -> bool
+        {
+            if (s.connection == nullptr)
             {
-                return state.connection != nullptr;
-            }))
+                return true;
+            }
+            try
+            {
+                if (s.connection->isClosed())
+                {
+                    return true;
+                }
+                // Idle connections are often closed server-side (wait_timeout). Without this, the first
+                // real query fails with "Lost connection to server during query" and hits the retry path.
+                return !s.connection->isValid();
+            }
+            catch (const std::exception&)
+            {
+                return true;
+            }
+        });
+
+    if (!needFreshConnection)
     {
         return state;
     }
 
-    // Otherwise, create a new connection. Writing it to the state.connection unique_ptr will release any previous connection
-    // that might be there.
-
     state.write(
-        [&](auto& state)
+        [&](auto& s)
         {
-            state.reset();
+            s.reset();
         });
 
     return state;
@@ -224,13 +263,15 @@ auto db::detail::timer(const std::string& query) -> xi::final_action<std::functi
             const auto duration = timer::count_milliseconds(end - start);
             if (timersEnabled && settings::get<bool>("logging.SQL_SLOW_QUERY_LOG_ENABLE"))
             {
+                // Duration only: the query still succeeded. Use warning levels so this is not mistaken
+                // for a SQL failure (ShowError is reserved for actual errors elsewhere).
                 if (duration > settings::get<uint32>("logging.SQL_SLOW_QUERY_ERROR_TIME"))
                 {
-                    ShowError(fmt::format("SQL query took {}ms: {}", duration, query));
+                    ShowWarning(fmt::format("SQL very slow query ({}ms): {}", duration, query));
                 }
                 else if (duration > settings::get<uint32>("logging.SQL_SLOW_QUERY_WARNING_TIME"))
                 {
-                    ShowWarning(fmt::format("SQL query took {}ms: {}", duration, query));
+                    ShowWarning(fmt::format("SQL slow query ({}ms): {}", duration, query));
                 }
             }
         });

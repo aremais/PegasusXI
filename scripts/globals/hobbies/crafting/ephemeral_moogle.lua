@@ -20,6 +20,32 @@ local moogleEventTable =
     ['Ephemeral_Moogle_Garden' ] = { trigger =    0, trade =    0, fail =    0 }, -- Mog Garden
 }
 
+-- If npc_list `name` is wrong but npcid matches retail, still resolve events (avoids silent trigger no-op).
+local moogleEventKeyByNpcId =
+{
+    [17720027] = 'Ephemeral_Moogle_Leather',
+    [17723847] = 'Ephemeral_Moogle_Wood',
+    [17723848] = 'Ephemeral_Moogle_Smith',
+    [17736061] = 'Ephemeral_Moogle_Alchemy',
+    [17740209] = 'Ephemeral_Moogle_Gold',
+    [17752589] = 'Ephemeral_Moogle_Cook',
+    [17764824] = 'Ephemeral_Moogle_Bone',
+    [17764825] = 'Ephemeral_Moogle_Cloth',
+    [17924238] = 'Ephemeral_Moogle_Garden',
+}
+
+local function getMoogleEvents(npc)
+    local byName = moogleEventTable[npc:getName()]
+    if byName then
+        return byName
+    end
+    local key = moogleEventKeyByNpcId[npc:getID()]
+    if key then
+        return moogleEventTable[key]
+    end
+    return nil
+end
+
 -- Information for crystal item IDs and currency.
 local crystalTable =
 {
@@ -54,6 +80,11 @@ local getStoredCrystals = function(player)
 end
 
 xi.crafting.ephemeralMoogleOnTrade = function(player, npc, trade)
+    local events = getMoogleEvents(npc)
+    if not events then
+        return
+    end
+
     local eventParams = { 0, 0, 0, 0, 0, 0, 0, 0 }
     local validTrade  = false
 
@@ -93,21 +124,31 @@ xi.crafting.ephemeralMoogleOnTrade = function(player, npc, trade)
     end
 
     if validTrade then
-        player:startEvent(moogleEventTable[npc:getName()].trade, eventParams[1], eventParams[2], eventParams[3], eventParams[4], eventParams[5], eventParams[6], eventParams[7], eventParams[8])
+        player:startEvent(events.trade, eventParams[1], eventParams[2], eventParams[3], eventParams[4], eventParams[5], eventParams[6], eventParams[7], eventParams[8])
     else
-        player:startEvent(moogleEventTable[npc:getName()].fail)
+        player:startEvent(events.fail)
     end
 end
 
 xi.crafting.ephemeralMoogleOnTrigger = function(player, npc)
+    local events = getMoogleEvents(npc)
+    if not events or events.trigger == 0 then
+        return
+    end
+
     local eventParams = getStoredCrystals(player)
 
-    player:startEvent(moogleEventTable[npc:getName()].trigger, eventParams[1], eventParams[2], eventParams[3], eventParams[4], 0, 0, 0, 0)
+    player:startEvent(events.trigger, eventParams[1], eventParams[2], eventParams[3], eventParams[4], 0, 0, 0, 0)
 end
 
 xi.crafting.ephemeralMoogleOnEventUpdate = function(player, csid, option, npc)
+    local events = getMoogleEvents(npc)
+    if not events then
+        return
+    end
+
     -- Only trade event (crystal storing) has updates.
-    if csid == moogleEventTable[npc:getName()].trade then
+    if csid == events.trade then
         -- Delete confirmed trade items, first thing.
         player:confirmTrade()
 
@@ -129,8 +170,13 @@ xi.crafting.ephemeralMoogleOnEventUpdate = function(player, csid, option, npc)
 end
 
 xi.crafting.ephemeralMoogleOnEventFinish = function(player, csid, option, npc)
+    local events = getMoogleEvents(npc)
+    if not events then
+        return
+    end
+
     -- Logic for crystal retrieving.
-    if csid ~= moogleEventTable[npc:getName()].trigger then
+    if csid ~= events.trigger then
         return
     end
 
@@ -141,6 +187,10 @@ xi.crafting.ephemeralMoogleOnEventFinish = function(player, csid, option, npc)
     -- Grab the crystal type and quantities
     local crystalType   = bit.band(bit.rshift(option, 16), 0xFF) -- Element.
     local totalQuantity = bit.band(option, 0xFFFF)
+
+    if crystalType < xi.element.FIRE or crystalType > xi.element.DARK then
+        return
+    end
     local crystalAmount = totalQuantity % 12
     local clusterAmount = math.floor(totalQuantity / 12)
 

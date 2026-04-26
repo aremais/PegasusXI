@@ -19,11 +19,13 @@
 ===========================================================================
 */
 
+#include <algorithm>
 #include <cstring>
 
 #include "common/utils.h"
 #include "exdata/appraisable.h"
 #include "exdata/augment_standard.h"
+#include "exdata/soul_plate.h"
 #include "item.h"
 
 /************************************************************************
@@ -397,4 +399,16 @@ bool CItem::isSoultrapper() const
 bool CItem::isMannequin() const
 {
     return m_id >= 256 && m_id <= 263;
+}
+
+void CItem::setSoulPlateData(const std::string& name, uint32 interestData, uint8 zeni, uint16 skillIndex, uint8 fp)
+{
+    std::memset(m_extra, 0, sizeof(m_extra));
+    auto& sp         = exdata<Exdata::SoulPlate>();
+    sp.PoolId        = static_cast<uint16_t>(interestData & 0xFFFFu);
+    sp.SuperFamilyId = static_cast<uint16_t>((interestData >> 16) & 0xFFFFu);
+    sp.Quality       = std::min<uint32_t>(zeni, (1u << 6) - 1u);
+    sp.FeralSkill    = std::min<uint32_t>(skillIndex, (1u << 12) - 1u);
+    sp.FeralPoints   = std::min<uint32_t>(fp, (1u << 7) - 1u);
+    PackSoultrapperName(name, sp.Signature);
 }

@@ -138,6 +138,12 @@ function PlayerHasValidSession(playerId)
 end
 
 ---@nodiscard
+---@param ipStr string
+---@return integer
+function KickSessionsByClientIP(ipStr)
+end
+
+---@nodiscard
 ---@param name string
 ---@return integer
 function GetPlayerIDByName(name)

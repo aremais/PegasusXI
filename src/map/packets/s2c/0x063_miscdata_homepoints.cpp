@@ -33,7 +33,12 @@ GP_SERV_COMMAND_MISCDATA::HOMEPOINTS::HOMEPOINTS(const CCharEntity* PChar)
     // Copy teleport masks directly
     std::memcpy(packet.homePoint, PChar->teleport.homepoint.access, sizeof(packet.homePoint));
     std::memcpy(packet.survivalGuide, PChar->teleport.survival.access, sizeof(packet.survivalGuide));
-    std::memcpy(packet.waypoint, PChar->teleport.waypoints.access, sizeof(packet.waypoint));
+
+    // waypoint_t only has uint32 access[2] (8 bytes). The packet reserves 16 bytes (waypoints + Abyssea maw
+    // style mask on retail). Copying sizeof(packet.waypoint) was UB and leaked adjacent memory into the
+    // packet — clients then showed broken mog menu strings (e.g. "Delete which?", "unknown #24").
+    std::memset(packet.waypoint, 0, sizeof(packet.waypoint));
+    std::memcpy(packet.waypoint, PChar->teleport.waypoints.access, sizeof(PChar->teleport.waypoints.access));
 
     // Everything below is untested/unimplemented
     // packet.atmos        = PChar->teleport.pastMaw;

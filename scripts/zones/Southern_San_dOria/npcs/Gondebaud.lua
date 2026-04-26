@@ -18,6 +18,7 @@ entity.onTrigger = function(player, npc)
     local trustBastok   = player:getQuestStatus(xi.questLog.BASTOK, xi.quest.id.bastok.TRUST_BASTOK)
     local trustWindurst = player:getQuestStatus(xi.questLog.WINDURST, xi.quest.id.windurst.TRUST_WINDURST)
 
+    -- Use direct dialogue here to prevent client lockups from event paths on this NPC.
     if
         player:getMainLvl() >= 5 and
         xi.settings.main.ENABLE_TRUST_QUESTS == 1 and
@@ -27,27 +28,30 @@ entity.onTrigger = function(player, npc)
             trustWindurst == xi.questStatus.QUEST_AVAILABLE and
             trustBastok == xi.questStatus.QUEST_AVAILABLE
         then
-            player:startEvent(3500)
+            player:addQuest(xi.questLog.SANDORIA, xi.quest.id.sandoria.TRUST_SANDORIA)
+            npcUtil.giveKeyItem(player, xi.ki.RED_INSTITUTE_CARD)
+            player:messageText(npc, ID.text.ROSEL_GREETINGS)
         elseif
             trustWindurst == xi.questStatus.QUEST_COMPLETED or
             trustBastok == xi.questStatus.QUEST_COMPLETED
         then
-            player:startEvent(3504)
+            player:addQuest(xi.questLog.SANDORIA, xi.quest.id.sandoria.TRUST_SANDORIA)
+            npcUtil.giveKeyItem(player, xi.ki.RED_INSTITUTE_CARD)
+            player:messageText(npc, ID.text.ROSEL_GREETINGS)
+        else
+            player:messageText(npc, ID.text.NOTHING_OUT_OF_ORDINARY)
         end
     elseif player:hasKeyItem(xi.ki.RED_INSTITUTE_CARD) then
-        player:startEvent(3501)
+        player:messageText(npc, ID.text.ROSEL_GREETINGS)
     elseif trustSandoria == xi.questStatus.QUEST_COMPLETED then
-        player:startEvent(3502)
+        player:messageText(npc, ID.text.ROSEL_GREETINGS)
     else
-        player:startEvent(3505)
+        player:messageText(npc, ID.text.NOTHING_OUT_OF_ORDINARY)
     end
 end
 
 entity.onEventFinish = function(player, csid, option, npc)
-    if (csid == 3500 or csid == 3504) and option == 2 then
-        player:addQuest(xi.questLog.SANDORIA, xi.quest.id.sandoria.TRUST_SANDORIA)
-        npcUtil.giveKeyItem(player, xi.ki.RED_INSTITUTE_CARD)
-    elseif csid == 3503 or csid == 3553 then
+    if csid == 3503 or csid == 3553 then
         local spellID = player:getLocalVar('TradingTrustCipher')
         player:setLocalVar('TradingTrustCipher', 0)
         player:addSpell(spellID, { silentLog = true })

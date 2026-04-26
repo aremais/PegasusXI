@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2024 LandSandBoat Dev Teams
@@ -36,6 +36,8 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+
+#include <thread>
 
 // TODO: mariadb-connector-cpp triggers this. Remove once they fix it.
 // 4263 'function': member function does not override any base class member functions
@@ -702,14 +704,17 @@ auto preparedStmt(const std::string& rawQuery, Args&&... args) -> std::unique_pt
                 }
             };
 
-            const auto queryRetryCount = 1 + settings::get<uint32>("network.SQL_QUERY_RETRY_COUNT");
+            const auto queryRetryCount = 1U + settings::get<uint32>("network.SQL_QUERY_RETRY_COUNT");
+            std::string lastConnectionError;
             for (auto i = 0U; i < queryRetryCount; ++i)
             {
                 try
                 {
                     if (i > 0)
                     {
-                        ShowInfo("Connection lost, re-establishing connection and retrying query (attempt %d)", i);
+                        // Brief backoff before reconnect (helps MariaDB restart / brief network loss).
+                        std::this_thread::sleep_for(std::chrono::milliseconds(100 * static_cast<int>(i)));
+                        ShowInfo("Connection lost, re-establishing connection and retrying query (attempt %u of %u)", i + 1, queryRetryCount);
                         state.reset();
                     }
                     return operation();
@@ -722,10 +727,15 @@ auto preparedStmt(const std::string& rawQuery, Args&&... args) -> std::unique_pt
                         ShowErrorFmt("{}", e.what());
                         return nullptr;
                     }
+                    lastConnectionError = e.what();
+                    ShowWarningFmt("SQL connection-level error (attempt {}/{}): {}", i + 1, queryRetryCount, lastConnectionError);
                 }
             }
 
-            ShowCritical("Query Failed after %d retries: %s", queryRetryCount, rawQuery.c_str());
+            ShowCriticalFmt("Query failed after {} attempts (each failed with a connection-level error). Last driver error: {} | Query: {}",
+                            queryRetryCount,
+                            lastConnectionError,
+                            rawQuery);
             std::this_thread::sleep_for(1s);
             std::terminate();
         });

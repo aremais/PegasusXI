@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -20,6 +20,9 @@
 */
 
 #include "zoneutils.h"
+
+#include "common/scheduler.h"
+#include "map_config.h"
 
 #include "ai/ai_container.h"
 #include "aman.h"
@@ -45,6 +48,8 @@
 #include <execution>
 #include <future>
 #include <ranges>
+#include <thread>
+#include <vector>
 
 std::map<uint16, CZone*> g_PZoneList; // Global array of pointers for zones
 
@@ -52,6 +57,12 @@ namespace zoneutils
 {
 
 detail::LazyLoadState lazyLoad;
+
+namespace
+{
+Scheduler*       g_loginScheduler     = nullptr;
+const MapConfig* g_loginMapConfig = nullptr;
+} // namespace
 
 /************************************************************************
  *                                                                       *
@@ -115,6 +126,22 @@ auto GetZone(uint16 zoneId) -> CZone*
     }
 
     return nullptr;
+}
+
+auto IsRegisteredZone(const CZone* zone) -> bool
+{
+    if (zone == nullptr)
+    {
+        return false;
+    }
+    for (const auto* PZone : g_PZoneList | std::views::values)
+    {
+        if (PZone == zone)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 auto GetEntity(const uint32 id, const uint8 filter) -> CBaseEntity*
@@ -410,7 +437,7 @@ auto LoadMOBList(Scheduler& scheduler, const std::vector<uint16>& zoneIds) -> Ta
 
                         auto* PZone = g_PZoneList[zoneId];
 
-                        const auto query = "SELECT mobname, packet_name, mobid, pos_rot, pos_x, pos_y, pos_z, "
+                        const auto query = "SELECT mobname, mob_spawn_points.polutils_name AS polutils_name, packet_name, mobid, pos_rot, pos_x, pos_y, pos_z, "
                                            "respawntime, spawntype, dropid, mob_groups.HP, mob_groups.MP, mob_spawn_points.minLevel, mob_spawn_points.maxLevel, "
                                            "modelid, mJob, sJob, cmbSkill, cmbDmgMult, cmbDelay, behavior, links, mobType, immunity, "
                                            "ecosystemID, speed, "
@@ -453,8 +480,10 @@ auto LoadMOBList(Scheduler& scheduler, const std::vector<uint16>& zoneIds) -> Ta
                                 {
                                     CMobEntity* PMob = new CMobEntity;
 
-                                    PMob->name       = rset->get<std::string>("mobname");
-                                    PMob->packetName = rset->get<std::string>("packet_name");
+                                    PMob->name = rset->get<std::string>("mobname");
+                                    // Prefer polutils_name (human-readable) for the client; mob_pools.packet_name uses underscores.
+                                    const auto polutilsName = rset->getOrDefault<std::string>("polutils_name", "");
+                                    PMob->packetName        = !polutilsName.empty() ? polutilsName : rset->get<std::string>("packet_name");
                                     PMob->id         = rset->get<uint32>("mobid");
 
                                     PMob->targid = static_cast<uint16>(PMob->id & 0x0FFF);
@@ -878,6 +907,77 @@ auto ProcessLoadQueue(Scheduler& scheduler, MapConfig config) -> Task<void>
 auto IsLazyLoadingEnabled() -> bool
 {
     return lazyLoad.enabled;
+}
+
+void SetLoginZoneLoadContext(Scheduler* scheduler, const MapConfig* config)
+{
+    g_loginScheduler = scheduler;
+    g_loginMapConfig = config;
+}
+
+void EnsureDestinationZoneLoaded(uint16 zoneId)
+{
+    if (zoneId >= MAX_ZONEID)
+    {
+        return;
+    }
+    if (GetZone(zoneId) != nullptr)
+    {
+        return;
+    }
+    if (!IsLazyLoadingEnabled())
+    {
+        return;
+    }
+    if (!lazyLoad.managedZones.contains(zoneId))
+    {
+        return;
+    }
+    if (g_loginScheduler == nullptr || g_loginMapConfig == nullptr)
+    {
+        ShowError("EnsureDestinationZoneLoaded: map runtime context not set");
+        return;
+    }
+
+    auto runLoad = [&]()
+    {
+        g_loginScheduler->blockOnMainThread(LoadZones(*g_loginScheduler, *g_loginMapConfig, std::vector<uint16>{ zoneId }));
+    };
+
+    try
+    {
+        if (std::this_thread::get_id() == g_loginScheduler->getMainThreadId())
+        {
+            runLoad();
+        }
+        else
+        {
+            std::promise<void> prom;
+            auto               fut = prom.get_future();
+            g_loginScheduler->postToMainThread(
+                [&]()
+                {
+                    try
+                    {
+                        runLoad();
+                        prom.set_value();
+                    }
+                    catch (...)
+                    {
+                        prom.set_exception(std::current_exception());
+                    }
+                });
+            fut.get();
+        }
+    }
+    catch (const std::exception& e)
+    {
+        ShowError("EnsureDestinationZoneLoaded: %s", e.what());
+    }
+    catch (...)
+    {
+        ShowError("EnsureDestinationZoneLoaded: unknown exception");
+    }
 }
 
 // Returns all zones managed by this process (ID and name)

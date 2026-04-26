@@ -23,6 +23,10 @@ xi.settings.search =
     -- Interval is in seconds, default is one hour
     EXPIRE_INTERVAL = 3600,
 
+    -- Max concurrent TCP connections to the search server from one public IP (AH + /sea each use sessions).
+    -- The retail client can open several at once; NAT (many players, one IP) needs a higher value.
+    MAX_CONNECTIONS_PER_IP = 1000,
+
     -- IP address strings in this list won't be subject to 'IPAddressesInUse' rate limiting
     ACCESS_WHITELIST =
     {
@@ -32,4 +36,5 @@ xi.settings.search =
 
     -- true/false: Enable/disable logging the content of packets being sent to the client (required Debug mode)
     DEBUG_OUT_PACKETS = false,
+
 }

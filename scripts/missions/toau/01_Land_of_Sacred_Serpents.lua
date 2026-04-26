@@ -26,6 +26,17 @@ mission.sections =
 
         [xi.zone.AHT_URHGAN_WHITEGATE] =
         {
+            -- Retail also expects players to speak with Naja; trigger area 3 is near Abquhbah
+            -- and does not cover Naja's desk (~22.7, -45.6), so targeting Naja must work too.
+            ['Naja_Salaheem'] =
+            {
+                onTrigger = function(player, npc)
+                    -- Naja Salaheem interactions require the 9th argument set to 0.
+                    -- This is because Aht Uhrgan Whitegate uses 2 different dats.
+                    return mission:progressEvent(3000, { text_table = 0 })
+                end,
+            },
+
             onTriggerAreaEnter =
             {
                 [3] = function(player, triggerArea)

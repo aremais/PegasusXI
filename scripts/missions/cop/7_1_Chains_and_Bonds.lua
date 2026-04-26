@@ -36,7 +36,7 @@ mission.sections =
 
             onZoneIn = function(player, prevZone)
                 if mission:getVar(player, 'Status') == 0 then
-                    return 111
+                    return { 111, 0 }
                 end
             end,
 
@@ -92,7 +92,7 @@ mission.sections =
 
             onZoneIn = function(player, prevZone)
                 if mission:getVar(player, 'Status') == 1 then
-                    return 114
+                    return { 114, 0 }
                 end
             end,
 
@@ -124,7 +124,7 @@ mission.sections =
         {
             onZoneIn = function(player, prevZone)
                 if not mission:isVarBitsSet(player, 'Option', 2) then
-                    return 14
+                    return { 14, 0 }
                 end
             end,
 

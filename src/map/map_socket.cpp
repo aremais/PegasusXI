@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2025 LandSandBoat Dev Teams
@@ -21,7 +21,39 @@
 
 #include "map_socket.h"
 
-#include <common/logging.h>
+#include "common/logging.h"
+
+#include <asio/error.hpp>
+#include <system_error>
+
+namespace
+{
+// Windows (and some POSIX stacks) surface ICMP unreachable / "no listener" on UDP as
+// connection_refused on a later recv/send completion — not a server bug.
+bool isBenignUdpSocketError(const std::error_code& ec)
+{
+    if (!ec)
+    {
+        return false;
+    }
+    if (ec == asio::error::operation_aborted)
+    {
+        return true;
+    }
+    const std::error_condition cond = ec.default_error_condition();
+    if (cond == std::errc::connection_refused || cond == std::errc::connection_reset)
+    {
+        return true;
+    }
+#if defined(_WIN32)
+    if (ec.category() == std::system_category() && ec.value() == WSAECONNREFUSED)
+    {
+        return true;
+    }
+#endif
+    return false;
+}
+} // namespace
 
 MapSocket::MapSocket(Scheduler& scheduler, const uint16 port, ReceiveFn onReceiveFn)
 : scheduler_(scheduler)
@@ -38,7 +70,7 @@ MapSocket::MapSocket(Scheduler& scheduler, const uint16 port, ReceiveFn onReceiv
     socket_.open(listen_endpoint.protocol());
     socket_.bind(listen_endpoint);
 
-    receive(); // begin receiving loop
+    startReceive();
 }
 
 MapSocket::~MapSocket()
@@ -51,44 +83,39 @@ MapSocket::~MapSocket()
     }
 }
 
-void MapSocket::receive()
+void MapSocket::startReceive()
 {
     TracyZoneScoped;
 
     socket_.async_receive_from(
-        asio::buffer(buffer_), remoteEndpoint_, [this](const std::error_code& ec, std::size_t bytesRecvd)
+        asio::buffer(buffer_), remote_endpoint_, [this](const std::error_code& ec, std::size_t bytes_recvd)
         {
             // NOTE: ASIO returns the address in host byte order, but we store it in network byte order,
             //     : so we convert it back.
-            const auto senderIP   = htonl(remoteEndpoint_.address().to_v4().to_uint());
-            const auto senderPort = remoteEndpoint_.port();
-            const auto ipp        = IPP(senderIP, senderPort);
+            const auto sender_ip   = htonl(remote_endpoint_.address().to_v4().to_uint());
+            const auto sender_port = remote_endpoint_.port();
+            const auto ipp         = IPP(sender_ip, sender_port);
 
-            const auto sizedBuffer = ByteSpan(buffer_.data(), bytesRecvd);
+            std::error_code recv_ec = ec;
+            if (ec && isBenignUdpSocketError(ec))
+            {
+                recv_ec.clear();
+            }
 
-            DebugPacketsFmt("Received {} bytes from {}", sizedBuffer.size(), ipp.toString());
+            const auto buffer = std::span(buffer_.data(), bytes_recvd);
 
-            if (ec)
-            {
-                ShowErrorFmt("Receive error from {}: {}", ipp.toString(), ec.message());
-            }
-            else if (sizedBuffer.empty())
-            {
-                ShowErrorFmt("Received empty buffer from {}", ipp.toString());
-            }
-            else // Everything is OK
-            {
-                onReceiveFn_(sizedBuffer, ipp);
-            }
+            DebugPacketsFmt("Received {} bytes from {}", buffer.size(), ipp.toString());
+
+            onReceiveFn_(recv_ec, buffer, ipp);
 
             if (!scheduler_.closeRequested() && socket_.is_open())
             {
-                receive(); // Queue up more work
+                startReceive(); // Queue up more work
             }
         });
 }
 
-void MapSocket::send(const IPP& ipp, ByteSpan buffer)
+void MapSocket::send(const IPP& ipp, std::span<uint8> buffer)
 {
     TracyZoneScoped;
 
@@ -104,7 +131,7 @@ void MapSocket::send(const IPP& ipp, ByteSpan buffer)
         endpoint,
         [](const std::error_code& ec, std::size_t /*bytes_sent*/)
         {
-            if (ec)
+            if (ec && !isBenignUdpSocketError(ec))
             {
                 ShowErrorFmt("Error sending data: {}", ec.message());
             }
@@ -112,4 +139,10 @@ void MapSocket::send(const IPP& ipp, ByteSpan buffer)
 
     // This will only be called in the middle of a doSocketsFor() call, so we don't
     // need to enqueue more work when we're done here.
+}
+
+void MapSocket::requestExit()
+{
+    isRunning_ = false;
+    scheduler_.stop();
 }

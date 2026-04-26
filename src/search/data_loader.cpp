@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -90,7 +90,7 @@ std::vector<ahHistory*> CDataLoader::GetAHItemHistory(uint16 ItemID, bool stack)
 
 std::vector<ahItem*> CDataLoader::GetAHItemsToCategory(uint8 ahCategoryID, const std::string& orderByString)
 {
-    ShowDebugFmt("Try find category: {}", ahCategoryID);
+    ShowTraceFmt("Try find category: {}", ahCategoryID);
 
     std::vector<ahItem*> ItemList;
 
@@ -103,20 +103,29 @@ std::vector<ahItem*> CDataLoader::GetAHItemsToCategory(uint8 ahCategoryID, const
 
         const auto fromTable = settings::get<bool>("search.OMIT_NO_HISTORY") ? subQuery : "item_basic";
 
-        // Build the query string with optional subquery and order-by statements before passing it to the prepared statement.
+        // Inner query: aggregate listings per itemid only. Outer query: JOIN equipment/weapon for ORDER BY.
+        // Doing ORDER BY item_equipment.level (etc.) in the same SELECT as GROUP BY item_basic.itemid breaks under
+        // ONLY_FULL_GROUP_BY and can fail sorting — the client then shows "Search failed".
         //
         // NOTE: We normally don't want to build a prepared statement with fmt::format,
         //     : but this query is entirely internal, so it's OK.
-        const auto queryStr = fmt::format("SELECT item_basic.itemid, item_basic.stackSize, COUNT(*)-SUM(stack), SUM(stack) "
-                                          "FROM {} "
-                                          "LEFT JOIN auction_house ON item_basic.itemId = auction_house.itemid AND auction_house.buyer_name IS NULL "
-                                          "LEFT JOIN item_equipment ON item_basic.itemid = item_equipment.itemid "
-                                          "LEFT JOIN item_weapon ON item_basic.itemid = item_weapon.itemid "
-                                          "WHERE aH = ? "
-                                          "GROUP BY item_basic.itemid "
-                                          "{}",
-                                          fromTable,
-                                          orderByString);
+        const auto queryStr = fmt::format(
+            "SELECT ah.itemid, ah.stackSize, ah.ah_singles, ah.ah_stacks "
+            "FROM ( "
+            "  SELECT item_basic.itemid, item_basic.stackSize, "
+            "    COUNT(*)-SUM(stack) AS ah_singles, "
+            "    SUM(stack) AS ah_stacks "
+            "  FROM {} "
+            "  LEFT JOIN auction_house ON item_basic.itemId = auction_house.itemid AND auction_house.buyer_name IS NULL "
+            "  WHERE item_basic.aH = ? "
+            "  GROUP BY item_basic.itemid "
+            ") AS ah "
+            "LEFT JOIN item_basic ON ah.itemid = item_basic.itemid "
+            "LEFT JOIN item_equipment ON ah.itemid = item_equipment.itemid "
+            "LEFT JOIN item_weapon ON ah.itemid = item_weapon.itemid "
+            "{}",
+            fromTable,
+            orderByString);
 
         // We will now populate the ? in the prepared statement.
         return db::preparedStmt(queryStr, ahCategoryID);
@@ -130,8 +139,8 @@ std::vector<ahItem*> CDataLoader::GetAHItemsToCategory(uint8 ahCategoryID, const
 
             PAHItem->ItemID = rset->get<uint16>("itemid");
 
-            PAHItem->SingleAmount = rset->getOrDefault<uint32>("COUNT(*)-SUM(stack)", 0);
-            PAHItem->StackAmount  = rset->getOrDefault<uint32>("SUM(stack)", 0);
+            PAHItem->SingleAmount = rset->getOrDefault<uint32>("ah_singles", 0);
+            PAHItem->StackAmount  = rset->getOrDefault<uint32>("ah_stacks", 0);
             PAHItem->Category     = ahCategoryID;
 
             if (rset->get<uint32>("stackSize") == 1)
@@ -757,20 +766,30 @@ void CDataLoader::ExpireAHItems(uint16 expireAgeInDays)
 
     std::vector<ListingToExpire> listingsToExpire;
 
-    const auto rset0 = db::preparedStmt("SELECT T0.id,T0.itemid,T1.stacksize, T0.stack, T0.seller FROM auction_house T0 INNER JOIN item_basic T1 ON "
-                                        "T0.itemid = T1.itemid WHERE datediff(now(),from_unixtime(date)) >= ? AND buyer_name IS NULL",
-                                        expireAgeInDays);
+    // Calendar-day age must match DATEDIFF(NOW(), FROM_UNIXTIME(date)) >= N, but without wrapping
+    // `date` in functions so the server can range-scan `date` (see idx_auction_house_buyer_date).
+    const auto rset0 = db::preparedStmt(
+        "SELECT T0.id, T0.itemid, T1.stackSize, T0.stack, T0.seller FROM auction_house T0 INNER JOIN item_basic T1 ON "
+        "T0.itemid = T1.itemid WHERE T0.buyer_name IS NULL AND T0.`date` < "
+        "UNIX_TIMESTAMP(DATE_ADD(DATE_SUB(CURDATE(), INTERVAL ? DAY), INTERVAL 1 DAY))",
+        expireAgeInDays);
+
+    if (!rset0)
+    {
+        ShowWarning("ExpireAHItems: failed to query expired listings (see prior DB error log).");
+        return;
+    }
 
     const auto expiredAuctions = rset0->rowsCount();
 
-    if (rset0 && expiredAuctions > 0)
+    if (expiredAuctions > 0)
     {
         while (rset0->next())
         {
             // Collect the items we're going to expire
             uint32 saleID    = rset0->get<uint32>("id");
             uint32 itemID    = rset0->get<uint32>("itemid");
-            uint8  itemStack = rset0->get<uint8>("stacksize");
+            uint8  itemStack = rset0->get<uint8>("stackSize");
             uint8  ahStack   = rset0->get<uint8>("stack");
             uint32 sellerID  = rset0->get<uint32>("seller");
             // NOTE: seller name left out for now, we'll populate this later

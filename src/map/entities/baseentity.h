@@ -240,12 +240,14 @@ struct location_t
     CZone*     zone;        // Current zone
     uint16     prevzone;    // Previous zone (Not used for monsters and NPCs)
     uint16     boundary;    // A certain area in the zone in which the entity is located (used by characters and transport)
+    bool       zoning{};    // Script flag: player must zone before continuing (see CLuaBaseEntity::needToZone)
 
     location_t()
     : destination(0)
     , zone(nullptr)
     , prevzone(0)
     , boundary(0)
+    , zoning(false)
     {
     }
 };

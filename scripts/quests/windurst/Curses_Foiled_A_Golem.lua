@@ -4,7 +4,7 @@
 -- !addquest 2 63
 -- Shantotto       : !pos 122 -2 112 239
 -- Torino-Samarino : !pos 105 -20 140 111
--- Cermet Door     : !pos -183 0 190 204
+-- Cermet Door     : !pos -183 0 190 204 (scripts/zones/FeiYin/npcs/_no4.lua)
 -----------------------------------
 
 local quest = Quest:new(xi.questLog.WINDURST, xi.quest.id.windurst.CURSES_FOILED_A_GOLEM)
@@ -134,17 +134,6 @@ quest.sections =
 
         [xi.zone.FEIYIN] =
         {
-            ['_no4'] =
-            {
-                onTrigger = function(player, npc)
-                    if player:hasKeyItem(xi.ki.SHANTOTTOS_NEW_SPELL) then
-                        return quest:progressEvent(14)
-                    elseif player:hasKeyItem(xi.ki.SHANTOTTOS_EX_SPELL) then
-                        return quest:event(13)
-                    end
-                end,
-            },
-
             ['Clockwork_Pod'] = feiyinMob,
             ['Colossus']      = feiyinMob,
             ['Droma']         = feiyinMob,
@@ -153,14 +142,6 @@ quest.sections =
             ['Mind_Hoarder']  = feiyinMob,
             ['Ore_Golem']     = feiyinMob,
             ['Talos']         = feiyinMob,
-
-            onEventFinish =
-            {
-                [14] = function(player, csid, option, npc)
-                    quest:setVar(player, 'Prog', 2)
-                    player:delKeyItem(xi.ki.SHANTOTTOS_NEW_SPELL)
-                end,
-            },
         },
 
         [xi.zone.WINDURST_WALLS] =

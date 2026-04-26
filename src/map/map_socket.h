@@ -33,10 +33,13 @@
 #include <asio/ts/buffer.hpp>
 #include <asio/ts/internet.hpp>
 
+#include <functional>
+#include <system_error>
+
 class MapSocket
 {
 public:
-    using ReceiveFn = std::function<void(ByteSpan, const IPP&)>;
+    using ReceiveFn = std::function<void(const std::error_code&, ByteSpan, const IPP&)>;
 
     MapSocket(Scheduler& scheduler, uint16 port, ReceiveFn onReceiveFn);
     ~MapSocket();

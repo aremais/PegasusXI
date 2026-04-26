@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -586,108 +586,10 @@ bool CheckSubJobZone(CMobEntity* PMob)
 
 /************************************************************************
  *                                                                       *
- *  Calculate base mob HP from job grades and levels                     *
- *                                                                       *
- ************************************************************************/
-static uint32 CalculateBaseMobHP(uint8 mLvl, uint8 baseHP, uint8 jobScale, uint8 scaleXHP)
-{
-    // HP formula has multiple parts based on level ranges:
-    // Levels 1-5: Base HP + scaling per level
-    // Levels 5-30: Additional scaling with conditional multiplier
-    // Levels 30+: Increased scaling with special modifiers
-    if (mLvl == 0)
-    {
-        return 0;
-    }
-
-    const uint8 level5Scaling  = std::min(mLvl, static_cast<uint8>(5));
-    const uint8 level30Scaling = std::min(mLvl, static_cast<uint8>(30));
-
-    uint32 hp = baseHP + (level5Scaling - 1) * (jobScale + 5);
-
-    // Additional bonuses based on scaling thresholds
-    uint32 riBonus = 0;
-    switch (level5Scaling)
-    {
-        case 0:
-        case 1:
-        case 2:
-            riBonus = 0;
-            break;
-        case 3:
-            riBonus = 3;
-            break;
-        case 4:
-            riBonus = 7;
-            break;
-        default: // 5
-            riBonus = 14;
-            break;
-    }
-
-    hp += riBonus;
-
-    if (mLvl > 5)
-    {
-        uint32 level5Bonus = (level30Scaling - 5) * (2 * jobScale + level30Scaling + 6) / 2;
-        hp += level5Bonus;
-    }
-
-    if (mLvl > 30)
-    {
-        uint32 level30Bonus = (mLvl - 30) * (63 + scaleXHP) + (mLvl - 31) * (jobScale + 6);
-        hp += level30Bonus;
-    }
-
-    return hp;
-}
-
-/************************************************************************
- *                                                                       *
- *  Calculate subjob HP contribution                                     *
- *                                                                       *
- ************************************************************************/
-static uint32 CalculateSubjobHP(uint8 mLvl, uint8 sjJobScale, uint8 sjScaleXHP)
-{
-    // Subjob HP contribution varies by main job level:
-    // 50+   = 100% of subjob stats
-    // 40-49 = 75% of subjob stats
-    // 31-39 = 50% of subjob stats
-    // 25-30 = 25% of subjob stats
-    // 1-24  = 0% of subjob stats
-    int sjScale = 0;
-    if (mLvl > 49)
-    {
-        sjScale = mLvl;
-    }
-    else if (mLvl > 39)
-    {
-        sjScale = (mLvl * 3) / 4;
-    }
-    else if (mLvl > 30)
-    {
-        sjScale = mLvl / 2;
-    }
-    else if (mLvl > 24)
-    {
-        sjScale = mLvl / 4;
-    }
-
-    const double sjHp =
-        sjJobScale * std::max(sjScale - 1, 0) +
-        (0.5 + 0.5 * sjScaleXHP) * std::max(sjScale - 10, 0) +
-        std::max(sjScale - 30, 0) +
-        std::max(sjScale - 50, 0) +
-        std::max(sjScale - 70, 0);
-
-    return static_cast<uint32>(std::ceil(sjHp / 2.0));
-}
-
-/************************************************************************
- *                                                                       *
  *  Calculate mob stats                                                  *
  *                                                                       *
  ************************************************************************/
+
 void CalculateMobStats(CMobEntity* PMob, bool recover)
 {
     // Reset modifiers to base values to prevent stacking
@@ -714,33 +616,90 @@ void CalculateMobStats(CMobEntity* PMob, bool recover)
     {
         if (PMob->HPmodifier == 0)
         {
-            // HP Calculations
-            mJobGrade = grade::GetJobGrade(mJob, 0);
-            sJobGrade = grade::GetJobGrade(sJob, 0);
+            uint32 mobHP = 1; // Set mob HP
 
-            // 1. Retrieve HP scaling values from job grades
-            // Index 0: Base HP
-            // Index 1: Job scaling
-            // Index 2: Modifier scale
-            uint8 BaseHP     = grade::GetMobHPScale(mJobGrade, 0);
-            uint8 JobScale   = grade::GetMobHPScale(mJobGrade, 1);
-            uint8 ScaleXHP   = grade::GetMobHPScale(mJobGrade, 2);
-            uint8 sjJobScale = grade::GetMobHPScale(sJobGrade, 1);
-            uint8 sjScaleXHP = grade::GetMobHPScale(sJobGrade, 2);
+            uint32 baseMobHP = 0; // Define base mobs hp
+            uint32 sjHP      = 0; // Define base subjob hp
 
-            // 2. Calculate base HP from main job
-            uint32 baseMobHP = CalculateBaseMobHP(mLvl, BaseHP, JobScale, ScaleXHP);
+            mJobGrade = grade::GetJobGrade(mJob, 0); // main jobs grade
+            sJobGrade = grade::GetJobGrade(sJob, 0); // subjobs grade
 
-            // 3. Calculate subjob HP contribution scaled by level range
-            uint32 sjHP = CalculateSubjobHP(mLvl, sjJobScale, sjScaleXHP);
+            uint8 base     = 0; // Column for base hp
+            uint8 jobScale = 1; // Column for job scaling
+            uint8 scaleX   = 2; // Column for modifier scale
 
-            // 4. Final mob HP before traits/family modifiers
-            uint32 mobHP = baseMobHP + sjHP;
+            uint8 BaseHP     = grade::GetMobHPScale(mJobGrade, base);     // Main job base HP
+            uint8 JobScale   = grade::GetMobHPScale(mJobGrade, jobScale); // Main job scaling
+            uint8 ScaleXHP   = grade::GetMobHPScale(mJobGrade, scaleX);   // Main job modifier scale
+            uint8 sjJobScale = grade::GetMobHPScale(sJobGrade, jobScale); // Sub job scaling
+            uint8 sjScaleXHP = grade::GetMobHPScale(sJobGrade, scaleX);   // Sub job modifier scale
 
-            // 5. Apply pet multiplier (pets are 30% of base mob HP)
+            uint8 RIgrade = std::min(mLvl, (uint8)5); // RI Grade
+            uint8 RIbase  = 1;                        // Column for RI base
+
+            uint8 RI = grade::GetMobRBI(RIgrade, RIbase); // Random Increment addition per grade vs. base
+
+            uint8 mLvlIf    = (PMob->GetMLevel() > 5 ? 1 : 0);
+            uint8 mLvlIf30  = (PMob->GetMLevel() > 30 ? 1 : 0);
+            uint8 raceScale = 6;
+            uint8 mLvlScale = 0;
+
+            if (mLvl > 0)
+            {
+                baseMobHP = BaseHP + (std::min(mLvl, (uint8)5) - 1) * (JobScale + raceScale - 1) + RI + mLvlIf * (std::min(mLvl, (uint8)30) - 5) * (2 * (JobScale + raceScale) + std::min(mLvl, (uint8)30) - 6) / 2 + mLvlIf30 * ((mLvl - 30) * (63 + ScaleXHP) + (mLvl - 31) * (JobScale + raceScale));
+            }
+
+            // 50+ = 1 hp sjstats
+            if (mLvl > 49)
+            {
+                mLvlScale = std::floor(mLvl);
+            }
+            // 40-49 = 3/4 hp sjstats
+            else if (mLvl > 39)
+            {
+                mLvlScale = std::floor(mLvl * 0.75);
+            }
+            // 31-39 = 1/2 hp sjstats
+            else if (mLvl > 30)
+            {
+                mLvlScale = std::floor(mLvl * 0.50);
+            }
+            // 25-30 = 1/4 hp sjstats
+            else if (mLvl > 24)
+            {
+                mLvlScale = std::floor(mLvl * 0.25);
+            }
+            // 1-24 = no hp sjstats
+            else
+            {
+                mLvlScale = 0;
+            }
+
+            sjHP = std::ceil((sjJobScale * (std::max((mLvlScale - 1), 0)) + (0.5 + 0.5 * sjScaleXHP) * (std::max(mLvlScale - 10, 0)) + std::max(mLvlScale - 30, 0) + std::max(mLvlScale - 50, 0) + std::max(mLvlScale - 70, 0)) / 2);
+
+            // Orcs 5% more hp
+            if ((PMob->m_Family == 189) || (PMob->m_Family == 190))
+            {
+                mobHP = (baseMobHP + sjHP) * 1.05;
+            }
+            // Quadavs 5% less hp
+            else if (PMob->m_Family == 202)
+            {
+                mobHP = (baseMobHP + sjHP) * 0.95;
+            }
+            // Manticore family has 50% more HP
+            else if (PMob->m_Family == 179)
+            {
+                mobHP = (baseMobHP + sjHP) * 1.5;
+            }
+            else
+            {
+                mobHP = baseMobHP + sjHP;
+            }
+
             if (PMob->PMaster != nullptr)
             {
-                mobHP = (uint32)(mobHP * 0.30f);
+                mobHP *= 0.30f; // Retail captures have all pets at 30% of the mobs family of the same level
             }
 
             PMob->health.maxhp = (int16)(mobHP);
@@ -750,21 +709,19 @@ void CalculateMobStats(CMobEntity* PMob, bool recover)
             PMob->health.maxhp = PMob->HPmodifier;
         }
 
-        // Apply NM/Mob HP multiplier from settings
         if (isNM)
         {
-            float hpMultiplierNM = settings::get<float>("map.NM_HP_MULTIPLIER");
-            hpMultiplierNM       = (hpMultiplierNM >= 0.1f && hpMultiplierNM <= 2.0f) ? hpMultiplierNM : 1.0f;
-            PMob->health.maxhp   = (int32)(PMob->health.maxhp * hpMultiplierNM);
+            auto hpMultiplierNM = settings::get<float>("map.NM_HP_MULTIPLIER");
+            hpMultiplierNM      = (hpMultiplierNM >= 0.1f && hpMultiplierNM <= 2.0f) ? hpMultiplierNM : 1.0f;
+            PMob->health.maxhp  = (int32)(PMob->health.maxhp * hpMultiplierNM);
         }
         else
         {
-            float hpMultiplierMob = settings::get<float>("map.MOB_HP_MULTIPLIER");
-            hpMultiplierMob       = (hpMultiplierMob >= 0.1f && hpMultiplierMob <= 2.0f) ? hpMultiplierMob : 1.0f;
-            PMob->health.maxhp    = (int32)(PMob->health.maxhp * hpMultiplierMob);
+            auto hpMultiplierMob = settings::get<float>("map.MOB_HP_MULTIPLIER");
+            hpMultiplierMob      = (hpMultiplierMob >= 0.1f && hpMultiplierMob <= 2.0f) ? hpMultiplierMob : 1.0f;
+            PMob->health.maxhp   = (int32)(PMob->health.maxhp * hpMultiplierMob);
         }
 
-        // MP Calculations
         bool hasMp = false;
 
         switch (mJob)
@@ -1022,9 +979,17 @@ void CalculateMobStats(CMobEntity* PMob, bool recover)
 
     PMob->m_Behavior |= PMob->getMobMod(MOBMOD_BEHAVIOR);
 
-    if (PMob->m_Type & MOBTYPE_BATTLEFIELD)
+    if (zoneType & ZONE_TYPE::DUNGEON)
+    {
+        SetupDungeonMob(PMob);
+    }
+    else if (PMob->m_Type & MOBTYPE_BATTLEFIELD)
     {
         SetupBattlefieldMob(PMob);
+    }
+    else if (zoneType & ZONE_TYPE::DYNAMIS)
+    {
+        SetupDynamisMob(PMob);
     }
 
     if (PMob->m_Type & MOBTYPE_NOTORIOUS)
@@ -1284,18 +1249,22 @@ uint8 JobSkillRankToBaseEvaRank(JOBTYPE mjob, JOBTYPE sjob)
     // Pick the best rank between the two jobs
     // Lower is better
     uint8 mainEvasionSkillRank = battleutils::GetSkillRank(SKILL_EVASION, mjob);
-    uint8 subEvasionSkillRank  = battleutils::GetSkillRank(SKILL_EVASION, sjob);
+    uint8 evasionSkillRank     = mainEvasionSkillRank;
 
-    if (sjob == JOB_NON)
+    // JOB_NON (and MON) are not loaded in skill_ranks; g_SkillRanks[*][0] reads as 0 and must not be mixed into min().
+    if (sjob != JOB_NON && sjob != JOB_MON)
     {
-        subEvasionSkillRank = mainEvasionSkillRank;
+        uint8 subEvasionSkillRank = battleutils::GetSkillRank(SKILL_EVASION, sjob);
+        evasionSkillRank          = std::min(mainEvasionSkillRank, subEvasionSkillRank);
     }
 
-    switch (std::min(mainEvasionSkillRank, subEvasionSkillRank))
+    switch (evasionSkillRank)
     {
+        case 0:
+            return 1; // A- (skill_caps r0)
         case 1:
         case 2:
-            return 1; // A, A+; A- doesnt exist anymore
+            return 1; // A, A+
         case 3:
         case 4:
         case 5:
@@ -1307,13 +1276,39 @@ uint8 JobSkillRankToBaseEvaRank(JOBTYPE mjob, JOBTYPE sjob)
         case 9:
             return 4; // D
         case 10:
-            return 5; // E
+        case 11:
+            return 5; // E, F
         default:
-            ShowError("JobSkillRankToBaseEvaRank: rank not implemented. Job SKILL_EVASION rank is likely not valid or no longer exists (A- rank in particular.)");
+            ShowError("JobSkillRankToBaseEvaRank: SKILL_EVASION rank %u not mapped for mjob=%u sjob=%u", evasionSkillRank, mjob, sjob);
     }
 
     return 3; // Give them C rank as a fallback.
 };
+
+void SetupDynamisMob(CMobEntity* PMob)
+{
+    // no gil drop and no mugging!
+    PMob->setMobMod(MOBMOD_GIL_MAX, -1);
+    PMob->setMobMod(MOBMOD_MUG_GIL, -1);
+
+    // boost dynamis mobs weapon damage
+    PMob->setMobMod(MOBMOD_WEAPON_BONUS, 30); // Add approximately 30 flat damage until proven otherwise (In-line with the 35% added previously)
+    ((CItemWeapon*)PMob->m_Weapons[SLOT_MAIN])->setDamage(GetWeaponDamage(PMob, SLOT_MAIN));
+    ((CItemWeapon*)PMob->m_Weapons[SLOT_RANGED])->setDamage(GetWeaponDamage(PMob, SLOT_RANGED));
+
+    // job resist traits are much more powerful in dynamis
+    // according to wiki
+    for (auto&& PTrait : PMob->TraitList)
+    {
+        Mod type = PTrait->getMod();
+
+        if (type >= Mod::SLEEPRES && type <= Mod::DEATHRES)
+        {
+            // give mob a total of x4 the regular rate
+            PMob->addModifier(type, PTrait->getValue() * 3);
+        }
+    }
+}
 
 void SetupBattlefieldMob(CMobEntity* PMob)
 {
@@ -1334,8 +1329,9 @@ void SetupBattlefieldMob(CMobEntity* PMob)
     }
 
     // do not roam around
+    PMob->m_roamFlags |= ROAMFLAG_SCRIPTED;
     PMob->setMobMod(MOBMOD_ROAM_RESET_FACING, 1);
-    PMob->m_maxRoamDistance = 0.0f;
+    PMob->m_maxRoamDistance = 0.5f;
     if ((PMob->m_bcnmID != 864) && (PMob->m_bcnmID != 704) && (PMob->m_bcnmID != 706))
     {
         // bcnmID 864 (desires of emptiness), 704 (darkness named), and 706 (waking dreams) don't superlink
@@ -1343,6 +1339,10 @@ void SetupBattlefieldMob(CMobEntity* PMob)
         // plus one in case id is zero
         PMob->setMobMod(MOBMOD_SUPERLINK, PMob->m_battlefieldID);
     }
+}
+
+void SetupDungeonMob(CMobEntity* PMob)
+{
 }
 
 void SetupEventMob(CMobEntity* PMob)

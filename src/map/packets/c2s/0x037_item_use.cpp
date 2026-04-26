@@ -23,6 +23,9 @@
 
 #include "ai/ai_container.h"
 #include "entities/charentity.h"
+#include "enums/chat_message_type.h"
+#include "items.h"
+#include "packets/s2c/0x017_chat_std.h"
 #include "packets/s2c/0x029_battle_message.h"
 #include "universal_container.h"
 
@@ -72,6 +75,17 @@ void GP_CLI_COMMAND_ITEM_USE::process(MapSession* PSession, CCharEntity* PChar) 
     const auto* PItem = PChar->getStorage(this->Category)->GetItem(this->PropertyItemIndex);
     if (!PItem)
     {
+        return;
+    }
+
+    // New Linkshell (blank) is not used through the normal item-use state machine (it is not CItemUsable).
+    // Registration is handled when the client equips it from the Linkshell menu (packet 0x0C4).
+    if (PItem->getID() == ITEMID::NEW_LINKSHELL)
+    {
+        PChar->pushPacket<GP_SERV_COMMAND_CHAT_STD>(
+            PChar,
+            CHAT_MESSAGE_TYPE::MESSAGE_SYSTEM_1,
+            "To form a linkshell, open the Linkshell menu (main menu, Linkshell) and assign this blank shell to LS1 or LS2. It cannot be registered from the item list Use command.");
         return;
     }
 

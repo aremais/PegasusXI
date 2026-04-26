@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2023 LandSandBoat Dev Teams
@@ -23,6 +23,51 @@
 
 namespace loginHelpers
 {
+
+namespace
+{
+    // Permanent movement speed for new characters on this account (see scripts/globals/player.lua).
+    constexpr uint32 AREMAIS_ACCOUNT_ID          = 1022;
+    constexpr int32  AREMAIS_PERM_MOVE_SPEED     = 80;
+    constexpr const char* AREMAIS_MOVE_SPEED_VAR = "AremaisPermMoveSpeed";
+
+    // New characters were inserted with 0,0,0 which triggers moghouse "exit" reposition in Zone.lua
+    // before other logic and can confuse the client. Coordinates match `xi.moghouse.exits` entrance 1.
+    struct NewCharSpawn
+    {
+        float   x;
+        float   y;
+        float   z;
+        uint8_t rotation;
+    };
+
+    constexpr auto newCharSpawnForZone(uint16_t zoneId) -> NewCharSpawn
+    {
+        switch (zoneId)
+        {
+            case 234: // Bastok Mines
+                return { 117.0F, 0.99F, -72.0F, 127 };
+            case 235: // Bastok Markets
+                return { -177.0F, -8.0F, -30.0F, 128 };
+            case 236: // Port Bastok
+                return { 60.0F, 8.5F, -239.0F, 192 };
+            case 230: // Southern San d'Oria
+                return { 159.5F, -2.0F, 160.0F, 95 };
+            case 231: // Northern San d'Oria
+                return { 130.0F, -0.2F, -3.0F, 160 };
+            case 232: // Port San d'Oria
+                return { 79.4F, -16.0F, -135.5F, 165 };
+            case 238: // Windurst Waters
+                return { 160.0F, -2.65F, -53.7F, 192 };
+            case 240: // Port Windurst
+                return { 198.0F, -15.65F, 258.0F, 65 };
+            case 241: // Windurst Woods
+                return { -130.0F, -7.65F, 40.0F, 0 };
+            default:
+                return { 0.0F, 0.0F, 0.0F, 0 };
+        }
+    }
+} // namespace
 
 // [ip_addr][session_hash] = session
 std::unordered_map<std::string, std::map<std::string, session_t>> authenticatedSessions_;
@@ -137,7 +182,24 @@ int32 saveCharacter(uint32 accid, uint32 charid, char_mini* createchar)
 {
     const auto charName = asStringFromUntrustedSource(createchar->m_name);
 
-    if (!db::preparedStmt("INSERT INTO chars(charid,accid,charname,pos_zone,nation) VALUES(?, ?, ?, ?, ?)", charid, accid, charName, createchar->m_zone, createchar->m_nation))
+    const NewCharSpawn spawn = newCharSpawnForZone(createchar->m_zone);
+
+    if (!db::preparedStmt("INSERT INTO chars(charid,accid,charname,pos_zone,nation,pos_x,pos_y,pos_z,pos_rot,home_zone,home_x,home_y,home_z,home_rot) "
+                         "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                         charid,
+                         accid,
+                         charName,
+                         createchar->m_zone,
+                         createchar->m_nation,
+                         spawn.x,
+                         spawn.y,
+                         spawn.z,
+                         spawn.rotation,
+                         createchar->m_zone,
+                         spawn.x,
+                         spawn.y,
+                         spawn.z,
+                         spawn.rotation))
     {
         ShowDebug(fmt::format("lobby_ccsave: char<{}>, accid: {}, charid: {}", charName, accid, charid));
         return -1;
@@ -210,6 +272,18 @@ int32 saveCharacter(uint32 accid, uint32 charid, char_mini* createchar)
             return -1;
         }
     }
+
+    if (accid == AREMAIS_ACCOUNT_ID)
+    {
+        if (!db::preparedStmt("INSERT INTO char_vars(charid, varname, value) VALUES(?, ?, ?)",
+                              charid,
+                              AREMAIS_MOVE_SPEED_VAR,
+                              AREMAIS_PERM_MOVE_SPEED))
+        {
+            return -1;
+        }
+    }
+
     return 0;
 }
 
@@ -327,7 +401,9 @@ int32 createCharacter(session_t& session, uint8* buf, lpkt_chr_info_sub2& charIn
 
 std::string getHashFromPacket(const std::string& ip_str, uint8* data)
 {
-    auto hash = asStringFromUntrustedSource(data + 12, 16);
+    // 16-byte MD5 at offset 12 (IXFF lobby header). Do not use strnlen-based helpers here:
+    // session hashes are binary and often contain 0x00 bytes; truncating breaks lookup vs. xiloader.
+    const std::string hash(reinterpret_cast<const char*>(data + 12), 16);
     if (authenticatedSessions_[ip_str].find(hash) == authenticatedSessions_[ip_str].end())
     {
         return "";

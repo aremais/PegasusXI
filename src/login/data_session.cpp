@@ -23,7 +23,36 @@
 
 #include "common/database.h"
 #include "common/ipc.h"
+#include "common/settings.h"
 #include "common/utils.h"
+
+#include <unordered_set>
+
+namespace
+{
+    bool isIpExemptFromLoginLimit(uint32 accountIP)
+    {
+        static const std::unordered_set<uint32> exemptIps = []
+        {
+            std::unordered_set<uint32> out;
+            const auto                list = settings::get<std::string>("login.LOGIN_LIMIT_EXEMPT_IPS");
+            for (const auto& part : split(list, ","))
+            {
+                const auto t = trim(part);
+                if (!t.empty())
+                {
+                    const auto ip = str2ip(t);
+                    if (ip != 0U)
+                    {
+                        out.insert(ip);
+                    }
+                }
+            }
+            return out;
+        }();
+        return exemptIps.contains(accountIP);
+    }
+} // namespace
 
 void data_session::deleteCharFromCharInfo(uint32_t ffxi_id)
 {
@@ -32,18 +61,18 @@ void data_session::deleteCharFromCharInfo(uint32_t ffxi_id)
         if (ffxi_id == charInfo.ffxi_id)
         {
             charInfo.status            = 0x01; // Available
-            charInfo.character_name[0] = 0x20; // space to display empty character slot, NULL displays a hume in a slot.
-            charInfo.character_name[1] = 0x00; // Null terminator so the client thinks the name is actually emptied. Otherwise it will display the deleted character.
+            charInfo.character_name[0] = 0x20; // space = empty slot; NUL alone shows default hume
+            charInfo.character_name[1] = 0x00;
         }
     }
 }
 
 void data_session::addCharIntoCharInfo(const lpkt_chr_info_sub2& charInfo)
 {
-    // Find the first empty slot and fill it in. The client expects this.
+    // First empty slot (name starts with space) — client expects slots preserved, not flattened.
     for (auto& existingCharInfo : characterInfoResponse.character_info)
     {
-        if (existingCharInfo.character_name[0] == 0x20) // empty - name is a space
+        if (existingCharInfo.character_name[0] == 0x20)
         {
             existingCharInfo = charInfo;
             break;
@@ -129,12 +158,11 @@ void data_session::read_func()
 
                 uint32_t i = 0;
 
-                // Generate on first time read from db
                 if (!generatedCharInfo)
                 {
-                    characterInfoResponse            = {};
-                    characterInfoResponse.terminator = loginPackets::getTerminator();
-                    characterInfoResponse.command    = 0x20;
+                    characterInfoResponse              = {};
+                    characterInfoResponse.terminator   = loginPackets::getTerminator();
+                    characterInfoResponse.command      = 0x20;
                     loginPackets::clearIdentifier(characterInfoResponse);
 
                     // Extract all the necessary information about each character from the database and load up the struct.
@@ -242,16 +270,16 @@ void data_session::read_func()
                 {
                     loginPackets::clearIdentifier(characterInfoResponse);
 
-                    for (i = 0; i < characterInfoResponse.characters; i++)
+                    for (i = 0; i < characterInfoResponse.characters; ++i)
                     {
-                        auto characterInfo = characterInfoResponse.character_info[i];
-                        // uList is sent through data socket (to xiloader)
+                        const auto& characterInfo = characterInfoResponse.character_info[i];
+
                         uint32 uListOffset = 16 * (i + 1);
 
-                        ref<uint32>(uList, uListOffset)     = characterInfo.ffxi_id;           // contentId
-                        ref<uint16>(uList, uListOffset + 4) = characterInfo.ffxi_id_world;     // charIdMain
-                        ref<uint8>(uList, uListOffset + 6)  = characterInfo.worldid;           // Ignored in xiloader?
-                        ref<uint8>(uList, uListOffset + 7)  = characterInfo.ffxi_id_world_tbl; // charIdExtra // Ignored in xiloader?
+                        ref<uint32>(uList, uListOffset)     = characterInfo.ffxi_id;
+                        ref<uint16>(uList, uListOffset + 4) = characterInfo.ffxi_id_world;
+                        ref<uint8>(uList, uListOffset + 6)  = static_cast<uint8>(characterInfo.worldid);
+                        ref<uint8>(uList, uListOffset + 7)  = characterInfo.ffxi_id_world_tbl;
                     }
                 }
 
@@ -339,11 +367,42 @@ void data_session::read_func()
                 // TODO: is this and the above compatible?
                 key3[16] += session.incrementKeyValue;
 
-                ZoneIP   = str2ip(rset->get<std::string>("zoneip"));
-                ZonePort = rset->get<uint16>("zoneport");
+                const auto zoneIpStr = trim(rset->get<std::string>("zoneip"));
+                ZoneIP                 = str2ip(zoneIpStr);
+                ZonePort               = rset->get<uint16>("zoneport");
 
-                characterSelectionResponse.server_ip   = ZoneIP;
+                // Client-visible map address: optional WAN/NAT override (see network.MAP_PUBLIC_IP).
+                uint32 clientMapIP = ZoneIP;
+                if (const auto mapPublicIp = settings::get<std::string>("network.MAP_PUBLIC_IP");
+                    !mapPublicIp.empty())
+                {
+                    const auto overrideIp = str2ip(mapPublicIp);
+                    if (overrideIp != 0)
+                    {
+                        clientMapIP = overrideIp;
+                    }
+                    else
+                    {
+                        ShowWarning("network.MAP_PUBLIC_IP is set but is not a valid IPv4 address; using zone_settings.zoneip for client map IP");
+                    }
+                }
+
+                characterSelectionResponse.server_ip   = clientMapIP;
                 characterSelectionResponse.server_port = ZonePort;
+
+                // Remote client + loopback or invalid map IP => FFXI-3001 after character select.
+                const auto loopback = str2ip("127.0.0.1");
+                if (ZonePort > 0 && (clientMapIP == 0 || clientMapIP == loopback) && accountIP != loopback)
+                {
+                    ShowWarning(fmt::format(
+                        "data_session: char {} — client {} is being sent map {}:{} (localhost/invalid). "
+                        "Set xidb.zone_settings.zoneip to this host's public IPv4 and restart xi_connect, "
+                        "or set network.MAP_PUBLIC_IP / XI_NETWORK_MAP_PUBLIC_IP.",
+                        charid,
+                        ipAddress,
+                        ip2str(clientMapIP),
+                        ZonePort));
+                }
 
                 characterSelectionResponse.cache_ip   = session.serverIP; // search-server ip
                 characterSelectionResponse.cache_port = settings::get<uint16>("network.SEARCH_PORT");
@@ -359,9 +418,11 @@ void data_session::read_func()
                 characterSelectionResponse.ffxi_id_world = charid & 0xFFFF;
                 characterSelectionResponse.server_id     = (charid >> 16) & 0xFF; // TODO: Looks wrong? shouldn't this be a server index?
 
-                ShowInfo(fmt::format("data_session: zoneid: {}, zoneipp: {}:{}, searchipp: {}:{}, for charid: {}",
+                ShowInfo(fmt::format("data_session: zoneid: {}, zoneipp (db): {}:{}, client map ipp: {}:{}, searchipp: {}:{}, for charid: {}",
                                      ZoneID,
                                      ip2str(ZoneIP),
+                                     ZonePort,
+                                     ip2str(clientMapIP),
                                      ZonePort,
                                      ip2str(characterSelectionResponse.cache_ip),
                                      characterSelectionResponse.cache_port,
@@ -406,7 +467,8 @@ void data_session::read_func()
                 const auto isNotMaint   = !settings::get<bool>("login.MAINT_MODE");
                 const auto loginLimit   = settings::get<uint8>("login.LOGIN_LIMIT");
                 const auto excepted     = exceptionTime > currentTime;
-                const auto loginLimitOK = loginLimit == 0 || sessionCount < loginLimit || excepted;
+                const auto ipExempt     = isIpExemptFromLoginLimit(accountIP);
+                const auto loginLimitOK = loginLimit == 0 || sessionCount < loginLimit || excepted || ipExempt;
                 const auto isGM         = gmlevel > 0;
 
                 if (!loginLimitOK)
@@ -429,13 +491,15 @@ void data_session::read_func()
                                                         "WHERE accid = ? LIMIT 1",
                                                         session.accountID);
 
-                    if (rset1 && rset1->rowsCount() != 0 && rset1->next())
+                    // Use next() only (not rowsCount): some drivers do not populate row counts for SELECT
+                    // until fetch, which could skip cleanup and cause Duplicate entry 'accid' on INSERT.
+                    if (rset1 && rset1->next())
                     {
                         // If character is already logged in (session still exists) kick them out
                         // TODO: Retail has POL login time so this is more restricted.
-                        uint32 sessionCharid = rset1->get<uint32>("charid");
+                        const uint32 sessionCharid = rset1->get<uint32>("charid");
 
-                        if (sessionCharid == session.requestedCharacterID)
+                        if (sessionCharid == charid)
                         {
                             if (auto viewSession = session.view_session.get())
                             {
@@ -447,12 +511,17 @@ void data_session::read_func()
                         }
                     }
 
+                    // UNIQUE(accid): one row per account. Remove any stale row (other char, crash, or bad
+                    // row-count path) before INSERT so character swap / reconnect cannot fail on duplicate accid.
+                    db::preparedStmt("DELETE FROM accounts_sessions WHERE accid = ?", session.accountID);
+
+                    // server_addr must match the IP the client uses for map UDP (same as server_ip in 0x0B).
                     if (!db::preparedStmt("INSERT INTO accounts_sessions(accid, charid, session_key, server_addr, server_port, client_addr, version_mismatch) "
                                           "VALUES(?, ?, ?, ?, ?, ?, ?)",
                                           session.accountID,
                                           charid,
                                           key3,
-                                          ZoneIP,
+                                          clientMapIP,
                                           ZonePort,
                                           accountIP,
                                           session.versionMismatch ? 1 : 0))

@@ -68,9 +68,8 @@ mission.sections =
             ['_521'] =
             {
                 onTrigger = function(player, npc)
-                    -- TODO: BCNM entry requires Primal Glow KI and Status variable set to 3.  BCNM
-                    -- Event entry parameters observed: ID: 32000, Params: 0, 0, 383910532, 2
-                    -- KeyItem is consumed on entry.
+                    -- Status 2: cutscene before the fight. Status 3 + Primal Glow: battlefield script
+                    -- `maiden_of_the_dusk.lua` handles BCNM registration on this door (event 32000).
 
                     if mission:getVar(player, 'Status') == 2 then
                         return mission:progressEvent(5)
@@ -145,11 +144,11 @@ mission.sections =
                 end,
 
                 [32001] = function(player, csid, option, npc)
-                    -- TODO: Add battlefieldWin localvar check here, which should be set to battlefield
-                    -- ID prior to this event being triggered in BCNM script.
-
-                    mission:setVar(player, 'Status', 4)
-                    player:setPos(-700.063, -17.6, -331.903, 64, xi.zone.WALK_OF_ECHOES)
+                    if player:getLocalVar('battlefieldWin') == xi.battlefield.id.MAIDEN_OF_THE_DUSK then
+                        player:setLocalVar('battlefieldWin', 0)
+                        mission:setVar(player, 'Status', 4)
+                        player:setPos(-700.063, -17.6, -331.903, 64, xi.zone.WALK_OF_ECHOES)
+                    end
                 end,
             },
         },

@@ -51,8 +51,15 @@ commandObj.onTrigger = function(player, arg1, arg2)
 
     -- set nation
     targ:setNation(nation)
+
+    -- Conquest overseer UI expects military rank >= 1; SQL/GMs can leave rank_* at 0 for the new nation.
+    if targ:getRank(nation) < 1 then
+        targ:setRank(1)
+        player:printToPlayer('Military rank for that nation was < 1; set to 1 for conquest/NPC scripts.')
+    end
+
     player:printToPlayer(string.format('Set %s\'s home nation to %s.', targ:getName(), nationByNum[nation]))
-    player:printToPlayer('NOTE! This does NOT clear or update ANY mission or related variables! ')
+    player:printToPlayer('NOTE! This does NOT clear or update other mission variables; use immigration NPCs for a full switch.')
 end
 
 return commandObj

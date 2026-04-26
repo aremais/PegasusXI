@@ -957,6 +957,38 @@ auto LoadChar(Scheduler& scheduler, MapConfig config, const uint32 charId) -> st
     PChar->StatusEffectContainer->LoadStatusEffects();
 
     charutils::LoadEquip(PChar);
+
+    // With lockstyle on, 0x0D / grap list use mainlook, not look. LoadEquip only refreshes look from
+    // char_equip; mainlook was copied from char_look earlier and can stay stale vs char_style (styleItems).
+    // Rebuild the same way as GP_CLI_COMMAND_LOCKSTYLE Set so body/head/etc. match the saved lockstyle.
+    if (PChar->getStyleLocked())
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            auto* PItem = PChar->getEquip(static_cast<SLOTTYPE>(i));
+
+            switch (i)
+            {
+                case SLOT_MAIN:
+                case SLOT_SUB:
+                case SLOT_RANGED:
+                case SLOT_AMMO:
+                    charutils::UpdateWeaponStyle(PChar, i, PItem);
+                    break;
+                case SLOT_HEAD:
+                case SLOT_BODY:
+                case SLOT_HANDS:
+                case SLOT_LEGS:
+                case SLOT_FEET:
+                    charutils::UpdateArmorStyle(PChar, i);
+                    break;
+                default:
+                    break;
+            }
+        }
+        charutils::UpdateRemovedSlotsLookForLockStyle(PChar);
+    }
+
     charutils::EmptyRecycleBin(PChar);
     bool canRestore  = zoneutils::IsResidentialArea(PChar) && HP > 0;
     PChar->health.hp = canRestore ? PChar->GetMaxHP() : HP;
@@ -1021,7 +1053,8 @@ void LoadSpells(CCharEntity* PChar)
         while (rset->next())
         {
             uint16 spellId = rset->get<uint16>("spellid");
-            if (spell::GetSpell(static_cast<SpellID>(spellId)) != nullptr)
+            if (spell::GetSpell(static_cast<SpellID>(spellId)) != nullptr ||
+                spellId == static_cast<uint16>(SpellID::Inundation))
             {
                 PChar->m_SpellList.set(spellId);
             }
@@ -3087,7 +3120,8 @@ void LoadJobChangeGear(CCharEntity* PChar)
                 {
                     bool found = false;
 
-                    for (uint8 slot = 0; slot < PChar->getStorage(container)->GetSize(); slot++)
+                    // Inventory slots are 1..size (slot 0 is unused for normal inserts; see CItemContainer::InsertItem).
+                    for (uint8 slot = 1; slot <= PChar->getStorage(container)->GetSize(); ++slot)
                     {
                         auto* PEquip = dynamic_cast<CItemEquipment*>(PChar->getStorage(container)->GetItem(slot));
 
@@ -4310,13 +4344,21 @@ int32 hasSpell(CCharEntity* PChar, uint16 SpellID)
 
 int32 addSpell(CCharEntity* PChar, uint16 spellID)
 {
-    auto* PSpell = spell::GetSpell(static_cast<SpellID>(spellID));
-    if (PSpell && !hasSpell(PChar, spellID))
+    if (hasSpell(PChar, spellID))
     {
-        PChar->m_SpellList[spellID] = true;
-        return 1;
+        return 0;
     }
-    return 0;
+
+    auto* PSpell = spell::GetSpell(static_cast<SpellID>(spellID));
+    // Inundation: teach even if spell_list was not loaded into PSpellList yet (e.g. hot SQL without
+    // map restart). Casting still requires a loaded row after restart.
+    if (PSpell == nullptr && spellID != static_cast<uint16>(SpellID::Inundation))
+    {
+        return 0;
+    }
+
+    PChar->m_SpellList[spellID] = true;
+    return 1;
 }
 
 int32 delSpell(CCharEntity* PChar, uint16 spellID)
@@ -7238,12 +7280,30 @@ void SendToZone(CCharEntity* PChar, uint16 zoneId)
         return;
     }
 
-    auto ip   = ipp.getIP();
-    auto port = ipp.getPort();
+    const auto ip   = ipp.getIP();
+    const auto port = ipp.getPort();
+
+    // Match login (data_session): WAN clients must get network.MAP_PUBLIC_IP for map UDP, or they
+    // receive zone_settings.loopback here and hit FFXI-3001 on every zone-including warp.
+    uint32 clientMapIP = ip;
+    if (const auto mapPublicIp = settings::get<std::string>("network.MAP_PUBLIC_IP");
+        !mapPublicIp.empty())
+    {
+        const auto overrideIp = str2ip(mapPublicIp);
+        if (overrideIp != 0)
+        {
+            clientMapIP = overrideIp;
+        }
+        else
+        {
+            ShowWarning("network.MAP_PUBLIC_IP is set but is not a valid IPv4 address; using zone_settings.zoneip for zone change");
+        }
+    }
+
     db::preparedStmt("UPDATE accounts_sessions "
                      "SET server_addr = ?, server_port = ? "
                      "WHERE charid = ?",
-                     ip,
+                     clientMapIP,
                      port,
                      PChar->id);
 
@@ -7281,7 +7341,7 @@ void SendToZone(CCharEntity* PChar, uint16 zoneId)
     PChar->requestedWarp       = false; // a previous warp can get us here, which could infinitely loop. So un-request warp.
 
     PChar->PSession->zone_ipp = {};
-    PChar->pushPacket<GP_SERV_COMMAND_LOGOUT>(GP_GAME_LOGOUT_STATE::ZONECHANGE, IPP(ipp));
+    PChar->pushPacket<GP_SERV_COMMAND_LOGOUT>(GP_GAME_LOGOUT_STATE::ZONECHANGE, IPP(clientMapIP, port));
 
     PChar->status = STATUS_TYPE::DISAPPEAR;
 
@@ -7486,6 +7546,13 @@ auto FetchCharVar(uint32 charId, const std::string& varName) -> std::pair<int32,
         {
             value = 0;
             db::preparedStmt("DELETE FROM char_vars WHERE charid = ? AND varname = ?", charId, varName);
+        }
+        // This var is only ever set with a conquest-tally expiry; expiry 0 never clears and blocks bands forever.
+        else if (varName == "CONQUEST_RING_RECHARGE" && value != 0 && expiry == 0)
+        {
+            db::preparedStmt("DELETE FROM char_vars WHERE charid = ? AND varname = ?", charId, varName);
+            value  = 0;
+            expiry = 0;
         }
     }
 

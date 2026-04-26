@@ -51,7 +51,23 @@ return {
     ['Ronan']            = { event = 37 },
     ['Steel_Bones']      = { event = 29 },
     ['Suspicious_Galka'] = { event = 417 },
-    ['Synergy_Engineer'] = { event = 11002 },
+    ['Synergy_Engineer'] = function(player, npc)
+        xi.synergy.engineerOnTrigger(player, npc, 11002)
+    end,
+
+    ['onEventFinish'] =
+    {
+        [11002] = function(player, csid, option, npc)
+            xi.synergy.engineerOnEventFinish(player, csid, option, npc)
+        end,
+    },
+
+    ['onEventUpdate'] =
+    {
+        [11002] = function(player, csid, option, npc)
+            xi.synergy.engineerOnEventUpdate(player, csid, option, npc)
+        end,
+    },
     ['Tete']             = { event = 35 },
     ['Tiger_Tooth']      = { event = 12 },
     ['Tilian']           = { event = 100 },

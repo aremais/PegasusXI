@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -159,8 +159,19 @@ void CZoneEntities::TryAddToNearbySpawnLists(CBaseEntity* PEntity)
             // Exclude NPCs from vertical rendering limits (elevators may go past the normal vertical range)
             if (PEntity->objtype == TYPE_NPC)
             {
-                PCurrentChar->SpawnNPCList[PEntity->id] = PEntity;
-                PCurrentChar->updateEntityPacket(PEntity, ENTITY_SPAWN, UPDATE_ALL_MOB);
+                const bool inCutsceneEvent = PCurrentChar->currentEvent &&
+                    (PCurrentChar->currentEvent->type == EVENT_TYPE::CUTSCENE || PCurrentChar->currentEvent->type == EVENT_TYPE::OPTIONAL_CUTSCENE);
+
+                const bool isVisibleStatus =
+                    PEntity->status == STATUS_TYPE::NORMAL ||
+                    PEntity->status == STATUS_TYPE::UPDATE ||
+                    (inCutsceneEvent && PEntity->status == STATUS_TYPE::CUTSCENE_ONLY);
+
+                if (isVisibleStatus)
+                {
+                    PCurrentChar->SpawnNPCList[PEntity->id] = PEntity;
+                    PCurrentChar->updateEntityPacket(PEntity, ENTITY_SPAWN, UPDATE_ALL_MOB);
+                }
             }
             else if (isWithinVerticalDistance(PEntity, PCurrentChar))
             {
@@ -881,7 +892,14 @@ void CZoneEntities::SpawnNPCs(CCharEntity* PChar)
         const auto itr             = spawnList.find(id);
         const auto isInSpawnList   = itr != spawnList.end();
         const auto isInRange       = isWithinDistance(PChar->loc.p, PCurrentEntity->loc.p, ENTITY_RENDER_DISTANCE);
-        const auto isVisibleStatus = PCurrentEntity->status == STATUS_TYPE::NORMAL || PCurrentEntity->status == STATUS_TYPE::UPDATE;
+        const bool inCutsceneEvent =
+            PChar->currentEvent &&
+            (PChar->currentEvent->type == EVENT_TYPE::CUTSCENE || PChar->currentEvent->type == EVENT_TYPE::OPTIONAL_CUTSCENE);
+
+        const auto isVisibleStatus =
+            PCurrentEntity->status == STATUS_TYPE::NORMAL ||
+            PCurrentEntity->status == STATUS_TYPE::UPDATE ||
+            (inCutsceneEvent && PCurrentEntity->status == STATUS_TYPE::CUTSCENE_ONLY);
 
         const auto tryAddToSpawnList = [&]()
         {

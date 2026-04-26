@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2025 LandSandBoat Dev Teams
@@ -21,8 +21,6 @@
 
 #include "0x05e_maprect.h"
 
-#include <string_view>
-
 #include "common/utils.h"
 #include "entities/charentity.h"
 #include "enums/msg_std.h"
@@ -31,9 +29,42 @@
 #include "packets/s2c/0x065_wpos2.h"
 #include "utils/charutils.h"
 #include "utils/zoneutils.h"
+#include "zone.h"
 
 namespace
 {
+
+// Same-zone zonelines in these zones are Mog House doors (sql: from_zone == to_zone). Other zones use same-zone for puzzles (e.g. Pso'Xja).
+bool isCityMogHousePortalZone(ZONEID zoneId)
+{
+    switch (zoneId)
+    {
+        case ZONE_AL_ZAHBI:
+        case ZONE_AHT_URHGAN_WHITEGATE:
+        case ZONE_SOUTHERN_SAN_DORIA_S:
+        case ZONE_BASTOK_MARKETS_S:
+        case ZONE_WINDURST_WATERS_S:
+        case ZONE_WESTERN_ADOULIN:
+        case ZONE_EASTERN_ADOULIN:
+        case ZONE_SOUTHERN_SANDORIA:
+        case ZONE_NORTHERN_SANDORIA:
+        case ZONE_PORT_SANDORIA:
+        case ZONE_BASTOK_MINES:
+        case ZONE_BASTOK_MARKETS:
+        case ZONE_PORT_BASTOK:
+        case ZONE_WINDURST_WATERS:
+        case ZONE_WINDURST_WALLS:
+        case ZONE_PORT_WINDURST:
+        case ZONE_WINDURST_WOODS:
+        case ZONE_RULUDE_GARDENS:
+        case ZONE_UPPER_JEUNO:
+        case ZONE_LOWER_JEUNO:
+        case ZONE_PORT_JEUNO:
+            return true;
+        default:
+            return false;
+    }
+}
 
 const auto denyZone = [](CCharEntity* PChar)
 {
@@ -54,7 +85,6 @@ const auto denyZone = [](CCharEntity* PChar)
 auto GP_CLI_COMMAND_MAPRECT::validate(MapSession* PSession, const CCharEntity* PChar) const -> PacketValidationResult
 {
     return PacketValidator(PChar)
-        .blockedBy({ BlockedState::InEvent })
         .oneOf<GP_CLI_COMMAND_MAPRECT_MYROOMEXITBIT>(this->MyRoomExitBit)
         .oneOf<GP_CLI_COMMAND_MAPRECT_MYROOMEXITMODE>(this->MyRoomExitMode);
 }
@@ -66,13 +96,10 @@ void GP_CLI_COMMAND_MAPRECT::process(MapSession* PSession, CCharEntity* PChar) c
 
     PChar->ClearTrusts();
 
-    // RectID is a uint32_t holding a 4-character zoneline tag (fourcc); reinterpret as exactly 4 bytes (no trailing NUL).
-    const std::string_view rectView(reinterpret_cast<const char*>(&this->RectID), 4);
-
-    const auto isMogHouseExit = rectView == "zmrq"; // universal Mog House exit zoneline
-
-    const std::string_view mogEntrancePrefix  = rectView.substr(0, 3);
-    const auto             isMogHouseEntrance = mogEntrancePrefix == "zmr" || mogEntrancePrefix == "zms"; // zmr* classic cities; zms* WoTG [S] + Adoulin
+    auto isMogHouseExit = std::memcmp(&this->RectID, "zmrq", 4) == 0; // zmrq is the universal Mog House exit zoneline
+    // zmr* = classic cities; zms* = Treasures of Aht Urhgan / Seekers cities (e.g. Bastok [S], Western Adoulin)
+    auto isMogHouseEntrance = std::memcmp(&this->RectID, "zmr", 3) == 0 ||
+                              std::memcmp(&this->RectID, "zms", 3) == 0;
 
     if (PChar->status == STATUS_TYPE::NORMAL)
     {
@@ -209,8 +236,13 @@ void GP_CLI_COMMAND_MAPRECT::process(MapSession* PSession, CCharEntity* PChar) c
             }
             else
             {
-                // 38-42y distance limit observed
-                if (distance(PChar->loc.p, PZoneLine->originPos, true) > 40.0f)
+                // 38-42y distance limit observed. Zeruhn Mines -> Korroloka Tunnel (sql zonelineid 846410874)
+                // often still has a wrong from_pos in DB (~-274 vs gate ~-80), so players read ~197y from anchor and fail.
+                // Skip this check for that rect until from_pos is corrected (sql/fix_zeruhn_korroloka_zoneline.sql).
+                const bool skipZoneLineDistanceCheck = (this->RectID == 846410874U);
+
+                if (!skipZoneLineDistanceCheck &&
+                    distance(PChar->loc.p, PZoneLine->originPos, true) > 40.0f)
                 {
                     ShowWarning("GP_CLI_COMMAND_MAPRECT: %s too far from zoneline %u (%.1fy)",
                                 PChar->getName(),
@@ -231,7 +263,11 @@ void GP_CLI_COMMAND_MAPRECT::process(MapSession* PSession, CCharEntity* PChar) c
                     return;
                 }
 
-                if (isMogHouseEntrance)
+                const bool mogSameZoneHouseLine = PZoneLine->originZoneId == PZoneLine->destinationZoneId &&
+                                                  !PChar->inMogHouse() &&
+                                                  isCityMogHousePortalZone(PZoneLine->originZoneId);
+
+                if (isMogHouseEntrance || mogSameZoneHouseLine)
                 {
                     // TODO: for entering another persons mog house, it must be set here
                     PChar->m_moghouseID    = PChar->id;

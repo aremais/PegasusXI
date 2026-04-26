@@ -6,7 +6,7 @@
 # python3 announce.py "Here is a message from python!"
 #
 # Requirements
-# pip3 install zmq pyzmq
+# pip install pyzmq
 #
 #############################
 

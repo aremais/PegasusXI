@@ -3,6 +3,8 @@
 --  Mob: Cirrate Christelle
 -- Note: Mega Boss
 -----------------------------------
+require('scripts/globals/dynamis_valkurm_christelle')
+-----------------------------------
 ---@type TMobEntity
 local entity = {}
 
@@ -15,11 +17,10 @@ entity.onMobSpawn = function(mob)
     mob:addImmunity(xi.immunity.GRAVITY)
     mob:addImmunity(xi.immunity.SILENCE)
     mob:setMobMod(xi.mobMod.WEAPON_BONUS, 50)
+    xi.dynamis.valkurmChristelleOnSpawn(mob)
 end
 
-entity.onMobMobskillChoose = function(mob, target, skillId)
-    -- TODO: Need to implement skill ID changes based on which NMs were killed. Needs more captures.
-end
+entity.onMobMobskillChoose = xi.dynamis.valkurmChristelleOnMobMobskillChoose
 
 entity.onMobDeath = function(mob, player, optParams)
     xi.dynamis.megaBossOnDeath(mob, player, optParams)

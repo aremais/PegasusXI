@@ -19,7 +19,6 @@ return {
     ['Horuni-Mawoni']        = { event = 303 },
     ['Ignaz']                = { event = 274 },
     ['Juna_Moshal']          = { event = 327 },
-    ['Juvillie']             = { event = 406 },
     ['Kaaya_Majiad']         = { event = 323 },
     ['Karija-Marija']        = { event = 317 },
     ['Karola']               = { event = 335 },
@@ -31,6 +30,9 @@ return {
     ['Komomo']               = { event = 290 },
     ['Koru-Moru']            = { event = 193 },
     ['Lala_Gohma']           = { event = 328 },
+    ['Linkshell_Concierge'] = function(player, npc)
+        xi.linkshellConcierge.onTrigger(player, npc)
+    end,
     ['Luuh_Koplehn']         = { event = 322 },
     ['Maan-Pokuun']          = { event = 293 },
     ['Malmi-Monmi']          = { event = 295 },

@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -109,6 +109,8 @@ struct action_result_t;
 enum ConquestUpdate : uint8;
 enum class Emote : uint8;
 
+class Scheduler;
+
 namespace luautils
 {
 namespace detail
@@ -132,6 +134,9 @@ void init(IPP mapIPP, bool isRunningInCI);
 void garbageCollectStep();
 void garbageCollectFull();
 void cleanup();
+
+// Map process main scheduler (asio). Used for deferred OnGameIn follow-up; set from MapEngine::init.
+void setMapScheduler(Scheduler* scheduler);
 
 // Find and call a global function in Lua from C++.
 //
@@ -242,6 +247,7 @@ void DespawnMob(uint32 mobid, const sol::object& arg2);                         
 auto GetPlayerByName(const std::string& name) -> CBaseEntity*;
 auto GetPlayerByID(uint32 pid) -> CBaseEntity*;
 bool PlayerHasValidSession(uint32 playerId);
+auto KickSessionsByClientIP(const std::string& ipStr) -> uint32;
 void SendToJailOffline(uint32 playerId, int8 cellId, float posX, float posY, float posZ, uint8 rot);
 void DrawIn(CLuaBaseEntity* PLuaBaseEntity, const sol::table& table, float offset, float degrees);
 

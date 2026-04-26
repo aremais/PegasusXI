@@ -691,6 +691,18 @@ bool CanUseSpell(CBattleEntity* PCaster, CSpell* spell)
             {
                 return true; // every PC can use trusts
             }
+            // Inundation: retail Red Mage 64 (main or sub). Do not rely only on spell_list jobs
+            // bytes (0 == "cannot use" maps to 255 required level); see BUG-0039 / BG Wiki.
+            if (spell->getID() == SpellID::Inundation)
+            {
+                auto* PChar = static_cast<CCharEntity*>(PCaster);
+                if ((PChar->GetMJob() == JOB_RDM && PChar->GetMLevel() >= 64) ||
+                    (PChar->GetSJob() == JOB_RDM && PChar->GetSLevel() >= 64))
+                {
+                    return true;
+                }
+                return false;
+            }
             else if (luautils::OnCanUseSpell(PCaster, spell))
             {
                 return true;

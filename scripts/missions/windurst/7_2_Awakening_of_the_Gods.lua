@@ -179,6 +179,19 @@ mission.sections =
         {
             ['_4fx'] =
             {
+                -- Cutscene is on trade (event 23), not on trigger. Clicking from the south (Z >= 332)
+                -- runs retail event 26, whose dialog in the client DAT is a debug line ("Granite" meme).
+                onTrigger = function(player, npc)
+                    local missionStatus = player:getMissionStatus(mission.areaId)
+                    if
+                        missionStatus >= 3 and missionStatus < 5 and
+                        player:hasKeyItem(xi.ki.BLANK_BOOK_OF_THE_GODS)
+                    then
+                        local doorText = zones[xi.zone.TEMPLE_OF_UGGALEPIH].text
+                        return mission:messageSpecial(doorText.THE_DOOR_IS_LOCKED, 0, xi.item.CURSED_KEY):progress()
+                    end
+                end,
+
                 onTrade = function(player, npc, trade)
                     if
                         npcUtil.tradeHasExactly(trade, xi.item.CURSED_KEY) and

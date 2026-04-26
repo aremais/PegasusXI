@@ -698,7 +698,9 @@ end
 -- bits 5-6 seem to encode the citizenship as below. This part needs more testing and verification.
 
 local function getArg6(player)
-    return player:getRank(player:getNation()) + (player:getNation() * 32)
+    -- Rank 0 breaks the conquest overseer client UI (e.g. nation change / bad DB); minimum is 1.
+    local milRank = math.max(1, player:getRank(player:getNation()))
+    return milRank + (player:getNation() * 32)
 end
 
 -----------------------------------
@@ -969,25 +971,23 @@ end
 local function canBuyExpRing(player, item)
     local text = zones[player:getZoneID()].text
 
-    -- check exp ring count
+    -- Cannot own another chariot / empress / emperor band (any of the trio).
     if xi.settings.main.ALLOW_MULTIPLE_EXP_RINGS ~= 1 then
         for i = 15761, 15763 do
             if player:hasItem(i) then
                 player:messageSpecial(text.CONQUEST + 60, 0, 0, item) -- You do not meet the requirements to purchase the <item>.
-                player:messageSpecial(text.CONQUEST + 50, 0, 0, item) -- Due to its special nature, you can only purchase or recharge <item> once until the conquest results tally is performed. Also, you cannot purchase this item if a similar item is already in your possession.
 
                 return false
             end
         end
     end
 
-    -- one exp ring per conquest tally
+    -- One purchase or recharge of these bands per conquest tally (unless bypassed in settings).
     if
         xi.settings.main.BYPASS_EXP_RING_ONE_PER_WEEK ~= 1 and
         player:getCharVar('CONQUEST_RING_RECHARGE') ~= 0
     then
-        player:messageSpecial(text.CONQUEST + 60, 0, 0, item)
-        player:messageSpecial(text.CONQUEST + 50, 0, 0, item)
+        player:messageSpecial(text.CONQUEST + 50, 0, 0, item) -- Purchase/recharge limited until next conquest tally; see also similar-item rule.
 
         return false
     end
@@ -1239,15 +1239,25 @@ xi.conquest.overseerOnEventUpdate = function(player, csid, option, guardNation)
     local stock = getStock(player, guardNation, option)
 
     if stock ~= nil then
-        local pRank = GetNationRank(pNation)
-        local u1    = 2 -- default: player is correct job and level to equip item
-        local u2    = 0 -- default: player has enough CP for item
-        local u3    = stock.item -- default: the item ID we're purchasing
+        local nationConquestRank = GetNationRank(pNation)
+        local u1                 = 2 -- default: player is correct job and level to equip item
+        local u2                 = 0 -- default: player has enough CP for item
+        local u3                 = stock.item -- default: the item ID we're purchasing
 
-        if not player:canEquipItem(stock.item, false) then -- can't equip
-            u1 = 0 -- can't equip due to job
+        -- Only armor/weapon prototypes use equip checks; scrolls, furnishings, etc. are not ITEM_EQUIPMENT
+        -- and would incorrectly show as unavailable (e.g. rank-10 Ornate Stool Set).
+        local itemObj = GetItemByID(stock.item)
+        if
+            itemObj and
+            (itemObj:isType(xi.itemType.ARMOR) or itemObj:isType(xi.itemType.WEAPON))
+        then
+            if not player:canEquipItem(stock.item, false) then
+                u1 = 0 -- can't equip due to job
+            elseif stock.lvl > player:getMainLvl() then
+                u1 = 1 -- can't equip due to level
+            end
         elseif stock.lvl > player:getMainLvl() then
-            u1 = 1 -- can't equip due to level
+            u1 = 1
         end
 
         if stock.cp > player:getCP() then
@@ -1266,7 +1276,7 @@ xi.conquest.overseerOnEventUpdate = function(player, csid, option, guardNation)
         if
             guardNation ~= xi.nation.OTHER and
             guardNation ~= pNation and
-            GetNationRank(guardNation) <= pRank
+            GetNationRank(guardNation) <= nationConquestRank
         then -- buy from other nation, must be higher ranked
             rankCheck = false
         elseif
@@ -1275,8 +1285,14 @@ xi.conquest.overseerOnEventUpdate = function(player, csid, option, guardNation)
             guardNation ~= pNation
         then -- buy from other nation, cannot buy items with nation rank requirement
             rankCheck = false
-        elseif stock.place ~= nil and pRank > stock.place then -- buy from own nation, check nation rank
+        elseif stock.rank and player:getRank(pNation) < stock.rank then -- military rank (nation mission rank)
             rankCheck = false
+        elseif stock.place ~= nil and nationConquestRank > stock.place then -- conquest standing (1 = first place)
+            rankCheck = false
+        end
+
+        if not rankCheck then
+            u2 = 1
         end
 
         if rankCheck and u2 == 0 then
@@ -1310,6 +1326,15 @@ local function canPurchaseItem(player, stock, pRank, guardNation, mOffset, optio
         return -1
     end
 
+    -- Nation aketons and similar require your nation to place at least as well as `stock.place` in conquest (1 = first).
+    if stock.place then
+        local nationPlace = GetNationRank(player:getNation())
+        if nationPlace > stock.place then
+            player:messageSpecial(mOffset + 61, stock.item)
+            return -1
+        end
+    end
+
     -- validate price
     local price = stock.cp
     if
@@ -1325,11 +1350,12 @@ local function canPurchaseItem(player, stock, pRank, guardNation, mOffset, optio
     end
 
     if player:getCP() < price then
-        if
-            option <= 32933 and
-            option >= 32935 and
-            not player:hasKeyItem(xi.ki.CONQUEST_PROMOTION_VOUCHER)
-        then
+        local promotionVoucherWaivesCp =
+            option >= 32933 and
+            option <= 32935 and
+            player:hasKeyItem(xi.ki.CONQUEST_PROMOTION_VOUCHER)
+
+        if not promotionVoucherWaivesCp then
             player:messageSpecial(mOffset + 62, 0, 0, stock.item) -- 'You do not have enough conquest points to purchase the <item>.'
             return -1
         end
@@ -1339,8 +1365,14 @@ local function canPurchaseItem(player, stock, pRank, guardNation, mOffset, optio
 end
 
 xi.conquest.overseerOnEventFinish = function(player, csid, option, guardNation, guardType, guardRegion)
-    local pNation  = player:getNation()
-    local pRank    = player:getRank(pNation)
+    local pNation = player:getNation()
+
+    -- Match overseerOnEventUpdate: Jeuno Ducal Guard uses nation OTHER; stock and checks use citizenship nation.
+    if guardNation == xi.nation.OTHER then
+        guardNation = pNation
+    end
+
+    local pRank = player:getRank(pNation)
     local sRegion  = player:getCharVar('supplyQuest_region')
     local sOutpost = outposts[sRegion]
     local mOffset  = zones[player:getZoneID()].text.CONQUEST

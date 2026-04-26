@@ -6,6 +6,7 @@ local zoneObject = {}
 
 zoneObject.onInitialize = function(zone)
     xi.events.harvestFestival.applyHalloweenNpcCostumes(zone:getID())
+    xi.events.eggHunt.onZoneInitialize(zone)
 end
 
 zoneObject.onZoneIn = function(player, prevZone)

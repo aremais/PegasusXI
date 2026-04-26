@@ -43,7 +43,6 @@ return {
     ['Nafiwaa']            = { event = 661 },
     ['Nijaom']             = { event = 673 },
     ['Nonoroon']           = { event = 660 },
-    ['Prillaure']          = { event = 503 },
     ['Pursuivant']         = { event = 773 },
     ['Qahzwin']            = { event = 244 },
     ['Qulsun']             = { event = 272 },

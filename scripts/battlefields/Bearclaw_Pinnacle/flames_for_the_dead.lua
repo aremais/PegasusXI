@@ -10,6 +10,7 @@ local content = BattlefieldMission:new({
     zoneId        = xi.zone.BEARCLAW_PINNACLE,
     battlefieldId = xi.battlefield.id.FLAMES_FOR_THE_DEAD,
     canLoseExp    = false,
+    allowTrusts   = true,
     maxPlayers    = 6,
     levelCap      = 99,
     timeLimit     = utils.minutes(30),

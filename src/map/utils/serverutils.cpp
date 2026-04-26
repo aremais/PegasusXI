@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -39,6 +39,23 @@ std::unordered_set<std::string>                           serverVarChanges;
 
 uint32 GetServerVar(const std::string& name)
 {
+    const uint32 now = earth_time::timestamp();
+
+    // Read-through cache: Lua GetServerVariable used to hit SQL on every call even though we
+    // already stored the last fetch in serverVarCache. Under slow or remote DB that stalls the
+    // main thread and can trigger the inactivity watchdog (e.g. many Dark Ixion checks per tick).
+    if (auto var = serverVarCache.find(name); var != serverVarCache.end())
+    {
+        const auto& cachedVarData = var->second;
+        const int32  cachedValue  = cachedVarData.first;
+        const uint32 expiry       = cachedVarData.second;
+
+        if (expiry == 0 || expiry > now)
+        {
+            return static_cast<uint32>(cachedValue);
+        }
+    }
+
     const auto rset = db::preparedStmt("SELECT value, expiry FROM server_variables WHERE name = ? LIMIT 1", name);
 
     int32  value  = 0;
@@ -48,20 +65,30 @@ uint32 GetServerVar(const std::string& name)
         value  = rset->get<int32>("value");
         expiry = rset->get<uint32>("expiry");
 
-        if (expiry > 0 && expiry <= earth_time::timestamp())
+        if (expiry > 0 && expiry <= now)
         {
-            value = 0;
+            value  = 0;
+            expiry = 0;
             db::preparedStmt("DELETE FROM server_variables WHERE name = ? LIMIT 1", name);
         }
     }
 
     serverVarCache[name] = { value, expiry };
-    return value;
+    return static_cast<uint32>(value);
 }
 
 void SetServerVar(const std::string& name, int32 value, uint32 expiry /* = 0 */)
 {
     PersistServerVar(name, value, expiry);
+
+    if (value == 0)
+    {
+        serverVarCache[name] = { 0, 0 };
+    }
+    else
+    {
+        serverVarCache[name] = { value, expiry };
+    }
 }
 
 void SetVolatileServerVar(const std::string& name, int32 value, uint32 expiry /* = 0 */)
@@ -103,6 +130,7 @@ void PersistVolatileServerVars()
         if (value == 0)
         {
             db::preparedStmt("DELETE FROM server_variables WHERE name = ? LIMIT 1", name);
+            serverVarCache[name] = { 0, 0 };
         }
         else
         {

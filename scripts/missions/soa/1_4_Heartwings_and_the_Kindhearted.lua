@@ -23,6 +23,10 @@ mission.sections =
         [xi.zone.WESTERN_ADOULIN] =
         {
             onZoneIn = function(player, prevZone)
+                if player:inMogHouse() then
+                    return nil
+                end
+
                 return 2
             end,
 

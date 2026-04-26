@@ -12,6 +12,7 @@ zones[xi.zone.KING_RANPERRES_TOMB] =
         ITEM_OBTAINED                 = 6550,  -- Obtained: <item>.
         GIL_OBTAINED                  = 6551,  -- Obtained <number> gil.
         KEYITEM_OBTAINED              = 6553,  -- Obtained key item: <keyitem>.
+        NOTHING_OUT_OF_ORDINARY       = 6564,  -- There is nothing out of the ordinary here.
         FELLOW_MESSAGE_OFFSET         = 6579,  -- I'm ready. I suppose.
         CARRIED_OVER_POINTS           = 7161,  -- You have carried over <number> login point[/s].
         LOGIN_CAMPAIGN_UNDERWAY       = 7162,  -- The [/January/February/March/April/May/June/July/August/September/October/November/December] <number> Login Campaign is currently underway!
@@ -28,6 +29,8 @@ zones[xi.zone.KING_RANPERRES_TOMB] =
         SENSE_SOMETHING_EVIL          = 7326,  -- You sense something evil.
         HEAVY_DOOR                    = 7327,  -- It is a solid stone door.
         FINAL_RESTING_PLACE           = 7331,  -- It appears to be the true resting place of King Ranperre.
+        ITEMS_ITEMS_LA_LA             = 7332,  -- You can hear a strange voice... Items, items, la la la la la
+        GOBLIN_SLIPPED_AWAY           = 7338,  -- The Goblin slipped away when you were not looking...
         PLAYER_OBTAINS_ITEM           = 8265,  -- <name> obtains <item>!
         UNABLE_TO_OBTAIN_ITEM         = 8266,  -- You were unable to obtain the item.
         PLAYER_OBTAINS_TEMP_ITEM      = 8267,  -- <name> obtains the temporary item: <item>!
@@ -50,7 +53,9 @@ zones[xi.zone.KING_RANPERRES_TOMB] =
     },
     npc =
     {
-        TREASURE_CHEST = GetFirstID('Treasure_Chest'),
+        TREASURE_CHEST       = GetFirstID('Treasure_Chest'),
+        -- Cutscene dragoon (San d'Oria M6-2); must match sql/npc_list.sql for zone 190
+        LEAUTE_CS_ACTOR_ID = 17556002,
     },
 }
 

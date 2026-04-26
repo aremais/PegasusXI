@@ -3,7 +3,7 @@ gitpython
 pylint
 pyyaml
 colorama
-zmq
+pyzmq
 black
 regex
 argparse

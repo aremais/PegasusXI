@@ -151,7 +151,8 @@ void logging::InitializeLog(const std::string& serverName, const std::string& lo
     // Basic sink, sink to file with name specified in main routine
     else
     {
-        sinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(logFile));
+        // Explicitly append to existing log files to avoid accidental truncation on restart.
+        sinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(logFile, false));
     }
 
     for (auto& name : logNames)

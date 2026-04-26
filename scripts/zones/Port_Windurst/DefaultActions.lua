@@ -75,7 +75,6 @@ return {
     ['Ten_of_Clubs']        = { event = 75 },
     ['Teruga-Boruga']       = { event = 335 },
     ['Tokaka']              = { event = 207 },
-    ['Tonule']              = { event = 551 },
     ['Tujaja']              = { event = 213 },
     ['Tun_Habyryu']         = { event = 348 },
     ['Wanja-Daruja']        = { event = 328 },

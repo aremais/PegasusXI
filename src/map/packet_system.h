@@ -27,7 +27,14 @@
 
 #include "entities/charentity.h"
 
+#include <functional>
+
 struct MapSession;
+
+// C2S packet dispatch table (defined in packet_system.cpp)
+extern uint8 PacketSize[512];
+extern std::function<void(MapSession* const, CCharEntity* const, CBasicPacket&)> PacketParser[512];
+void PacketParserInitialize();
 
 class PacketSystem
 {

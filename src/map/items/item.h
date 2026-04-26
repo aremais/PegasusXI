@@ -110,6 +110,8 @@ public:
 
     bool isMannequin() const;
 
+    void setSoulPlateData(const std::string& name, uint32 interestData, uint8 zeni, uint16 skillIndex, uint8 fp);
+
     static constexpr uint32_t extra_size = 0x18;
     uint8                     m_extra[extra_size]{};
 
