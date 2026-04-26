@@ -4364,6 +4364,18 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,133,68,255); -- shell
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,134,75,255); -- shellra_v (75~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,205,75,255); -- flare_ii (75~255)
 
+-- Mnejing Trust Spell List (1041)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,1,1,1,255);   -- Cure
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,1,2,1,255);   -- Cure II
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,1,3,1,255);   -- Cure III
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,1,4,1,255);   -- Cure IV
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,1,46,1,255);  -- Protect IV
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,1,51,1,255);  -- Shell IV
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,1,54,1,255);  -- Stoneskin
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,1,106,1,255); -- Phalanx
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,1,112,1,255); -- Flash
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,1,477,1,255); -- Regen IV
+
 -- TRUST_Shantotto_II (428)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Shantotto_II',428,144,9,255);  -- fire (9~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Shantotto_II',428,149,17,255); -- blizzard (17~255)
