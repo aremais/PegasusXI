@@ -74,10 +74,10 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.TARGET,  { ai.c.NOT_HAS_TOP_ENMITY, 0                    }, { ai.r.MA, ai.s.HIGHEST,  xi.magic.spellFamily.KURAYAMI              }, 45)
 
     -- 2 conditions
-    mob:addGambit(ai.t.SELF,    { { ai.c.PT_HAS_TANK,      0                    }, { ai.c.NOT_STATUS, xi.effect.INNIN   }, }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.INNIN   })
-    mob:addGambit(ai.t.SELF,    { { ai.c.PT_HAS_TANK,      0                    }, { ai.c.NOT_STATUS, xi.effect.BERSERK }, }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK })
-    mob:addGambit(ai.t.SELF,    { { ai.c.NOT_PT_HAS_TANK,  0                    }, { ai.c.NOT_STATUS, xi.effect.YONIN   }, }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.YONIN   })
-    mob:addGambit(ai.t.SELF,    { { ai.c.NOT_PT_HAS_TANK,  0                    }, { ai.c.NOT_STATUS, xi.effect.WARCRY  }, }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.WARCRY  })
+    mob:addGambit(ai.t.SELF,    { { ai.c.PT_HAS_TANK,  0                    }, { ai.c.NOT_STATUS, xi.effect.INNIN   }, }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.INNIN   })
+    mob:addGambit(ai.t.SELF,    { { ai.c.PT_HAS_TANK,      0                    }, { ai.c.NOT_STATUS, xi.effect.WARCRY  }, }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.WARCRY  })
+    mob:addGambit(ai.t.SELF,    { { ai.c.NOT_PT_HAS_TANK,      0                    }, { ai.c.NOT_STATUS, xi.effect.YONIN   }, }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.YONIN   })
+    mob:addGambit(ai.t.SELF,    { { ai.c.NOT_PT_HAS_TANK,  0                    }, { ai.c.NOT_STATUS, xi.effect.BERSERK }, }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK })
 
     mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.RANDOM)
 

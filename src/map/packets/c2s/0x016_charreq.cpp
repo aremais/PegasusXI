@@ -34,24 +34,23 @@ auto GP_CLI_COMMAND_CHARREQ::validate(MapSession* PSession, const CCharEntity* P
 void GP_CLI_COMMAND_CHARREQ::process(MapSession* PSession, CCharEntity* PChar) const
 {
     // Requesting self-update
-    if (ActIndex == PChar->targid)
+    if (this->ActIndex == PChar->targid)
     {
         PChar->updateEntityPacket(PChar, ENTITY_SPAWN, UPDATE_ALL_CHAR);
         PChar->pushPacket<CCharStatusPacket>(PChar);
         return;
     }
 
-    CBaseEntity* PEntity = PChar->GetEntity(ActIndex, TYPE_NPC | TYPE_PC);
+    // Targids below 0x400 may be mobs, NPCs, or ships; mobs are only resolved when TYPE_MOB is set (see CZoneEntities::GetEntity).
+    CBaseEntity* PEntity = PChar->GetEntity(this->ActIndex, TYPE_NPC | TYPE_PC | TYPE_MOB);
     if (!PEntity)
     {
-        const auto fullId = ((4096 + PChar->getZone()) << 12) + ActIndex;
-        // The client often polls targids that are not spawned server-side (cutscenes, CS desync, stale target).
-        // Softlock without a running event still produces these packets; avoid warning spam — use debug logging.
-        ShowDebugFmt("Could not look up entity <{}, {}> in zone <{} ({})>",
-                     ActIndex,
-                     fullId,
-                     zoneutils::GetZone(PChar->getZone())->getName(),
-                     PChar->getZone());
+        const auto fullId = ((4096 + PChar->getZone()) << 12) + this->ActIndex;
+        ShowWarningFmt("Could not look up entity <{}, {}> in zone <{} ({})>",
+                       this->ActIndex,
+                       fullId,
+                       zoneutils::GetZone(PChar->getZone())->getName(),
+                       PChar->getZone());
         return;
     }
 
@@ -62,7 +61,7 @@ void GP_CLI_COMMAND_CHARREQ::process(MapSession* PSession, CCharEntity* PChar) c
         {
             if (PCharEntity->m_isGMHidden)
             {
-                ShowErrorFmt("Player {} requested information about a hidden GM ({}) using targid {}", PChar->getName(), PCharEntity->getName(), ActIndex);
+                ShowErrorFmt("Player {} requested information about a hidden GM ({}) using targid {}", PChar->getName(), PCharEntity->getName(), this->ActIndex);
                 return;
             }
 

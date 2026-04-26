@@ -28,6 +28,7 @@
 #include "conquest_system.h"
 
 #include <concurrentqueue.h>
+#include <exception>
 #include <memory>
 
 #include "common/database.h"
@@ -369,12 +370,25 @@ void IPCServer::handleIncomingMessages()
     IPPMessage message;
     while (zmqRouterWrapper_.incomingQueue_.try_dequeue(message))
     {
-        const auto firstByte = message.payload[0];
-        const auto msgType   = ipc::toString(static_cast<ipc::MessageType>(firstByte));
+        if (message.payload.empty())
+        {
+            ShowWarningFmt("Incoming IPC message from {} with empty payload (ignored)", message.ipp.toString());
+            continue;
+        }
 
-        DebugIPCFmt("Incoming {} message from {}", msgType, message.ipp.toString());
+        try
+        {
+            const auto firstByte = message.payload[0];
+            const auto msgType   = ipc::toString(static_cast<ipc::MessageType>(firstByte));
 
-        handleMessage(message.ipp, { message.payload.data(), message.payload.size() });
+            DebugIPCFmt("Incoming {} message from {}", msgType, message.ipp.toString());
+
+            handleMessage(message.ipp, { message.payload.data(), message.payload.size() });
+        }
+        catch (const std::exception& e)
+        {
+            ShowErrorFmt("IPC handleMessage exception from {}: {}", message.ipp.toString(), e.what());
+        }
     }
 }
 
@@ -623,11 +637,24 @@ void IPCServer::handleMessage_KillSession(const IPP& ipp, const ipc::KillSession
 
         if (prevZoneID != nextZoneID)
         {
-            const auto zoneSettings = zoneSettings_.zoneSettingsMap_.at(prevZoneID);
+            const auto prevZoneU16 = static_cast<uint16>(prevZoneID);
+            if (const auto it = zoneSettings_.zoneSettingsMap_.find(prevZoneU16); it != zoneSettings_.zoneSettingsMap_.end())
+            {
+                DebugIPCFmt("Message: -> rerouting to {}", it->second.ipp.toString());
 
-            DebugIPCFmt("Message: -> rerouting to {}", zoneSettings.ipp.toString());
-
-            sendMessage(zoneSettings.ipp, message);
+                sendMessage(it->second.ipp, message);
+            }
+            else
+            {
+                ShowWarningFmt("KillSession: char {} has prev_zone {} not present in zone_settings; broadcasting to all map endpoints",
+                               message.victimId,
+                               prevZoneID);
+                for (const auto& ipp : zoneSettings_.mapEndpoints_)
+                {
+                    DebugIPCFmt("Message: -> rerouting to {}", ipp.toString());
+                    sendMessage(ipp, message);
+                }
+            }
         }
         else
         {
@@ -755,6 +782,12 @@ void IPCServer::handleMessage_GMCallResponse(const IPP& ipp, const ipc::GMCallRe
 void IPCServer::handleUnknownMessage(const IPP& ipp, const std::span<uint8_t> message)
 {
     TracyZoneScoped;
+
+    if (message.empty())
+    {
+        ShowWarningFmt("Received unknown empty message from {}", ipp.toString());
+        return;
+    }
 
     ShowWarningFmt("Received unknown message from {} with code {} and size {}", ipp.toString(), message[0], message.size());
 }
