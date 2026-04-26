@@ -22,7 +22,7 @@ zoneObject.onZoneIn = function(player, prevZone)
     end
 
     -- Enagakure pop mechanics.
-    local enagakure = GetEntityByID(ID.mob.ENAGAKURE, nil, true)
+    local enagakure = GetMobByID(ID.mob.ENAGAKURE)
     local hour      = VanadielHour()
 
     if
@@ -54,7 +54,7 @@ end
 
 zoneObject.onGameHour = function(zone)
     -- Enagakure pop mechanics.
-    local enagakure = GetEntityByID(ID.mob.ENAGAKURE, nil, true)
+    local enagakure = GetMobByID(ID.mob.ENAGAKURE)
     local hour      = VanadielHour()
 
     if enagakure then
@@ -67,7 +67,7 @@ zoneObject.onGameHour = function(zone)
             end
         else
             if
-                (hour >= 20 or hour < 4) and                               -- Night-time.
+                (hour >= 20 or hour < 4) and                                -- Night-time.
                 VanadielUniqueDay() > enagakure:getLocalVar('despawnDay') -- Can spawn today.
             then
                 for _, player in pairs(zone:getPlayers()) do

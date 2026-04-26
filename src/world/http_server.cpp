@@ -27,6 +27,7 @@
 #include "common/utils.h"
 #include "common/xi.h"
 
+#include <exception>
 #include <unordered_set>
 
 #include <nlohmann/json.hpp>
@@ -49,6 +50,8 @@ HTTPServer::HTTPServer(Scheduler& scheduler)
     scheduler_.postToWorkerThread(
         [this, host, port]()
         {
+            try
+            {
             httpServer_.Get(
                 "/api",
                 [&](const httplib::Request& req, httplib::Response& res)
@@ -196,6 +199,14 @@ HTTPServer::HTTPServer(Scheduler& scheduler)
                 });
 
             httpServer_.listen(host, port); // blocks
+            }
+            catch (const std::exception& e)
+            {
+                ShowCriticalFmt("HTTP server thread failed on {}:{} — {} (is another process using this port?)",
+                                host,
+                                port,
+                                e.what());
+            }
         });
 }
 

@@ -9,12 +9,9 @@ xi.pirates = xi.pirates or {}
 -- chance for encounter to have a special middle NPC, which indicates a chance for NM to spawn
 local vermCloakPirateChance = 10
 
--- At least this many Crossbones alive during the encounter; all zone Crossbones IDs may be up (e.g. 4) if available.
-local CROSSBONES_MIN_ALIVE = 3
-
--- music106.bgw Ship; music170.bgw Buccaneers (retail pirate ferry encounter)
-local shipAmbientBgm   = 106
-local pirateEncounterBgm = 170
+-- Background music while pirate assault is active (matches pirates_chart.lua / pirate battle theme)
+local pirateEventMusic = 136
+local shipZoneMusic      = 106
 
 local actions =
 {
@@ -75,146 +72,6 @@ local piratesData =
     },
 }
 
-local function countAliveCrossbones(crossbonesIds)
-    local n = 0
-    for _, mobId in ipairs(crossbonesIds) do
-        local mob = GetMobByID(mobId)
-        if mob and mob:isSpawned() and mob:isAlive() then
-            n = n + 1
-        end
-    end
-
-    return n
-end
-
--- While pirates loop summon animations after mobs have spawned, keep at least CROSSBONES_MIN_ALIVE Crossbones up
--- (spawn all listed IDs on pull; extra IDs mean more than the minimum can be alive).
-local function maybeSummonCrossboneOnPirateCastComplete(zone)
-    if zone:getLocalVar('currPiratesAction') ~= actions.MOBS_SPAWN then
-        return
-    end
-
-    local zoneId = zone:getID()
-    if
-        zoneId ~= xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES and
-        zoneId ~= xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES
-    then
-        return
-    end
-
-    local ID = zones[zoneId]
-    if not ID or not ID.mob or not ID.mob.CROSSBONES then
-        return
-    end
-
-    local crossbonesIds = ID.mob.CROSSBONES
-    local poolSize        = #crossbonesIds
-    if poolSize == 0 then
-        return
-    end
-
-    local minNeeded       = math.min(CROSSBONES_MIN_ALIVE, poolSize)
-    local deficit         = minNeeded - countAliveCrossbones(crossbonesIds)
-    if deficit <= 0 then
-        return
-    end
-
-    for i = 1, poolSize do
-        if deficit <= 0 then
-            break
-        end
-
-        local mobId = crossbonesIds[i]
-        local mob   = GetMobByID(mobId)
-        if mob and not mob:isSpawned() then
-            SpawnMob(mobId)
-            deficit = deficit - 1
-        end
-    end
-
-    if deficit <= 0 then
-        return
-    end
-
-    for i = 1, poolSize do
-        local mobId = crossbonesIds[i]
-        local mob   = GetMobByID(mobId)
-        if mob and mob:isSpawned() and not mob:isAlive() then
-            DespawnMob(mobId)
-            mob:timer(500, function()
-                if zone:getLocalVar('currPiratesAction') ~= actions.MOBS_SPAWN then
-                    return
-                end
-
-                local m = GetMobByID(mobId)
-                if m and not m:isSpawned() then
-                    SpawnMob(mobId)
-                end
-
-                maybeSummonCrossboneOnPirateCastComplete(zone)
-            end)
-            return
-        end
-    end
-end
-
-xi.pirates.applyEncounterBgm = function(zone, usePirateTheme)
-    if not zone then
-        return
-    end
-
-    local zoneId = zone:getID()
-    if
-        zoneId ~= xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES and
-        zoneId ~= xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES
-    then
-        return
-    end
-
-    local song = usePirateTheme and pirateEncounterBgm or shipAmbientBgm
-    zone:setBackgroundMusicDay(song)
-    zone:setBackgroundMusicNight(song)
-
-    for _, player in pairs(zone:getPlayers()) do
-        player:changeMusic(0, song)
-        player:changeMusic(1, song)
-    end
-end
-
--- Match currPiratesAction with PIRATES_ARRIVE (2) / MOBS_SPAWN (3) for zone-in after the event starts.
-xi.pirates.syncEncounterBgmForPlayer = function(player)
-    if not player then
-        return
-    end
-
-    local zone = player:getZone()
-    if not zone then
-        return
-    end
-
-    local zoneId = zone:getID()
-    if
-        zoneId ~= xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES and
-        zoneId ~= xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES
-    then
-        return
-    end
-
-    local a    = zone:getLocalVar('currPiratesAction')
-    local song = (a == 2 or a == 3) and pirateEncounterBgm or shipAmbientBgm
-    player:changeMusic(0, song)
-    player:changeMusic(1, song)
-end
-
--- True from MOBS_SPAWN until PIRATES_RETREAT (currPiratesAction is not advanced between those triggers).
-xi.pirates.isPirateMobWaveActive = function(zone)
-    if not zone then
-        return false
-    end
-
-    return zone:getLocalVar('currPiratesAction') == actions.MOBS_SPAWN
-end
-
 xi.pirates.setupPirateNPCSchedule = function(npc)
     npc:initNpcAi()
 
@@ -224,8 +81,7 @@ xi.pirates.setupPirateNPCSchedule = function(npc)
     end
 end
 
--- Re-arms a timer to loop summoner cast start/stop while pirates are alongside the ship.
--- Visibility ends on DEPART (or DISAPPEAR elsewhere); do not hide NPCs here between cycles.
+-- calls itself via timer until the npc is hidden
 local function summonAnimations(npc, rotation, offset)
     if npc:getStatus() == xi.status.DISAPPEAR then
         return
@@ -256,14 +112,11 @@ local function summonAnimations(npc, rotation, offset)
             npc:setLocalVar('summonStartTime', GetSystemTime() + math.random(4 + offset, 10))
 
             npc:entityAnimationPacket(xi.animationString.CAST_SUMMONER_STOP)
+        end
 
-            -- One NPC handles respawn checks so three pirates do not race the same mob IDs
-            if offset == 1 then
-                local pirateZone = npc:getZone()
-                if pirateZone then
-                    maybeSummonCrossboneOnPirateCastComplete(pirateZone)
-                end
-            end
+        -- No more animations and npc is done pathing
+        if summonEndTime == 0 and summonStartTime == 0 then
+            npc:setStatus(xi.status.DISAPPEAR)
         end
     end
 
@@ -322,8 +175,9 @@ xi.pirates.pirateNPCTimeTrigger = function(npc, triggerId, zoneKey)
         npc:setLocalVar('initialNpcState', 1)
         summonAnimations(npc, pirateData.standingPos.rotation, pirateIdx)
     elseif triggerId == actions.PIRATES_RETREAT then
-        -- retreat; summoning stops (timers cleared) while pirates run back to their ship
+        -- retreat
         local summonEndTime = npc:getLocalVar('summonEndTime')
+        -- No more animations will happen and recursive function self destructs
         npc:setLocalVar('summonStartTime', 0)
         npc:setLocalVar('summonEndTime', 0)
         if summonEndTime > 0 then
@@ -340,101 +194,107 @@ xi.pirates.pirateNPCTimeTrigger = function(npc, triggerId, zoneKey)
     xi.pirates.zoneStateChange(pirateZone, triggerId)
 end
 
-local function spawnPirateWave(zone)
-    local zoneId = zone:getID()
-    local ID = zones[zoneId]
-    if not ID or not ID.mob then
-        return
+local function setShipPirateMusic(zone, musicId)
+    zone:setBackgroundMusicDay(musicId)
+    zone:setBackgroundMusicNight(musicId)
+
+    for _, player in pairs(zone:getPlayers()) do
+        player:changeMusic(0, musicId)
+        player:changeMusic(1, musicId)
+    end
+end
+
+local function getPirateAssaultMobIds(zoneId)
+    local mobTable = zones[zoneId].mob
+    local list     = {}
+
+    if mobTable.PHANTOM and mobTable.PHANTOM > 0 then
+        table.insert(list, mobTable.PHANTOM)
     end
 
-    local spawnList = {}
-
-    if ID.mob.CROSSBONES then
-        for _, mobId in ipairs(ID.mob.CROSSBONES) do
-            spawnList[#spawnList + 1] = mobId
+    if mobTable.CROSSBONES then
+        for _, mobId in ipairs(mobTable.CROSSBONES) do
+            if mobId and mobId > 0 then
+                table.insert(list, mobId)
+            end
         end
     end
 
     if zoneId == xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES then
-        -- Middle pirate Vermillion Cloak sets nmCanSpawn; NM replaces Ship Wight placeholder.
-        if zone:getLocalVar('nmCanSpawn') == 1 then
-            spawnList[#spawnList + 1] = ID.mob.BLACKBEARD
-        else
-            spawnList[#spawnList + 1] = ID.mob.SHIP_WIGHT
+        if mobTable.SHIP_WIGHT and mobTable.SHIP_WIGHT > 0 then
+            table.insert(list, mobTable.SHIP_WIGHT)
         end
 
-        -- Enagakure uses night / key item logic in Zone.lua; not spawned by the pirate wave
-    elseif zoneId == xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES then
-        if zone:getLocalVar('nmCanSpawn') == 1 then
-            spawnList[#spawnList + 1] = ID.mob.SILVERHOOK
-        else
-            spawnList[#spawnList + 1] = ID.mob.WIGHT
+        if mobTable.BLACKBEARD and mobTable.BLACKBEARD > 0 then
+            table.insert(list, mobTable.BLACKBEARD)
         end
-    else
-        return
+    elseif zoneId == xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES then
+        if mobTable.WIGHT and mobTable.WIGHT > 0 then
+            table.insert(list, mobTable.WIGHT)
+        end
+
+        if mobTable.SILVERHOOK and mobTable.SILVERHOOK > 0 then
+            table.insert(list, mobTable.SILVERHOOK)
+        end
     end
 
-    for _, mobId in ipairs(spawnList) do
+    return list
+end
+
+local function spawnPirateAssaultMobs(zone)
+    local zoneId = zone:getID()
+    local mobIds   = getPirateAssaultMobIds(zoneId)
+
+    for i, mobId in ipairs(mobIds) do
         if mobId and mobId > 0 then
-            -- Use silent lookup: missing mob rows (e.g. DB not migrated to 177152xx IDs) should not spam GetMobByID warnings.
-            local mob = GetEntityByID(mobId, nil, true)
-            if mob and not mob:isSpawned() then
-                SpawnMob(mobId)
+            -- Last entry is the zone NM (Blackbeard / Silverhook); only pop when flagged by middle pirate NPC.
+            local skipNm = i == #mobIds and zone:getLocalVar('nmCanSpawn') ~= 1
+            if not skipNm then
+                DisallowRespawn(mobId, false)
+
+                local mob = GetMobByID(mobId)
+                if mob and not mob:isSpawned() then
+                    SpawnMob(mobId)
+                end
             end
         end
     end
 end
 
--- Death during MOBS_SPAWN sets a short respawn; cancel those timers once the encounter ends.
-local function haltCrossbonesRespawns(zone)
+local function despawnPirateAssaultMobs(zone)
     local zoneId = zone:getID()
+    local mobIds   = getPirateAssaultMobIds(zoneId)
+
+    for _, mobId in ipairs(mobIds) do
+        if mobId and mobId > 0 then
+            local mob = GetMobByID(mobId)
+            if mob and mob:isSpawned() and not mob:isEngaged() then
+                DespawnMob(mobId)
+            end
+
+            DisallowRespawn(mobId, true)
+        end
+    end
+end
+
+--- Called from pirate ship zones' onZoneIn so music matches the timed assault state.
+xi.pirates.onZoneIn = function(player)
+    local zone = player:getZone()
+    if not zone then
+        return
+    end
+
+    local zid = zone:getID()
     if
-        zoneId ~= xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES and
-        zoneId ~= xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES
+        zid ~= xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES and
+        zid ~= xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES
     then
         return
     end
 
-    local ID = zones[zoneId]
-    if not ID or not ID.mob or not ID.mob.CROSSBONES then
-        return
-    end
-
-    for _, mobId in ipairs(ID.mob.CROSSBONES) do
-        local mob = GetEntityByID(mobId, nil, true)
-        if mob and not mob:isSpawned() and mob:getRespawnTime() > 0 then
-            mob:setRespawnTime(0)
-        end
-    end
-end
-
--- Despawn non-Crossbones wave mobs on retreat (players finish off skeletons).
-local function despawnPirateWave(zone)
-    local zoneId = zone:getID()
-    local ID = zones[zoneId]
-    if not ID or not ID.mob then
-        return
-    end
-
-    local despawnList = {}
-
-    if zoneId == xi.zone.SHIP_BOUND_FOR_SELBINA_PIRATES then
-        despawnList[#despawnList + 1] = ID.mob.SHIP_WIGHT
-        despawnList[#despawnList + 1] = ID.mob.BLACKBEARD
-    elseif zoneId == xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES then
-        despawnList[#despawnList + 1] = ID.mob.WIGHT
-        despawnList[#despawnList + 1] = ID.mob.SILVERHOOK
-    else
-        return
-    end
-
-    for _, mobId in ipairs(despawnList) do
-        if mobId and mobId > 0 then
-            local mob = GetEntityByID(mobId, nil, true)
-            if mob and mob:isSpawned() and not mob:isEngaged() then
-                DespawnMob(mobId)
-            end
-        end
+    if zone:getLocalVar('currPiratesAction') == actions.MOBS_SPAWN then
+        player:changeMusic(0, pirateEventMusic)
+        player:changeMusic(1, pirateEventMusic)
     end
 end
 
@@ -444,16 +304,11 @@ xi.pirates.zoneStateChange = function(zone, action)
         zone:setLocalVar('currPiratesAction', action)
 
         if action == actions.MOBS_SPAWN then
-            spawnPirateWave(zone)
+            setShipPirateMusic(zone, pirateEventMusic)
+            spawnPirateAssaultMobs(zone)
         elseif action == actions.PIRATES_RETREAT then
-            despawnPirateWave(zone)
-            haltCrossbonesRespawns(zone)
-        end
-
-        if action == actions.PIRATES_ARRIVE or action == actions.MOBS_SPAWN then
-            xi.pirates.applyEncounterBgm(zone, true)
-        elseif action == actions.PIRATES_RETREAT or action == actions.ARRIVING then
-            xi.pirates.applyEncounterBgm(zone, false)
+            setShipPirateMusic(zone, shipZoneMusic)
+            despawnPirateAssaultMobs(zone)
         end
     end
 end
