@@ -109,6 +109,8 @@ struct action_result_t;
 enum ConquestUpdate : uint8;
 enum class Emote : uint8;
 
+class Scheduler;
+
 namespace luautils
 {
 namespace detail
@@ -132,6 +134,9 @@ void init(IPP mapIPP, bool isRunningInCI);
 void garbageCollectStep();
 void garbageCollectFull();
 void cleanup();
+
+// Map process main scheduler (asio). Used for deferred OnGameIn follow-up; set from MapEngine::init.
+void setMapScheduler(Scheduler* scheduler);
 
 // Find and call a global function in Lua from C++.
 //

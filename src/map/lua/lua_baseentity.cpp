@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -239,9 +239,9 @@ void CLuaBaseEntity::showText(CLuaBaseEntity* entity, uint16 messageID, const so
 
 void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageID, const sol::object& arg2, const sol::object& arg3)
 {
-    if (PLuaBaseEntity == nullptr)
+    if (PLuaBaseEntity == nullptr || PLuaBaseEntity->m_PBaseEntity == nullptr)
     {
-        ShowError("CLuaBaseEntity::messageText() - argument 1 of CLuaBaseEntity* was nullptr");
+        ShowError("CLuaBaseEntity::messageText() - target entity was nullptr");
         return;
     }
 
@@ -252,7 +252,8 @@ void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageI
     bool  faceGiven = false;
     uint8 face      = 0;
 
-    // TODO: Clean this up.  We could potentially accept two int vals for optional args, which could cause unexpected showName behavior.
+    // TODO: Clean this up. We could potentially accept two int vals for optional args,
+    // which could cause unexpected showName behavior.
     if (arg2 != sol::lua_nil)
     {
         if (arg2.is<bool>())
@@ -267,19 +268,16 @@ void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageI
         {
             auto table   = arg2.as<sol::table>();
             auto faceArg = table.get<sol::object>("face");
-            faceGiven    = true;
 
             if (faceArg.get_type() == sol::type::number)
             {
                 face = faceArg.as<uint8>();
+                faceGiven = true;
             }
-            else if (faceArg.get_type() == sol::type::number)
+            else if (faceArg.get_type() == sol::type::boolean && faceArg.as<bool>())
             {
                 face = worldAngle(PTarget->loc.p, m_PBaseEntity->loc.p);
-            }
-            else
-            {
-                faceGiven = false;
+                faceGiven = true;
             }
 
             showName = table.get_or("showName", true);
@@ -299,13 +297,14 @@ void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageI
         PTarget->updatemask |= UPDATE_POS;
     }
 
-    if (auto player = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    if (auto* player = dynamic_cast<CCharEntity*>(m_PBaseEntity))
     {
         player->gotMessage = true;
         player->pushPacket<GP_SERV_COMMAND_TALKNUM>(PTarget, messageID, showName, mode);
     }
-    else
-    { // broadcast in range
+    else if (m_PBaseEntity->loc.zone)
+    {
+        // Broadcast in range
         m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUM>(PTarget, messageID, showName, mode));
     }
 }
@@ -460,7 +459,17 @@ void CLuaBaseEntity::messageBasic(uint16 messageID, const sol::object& p0, const
     uint32 param0 = (p0 != sol::lua_nil) ? p0.as<uint32>() : 0;
     uint32 param1 = (p1 != sol::lua_nil) ? p1.as<uint32>() : 0;
 
-    auto* PTarget = (target != sol::lua_nil) ? target.as<CLuaBaseEntity*>()->m_PBaseEntity : m_PBaseEntity;
+    CBaseEntity* PTarget = m_PBaseEntity;
+    if (target != sol::lua_nil)
+    {
+        if (auto* luaTarget = target.as<CLuaBaseEntity*>())
+        {
+            if (luaTarget->m_PBaseEntity)
+            {
+                PTarget = luaTarget->m_PBaseEntity;
+            }
+        }
+    }
 
     if (m_PBaseEntity->objtype == TYPE_PC)
     {
@@ -651,6 +660,28 @@ auto CLuaBaseEntity::getCharVarsWithPrefix(const std::string& prefix) -> sol::ta
     if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
     {
         for (const auto& [varName, value] : PChar->getCharVarsWithPrefix(prefix))
+        {
+            table[varName] = value;
+        }
+    }
+
+    return table;
+}
+
+/************************************************************************
+ *  Function: getCharVarsWithSuffix()
+ *  Purpose : Returns all char_vars whose names end with the given suffix (SQL LIKE %suffix).
+ *  Example : local vars = player:getCharVarsWithSuffix(']mustZone')
+ *  Notes   :
+ ************************************************************************/
+
+auto CLuaBaseEntity::getCharVarsWithSuffix(const std::string& suffix) -> sol::table
+{
+    sol::table table = lua.create_table();
+
+    if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    {
+        for (const auto& [varName, value] : PChar->getCharVarsWithSuffix(suffix))
         {
             table[varName] = value;
         }
@@ -1152,8 +1183,8 @@ EventInfo* CLuaBaseEntity::ParseEvent(int32 EventID, sol::variadic_args va, Even
             currentIndex++;
         }
 
-        // Finally parse out an optional last argument as text_table
-        eventToStart->textTable = va.get_type(8) == sol::type::number ? va.get<int16>(8) : -1;
+        // Finally parse out an optional last argument as text_table.
+        eventToStart->textTable = va.get_type(currentIndex) == sol::type::number ? va.get<int16>(currentIndex) : -1;
     }
 
     if (eventType == OPTIONAL_CUTSCENE)
@@ -1657,7 +1688,10 @@ void CLuaBaseEntity::initNpcAi()
 
 void CLuaBaseEntity::resetAI()
 {
-    m_PBaseEntity->PAI->Reset();
+    if (m_PBaseEntity->PAI)
+    {
+        m_PBaseEntity->PAI->Reset();
+    }
 }
 
 /************************************************************************
@@ -1701,6 +1735,12 @@ uint8 CLuaBaseEntity::getCurrentAction()
         return 0;
     }
 
+    if (m_PBaseEntity->PAI == nullptr)
+    {
+        ShowWarning("getCurrentAction: PAI was nullptr for %s", m_PBaseEntity->getName());
+        return 0;
+    }
+
     uint8 action = 0;
 
     if (m_PBaseEntity->PAI->IsStateStackEmpty())
@@ -1735,6 +1775,10 @@ uint8 CLuaBaseEntity::getCurrentAction()
     {
         action = 27;
     }
+    else if (m_PBaseEntity->PAI->IsCurrentState<CDeathState>() && m_PBaseEntity->objtype == TYPE_PC && static_cast<CCharEntity*>(m_PBaseEntity)->m_hasRaise)
+    {
+        action = 37;
+    }
     else if (m_PBaseEntity->PAI->IsCurrentState<CDeathState>())
     {
         action = 22;
@@ -1742,10 +1786,6 @@ uint8 CLuaBaseEntity::getCurrentAction()
     else if (m_PBaseEntity->PAI->IsCurrentState<CDespawnState>())
     {
         action = 24;
-    }
-    else if (m_PBaseEntity->PAI->IsCurrentState<CDeathState>() && m_PBaseEntity->objtype == TYPE_PC && static_cast<CCharEntity*>(m_PBaseEntity)->m_hasRaise)
-    {
-        action = 37;
     }
     else if (m_PBaseEntity->PAI->IsCurrentState<CMobSkillState>())
     {
@@ -1779,6 +1819,11 @@ bool CLuaBaseEntity::canUseAbilities()
 {
     if (auto* PEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity))
     {
+        if (m_PBaseEntity->PAI == nullptr)
+        {
+            return false;
+        }
+
         return !(PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_SLEEP) ||
                  PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_IMPAIRMENT) ||
                  PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_SLEEP_II) ||
@@ -1803,21 +1848,38 @@ bool CLuaBaseEntity::canUseAbilities()
 
 void CLuaBaseEntity::lookAt(const sol::object& arg0, const sol::object& arg1, const sol::object& arg2)
 {
-    position_t point;
+    position_t point{};
 
-    if ((arg0 != sol::lua_nil) && (arg0.is<double>()))
+    if ((arg0 != sol::lua_nil) && arg0.is<double>())
     {
+        if (!(arg1.is<double>() && arg2.is<double>()))
+        {
+            ShowError("CLuaBaseEntity::lookAt() requires x, y, z when first argument is numeric");
+            return;
+        }
+
         point.x = arg0.as<float>();
         point.y = arg1.as<float>();
         point.z = arg2.as<float>();
     }
-    else
+    else if (arg0.get_type() == sol::type::table)
     {
         auto position = arg0.as<std::map<std::string, float>>();
+
+        if (!position.contains("x") || !position.contains("y") || !position.contains("z"))
+        {
+            ShowError("CLuaBaseEntity::lookAt() table argument must contain x, y, z");
+            return;
+        }
 
         point.x = position["x"];
         point.y = position["y"];
         point.z = position["z"];
+    }
+    else
+    {
+        ShowError("CLuaBaseEntity::lookAt() received invalid arguments");
+        return;
     }
 
     // Avoid unpredictable results if we're too close.
@@ -4881,12 +4943,8 @@ bool CLuaBaseEntity::addLinkpearl(const std::string& lsname, bool equip)
         const auto rset = db::preparedStmt("SELECT linkshellid, color FROM linkshells WHERE name = ? AND broken = 0", lsname);
         if (rset && rset->rowsCount() && rset->next())
         {
-            // build linkpearl
-            char EncodedString[LinkshellStringLength];
-
-            std::memset(&EncodedString, 0, sizeof(EncodedString));
-            EncodeStringLinkshell(lsname, EncodedString);
-            ((CItem*)PItemLinkPearl)->setSignature(EncodedString);
+            // setSignature() expects decoded name; it encodes into exdata.
+            ((CItem*)PItemLinkPearl)->setSignature(lsname);
             PItemLinkPearl->SetLSID(rset->get<uint32>("linkshellid"));
             PItemLinkPearl->SetLSColor(rset->get<uint16>("color"));
             PItemLinkPearl->SetLSType(lstype);
@@ -4955,10 +5013,7 @@ bool CLuaBaseEntity::addLinkshellHolder(const std::string& lsname, sol::optional
         return false;
     }
 
-    char EncodedString[LinkshellStringLength]{};
-    std::memset(EncodedString, 0, sizeof(EncodedString));
-    EncodeStringLinkshell(lsname, EncodedString);
-    PItemShell->setSignature(EncodedString);
+    PItemShell->setSignature(lsname);
     PItemShell->SetLSID(rset->get<uint32>("linkshellid"));
     PItemShell->SetLSColor(rset->get<uint16>("color"));
     PItemShell->SetLSType(LSTYPE_LINKSHELL);
@@ -12790,7 +12845,32 @@ void CLuaBaseEntity::disengage()
 
 void CLuaBaseEntity::timer(int ms, sol::function func)
 {
-    m_PBaseEntity->PAI->QueueAction(queueAction_t(ms, false, std::move(func)));
+    if (!func.valid())
+    {
+        ShowWarning("CLuaBaseEntity::timer: invalid lua function (%s).", m_PBaseEntity->getName().c_str());
+        return;
+    }
+
+
+
+    sol::function luaCallback = std::move(func);
+    m_PBaseEntity->PAI->QueueAction(queueAction_t(
+        std::chrono::milliseconds(ms),
+        false,
+        [luaCallback = std::move(luaCallback)](CBaseEntity* PEntity) mutable
+        {
+            if (!luaCallback.valid())
+            {
+                return;
+            }
+
+            const auto result = luaCallback(PEntity);
+            if (!result.valid())
+            {
+                sol::error err = result;
+                ShowError("CLuaBaseEntity::timer: %s", err.what());
+            }
+        }));
 }
 
 /************************************************************************
@@ -12805,7 +12885,30 @@ void CLuaBaseEntity::timer(int ms, sol::function func)
 
 void CLuaBaseEntity::queue(int ms, sol::function func)
 {
-    m_PBaseEntity->PAI->QueueAction(queueAction_t(ms, true, std::move(func)));
+    if (!func.valid())
+    {
+        ShowWarning("CLuaBaseEntity::queue: invalid lua function (%s).", m_PBaseEntity->getName().c_str());
+        return;
+    }
+
+    sol::function luaCallback = std::move(func);
+    m_PBaseEntity->PAI->QueueAction(queueAction_t(
+        std::chrono::milliseconds(ms),
+        true,
+        [luaCallback = std::move(luaCallback)](CBaseEntity* PEntity) mutable
+        {
+            if (!luaCallback.valid())
+            {
+                return;
+            }
+
+            const auto result = luaCallback(PEntity);
+            if (!result.valid())
+            {
+                sol::error err = result;
+                ShowError("CLuaBaseEntity::queue: %s", err.what());
+            }
+        }));
 }
 
 /************************************************************************
@@ -19798,6 +19901,7 @@ void CLuaBaseEntity::Register()
     // Variables
     SOL_REGISTER("getCharVar", CLuaBaseEntity::getCharVar);
     SOL_REGISTER("getCharVarsWithPrefix", CLuaBaseEntity::getCharVarsWithPrefix);
+    SOL_REGISTER("getCharVarsWithSuffix", CLuaBaseEntity::getCharVarsWithSuffix);
     SOL_REGISTER("setCharVar", CLuaBaseEntity::setCharVar);
     SOL_REGISTER("setCharVarExpiration", CLuaBaseEntity::setCharVarExpiration);
     SOL_REGISTER("getVar", CLuaBaseEntity::getCharVar); // Compatibility binding

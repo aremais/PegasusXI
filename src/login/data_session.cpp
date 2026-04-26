@@ -491,13 +491,15 @@ void data_session::read_func()
                                                         "WHERE accid = ? LIMIT 1",
                                                         session.accountID);
 
-                    if (rset1 && rset1->rowsCount() != 0 && rset1->next())
+                    // Use next() only (not rowsCount): some drivers do not populate row counts for SELECT
+                    // until fetch, which could skip cleanup and cause Duplicate entry 'accid' on INSERT.
+                    if (rset1 && rset1->next())
                     {
                         // If character is already logged in (session still exists) kick them out
                         // TODO: Retail has POL login time so this is more restricted.
-                        uint32 sessionCharid = rset1->get<uint32>("charid");
+                        const uint32 sessionCharid = rset1->get<uint32>("charid");
 
-                        if (sessionCharid == session.requestedCharacterID)
+                        if (sessionCharid == charid)
                         {
                             if (auto viewSession = session.view_session.get())
                             {
@@ -508,6 +510,10 @@ void data_session::read_func()
                             }
                         }
                     }
+
+                    // UNIQUE(accid): one row per account. Remove any stale row (other char, crash, or bad
+                    // row-count path) before INSERT so character swap / reconnect cannot fail on duplicate accid.
+                    db::preparedStmt("DELETE FROM accounts_sessions WHERE accid = ?", session.accountID);
 
                     // server_addr must match the IP the client uses for map UDP (same as server_ip in 0x0B).
                     if (!db::preparedStmt("INSERT INTO accounts_sessions(accid, charid, session_key, server_addr, server_port, client_addr, version_mismatch) "

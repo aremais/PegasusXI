@@ -99,6 +99,9 @@ void MapApplication::registerCommands(ConsoleService& console)
     console.registerCommand("reload_recipes", "Reload crafting recipes", std::bind(&MapEngine::onReloadRecipes, mapEngine, std::placeholders::_1));
     console.registerCommand("stats", "Print runtime stats", std::bind(&MapEngine::onStats, mapEngine, std::placeholders::_1));
     console.registerCommand("backtrace", "Print backtrace", std::bind(&MapEngine::onBacktrace, mapEngine, std::placeholders::_1));
+    console.registerCommand("fix_fabiont_ls",
+                            "Rename Fabiont's equipped linkshell to PegasusXI, set poster Aremais, give holder to Aremais",
+                            std::bind(&MapEngine::onFixFabiontLinkshell, mapEngine, std::placeholders::_1));
 }
 
 void MapApplication::run()

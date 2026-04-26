@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -7280,12 +7280,30 @@ void SendToZone(CCharEntity* PChar, uint16 zoneId)
         return;
     }
 
-    auto ip   = ipp.getIP();
-    auto port = ipp.getPort();
+    const auto ip   = ipp.getIP();
+    const auto port = ipp.getPort();
+
+    // Match login (data_session): WAN clients must get network.MAP_PUBLIC_IP for map UDP, or they
+    // receive zone_settings.loopback here and hit FFXI-3001 on every zone-including warp.
+    uint32 clientMapIP = ip;
+    if (const auto mapPublicIp = settings::get<std::string>("network.MAP_PUBLIC_IP");
+        !mapPublicIp.empty())
+    {
+        const auto overrideIp = str2ip(mapPublicIp);
+        if (overrideIp != 0)
+        {
+            clientMapIP = overrideIp;
+        }
+        else
+        {
+            ShowWarning("network.MAP_PUBLIC_IP is set but is not a valid IPv4 address; using zone_settings.zoneip for zone change");
+        }
+    }
+
     db::preparedStmt("UPDATE accounts_sessions "
                      "SET server_addr = ?, server_port = ? "
                      "WHERE charid = ?",
-                     ip,
+                     clientMapIP,
                      port,
                      PChar->id);
 
@@ -7323,7 +7341,7 @@ void SendToZone(CCharEntity* PChar, uint16 zoneId)
     PChar->requestedWarp       = false; // a previous warp can get us here, which could infinitely loop. So un-request warp.
 
     PChar->PSession->zone_ipp = {};
-    PChar->pushPacket<GP_SERV_COMMAND_LOGOUT>(GP_GAME_LOGOUT_STATE::ZONECHANGE, IPP(ipp));
+    PChar->pushPacket<GP_SERV_COMMAND_LOGOUT>(GP_GAME_LOGOUT_STATE::ZONECHANGE, IPP(clientMapIP, port));
 
     PChar->status = STATUS_TYPE::DISAPPEAR;
 

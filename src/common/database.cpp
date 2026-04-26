@@ -263,13 +263,15 @@ auto db::detail::timer(const std::string& query) -> xi::final_action<std::functi
             const auto duration = timer::count_milliseconds(end - start);
             if (timersEnabled && settings::get<bool>("logging.SQL_SLOW_QUERY_LOG_ENABLE"))
             {
+                // Duration only: the query still succeeded. Use warning levels so this is not mistaken
+                // for a SQL failure (ShowError is reserved for actual errors elsewhere).
                 if (duration > settings::get<uint32>("logging.SQL_SLOW_QUERY_ERROR_TIME"))
                 {
-                    ShowError(fmt::format("SQL query took {}ms: {}", duration, query));
+                    ShowWarning(fmt::format("SQL very slow query ({}ms): {}", duration, query));
                 }
                 else if (duration > settings::get<uint32>("logging.SQL_SLOW_QUERY_WARNING_TIME"))
                 {
-                    ShowWarning(fmt::format("SQL query took {}ms: {}", duration, query));
+                    ShowWarning(fmt::format("SQL slow query ({}ms): {}", duration, query));
                 }
             }
         });

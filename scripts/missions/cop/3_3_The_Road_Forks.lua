@@ -60,7 +60,9 @@ jewelTimer = function(player)
         local minutesRemaining = secondsRemaining / 60
 
         if minutesRemaining <= nextMessageTime then
-            player:messageSpecial(attohwaChasmID.text.MIMEO_JEWEL_OFFSET + messageOffset - 1, xi.ki.MIMEO_JEWEL)
+            -- MIMEO_JEWEL_OFFSET is the first jewel warning; do not use (messageOffset - 1) or the first tick
+            -- uses ID 7335, which is unrelated text (e.g. skill-up), with 586 mistaken for a skill value.
+            player:messageSpecial(attohwaChasmID.text.MIMEO_JEWEL_OFFSET + messageOffset, xi.ki.MIMEO_JEWEL)
             mission:setLocalVar(player, 'Option', messageOffset + 1)
         end
 
@@ -389,7 +391,8 @@ mission.sections =
             ['Loose_Sand'] =
             {
                 onTrigger = function(player, npc)
-                    if player:checkDistance(npc) < 0.5 then
+                    -- Same interaction range as other ground targets (0.5 yalm was far too strict).
+                    if player:checkDistance(npc) <= 3 then
                         if
                             player:getMissionStatus(mission.areaId, xi.mission.status.COP.WINDURST) == 8
                         then
@@ -420,7 +423,7 @@ mission.sections =
 
             onZoneOut = function(player)
                 if player:hasKeyItem(xi.ki.MIMEO_JEWEL) then
-                    player:messageSpecial(attohwaChasmID.text.MIMEO_JEWEL_OFFSET + 4)
+                    player:messageSpecial(attohwaChasmID.text.MIMEO_JEWEL_OFFSET + 4, xi.ki.MIMEO_JEWEL)
                     player:delKeyItem(xi.ki.MIMEO_JEWEL)
                 end
             end,
