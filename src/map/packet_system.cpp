@@ -255,6 +255,7 @@ void ValidatedPacketHandler(MapSession* const PSession, CCharEntity* const PChar
         }
 
         packet->process(PSession, PChar);
+        PChar->m_LastPacketType = static_cast<uint16>(T::packetId);
     }
     else
     {
