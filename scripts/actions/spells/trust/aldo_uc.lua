@@ -1,7 +1,7 @@
 -----------------------------------
 -- Trust: Aldo UC
 -- THF/NIN
--- Uses: Bully, Sneak Attack
+-- Uses: Sneak Attack
 -- WS: Evisceration, Mercy Stroke
 -----------------------------------
 ---@type TSpellTrust
@@ -43,14 +43,7 @@ spellObject.onMobSpawn = function(mob)
     mob:addMod(xi.mod.DOUBLE_ATTACK, 20)
     mob:addMod(xi.mod.TRIPLE_ATTACK, 10)
 
-    -- THF JAs
-    safeAddGambit(mob,
-        ai.t.TARGET,
-        { ai.c.ALWAYS, 0 },
-        { ai.r.JA, ai.s.SPECIFIC, xi.ja.BULLY },
-        180
-    )
-
+    -- THF JA
     safeAddGambit(mob,
         ai.t.TARGET,
         { ai.c.ALWAYS, 0 },
