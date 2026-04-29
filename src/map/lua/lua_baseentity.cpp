@@ -46,6 +46,7 @@
 #include "instance.h"
 #include "ipc_client.h"
 #include "item_container.h"
+#include "items/exdata.h"
 #include "items.h"
 #include "job_points.h"
 #include "latent_effect_container.h"
@@ -4277,18 +4278,23 @@ bool CLuaBaseEntity::addItem(sol::variadic_args va)
                 if (exdataObj.is<sol::table>())
                 {
                     auto exdataTable = exdataObj.as<sol::table>();
-                    for (const auto& entryPair : exdataTable)
-                    {
-                        uint8 index = entryPair.first.as<uint8>();
-                        uint8 value = entryPair.second.as<uint8>();
 
-                        if (index < CItem::extra_size)
+                    // Typed exdata tables are the preferred script API for augments, trials, and other item metadata.
+                    if (!Exdata::fromTable(PItem, exdataTable))
+                    {
+                        for (const auto& entryPair : exdataTable)
                         {
-                            PItem->m_extra[index] = value;
-                        }
-                        else
-                        {
-                            ShowWarning("AddItem: Trying to write to invalid exdata index: <%i>", index);
+                            uint8 index = entryPair.first.as<uint8>();
+                            uint8 value = entryPair.second.as<uint8>();
+
+                            if (index < CItem::extra_size)
+                            {
+                                PItem->m_extra[index] = value;
+                            }
+                            else
+                            {
+                                ShowWarning("AddItem: Trying to write to invalid exdata index: <%i>", index);
+                            }
                         }
                     }
                 }
@@ -7644,9 +7650,6 @@ void CLuaBaseEntity::addTitle(uint16 titleID)
     }
 
     auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
-
-    PChar->profile.title = titleID;
-    PChar->pushPacket<GP_SERV_COMMAND_CLISTATUS>(PChar);
 
     charutils::addTitle(PChar, titleID);
     charutils::SaveTitles(PChar);

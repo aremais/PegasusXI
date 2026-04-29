@@ -13020,7 +13020,7 @@ INSERT INTO `mob_groups` VALUES (98,7257,188,'Vanguard_Pathfinder',300,0,2563,40
 -- King_Ranperres_Tomb (Zone 190)
 -- ------------------------------------------------------------
 
-INSERT INTO `mob_groups` VALUES (1,1038,190,'Ding_Bats',300,2,655,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (1,1038,190,'Ding_Bats',300,1,655,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (2,656,190,'Carrion_Worm',300,0,428,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (3,1737,190,'Goblin_Thug',300,0,1170,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (4,2763,190,'Mouse_Bat',300,0,386,0,0,0,NULL);
@@ -13039,7 +13039,7 @@ INSERT INTO `mob_groups` VALUES (16,2797,190,'Nachzehrer_war',300,0,1771,0,0,0,N
 INSERT INTO `mob_groups` VALUES (17,5769,190,'Gwyllgi',0,32,3053,1500,0,0,'WOTG');
 INSERT INTO `mob_groups` VALUES (18,3942,190,'Tomb_Bat',300,0,2423,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (19,857,190,'Crypt_Ghost',0,128,544,490,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (20,3152,190,'Plague_Bats',300,2,2002,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (20,3152,190,'Plague_Bats',300,1,2002,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (21,5726,190,'Ankou',3600,0,2989,650,650,0,'WOTG');
 INSERT INTO `mob_groups` VALUES (22,4569,190,'Barbastelle',0,128,2971,550,0,0,'WOTG');
 INSERT INTO `mob_groups` VALUES (23,1690,190,'Goblin_Mugger',300,0,1118,0,0,0,NULL);
