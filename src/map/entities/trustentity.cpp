@@ -43,9 +43,9 @@
 #include "recast_container.h"
 #include "status_effect_container.h"
 #include "utils/battleutils.h"
+#include "utils/charutils.h"
 #include "utils/messageutils.h"
 #include "utils/trustutils.h"
-#include "utils/charutils.h"
 #include <algorithm>
 
 CTrustEntity::CTrustEntity(CCharEntity* PChar)
