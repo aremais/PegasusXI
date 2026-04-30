@@ -261,7 +261,7 @@ uint32 CItem::getCharPrice() const
  *                                                                       *
  ************************************************************************/
 
-const std::string& CItem::getName()
+const std::string& CItem::getName() const
 {
     return m_name;
 }
@@ -277,7 +277,7 @@ void CItem::setName(const std::string& name)
  *                                                                       *
  ************************************************************************/
 
-const std::string& CItem::getSender()
+const std::string& CItem::getSender() const
 {
     return m_send;
 }
@@ -293,7 +293,7 @@ void CItem::setSender(const std::string& sender)
  *                                                                       *
  ************************************************************************/
 
-const std::string& CItem::getReceiver()
+const std::string& CItem::getReceiver() const
 {
     return m_recv;
 }
@@ -309,7 +309,7 @@ void CItem::setReceiver(const std::string& receiver)
  *                                                                       *
  ************************************************************************/
 
-const std::string CItem::getSignature()
+auto CItem::getSignature() const -> const std::string
 {
     return Exdata::decodeSignature(this->exdata<Exdata::AugmentStandard>().Signature);
 }
@@ -320,6 +320,21 @@ void CItem::setSignature(const std::string& signature)
     EncodeStringSignature(signature, encoded);
     std::memset(m_extra + 0x0C, 0, sizeof(m_extra) - 0x0C);
     std::memcpy(m_extra + 0x0C, encoded, sizeof(m_extra) - 0x0C);
+}
+
+auto CItem::state() const -> ItemState
+{
+    return state_;
+}
+
+void CItem::setState(const ItemState newState, xi::Badge<xi::items::detail::ItemAccess>)
+{
+    state_ = newState;
+}
+
+auto CItem::isBusy() const -> bool
+{
+    return state_ != ItemState::Free;
 }
 
 /************************************************************************

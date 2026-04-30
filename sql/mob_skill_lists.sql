@@ -3495,7 +3495,9 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Mnejing',1041,1941); -- String Clip
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Sakura',1042,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Luzaf',1043,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Najelith',1044,0);
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Aldo',1045,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Aldo',1045,16); -- Wasp Sting
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Aldo',1045,23); -- Dancing Edge
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Aldo',1045,25); -- Evisceration
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Moogle',1046,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Fablinix',1047,3261); -- Bomb Toss
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Fablinix',1047,3262); -- Goblin Rush
