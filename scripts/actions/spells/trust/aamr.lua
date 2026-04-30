@@ -4,7 +4,6 @@
 ---@type TSpellTrust
 local spellObject = {}
 
-
 spellObject.onMagicCastingCheck = function(caster, target, spell)
     return xi.trust.canCast(caster, spell)
 end
