@@ -1,6 +1,9 @@
 -----------------------------------
 -- Trust: Mnejing
 -----------------------------------
+require('scripts/globals/trust')
+require('scripts/globals/ai')
+
 ---@type TSpellTrust
 local spellObject = {}
 

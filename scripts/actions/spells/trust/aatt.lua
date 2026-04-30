@@ -17,7 +17,7 @@ spellObject.onMobSpawn = function(mob)
 
     mob:setMobMod(xi.mobMod.SKILL_LIST, 1110)
     mob:setAutoAttackEnabled(true)
-    mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.MID_RANGE)
+    mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.MELEE)
 
     -- Reactive Stun
     mob:addGambit(ai.t.TARGET, { ai.c.READYING_WS, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.STUN })
