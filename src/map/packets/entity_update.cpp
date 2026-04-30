@@ -268,11 +268,8 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
     }
 
     // Equipped/chocobo NPCs use a 20-byte look at 0x30; the short name slot at 0x34 collides with that data.
-    // Long layout (size 0x56, name at 0x44) matches the Fellow spawn path; see ref<uint8>(0x18) below.
-    bool useEquippedNpcLongNameLayout = false;
-    // When true, we intentionally send no 0x00E name (client uses zone DAT). Must also skip ENTITY_SPAWN name
-    // for equipped look—otherwise the block below overwrites 0x34/0x44 with a truncated string.
-    bool omitStaticNpcLabelForPacket = false;
+    // Long layout (name at 0x44) matches the Fellow spawn path; see ref<uint8>(0x18) below.
+    bool useNpcLongNameLayout = false;
 
     auto packet = this->as<GP_SERV_CHAR_NPC>();
 
@@ -318,9 +315,8 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         }
     }
 
-    // Static NPCs (targid < 1024): the 0x00E name field only fits 15 displayable characters (16 bytes; see XiPackets).
-    // Sending a longer polutils_name truncates badly (e.g. "Linkshell Conci"). Omit the name so the client keeps the
-    // full string from zone DAT files, matching retail behavior for unmolested static entities.
+    // Static NPCs (targid < 1024): the standard 0x00E name field only fits 15 displayable characters.
+    // Spawn packets can use the long-name layout; non-spawn updates omit oversized names to avoid truncation.
     if (PEntity->objtype == TYPE_NPC)
     {
         auto* PNpc                 = static_cast<CNpcEntity*>(PEntity);
@@ -328,13 +324,11 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         if (!isTransportLook && !PEntity->isRenamed)
         {
             const std::string& displayName = PNpc->packetName.empty() ? PNpc->getName() : PNpc->packetName;
-            // Cutscene bodies in npc_list use internal name csnpc (or sometimes "blank") with empty polutils_name;
-            // the slot is often targid >= 1024. Omit the label so the client does not show the placeholder over the model.
-            const bool omitCutscenePlaceholder = PNpc->packetName.empty() &&
-                                                (PNpc->getName() == "csnpc" || PNpc->getName() == "blank");
-            if ((PNpc->targid < 1024 && displayName.size() > PacketNameLength - 1) || omitCutscenePlaceholder)
+            // Cutscene bodies in npc_list use internal name csnpc with empty polutils_name; the slot is often
+            // targid >= 1024. Omit the label so the client does not show the developer string over the model.
+            const bool omitCsnpcPlaceholder = (PNpc->getName() == "csnpc" && PNpc->packetName.empty());
+            if ((PNpc->targid < 1024 && displayName.size() > PacketNameLength - 1 && type != ENTITY_SPAWN) || omitCsnpcPlaceholder)
             {
-                omitStaticNpcLabelForPacket = true;
                 updatemask &= static_cast<uint8>(~UPDATE_NAME);
                 ref<uint8>(0x0A) &= static_cast<uint8>(~UPDATE_NAME);
                 // Reused entity-update packets can still carry a previous truncated name at 0x34; clear it so
@@ -392,7 +386,7 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
             }
 
             // TODO: Unify name logic
-            const bool shouldSendNpcName = !omitStaticNpcLabelForPacket && ((updatemask & UPDATE_NAME) || (type == ENTITY_SPAWN && npcIsEquippedLike));
+            const bool shouldSendNpcName = (updatemask & UPDATE_NAME) || (type == ENTITY_SPAWN && npcIsEquippedLike);
             if (shouldSendNpcName)
             {
                 auto name = PNpc->packetName.empty() ? PNpc->getName() : PNpc->packetName;
@@ -401,10 +395,9 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
                     name = getTransportNPCName(PNpc);
                 }
 
-                // db name csnpc / blank with empty polutils: the early omit strips UPDATE_NAME, but ENTITY_SPAWN for
-                // equipped/chocobo look still takes this path and would write the internal name at 0x44 (long layout).
-                if (PNpc->packetName.empty() && !PEntity->isRenamed &&
-                    (PNpc->getName() == "csnpc" || PNpc->getName() == "blank"))
+                // db name "csnpc" with empty polutils: the early omit strips UPDATE_NAME, but ENTITY_SPAWN for
+                // equipped/chocobo look still takes this path and would write "csnpc" at 0x44 (long layout).
+                if (PNpc->getName() == "csnpc" && PNpc->packetName.empty() && !PEntity->isRenamed)
                 {
                     name.clear();
                 }
@@ -417,14 +410,16 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
                     name = "LS Concierge";
                 }
 
-                if (npcIsEquippedLike)
+                const bool staticNpcNeedsLongNameLayout = type == ENTITY_SPAWN && PNpc->targid < 1024 &&
+                                                          name.size() > PacketNameLength - 1 && !PEntity->isRenamed;
+                if (npcIsEquippedLike || staticNpcNeedsLongNameLayout)
                 {
-                    // For equipped/chocobo NPCs, write name through the long-name path so it never collides with look_t bytes.
-                    useEquippedNpcLongNameLayout = true;
-                    this->setSize(0x56);
+                    // Use the long-name path when the short slot is either unavailable or too small for the display name.
+                    useNpcLongNameLayout = true;
+                    this->setSize(0x58);
                     auto start = buffer_.data() + 0x44;
                     std::memset(start, 0U, this->getSize() - 0x44);
-                    std::memcpy(start, name.c_str(), std::min<size_t>(name.size(), PacketNameLength));
+                    std::memcpy(start, name.c_str(), std::min<size_t>(name.size(), this->getSize() - 0x44 - 1));
                 }
                 else
                 {
@@ -556,7 +551,7 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         break;
     }
 
-    if (type == ENTITY_SPAWN && useEquippedNpcLongNameLayout)
+    if (type == ENTITY_SPAWN && useNpcLongNameLayout)
     {
         // Required for FUNC_Packet_Incoming_0x000E to use the long-name / full look layout (same as Fellow spawn).
         ref<uint8>(0x18) = 0x01;

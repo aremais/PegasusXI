@@ -26,7 +26,8 @@
 
 auto GP_CLI_COMMAND_REQSUBMAPNUM::validate(MapSession* PSession, const CCharEntity* PChar) const -> PacketValidationResult
 {
-    // InEvent must not block this packet (see 0x0eb_reqsubmapnum.h). process() is gated on isNpcLocked().
+    // Do not block InEvent: clients send this during zone load while event state may still
+    // be set (e.g. mission handoffs). process() only responds when isNpcLocked().
     return PacketValidator(PChar);
 }
 
