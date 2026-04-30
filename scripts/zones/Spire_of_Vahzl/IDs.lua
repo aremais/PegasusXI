@@ -30,12 +30,13 @@ zones[xi.zone.SPIRE_OF_VAHZL] =
     },
     mob =
     {
-        -- Stock mob_spawn_points.sql (first Pulling the Plug / Desires mobs). Must decode as zone 23 via (mobid >> 12) & 0xFFF.
+        -- Stock mob_spawn_points.sql (zone 23). IDs must match mobid column there; (mobid >> 12) & 0xFFF == 23.
         -- Do not use GetFirstID here: it logs errors when the DB omits these rows (e.g. partial migration), and `or` does not suppress that.
-        -- Never use 16875521 for Agonizer — that id is zone 25 (Lufaise), so battlefield scripts find no mobs in Spire.
-        AGONIZER                 = 16871424,
-        MEMORY_RECEPTACLE_RED    = 16871445,
-        MEMORY_RECEPTACLE_SHIELD = 16871446,
+        -- First Desires-of-Emptiness row is 16871425 (16871424 has no row — battlefield would spawn a broken "NPC" mob).
+        AGONIZER                 = 16871425,
+        -- Pulling the Plug receptacles (first arena): Red then three shields (see Memory_Receptacle_* scripts +10 per area).
+        MEMORY_RECEPTACLE_RED    = 16871446,
+        MEMORY_RECEPTACLE_SHIELD = 16871447,
     },
     npc =
     {

@@ -1322,6 +1322,18 @@ function xi.battlefield.getBattlefieldOptions(player, npc, trade)
     return result
 end
 
+-- True while the player is on CoP 5-3 (Three Paths) Ulmia path at the mission-only BCNM step
+-- for that zone: 7 = Head Wind (Boneyard Gully), 8 = Flames for the Dead (Bearclaw Pinnacle).
+-- Optional BCNMs that share the same entrance must return false from entryRequirement so the
+-- registrar menu lists only the mission instance.
+function xi.battlefield.shouldHideOtherBfDuringCopThreePathsUlmiaMissionBf(player, ulmiaMissionBfStatus)
+    if player:getCurrentMission(xi.mission.log_id.COP) ~= xi.mission.id.cop.THREE_PATHS then
+        return false
+    end
+
+    return player:getMissionStatus(xi.mission.log_id.COP, xi.mission.status.COP.ULMIA) == ulmiaMissionBfStatus
+end
+
 function xi.battlefield.rejectLevelSyncedParty(player, npc)
     for _, member in pairs(player:getAlliance()) do
         if member:hasStatusEffect(xi.effect.LEVEL_SYNC) then

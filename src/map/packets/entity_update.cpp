@@ -270,6 +270,9 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
     // Equipped/chocobo NPCs use a 20-byte look at 0x30; the short name slot at 0x34 collides with that data.
     // Long layout (size 0x56, name at 0x44) matches the Fellow spawn path; see ref<uint8>(0x18) below.
     bool useEquippedNpcLongNameLayout = false;
+    // When true, we intentionally send no 0x00E name (client uses zone DAT). Must also skip ENTITY_SPAWN name
+    // for equipped look—otherwise the block below overwrites 0x34/0x44 with a truncated string.
+    bool omitStaticNpcLabelForPacket = false;
 
     auto packet = this->as<GP_SERV_CHAR_NPC>();
 
@@ -325,11 +328,13 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         if (!isTransportLook && !PEntity->isRenamed)
         {
             const std::string& displayName = PNpc->packetName.empty() ? PNpc->getName() : PNpc->packetName;
-            // Cutscene bodies in npc_list use internal name csnpc with empty polutils_name; the slot is often
-            // targid >= 1024. Omit the label so the client does not show the developer string over the model.
-            const bool omitCsnpcPlaceholder = (PNpc->getName() == "csnpc" && PNpc->packetName.empty());
-            if ((PNpc->targid < 1024 && displayName.size() > PacketNameLength - 1) || omitCsnpcPlaceholder)
+            // Cutscene bodies in npc_list use internal name csnpc (or sometimes "blank") with empty polutils_name;
+            // the slot is often targid >= 1024. Omit the label so the client does not show the placeholder over the model.
+            const bool omitCutscenePlaceholder = PNpc->packetName.empty() &&
+                                                (PNpc->getName() == "csnpc" || PNpc->getName() == "blank");
+            if ((PNpc->targid < 1024 && displayName.size() > PacketNameLength - 1) || omitCutscenePlaceholder)
             {
+                omitStaticNpcLabelForPacket = true;
                 updatemask &= static_cast<uint8>(~UPDATE_NAME);
                 ref<uint8>(0x0A) &= static_cast<uint8>(~UPDATE_NAME);
                 // Reused entity-update packets can still carry a previous truncated name at 0x34; clear it so
@@ -387,7 +392,7 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
             }
 
             // TODO: Unify name logic
-            const bool shouldSendNpcName = (updatemask & UPDATE_NAME) || (type == ENTITY_SPAWN && npcIsEquippedLike);
+            const bool shouldSendNpcName = !omitStaticNpcLabelForPacket && ((updatemask & UPDATE_NAME) || (type == ENTITY_SPAWN && npcIsEquippedLike));
             if (shouldSendNpcName)
             {
                 auto name = PNpc->packetName.empty() ? PNpc->getName() : PNpc->packetName;
@@ -396,9 +401,10 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
                     name = getTransportNPCName(PNpc);
                 }
 
-                // db name "csnpc" with empty polutils: the early omit strips UPDATE_NAME, but ENTITY_SPAWN for
-                // equipped/chocobo look still takes this path and would write "csnpc" at 0x44 (long layout).
-                if (PNpc->getName() == "csnpc" && PNpc->packetName.empty() && !PEntity->isRenamed)
+                // db name csnpc / blank with empty polutils: the early omit strips UPDATE_NAME, but ENTITY_SPAWN for
+                // equipped/chocobo look still takes this path and would write the internal name at 0x44 (long layout).
+                if (PNpc->packetName.empty() && !PEntity->isRenamed &&
+                    (PNpc->getName() == "csnpc" || PNpc->getName() == "blank"))
                 {
                     name.clear();
                 }

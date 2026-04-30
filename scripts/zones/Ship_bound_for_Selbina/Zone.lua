@@ -21,19 +21,21 @@ zoneObject.onZoneIn = function(player, prevZone)
         player:setPos(position, -2.100, 3.250, 64)
     end
 
-    -- Enagakure pop mechanics.
-    local enagakure = GetEntityByID(ID.mob.ENAGAKURE, nil, true)
-    local hour      = VanadielHour()
+    -- Enagakure pop mechanics (nil if Enagakure is missing from mob_spawn_points for this zone).
+    if ID.mob.ENAGAKURE then
+        local enagakure = GetEntityByID(ID.mob.ENAGAKURE, nil, true)
+        local hour      = VanadielHour()
 
-    if
-        enagakure and
-        not enagakure:isSpawned() and
-        VanadielUniqueDay() > enagakure:getLocalVar('despawnDay') and
-        (hour >= 20 or hour < 4) and
-        player:hasKeyItem(xi.ki.SEANCE_STAFF) and
-        player:getCharVar('Enagakure_Killed') == 0
-    then
-        SpawnMob(ID.mob.ENAGAKURE)
+        if
+            enagakure and
+            not enagakure:isSpawned() and
+            VanadielUniqueDay() > enagakure:getLocalVar('despawnDay') and
+            (hour >= 20 or hour < 4) and
+            player:hasKeyItem(xi.ki.SEANCE_STAFF) and
+            player:getCharVar('Enagakure_Killed') == 0
+        then
+            SpawnMob(ID.mob.ENAGAKURE)
+        end
     end
 
     return cs
@@ -53,6 +55,10 @@ zoneObject.onEventFinish = function(player, csid, option, npc)
 end
 
 zoneObject.onGameHour = function(zone)
+    if not ID.mob.ENAGAKURE then
+        return
+    end
+
     -- Enagakure pop mechanics.
     local enagakure = GetEntityByID(ID.mob.ENAGAKURE, nil, true)
     local hour      = VanadielHour()

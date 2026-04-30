@@ -30,7 +30,8 @@ entity.onTrigger = function(player, npc)
             if not rancorDoor then
                 return
             elseif rancorDoor:getAnimation() == xi.anim.OPEN_DOOR then
-                player:messageSpecial(ID.text.PAINTBRUSH_OFFSET + 23, xi.ki.PAINTBRUSH_OF_SOULS) -- The <KEY_ITEM> begins to twitch. The canvas is graced with the image from your soul.
+                -- param0=0: client expects a slot for key item name; omitting it yields "The  begins to twitch"
+                player:messageSpecial(ID.text.PAINTBRUSH_OFFSET + 23, 0, xi.ki.PAINTBRUSH_OF_SOULS) -- The <KEY_ITEM> begins to twitch. The canvas is graced with the image from your soul.
             elseif
                 player:hasKeyItem(xi.ki.PAINTBRUSH_OF_SOULS) and
                 xPos >= -53.2 and
