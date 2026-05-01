@@ -4365,16 +4365,16 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,134,75,255); -- shell
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,205,75,255); -- flare_ii (75~255)
 
 -- Mnejing Trust Spell List (1041)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,1,1,255);   -- Cure
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,2,1,255);   -- Cure II
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,3,1,255);   -- Cure III
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,4,1,255);   -- Cure IV
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,46,1,255);  -- Protect IV
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,51,1,255);  -- Shell IV
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,54,1,255);  -- Stoneskin
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,106,1,255); -- Phalanx
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,112,1,255); -- Flash
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,477,1,255); -- Regen IV
+INSERT INTO `mob_spell_lists` VALUES (1041,1,1,255);   -- Cure
+INSERT INTO `mob_spell_lists` VALUES (1041,2,1,255);   -- Cure II
+INSERT INTO `mob_spell_lists` VALUES (1041,3,1,255);   -- Cure III
+INSERT INTO `mob_spell_lists` VALUES (1041,4,1,255);   -- Cure IV
+INSERT INTO `mob_spell_lists` VALUES (1041,46,1,255);  -- Protect IV
+INSERT INTO `mob_spell_lists` VALUES (1041,51,1,255);  -- Shell IV
+INSERT INTO `mob_spell_lists` VALUES (1041,54,1,255);  -- Stoneskin
+INSERT INTO `mob_spell_lists` VALUES (1041,106,1,255); -- Phalanx
+INSERT INTO `mob_spell_lists` VALUES (1041,112,1,255); -- Flash
+INSERT INTO `mob_spell_lists` VALUES (1041,477,1,255); -- Regen IV
 
 -- TRUST_Shantotto_II (428)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Shantotto_II',428,144,9,255);  -- fire (9~255)
