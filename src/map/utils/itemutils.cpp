@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -26,6 +26,7 @@
 #include <algorithm>
 #include <array>
 #include <cstring>
+#include <string>
 #include <map>
 #include <unordered_map>
 
@@ -250,27 +251,38 @@ void LoadItemList()
         }
     };
 
-    auto rset = db::preparedStmt("SELECT "
-                                 "b.itemId,b.name,b.sortname,b.name_jp,b.type,b.stackSize,b.flags,"
-                                 "b.aH,b.BaseSell,b.subid,"
-                                 "u.validTargets,u.activation,u.animation,u.animationTime,"
-                                 "u.maxCharges,u.useDelay,u.reuseDelay,u.aoe,"
-                                 "a.level,a.ilevel,a.jobs,a.MId,"
-                                 "a.shieldSize,a.scriptType,a.slot,a.rslot,"
-                                 "a.su_level,a.rslotlook,"
-                                 "w.skill,w.subskill,w.ilvl_skill,w.ilvl_parry,"
-                                 "w.ilvl_macc,w.delay,w.dmg,w.dmgType,"
-                                 "w.hit,w.unlock_points,"
-                                 "f.storage,f.moghancement,f.element,f.aura,f.placement AS furn_placement,f.size_x,f.size_y,f.height AS furn_height,"
-                                 "p.slot AS pup_slot,p.element AS pup_element "
-                                 "FROM item_basic AS b "
-                                 "LEFT JOIN item_usable AS u USING (itemId) "
-                                 "LEFT JOIN item_equipment  AS a USING (itemId) "
-                                 "LEFT JOIN item_weapon AS w USING (itemId) "
-                                 "LEFT JOIN item_furnishing AS f USING (itemId) "
-                                 "LEFT JOIN item_puppet AS p USING (itemId) "
-                                 "WHERE itemId < ?",
-                                 MAX_ITEMID);
+    const auto itemBasicColumns = db::getTableColumnNames("item_basic");
+    const bool haveNameJpCol    = std::find(itemBasicColumns.begin(), itemBasicColumns.end(), "name_jp") != itemBasicColumns.end();
+    if (!haveNameJpCol)
+    {
+        ShowWarning("item_basic is missing name_jp; using empty strings for item JP names. Apply migration tools/migrations/051_item_basic_name_jp.py to restore the column and optional Japanese data.");
+    }
+
+    const std::string nameJpSelect = haveNameJpCol
+                                       ? "b.name_jp"
+                                       : "CAST('' AS CHAR(255) CHARACTER SET utf8mb4) AS name_jp";
+    const auto        query        = fmt::format("SELECT "
+                                          "b.itemId,b.name,b.sortname,{},b.type,b.stackSize,b.flags,"
+                                          "b.aH,b.BaseSell,b.subid,"
+                                          "u.validTargets,u.activation,u.animation,u.animationTime,"
+                                          "u.maxCharges,u.useDelay,u.reuseDelay,u.aoe,"
+                                          "a.level,a.ilevel,a.jobs,a.MId,"
+                                          "a.shieldSize,a.scriptType,a.slot,a.rslot,"
+                                          "a.su_level,a.rslotlook,"
+                                          "w.skill,w.subskill,w.ilvl_skill,w.ilvl_parry,"
+                                          "w.ilvl_macc,w.delay,w.dmg,w.dmgType,"
+                                          "w.hit,w.unlock_points,"
+                                          "f.storage,f.moghancement,f.element,f.aura,f.placement AS furn_placement,f.size_x,f.size_y,f.height AS furn_height,"
+                                          "p.slot AS pup_slot,p.element AS pup_element "
+                                          "FROM item_basic AS b "
+                                          "LEFT JOIN item_usable AS u USING (itemId) "
+                                          "LEFT JOIN item_equipment  AS a USING (itemId) "
+                                          "LEFT JOIN item_weapon AS w USING (itemId) "
+                                          "LEFT JOIN item_furnishing AS f USING (itemId) "
+                                          "LEFT JOIN item_puppet AS p USING (itemId) "
+                                          "WHERE itemId < ?",
+                                          nameJpSelect);
+    auto rset = db::preparedStmt(query, MAX_ITEMID);
     FOR_DB_MULTIPLE_RESULTS(rset)
     {
         auto   tplOwn = buildFromType(rset->get<uint16>("itemId"), rset->get<ItemType>("type"));

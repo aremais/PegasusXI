@@ -262,26 +262,26 @@ void ValidatedPacketHandler(MapSession* const PSession, CCharEntity* const PChar
         const uint16 packetType = data.ref<uint16>(0) & 0x1FF;
         const auto   error      = result.errorString();
 
-<<<<<<< Updated upstream
         // Duplicate 0x00A after successful zone/login can happen on client retry.
         // Keep validation strict, but avoid warning spam for this known benign case.
         if (packetType == 0x00A && error == "Player already logged in.")
         {
             ShowDebugFmt("Invalid 0x{:03X} packet from {}: {}", packetType, PChar->name, error);
         }
+        // Client can resend 0x050 (equip) frequently during events/cutscenes; we still reject it.
+        else if (packetType == 0x050 && error == "Invalid state: InEvent")
+        {
+            ShowDebugFmt("Invalid 0x{:03X} packet from {}: {}", packetType, PChar->name, error);
+        }
+        // 0x0E1 (GET LS message) is sent opportunistically; ignore during event without warning spam.
+        else if (packetType == 0x0E1 && error == "Invalid state: InEvent")
+        {
+            ShowDebugFmt("Invalid 0x{:03X} packet from {}: {}", packetType, PChar->name, error);
+        }
         else
         {
             ShowWarningFmt("Invalid 0x{:03X} packet from {}: {}", packetType, PChar->name, error);
-=======
-        // Duplicate 0x00A after successful zone/login is common (client retry during zoning / cutscene).
-        // Validation correctly rejects it; logging would flood the console at any log level.
-        if (packetName == "GP_CLI_COMMAND_LOGIN" && error == "Player already logged in.")
-        {
-            return;
->>>>>>> Stashed changes
         }
-
-        ShowWarningFmt("Invalid {} packet from {}: {}", packetName, PChar->name, error);
     }
 }
 
