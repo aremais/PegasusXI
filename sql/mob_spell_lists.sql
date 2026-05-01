@@ -4365,16 +4365,16 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,134,75,255); -- shell
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,205,75,255); -- flare_ii (75~255)
 
 -- Mnejing Trust Spell List (1041)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,1,1,255);   -- Cure
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,2,1,255);   -- Cure II
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,3,1,255);   -- Cure III
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,4,1,255);   -- Cure IV
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,46,1,255);  -- Protect IV
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,51,1,255);  -- Shell IV
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,54,1,255);  -- Stoneskin
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,106,1,255); -- Phalanx
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,112,1,255); -- Flash
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Mnejing',1041,477,1,255); -- Regen IV
+INSERT INTO `mob_spell_lists` VALUES (1041,1,1,255);   -- Cure
+INSERT INTO `mob_spell_lists` VALUES (1041,2,1,255);   -- Cure II
+INSERT INTO `mob_spell_lists` VALUES (1041,3,1,255);   -- Cure III
+INSERT INTO `mob_spell_lists` VALUES (1041,4,1,255);   -- Cure IV
+INSERT INTO `mob_spell_lists` VALUES (1041,46,1,255);  -- Protect IV
+INSERT INTO `mob_spell_lists` VALUES (1041,51,1,255);  -- Shell IV
+INSERT INTO `mob_spell_lists` VALUES (1041,54,1,255);  -- Stoneskin
+INSERT INTO `mob_spell_lists` VALUES (1041,106,1,255); -- Phalanx
+INSERT INTO `mob_spell_lists` VALUES (1041,112,1,255); -- Flash
+INSERT INTO `mob_spell_lists` VALUES (1041,477,1,255); -- Regen IV
 
 -- TRUST_Shantotto_II (428)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Shantotto_II',428,144,9,255);  -- fire (9~255)
@@ -5788,6 +5788,18 @@ INSERT INTO `mob_spell_lists` VALUES ('Chemical_Cook_Chemachiq',565,112,1,255); 
 -- Next Available: 566
 
 /*!40000 ALTER TABLE `mob_spell_lists` ENABLE KEYS */;
+-- TRUST_ALDO_UC Ninjutsu
+INSERT INTO `mob_spell_lists` VALUES (1122, 320, 1, 99); -- Katon: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 323, 1, 99); -- Hyoton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 326, 1, 99); -- Huton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 329, 1, 99); -- Doton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 332, 1, 99); -- Raiton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 335, 1, 99); -- Suiton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 338, 1, 99); -- Utsusemi: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 341, 1, 99); -- Jubaku: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 344, 1, 99); -- Hojo: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 347, 1, 99); -- Kurayami: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 350, 1, 99); -- Dokumori: Ichi
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
