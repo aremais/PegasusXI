@@ -5788,17 +5788,50 @@ INSERT INTO `mob_spell_lists` VALUES ('Chemical_Cook_Chemachiq',565,112,1,255); 
 -- Next Available: 566
 
 /*!40000 ALTER TABLE `mob_spell_lists` ENABLE KEYS */;
+-- Aldo Ninjutsu
+INSERT INTO `mob_spell_lists` VALUES (1045, 320, 1, 99); -- Katon: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1045, 321, 1, 99); -- Katon: Ni
+INSERT INTO `mob_spell_lists` VALUES (1045, 323, 1, 99); -- Hyoton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1045, 324, 1, 99); -- Hyoton: Ni
+INSERT INTO `mob_spell_lists` VALUES (1045, 326, 1, 99); -- Huton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1045, 327, 1, 99); -- Huton: Ni
+INSERT INTO `mob_spell_lists` VALUES (1045, 329, 1, 99); -- Doton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1045, 330, 1, 99); -- Doton: Ni
+INSERT INTO `mob_spell_lists` VALUES (1045, 332, 1, 99); -- Raiton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1045, 333, 1, 99); -- Raiton: Ni
+INSERT INTO `mob_spell_lists` VALUES (1045, 335, 1, 99); -- Suiton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1045, 336, 1, 99); -- Suiton: Ni
+INSERT INTO `mob_spell_lists` VALUES (1045, 338, 1, 99); -- Utsusemi: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1045, 339, 1, 99); -- Utsusemi: Ni
+INSERT INTO `mob_spell_lists` VALUES (1045, 341, 1, 99); -- Jubaku: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1045, 342, 1, 99); -- Jubaku: Ni
+INSERT INTO `mob_spell_lists` VALUES (1045, 344, 1, 99); -- Hojo: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1045, 345, 1, 99); -- Hojo: Ni
+INSERT INTO `mob_spell_lists` VALUES (1045, 347, 1, 99); -- Kurayami: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1045, 348, 1, 99); -- Kurayami: Ni
+INSERT INTO `mob_spell_lists` VALUES (1045, 350, 1, 99); -- Dokumori: Ichi
+
 -- TRUST_ALDO_UC Ninjutsu
 INSERT INTO `mob_spell_lists` VALUES (1122, 320, 1, 99); -- Katon: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 321, 1, 99); -- Katon: Ni
 INSERT INTO `mob_spell_lists` VALUES (1122, 323, 1, 99); -- Hyoton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 324, 1, 99); -- Hyoton: Ni
 INSERT INTO `mob_spell_lists` VALUES (1122, 326, 1, 99); -- Huton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 327, 1, 99); -- Huton: Ni
 INSERT INTO `mob_spell_lists` VALUES (1122, 329, 1, 99); -- Doton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 330, 1, 99); -- Doton: Ni
 INSERT INTO `mob_spell_lists` VALUES (1122, 332, 1, 99); -- Raiton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 333, 1, 99); -- Raiton: Ni
 INSERT INTO `mob_spell_lists` VALUES (1122, 335, 1, 99); -- Suiton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 336, 1, 99); -- Suiton: Ni
 INSERT INTO `mob_spell_lists` VALUES (1122, 338, 1, 99); -- Utsusemi: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 339, 1, 99); -- Utsusemi: Ni
 INSERT INTO `mob_spell_lists` VALUES (1122, 341, 1, 99); -- Jubaku: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 342, 1, 99); -- Jubaku: Ni
 INSERT INTO `mob_spell_lists` VALUES (1122, 344, 1, 99); -- Hojo: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 345, 1, 99); -- Hojo: Ni
 INSERT INTO `mob_spell_lists` VALUES (1122, 347, 1, 99); -- Kurayami: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 348, 1, 99); -- Kurayami: Ni
 INSERT INTO `mob_spell_lists` VALUES (1122, 350, 1, 99); -- Dokumori: Ichi
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
