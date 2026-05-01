@@ -632,6 +632,31 @@ describe('Exdata', function()
         assert(ex.augments[1].id == 1)
     end)
 
+    it('can add an item with AugmentTrial exdata', function()
+        assert(player:addItem({
+            id     = xi.item.BRONZE_SWORD,
+            exdata =
+            {
+                augmentKind    = xi.augment.kind.HAS_AUGMENTS,
+                augmentSubKind = xi.augment.subKind.STANDARD + xi.augment.subKind.TRIAL,
+                augments       =
+                {
+                    { id = 1, value = 4 },
+                },
+                trial = { id = 100, completed = false },
+            },
+        }))
+
+        local item = player:findItem(xi.item.BRONZE_SWORD)
+        assert(item)
+
+        local ex = item:getExData()
+        assert(ex.trial.id == 100)
+        assert(ex.trial.completed == false)
+        assert(ex.augments[1].id == 1)
+        assert(ex.augments[1].value == 4)
+    end)
+
     it('can get and set AugmentBundle exdata', function()
         local item = player:addItem({ id = xi.item.BRONZE_SWORD, quantity = 1 })
         assert(item)

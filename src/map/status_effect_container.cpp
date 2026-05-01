@@ -1592,7 +1592,7 @@ auto CStatusEffectContainer::SetEffectParams(CStatusEffect* StatusEffect) -> voi
     {
         if (effectSourceType == EffectSourceType::SOURCE_EQUIPPED_ITEM)
         {
-            auto PItem = itemutils::GetItemPointer(effectSourceTypeParam);
+            auto PItem = xi::items::lookup(effectSourceTypeParam);
             if (PItem != nullptr)
             {
                 // get the item lua script and check if it has valid functions
@@ -1613,7 +1613,7 @@ auto CStatusEffectContainer::SetEffectParams(CStatusEffect* StatusEffect) -> voi
         }
         else if (effectSourceType == EffectSourceType::SOURCE_FOOD)
         {
-            auto PItem = itemutils::GetItemPointer(StatusEffect->GetSourceTypeParam());
+            auto PItem = xi::items::lookup(StatusEffect->GetSourceTypeParam());
             if (PItem != nullptr)
             {
                 // get the item lua script and check if it has valid functions
@@ -1650,7 +1650,7 @@ auto CStatusEffectContainer::SetEffectParams(CStatusEffect* StatusEffect) -> voi
     // Known use cases: Enchantments without an effect source.
     else
     {
-        CItem* Ptem = itemutils::GetItemPointer(subType);
+        const CItem* Ptem = xi::items::lookup(subType);
         if (Ptem != nullptr && subType > 0)
         {
             name.insert(0, "items/");
