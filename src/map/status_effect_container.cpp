@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -1570,7 +1570,10 @@ auto CStatusEffectContainer::SetEffectParams(CStatusEffect* StatusEffect) -> voi
 
     auto subType = StatusEffect->GetSubID();
 
-    if (StatusEffect->GetStatusID() == EFFECT_NONE && subType == 0)
+    // EFFECT_NONE + sub 0 is invalid unless a custom icon disambiguates (e.g. GM immortal uses
+    // id NONE with icon TRANSCENDENCY). When icon matches id (default) and there is no sub, bail.
+    if (StatusEffect->GetStatusID() == EFFECT_NONE && subType == 0 &&
+        StatusEffect->GetIcon() == StatusEffect->GetStatusID())
     {
         ShowWarning("None-type Effect has SubID of 0");
         return;

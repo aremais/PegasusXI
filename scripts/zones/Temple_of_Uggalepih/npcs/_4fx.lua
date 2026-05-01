@@ -11,7 +11,7 @@ local entity = {}
 entity.onTrade = function(player, npc, trade)
     if
         npcUtil.tradeHasExactly(trade, xi.item.CURSED_KEY) and
-        player:getZPos() < 332
+        player:getZPos() < 333
     then
         -- Cursed Key
         player:confirmTrade()
@@ -23,7 +23,7 @@ entity.onTrade = function(player, npc, trade)
 end
 
 entity.onTrigger = function(player, npc)
-    if player:getZPos() < 332 then
+    if player:getZPos() < 333 then
         player:messageSpecial(ID.text.DOOR_LOCKED)
     else
         player:startEvent(26)

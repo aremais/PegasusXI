@@ -41,6 +41,10 @@ function content:checkRequirements(player, npc, isRegistrant, trade)
         return false
     end
 
+    if xi.battlefield.shouldHideOtherBfDuringCopThreePathsUlmiaMissionBf(player, 7) then
+        return false
+    end
+
     return player:hasKeyItem(xi.keyItem.LETTER_FROM_SHIKAREE_Y) or
         player:hasKeyItem(xi.keyItem.LETTER_FROM_THE_MITHRAN_TRACKERS)
 end

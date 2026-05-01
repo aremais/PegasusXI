@@ -19,6 +19,14 @@ local wohGatesID            = zones[xi.zone.WOH_GATES]
 local yahseHuntingGroundsID = zones[xi.zone.YAHSE_HUNTING_GROUNDS]
 local yorciaWealdID         = zones[xi.zone.YORCIA_WEALD]
 
+-- nil-safe: GetFirstID is nil if mob_spawn_points / npc_list rows are missing.
+local function reiveMobBase(z)
+    return (z and z.mob and z.mob.REIVE_MOB_OFFSET) or 0
+end
+local function reiveNpcCol(z)
+    return (z and z.npc and z.npc.REIVE_COLLISION_OFFSET) or 0
+end
+
 --Zone Data
 xi.reives.zoneData =
 {
@@ -33,21 +41,21 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 3,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 4,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 5,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 6,
+                    reiveMobBase(ceizakBattlegroundsID) + 3,
+                    reiveMobBase(ceizakBattlegroundsID) + 4,
+                    reiveMobBase(ceizakBattlegroundsID) + 5,
+                    reiveMobBase(ceizakBattlegroundsID) + 6,
                 },
                 obstacles =
                 {
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 1,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 2,
+                    reiveMobBase(ceizakBattlegroundsID),
+                    reiveMobBase(ceizakBattlegroundsID) + 1,
+                    reiveMobBase(ceizakBattlegroundsID) + 2,
                 },
                 collision =
                 {
-                    ceizakBattlegroundsID.npc.REIVE_COLLISION_OFFSET,
-                    ceizakBattlegroundsID.npc.REIVE_COLLISION_OFFSET + 1,
+                    reiveNpcCol(ceizakBattlegroundsID),
+                    reiveNpcCol(ceizakBattlegroundsID) + 1,
                 },
             },
 
@@ -56,23 +64,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 19,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 20,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 21,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 22,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 23,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 24,
+                    reiveMobBase(ceizakBattlegroundsID) + 19,
+                    reiveMobBase(ceizakBattlegroundsID) + 20,
+                    reiveMobBase(ceizakBattlegroundsID) + 21,
+                    reiveMobBase(ceizakBattlegroundsID) + 22,
+                    reiveMobBase(ceizakBattlegroundsID) + 23,
+                    reiveMobBase(ceizakBattlegroundsID) + 24,
                 },
                 obstacles =
                 {
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 16,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 17,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 18,
+                    reiveMobBase(ceizakBattlegroundsID) + 16,
+                    reiveMobBase(ceizakBattlegroundsID) + 17,
+                    reiveMobBase(ceizakBattlegroundsID) + 18,
                 },
                 collision =
                 {
-                    ceizakBattlegroundsID.npc.REIVE_COLLISION_OFFSET + 2,
-                    ceizakBattlegroundsID.npc.REIVE_COLLISION_OFFSET + 3,
+                    reiveNpcCol(ceizakBattlegroundsID) + 2,
+                    reiveNpcCol(ceizakBattlegroundsID) + 3,
                 },
             },
 
@@ -81,23 +89,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 10,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 11,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 12,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 13,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 14,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 15,
+                    reiveMobBase(ceizakBattlegroundsID) + 10,
+                    reiveMobBase(ceizakBattlegroundsID) + 11,
+                    reiveMobBase(ceizakBattlegroundsID) + 12,
+                    reiveMobBase(ceizakBattlegroundsID) + 13,
+                    reiveMobBase(ceizakBattlegroundsID) + 14,
+                    reiveMobBase(ceizakBattlegroundsID) + 15,
                 },
                 obstacles =
                 {
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 7,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 8,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 9,
+                    reiveMobBase(ceizakBattlegroundsID) + 7,
+                    reiveMobBase(ceizakBattlegroundsID) + 8,
+                    reiveMobBase(ceizakBattlegroundsID) + 9,
                 },
                 collision =
                 {
-                    ceizakBattlegroundsID.npc.REIVE_COLLISION_OFFSET + 4,
-                    ceizakBattlegroundsID.npc.REIVE_COLLISION_OFFSET + 5,
+                    reiveNpcCol(ceizakBattlegroundsID) + 4,
+                    reiveNpcCol(ceizakBattlegroundsID) + 5,
                 },
             },
 
@@ -106,23 +114,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 28,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 29,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 30,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 31,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 32,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 33,
+                    reiveMobBase(ceizakBattlegroundsID) + 28,
+                    reiveMobBase(ceizakBattlegroundsID) + 29,
+                    reiveMobBase(ceizakBattlegroundsID) + 30,
+                    reiveMobBase(ceizakBattlegroundsID) + 31,
+                    reiveMobBase(ceizakBattlegroundsID) + 32,
+                    reiveMobBase(ceizakBattlegroundsID) + 33,
                 },
                 obstacles =
                 {
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 25,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 26,
-                    ceizakBattlegroundsID.mob.REIVE_MOB_OFFSET + 27,
+                    reiveMobBase(ceizakBattlegroundsID) + 25,
+                    reiveMobBase(ceizakBattlegroundsID) + 26,
+                    reiveMobBase(ceizakBattlegroundsID) + 27,
                 },
                 collision =
                 {
-                    ceizakBattlegroundsID.npc.REIVE_COLLISION_OFFSET + 6,
-                    ceizakBattlegroundsID.npc.REIVE_COLLISION_OFFSET + 7,
+                    reiveNpcCol(ceizakBattlegroundsID) + 6,
+                    reiveNpcCol(ceizakBattlegroundsID) + 7,
                 },
             },
         },
@@ -140,20 +148,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 2,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 3,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 4,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 5,
+                    reiveMobBase(cirdasCavernsID) + 2,
+                    reiveMobBase(cirdasCavernsID) + 3,
+                    reiveMobBase(cirdasCavernsID) + 4,
+                    reiveMobBase(cirdasCavernsID) + 5,
                 },
                 obstacles =
                 {
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 1,
+                    reiveMobBase(cirdasCavernsID),
+                    reiveMobBase(cirdasCavernsID) + 1,
                 },
                 collision =
                 {
-                    cirdasCavernsID.npc.REIVE_COLLISION_OFFSET + 12,
-                    cirdasCavernsID.npc.REIVE_COLLISION_OFFSET + 13,
+                    reiveNpcCol(cirdasCavernsID) + 12,
+                    reiveNpcCol(cirdasCavernsID) + 13,
                 },
             },
 
@@ -162,20 +170,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 8,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 9,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 10,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 11,
+                    reiveMobBase(cirdasCavernsID) + 8,
+                    reiveMobBase(cirdasCavernsID) + 9,
+                    reiveMobBase(cirdasCavernsID) + 10,
+                    reiveMobBase(cirdasCavernsID) + 11,
                 },
                 obstacles =
                 {
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 6,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 7,
+                    reiveMobBase(cirdasCavernsID) + 6,
+                    reiveMobBase(cirdasCavernsID) + 7,
                 },
                 collision =
                 {
-                    cirdasCavernsID.npc.REIVE_COLLISION_OFFSET,
-                    cirdasCavernsID.npc.REIVE_COLLISION_OFFSET + 1,
+                    reiveNpcCol(cirdasCavernsID),
+                    reiveNpcCol(cirdasCavernsID) + 1,
                 },
             },
 
@@ -184,20 +192,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 14,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 15,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 16,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 17,
+                    reiveMobBase(cirdasCavernsID) + 14,
+                    reiveMobBase(cirdasCavernsID) + 15,
+                    reiveMobBase(cirdasCavernsID) + 16,
+                    reiveMobBase(cirdasCavernsID) + 17,
                 },
                 obstacles =
                 {
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 12,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 13,
+                    reiveMobBase(cirdasCavernsID) + 12,
+                    reiveMobBase(cirdasCavernsID) + 13,
                 },
                 collision =
                 {
-                    cirdasCavernsID.npc.REIVE_COLLISION_OFFSET + 8,
-                    cirdasCavernsID.npc.REIVE_COLLISION_OFFSET + 9,
+                    reiveNpcCol(cirdasCavernsID) + 8,
+                    reiveNpcCol(cirdasCavernsID) + 9,
                 },
             },
 
@@ -206,20 +214,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 20,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 21,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 22,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 23,
+                    reiveMobBase(cirdasCavernsID) + 20,
+                    reiveMobBase(cirdasCavernsID) + 21,
+                    reiveMobBase(cirdasCavernsID) + 22,
+                    reiveMobBase(cirdasCavernsID) + 23,
                 },
                 obstacles =
                 {
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 18,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 19,
+                    reiveMobBase(cirdasCavernsID) + 18,
+                    reiveMobBase(cirdasCavernsID) + 19,
                 },
                 collision =
                 {
-                    cirdasCavernsID.npc.REIVE_COLLISION_OFFSET + 10,
-                    cirdasCavernsID.npc.REIVE_COLLISION_OFFSET + 11,
+                    reiveNpcCol(cirdasCavernsID) + 10,
+                    reiveNpcCol(cirdasCavernsID) + 11,
                 },
             },
 
@@ -228,20 +236,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 26,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 27,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 28,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 29,
+                    reiveMobBase(cirdasCavernsID) + 26,
+                    reiveMobBase(cirdasCavernsID) + 27,
+                    reiveMobBase(cirdasCavernsID) + 28,
+                    reiveMobBase(cirdasCavernsID) + 29,
                 },
                 obstacles =
                 {
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 24,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 25,
+                    reiveMobBase(cirdasCavernsID) + 24,
+                    reiveMobBase(cirdasCavernsID) + 25,
                 },
                 collision =
                 {
-                    cirdasCavernsID.npc.REIVE_COLLISION_OFFSET + 4,
-                    cirdasCavernsID.npc.REIVE_COLLISION_OFFSET + 5,
+                    reiveNpcCol(cirdasCavernsID) + 4,
+                    reiveNpcCol(cirdasCavernsID) + 5,
                 },
             },
 
@@ -250,20 +258,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 32,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 33,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 34,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 35,
+                    reiveMobBase(cirdasCavernsID) + 32,
+                    reiveMobBase(cirdasCavernsID) + 33,
+                    reiveMobBase(cirdasCavernsID) + 34,
+                    reiveMobBase(cirdasCavernsID) + 35,
                 },
                 obstacles =
                 {
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 30,
-                    cirdasCavernsID.mob.REIVE_MOB_OFFSET + 31,
+                    reiveMobBase(cirdasCavernsID) + 30,
+                    reiveMobBase(cirdasCavernsID) + 31,
                 },
                 collision =
                 {
-                    cirdasCavernsID.npc.REIVE_COLLISION_OFFSET + 2,
-                    cirdasCavernsID.npc.REIVE_COLLISION_OFFSET + 3,
+                    reiveNpcCol(cirdasCavernsID) + 2,
+                    reiveNpcCol(cirdasCavernsID) + 3,
                 },
             },
         },
@@ -280,20 +288,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    dhoGatesID.mob.REIVE_MOB_OFFSET + 2,
-                    dhoGatesID.mob.REIVE_MOB_OFFSET + 3,
-                    dhoGatesID.mob.REIVE_MOB_OFFSET + 4,
-                    dhoGatesID.mob.REIVE_MOB_OFFSET + 5,
+                    reiveMobBase(dhoGatesID) + 2,
+                    reiveMobBase(dhoGatesID) + 3,
+                    reiveMobBase(dhoGatesID) + 4,
+                    reiveMobBase(dhoGatesID) + 5,
                 },
                 obstacles =
                 {
-                    dhoGatesID.mob.REIVE_MOB_OFFSET,
-                    dhoGatesID.mob.REIVE_MOB_OFFSET + 1,
+                    reiveMobBase(dhoGatesID),
+                    reiveMobBase(dhoGatesID) + 1,
                 },
                 collision =
                 {
-                    dhoGatesID.npc.REIVE_COLLISION_OFFSET,
-                    dhoGatesID.npc.REIVE_COLLISION_OFFSET + 1,
+                    reiveNpcCol(dhoGatesID),
+                    reiveNpcCol(dhoGatesID) + 1,
                 },
             },
 
@@ -302,20 +310,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    dhoGatesID.mob.REIVE_MOB_OFFSET + 8,
-                    dhoGatesID.mob.REIVE_MOB_OFFSET + 9,
-                    dhoGatesID.mob.REIVE_MOB_OFFSET + 10,
-                    dhoGatesID.mob.REIVE_MOB_OFFSET + 11,
+                    reiveMobBase(dhoGatesID) + 8,
+                    reiveMobBase(dhoGatesID) + 9,
+                    reiveMobBase(dhoGatesID) + 10,
+                    reiveMobBase(dhoGatesID) + 11,
                 },
                 obstacles =
                 {
-                    dhoGatesID.mob.REIVE_MOB_OFFSET + 6,
-                    dhoGatesID.mob.REIVE_MOB_OFFSET + 7,
+                    reiveMobBase(dhoGatesID) + 6,
+                    reiveMobBase(dhoGatesID) + 7,
                 },
                 collision =
                 {
-                    dhoGatesID.npc.REIVE_COLLISION_OFFSET + 2,
-                    dhoGatesID.npc.REIVE_COLLISION_OFFSET + 3,
+                    reiveNpcCol(dhoGatesID) + 2,
+                    reiveNpcCol(dhoGatesID) + 3,
                 },
             },
         },
@@ -332,18 +340,18 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 1,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 2,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 3,
+                    reiveMobBase(foretDeHennetielID) + 1,
+                    reiveMobBase(foretDeHennetielID) + 2,
+                    reiveMobBase(foretDeHennetielID) + 3,
                 },
                 obstacles =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET,
+                    reiveMobBase(foretDeHennetielID),
                 },
                 collision =
                 {
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 10,
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 11,
+                    reiveNpcCol(foretDeHennetielID) + 10,
+                    reiveNpcCol(foretDeHennetielID) + 11,
                 },
             },
             -- !pos 136.5 -2.1 258 262
@@ -351,18 +359,18 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 5,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 6,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 7,
+                    reiveMobBase(foretDeHennetielID) + 5,
+                    reiveMobBase(foretDeHennetielID) + 6,
+                    reiveMobBase(foretDeHennetielID) + 7,
                 },
                 obstacles =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 4,
+                    reiveMobBase(foretDeHennetielID) + 4,
                 },
                 collision =
                 {
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 8,
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 9,
+                    reiveNpcCol(foretDeHennetielID) + 8,
+                    reiveNpcCol(foretDeHennetielID) + 9,
                 },
             },
 
@@ -371,18 +379,18 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 9,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 10,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 11,
+                    reiveMobBase(foretDeHennetielID) + 9,
+                    reiveMobBase(foretDeHennetielID) + 10,
+                    reiveMobBase(foretDeHennetielID) + 11,
                 },
                 obstacles =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 8,
+                    reiveMobBase(foretDeHennetielID) + 8,
                 },
                 collision =
                 {
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 6,
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 7,
+                    reiveNpcCol(foretDeHennetielID) + 6,
+                    reiveNpcCol(foretDeHennetielID) + 7,
                 },
             },
 
@@ -391,18 +399,18 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 13,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 14,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 15,
+                    reiveMobBase(foretDeHennetielID) + 13,
+                    reiveMobBase(foretDeHennetielID) + 14,
+                    reiveMobBase(foretDeHennetielID) + 15,
                 },
                 obstacles =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 12,
+                    reiveMobBase(foretDeHennetielID) + 12,
                 },
                 collision =
                 {
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 4,
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 5,
+                    reiveNpcCol(foretDeHennetielID) + 4,
+                    reiveNpcCol(foretDeHennetielID) + 5,
                 },
             },
 
@@ -411,18 +419,18 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 17,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 18,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 19,
+                    reiveMobBase(foretDeHennetielID) + 17,
+                    reiveMobBase(foretDeHennetielID) + 18,
+                    reiveMobBase(foretDeHennetielID) + 19,
                 },
                 obstacles =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 16,
+                    reiveMobBase(foretDeHennetielID) + 16,
                 },
                 collision =
                 {
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 18,
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 19,
+                    reiveNpcCol(foretDeHennetielID) + 18,
+                    reiveNpcCol(foretDeHennetielID) + 19,
                 },
             },
 
@@ -431,18 +439,18 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 21,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 22,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 23,
+                    reiveMobBase(foretDeHennetielID) + 21,
+                    reiveMobBase(foretDeHennetielID) + 22,
+                    reiveMobBase(foretDeHennetielID) + 23,
                 },
                 obstacles =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 20,
+                    reiveMobBase(foretDeHennetielID) + 20,
                 },
                 collision =
                 {
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 16,
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 17,
+                    reiveNpcCol(foretDeHennetielID) + 16,
+                    reiveNpcCol(foretDeHennetielID) + 17,
                 },
             },
 
@@ -451,18 +459,18 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 25,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 26,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 27,
+                    reiveMobBase(foretDeHennetielID) + 25,
+                    reiveMobBase(foretDeHennetielID) + 26,
+                    reiveMobBase(foretDeHennetielID) + 27,
                 },
                 obstacles =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 24,
+                    reiveMobBase(foretDeHennetielID) + 24,
                 },
                 collision =
                 {
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 14,
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 15,
+                    reiveNpcCol(foretDeHennetielID) + 14,
+                    reiveNpcCol(foretDeHennetielID) + 15,
                 },
             },
 
@@ -471,18 +479,18 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 29,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 30,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 31,
+                    reiveMobBase(foretDeHennetielID) + 29,
+                    reiveMobBase(foretDeHennetielID) + 30,
+                    reiveMobBase(foretDeHennetielID) + 31,
                 },
                 obstacles =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 28,
+                    reiveMobBase(foretDeHennetielID) + 28,
                 },
                 collision =
                 {
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 12,
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 13,
+                    reiveNpcCol(foretDeHennetielID) + 12,
+                    reiveNpcCol(foretDeHennetielID) + 13,
                 },
             },
 
@@ -491,18 +499,18 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 33,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 34,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 35,
+                    reiveMobBase(foretDeHennetielID) + 33,
+                    reiveMobBase(foretDeHennetielID) + 34,
+                    reiveMobBase(foretDeHennetielID) + 35,
                 },
                 obstacles =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 32,
+                    reiveMobBase(foretDeHennetielID) + 32,
                 },
                 collision =
                 {
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 2,
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 3,
+                    reiveNpcCol(foretDeHennetielID) + 2,
+                    reiveNpcCol(foretDeHennetielID) + 3,
                 },
             },
 
@@ -511,18 +519,18 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 37,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 38,
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 39,
+                    reiveMobBase(foretDeHennetielID) + 37,
+                    reiveMobBase(foretDeHennetielID) + 38,
+                    reiveMobBase(foretDeHennetielID) + 39,
                 },
                 obstacles =
                 {
-                    foretDeHennetielID.mob.REIVE_MOB_OFFSET + 36,
+                    reiveMobBase(foretDeHennetielID) + 36,
                 },
                 collision =
                 {
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET,
-                    foretDeHennetielID.npc.REIVE_COLLISION_OFFSET + 1,
+                    reiveNpcCol(foretDeHennetielID),
+                    reiveNpcCol(foretDeHennetielID) + 1,
                 },
             },
         },
@@ -539,19 +547,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 2,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 3,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 4,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 5,
+                    reiveMobBase(kamihrDriftsID) + 2,
+                    reiveMobBase(kamihrDriftsID) + 3,
+                    reiveMobBase(kamihrDriftsID) + 4,
+                    reiveMobBase(kamihrDriftsID) + 5,
                 },
                 obstacles =
                 {
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 1,
+                    reiveMobBase(kamihrDriftsID),
+                    reiveMobBase(kamihrDriftsID) + 1,
                 },
                 collision =
                 {
-                    kamihrDriftsID.npc.REIVE_COLLISION_OFFSET,
+                    reiveNpcCol(kamihrDriftsID),
                 },
             },
 
@@ -560,19 +568,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 8,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 9,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 10,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 11,
+                    reiveMobBase(kamihrDriftsID) + 8,
+                    reiveMobBase(kamihrDriftsID) + 9,
+                    reiveMobBase(kamihrDriftsID) + 10,
+                    reiveMobBase(kamihrDriftsID) + 11,
                 },
                 obstacles =
                 {
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 6,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 7,
+                    reiveMobBase(kamihrDriftsID) + 6,
+                    reiveMobBase(kamihrDriftsID) + 7,
                 },
                 collision =
                 {
-                    kamihrDriftsID.npc.REIVE_COLLISION_OFFSET + 1,
+                    reiveNpcCol(kamihrDriftsID) + 1,
                 },
             },
 
@@ -581,19 +589,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 14,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 15,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 16,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 17,
+                    reiveMobBase(kamihrDriftsID) + 14,
+                    reiveMobBase(kamihrDriftsID) + 15,
+                    reiveMobBase(kamihrDriftsID) + 16,
+                    reiveMobBase(kamihrDriftsID) + 17,
                 },
                 obstacles =
                 {
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 12,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 13,
+                    reiveMobBase(kamihrDriftsID) + 12,
+                    reiveMobBase(kamihrDriftsID) + 13,
                 },
                 collision =
                 {
-                    kamihrDriftsID.npc.REIVE_COLLISION_OFFSET + 2,
+                    reiveNpcCol(kamihrDriftsID) + 2,
                 },
             },
 
@@ -602,19 +610,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 20,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 21,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 22,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 23,
+                    reiveMobBase(kamihrDriftsID) + 20,
+                    reiveMobBase(kamihrDriftsID) + 21,
+                    reiveMobBase(kamihrDriftsID) + 22,
+                    reiveMobBase(kamihrDriftsID) + 23,
                 },
                 obstacles =
                 {
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 18,
-                    kamihrDriftsID.mob.REIVE_MOB_OFFSET + 19,
+                    reiveMobBase(kamihrDriftsID) + 18,
+                    reiveMobBase(kamihrDriftsID) + 19,
                 },
                 collision =
                 {
-                    kamihrDriftsID.npc.REIVE_COLLISION_OFFSET + 3,
+                    reiveNpcCol(kamihrDriftsID) + 3,
                 },
             },
         },
@@ -632,19 +640,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 2,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 3,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 4,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 5,
+                    reiveMobBase(marjamiRavineID) + 2,
+                    reiveMobBase(marjamiRavineID) + 3,
+                    reiveMobBase(marjamiRavineID) + 4,
+                    reiveMobBase(marjamiRavineID) + 5,
                 },
                 obstacles =
                 {
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 1,
+                    reiveMobBase(marjamiRavineID),
+                    reiveMobBase(marjamiRavineID) + 1,
                 },
                 collision =
                 {
-                    marjamiRavineID.npc.REIVE_COLLISION_OFFSET,
+                    reiveNpcCol(marjamiRavineID),
                 },
             },
 
@@ -653,19 +661,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 8,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 9,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 10,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 11,
+                    reiveMobBase(marjamiRavineID) + 8,
+                    reiveMobBase(marjamiRavineID) + 9,
+                    reiveMobBase(marjamiRavineID) + 10,
+                    reiveMobBase(marjamiRavineID) + 11,
                 },
                 obstacles =
                 {
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 6,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 7,
+                    reiveMobBase(marjamiRavineID) + 6,
+                    reiveMobBase(marjamiRavineID) + 7,
                 },
                 collision =
                 {
-                    marjamiRavineID.npc.REIVE_COLLISION_OFFSET + 1,
+                    reiveNpcCol(marjamiRavineID) + 1,
                 },
             },
 
@@ -674,19 +682,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 14,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 15,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 16,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 17,
+                    reiveMobBase(marjamiRavineID) + 14,
+                    reiveMobBase(marjamiRavineID) + 15,
+                    reiveMobBase(marjamiRavineID) + 16,
+                    reiveMobBase(marjamiRavineID) + 17,
                 },
                 obstacles =
                 {
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 12,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 13,
+                    reiveMobBase(marjamiRavineID) + 12,
+                    reiveMobBase(marjamiRavineID) + 13,
                 },
                 collision =
                 {
-                    marjamiRavineID.npc.REIVE_COLLISION_OFFSET + 2,
+                    reiveNpcCol(marjamiRavineID) + 2,
                 },
             },
 
@@ -695,19 +703,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 20,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 21,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 22,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 23,
+                    reiveMobBase(marjamiRavineID) + 20,
+                    reiveMobBase(marjamiRavineID) + 21,
+                    reiveMobBase(marjamiRavineID) + 22,
+                    reiveMobBase(marjamiRavineID) + 23,
                 },
                 obstacles =
                 {
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 18,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 19,
+                    reiveMobBase(marjamiRavineID) + 18,
+                    reiveMobBase(marjamiRavineID) + 19,
                 },
                 collision =
                 {
-                    marjamiRavineID.npc.REIVE_COLLISION_OFFSET + 3,
+                    reiveNpcCol(marjamiRavineID) + 3,
                 },
             },
 
@@ -716,19 +724,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 26,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 27,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 28,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 29,
+                    reiveMobBase(marjamiRavineID) + 26,
+                    reiveMobBase(marjamiRavineID) + 27,
+                    reiveMobBase(marjamiRavineID) + 28,
+                    reiveMobBase(marjamiRavineID) + 29,
                 },
                 obstacles =
                 {
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 24,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 25,
+                    reiveMobBase(marjamiRavineID) + 24,
+                    reiveMobBase(marjamiRavineID) + 25,
                 },
                 collision =
                 {
-                    marjamiRavineID.npc.REIVE_COLLISION_OFFSET + 4,
+                    reiveNpcCol(marjamiRavineID) + 4,
                 },
             },
 
@@ -737,19 +745,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 32,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 33,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 34,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 35,
+                    reiveMobBase(marjamiRavineID) + 32,
+                    reiveMobBase(marjamiRavineID) + 33,
+                    reiveMobBase(marjamiRavineID) + 34,
+                    reiveMobBase(marjamiRavineID) + 35,
                 },
                 obstacles =
                 {
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 30,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 31,
+                    reiveMobBase(marjamiRavineID) + 30,
+                    reiveMobBase(marjamiRavineID) + 31,
                 },
                 collision =
                 {
-                    marjamiRavineID.npc.REIVE_COLLISION_OFFSET + 5,
+                    reiveNpcCol(marjamiRavineID) + 5,
                 },
             },
 
@@ -758,19 +766,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 38,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 39,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 40,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 41,
+                    reiveMobBase(marjamiRavineID) + 38,
+                    reiveMobBase(marjamiRavineID) + 39,
+                    reiveMobBase(marjamiRavineID) + 40,
+                    reiveMobBase(marjamiRavineID) + 41,
                 },
                 obstacles =
                 {
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 36,
-                    marjamiRavineID.mob.REIVE_MOB_OFFSET + 37,
+                    reiveMobBase(marjamiRavineID) + 36,
+                    reiveMobBase(marjamiRavineID) + 37,
                 },
                 collision =
                 {
-                    marjamiRavineID.npc.REIVE_COLLISION_OFFSET + 6,
+                    reiveNpcCol(marjamiRavineID) + 6,
                 },
             },
         },
@@ -787,23 +795,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 3,
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 4,
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 5,
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 6,
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 7,
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 8,
+                    reiveMobBase(mohGatesID) + 3,
+                    reiveMobBase(mohGatesID) + 4,
+                    reiveMobBase(mohGatesID) + 5,
+                    reiveMobBase(mohGatesID) + 6,
+                    reiveMobBase(mohGatesID) + 7,
+                    reiveMobBase(mohGatesID) + 8,
                 },
                 obstacles =
                 {
-                    mohGatesID.mob.REIVE_MOB_OFFSET,
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 1,
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 2,
+                    reiveMobBase(mohGatesID),
+                    reiveMobBase(mohGatesID) + 1,
+                    reiveMobBase(mohGatesID) + 2,
                 },
                 collision =
                 {
-                    mohGatesID.npc.REIVE_COLLISION_OFFSET + 2,
-                    mohGatesID.npc.REIVE_COLLISION_OFFSET + 3,
+                    reiveNpcCol(mohGatesID) + 2,
+                    reiveNpcCol(mohGatesID) + 3,
                 },
             },
 
@@ -812,23 +820,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 12,
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 13,
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 14,
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 15,
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 16,
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 17,
+                    reiveMobBase(mohGatesID) + 12,
+                    reiveMobBase(mohGatesID) + 13,
+                    reiveMobBase(mohGatesID) + 14,
+                    reiveMobBase(mohGatesID) + 15,
+                    reiveMobBase(mohGatesID) + 16,
+                    reiveMobBase(mohGatesID) + 17,
                 },
                 obstacles =
                 {
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 9,
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 10,
-                    mohGatesID.mob.REIVE_MOB_OFFSET + 11,
+                    reiveMobBase(mohGatesID) + 9,
+                    reiveMobBase(mohGatesID) + 10,
+                    reiveMobBase(mohGatesID) + 11,
                 },
                 collision =
                 {
-                    mohGatesID.npc.REIVE_COLLISION_OFFSET,
-                    mohGatesID.npc.REIVE_COLLISION_OFFSET + 1,
+                    reiveNpcCol(mohGatesID),
+                    reiveNpcCol(mohGatesID) + 1,
                 },
             },
         },
@@ -846,23 +854,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 3,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 4,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 5,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 6,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 7,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 8,
+                    reiveMobBase(morimarBasaltFieldsID) + 3,
+                    reiveMobBase(morimarBasaltFieldsID) + 4,
+                    reiveMobBase(morimarBasaltFieldsID) + 5,
+                    reiveMobBase(morimarBasaltFieldsID) + 6,
+                    reiveMobBase(morimarBasaltFieldsID) + 7,
+                    reiveMobBase(morimarBasaltFieldsID) + 8,
                 },
                 obstacles =
                 {
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 0,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 1,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 2,
+                    reiveMobBase(morimarBasaltFieldsID) + 0,
+                    reiveMobBase(morimarBasaltFieldsID) + 1,
+                    reiveMobBase(morimarBasaltFieldsID) + 2,
                 },
                 collision =
                 {
-                    morimarBasaltFieldsID.npc.REIVE_COLLISION_OFFSET + 4,
-                    morimarBasaltFieldsID.npc.REIVE_COLLISION_OFFSET + 5,
+                    reiveNpcCol(morimarBasaltFieldsID) + 4,
+                    reiveNpcCol(morimarBasaltFieldsID) + 5,
                 },
             },
 
@@ -871,23 +879,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 12,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 13,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 14,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 15,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 16,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 17,
+                    reiveMobBase(morimarBasaltFieldsID) + 12,
+                    reiveMobBase(morimarBasaltFieldsID) + 13,
+                    reiveMobBase(morimarBasaltFieldsID) + 14,
+                    reiveMobBase(morimarBasaltFieldsID) + 15,
+                    reiveMobBase(morimarBasaltFieldsID) + 16,
+                    reiveMobBase(morimarBasaltFieldsID) + 17,
                 },
                 obstacles =
                 {
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 9,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 10,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 11,
+                    reiveMobBase(morimarBasaltFieldsID) + 9,
+                    reiveMobBase(morimarBasaltFieldsID) + 10,
+                    reiveMobBase(morimarBasaltFieldsID) + 11,
                 },
                 collision =
                 {
-                    morimarBasaltFieldsID.npc.REIVE_COLLISION_OFFSET + 2,
-                    morimarBasaltFieldsID.npc.REIVE_COLLISION_OFFSET + 3,
+                    reiveNpcCol(morimarBasaltFieldsID) + 2,
+                    reiveNpcCol(morimarBasaltFieldsID) + 3,
                 },
             },
 
@@ -896,23 +904,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 21,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 22,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 23,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 24,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 25,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 26,
+                    reiveMobBase(morimarBasaltFieldsID) + 21,
+                    reiveMobBase(morimarBasaltFieldsID) + 22,
+                    reiveMobBase(morimarBasaltFieldsID) + 23,
+                    reiveMobBase(morimarBasaltFieldsID) + 24,
+                    reiveMobBase(morimarBasaltFieldsID) + 25,
+                    reiveMobBase(morimarBasaltFieldsID) + 26,
                 },
                 obstacles =
                 {
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 18,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 19,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 20,
+                    reiveMobBase(morimarBasaltFieldsID) + 18,
+                    reiveMobBase(morimarBasaltFieldsID) + 19,
+                    reiveMobBase(morimarBasaltFieldsID) + 20,
                 },
                 collision =
                 {
-                    morimarBasaltFieldsID.npc.REIVE_COLLISION_OFFSET + 10,
-                    morimarBasaltFieldsID.npc.REIVE_COLLISION_OFFSET + 11,
+                    reiveNpcCol(morimarBasaltFieldsID) + 10,
+                    reiveNpcCol(morimarBasaltFieldsID) + 11,
                 },
             },
 
@@ -921,23 +929,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 30,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 31,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 32,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 33,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 34,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 35,
+                    reiveMobBase(morimarBasaltFieldsID) + 30,
+                    reiveMobBase(morimarBasaltFieldsID) + 31,
+                    reiveMobBase(morimarBasaltFieldsID) + 32,
+                    reiveMobBase(morimarBasaltFieldsID) + 33,
+                    reiveMobBase(morimarBasaltFieldsID) + 34,
+                    reiveMobBase(morimarBasaltFieldsID) + 35,
                 },
                 obstacles =
                 {
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 27,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 28,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 29,
+                    reiveMobBase(morimarBasaltFieldsID) + 27,
+                    reiveMobBase(morimarBasaltFieldsID) + 28,
+                    reiveMobBase(morimarBasaltFieldsID) + 29,
                 },
                 collision =
                 {
-                    morimarBasaltFieldsID.npc.REIVE_COLLISION_OFFSET + 12,
-                    morimarBasaltFieldsID.npc.REIVE_COLLISION_OFFSET + 13,
+                    reiveNpcCol(morimarBasaltFieldsID) + 12,
+                    reiveNpcCol(morimarBasaltFieldsID) + 13,
                 },
             },
 
@@ -946,23 +954,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 48,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 49,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 50,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 51,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 52,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 53,
+                    reiveMobBase(morimarBasaltFieldsID) + 48,
+                    reiveMobBase(morimarBasaltFieldsID) + 49,
+                    reiveMobBase(morimarBasaltFieldsID) + 50,
+                    reiveMobBase(morimarBasaltFieldsID) + 51,
+                    reiveMobBase(morimarBasaltFieldsID) + 52,
+                    reiveMobBase(morimarBasaltFieldsID) + 53,
                 },
                 obstacles =
                 {
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 45,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 46,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 47,
+                    reiveMobBase(morimarBasaltFieldsID) + 45,
+                    reiveMobBase(morimarBasaltFieldsID) + 46,
+                    reiveMobBase(morimarBasaltFieldsID) + 47,
                 },
                 collision =
                 {
-                    morimarBasaltFieldsID.npc.REIVE_COLLISION_OFFSET + 6,
-                    morimarBasaltFieldsID.npc.REIVE_COLLISION_OFFSET + 7,
+                    reiveNpcCol(morimarBasaltFieldsID) + 6,
+                    reiveNpcCol(morimarBasaltFieldsID) + 7,
                 },
             },
 
@@ -971,23 +979,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 57,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 58,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 59,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 60,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 61,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 62,
+                    reiveMobBase(morimarBasaltFieldsID) + 57,
+                    reiveMobBase(morimarBasaltFieldsID) + 58,
+                    reiveMobBase(morimarBasaltFieldsID) + 59,
+                    reiveMobBase(morimarBasaltFieldsID) + 60,
+                    reiveMobBase(morimarBasaltFieldsID) + 61,
+                    reiveMobBase(morimarBasaltFieldsID) + 62,
                 },
                 obstacles =
                 {
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 54,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 55,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 56,
+                    reiveMobBase(morimarBasaltFieldsID) + 54,
+                    reiveMobBase(morimarBasaltFieldsID) + 55,
+                    reiveMobBase(morimarBasaltFieldsID) + 56,
                 },
                 collision =
                 {
-                    morimarBasaltFieldsID.npc.REIVE_COLLISION_OFFSET,
-                    morimarBasaltFieldsID.npc.REIVE_COLLISION_OFFSET + 1,
+                    reiveNpcCol(morimarBasaltFieldsID),
+                    reiveNpcCol(morimarBasaltFieldsID) + 1,
                 },
             },
 
@@ -996,23 +1004,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 39,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 40,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 41,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 42,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 43,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 44,
+                    reiveMobBase(morimarBasaltFieldsID) + 39,
+                    reiveMobBase(morimarBasaltFieldsID) + 40,
+                    reiveMobBase(morimarBasaltFieldsID) + 41,
+                    reiveMobBase(morimarBasaltFieldsID) + 42,
+                    reiveMobBase(morimarBasaltFieldsID) + 43,
+                    reiveMobBase(morimarBasaltFieldsID) + 44,
                 },
                 obstacles =
                 {
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 36,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 37,
-                    morimarBasaltFieldsID.mob.REIVE_MOB_OFFSET + 38,
+                    reiveMobBase(morimarBasaltFieldsID) + 36,
+                    reiveMobBase(morimarBasaltFieldsID) + 37,
+                    reiveMobBase(morimarBasaltFieldsID) + 38,
                 },
                 collision =
                 {
-                    morimarBasaltFieldsID.npc.REIVE_COLLISION_OFFSET + 8,
-                    morimarBasaltFieldsID.npc.REIVE_COLLISION_OFFSET + 9,
+                    reiveNpcCol(morimarBasaltFieldsID) + 8,
+                    reiveNpcCol(morimarBasaltFieldsID) + 9,
                 },
             },
         },
@@ -1030,20 +1038,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 3,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 4,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 5,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 6,
+                    reiveMobBase(outerRakaznarID) + 3,
+                    reiveMobBase(outerRakaznarID) + 4,
+                    reiveMobBase(outerRakaznarID) + 5,
+                    reiveMobBase(outerRakaznarID) + 6,
                 },
                 obstacles =
                 {
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 1,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 2,
+                    reiveMobBase(outerRakaznarID),
+                    reiveMobBase(outerRakaznarID) + 1,
+                    reiveMobBase(outerRakaznarID) + 2,
                 },
                 collision =
                 {
-                    outerRakaznarID.npc.REIVE_COLLISION_OFFSET,
+                    reiveNpcCol(outerRakaznarID),
                 },
             },
 
@@ -1052,20 +1060,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 10,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 11,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 12,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 13,
+                    reiveMobBase(outerRakaznarID) + 10,
+                    reiveMobBase(outerRakaznarID) + 11,
+                    reiveMobBase(outerRakaznarID) + 12,
+                    reiveMobBase(outerRakaznarID) + 13,
                 },
                 obstacles =
                 {
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 7,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 8,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 9,
+                    reiveMobBase(outerRakaznarID) + 7,
+                    reiveMobBase(outerRakaznarID) + 8,
+                    reiveMobBase(outerRakaznarID) + 9,
                 },
                 collision =
                 {
-                    outerRakaznarID.npc.REIVE_COLLISION_OFFSET + 1,
+                    reiveNpcCol(outerRakaznarID) + 1,
                 },
             },
 
@@ -1074,20 +1082,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 17,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 18,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 19,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 20,
+                    reiveMobBase(outerRakaznarID) + 17,
+                    reiveMobBase(outerRakaznarID) + 18,
+                    reiveMobBase(outerRakaznarID) + 19,
+                    reiveMobBase(outerRakaznarID) + 20,
                 },
                 obstacles =
                 {
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 14,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 15,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 16,
+                    reiveMobBase(outerRakaznarID) + 14,
+                    reiveMobBase(outerRakaznarID) + 15,
+                    reiveMobBase(outerRakaznarID) + 16,
                 },
                 collision =
                 {
-                    outerRakaznarID.npc.REIVE_COLLISION_OFFSET + 3,
+                    reiveNpcCol(outerRakaznarID) + 3,
                 },
             },
 
@@ -1096,20 +1104,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 24,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 25,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 26,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 27,
+                    reiveMobBase(outerRakaznarID) + 24,
+                    reiveMobBase(outerRakaznarID) + 25,
+                    reiveMobBase(outerRakaznarID) + 26,
+                    reiveMobBase(outerRakaznarID) + 27,
                 },
                 obstacles =
                 {
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 21,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 22,
-                    outerRakaznarID.mob.REIVE_MOB_OFFSET + 23,
+                    reiveMobBase(outerRakaznarID) + 21,
+                    reiveMobBase(outerRakaznarID) + 22,
+                    reiveMobBase(outerRakaznarID) + 23,
                 },
                 collision =
                 {
-                    outerRakaznarID.npc.REIVE_COLLISION_OFFSET + 2,
+                    reiveNpcCol(outerRakaznarID) + 2,
                 },
             },
         },
@@ -1126,20 +1134,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 3,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 4,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 5,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 6,
+                    reiveMobBase(rakaznarInnerCourtID) + 3,
+                    reiveMobBase(rakaznarInnerCourtID) + 4,
+                    reiveMobBase(rakaznarInnerCourtID) + 5,
+                    reiveMobBase(rakaznarInnerCourtID) + 6,
                 },
                 obstacles =
                 {
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 1,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 2,
+                    reiveMobBase(rakaznarInnerCourtID),
+                    reiveMobBase(rakaznarInnerCourtID) + 1,
+                    reiveMobBase(rakaznarInnerCourtID) + 2,
                 },
                 collision =
                 {
-                    rakaznarInnerCourtID.npc.REIVE_COLLISION_OFFSET,
+                    reiveNpcCol(rakaznarInnerCourtID),
                 },
             },
 
@@ -1148,20 +1156,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 10,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 11,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 12,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 13,
+                    reiveMobBase(rakaznarInnerCourtID) + 10,
+                    reiveMobBase(rakaznarInnerCourtID) + 11,
+                    reiveMobBase(rakaznarInnerCourtID) + 12,
+                    reiveMobBase(rakaznarInnerCourtID) + 13,
                 },
                 obstacles =
                 {
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 7,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 8,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 9,
+                    reiveMobBase(rakaznarInnerCourtID) + 7,
+                    reiveMobBase(rakaznarInnerCourtID) + 8,
+                    reiveMobBase(rakaznarInnerCourtID) + 9,
                 },
                 collision =
                 {
-                    rakaznarInnerCourtID.npc.REIVE_COLLISION_OFFSET + 1,
+                    reiveNpcCol(rakaznarInnerCourtID) + 1,
                 },
             },
 
@@ -1170,20 +1178,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 17,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 18,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 19,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 20,
+                    reiveMobBase(rakaznarInnerCourtID) + 17,
+                    reiveMobBase(rakaznarInnerCourtID) + 18,
+                    reiveMobBase(rakaznarInnerCourtID) + 19,
+                    reiveMobBase(rakaznarInnerCourtID) + 20,
                 },
                 obstacles =
                 {
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 14,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 15,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 16,
+                    reiveMobBase(rakaznarInnerCourtID) + 14,
+                    reiveMobBase(rakaznarInnerCourtID) + 15,
+                    reiveMobBase(rakaznarInnerCourtID) + 16,
                 },
                 collision =
                 {
-                    rakaznarInnerCourtID.npc.REIVE_COLLISION_OFFSET + 2,
+                    reiveNpcCol(rakaznarInnerCourtID) + 2,
                 },
             },
 
@@ -1192,20 +1200,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 24,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 25,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 26,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 27,
+                    reiveMobBase(rakaznarInnerCourtID) + 24,
+                    reiveMobBase(rakaznarInnerCourtID) + 25,
+                    reiveMobBase(rakaznarInnerCourtID) + 26,
+                    reiveMobBase(rakaznarInnerCourtID) + 27,
                 },
                 obstacles =
                 {
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 21,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 22,
-                    rakaznarInnerCourtID.mob.REIVE_MOB_OFFSET + 23,
+                    reiveMobBase(rakaznarInnerCourtID) + 21,
+                    reiveMobBase(rakaznarInnerCourtID) + 22,
+                    reiveMobBase(rakaznarInnerCourtID) + 23,
                 },
                 collision =
                 {
-                    rakaznarInnerCourtID.npc.REIVE_COLLISION_OFFSET + 3,
+                    reiveNpcCol(rakaznarInnerCourtID) + 3,
                 },
             },
         },
@@ -1223,23 +1231,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 3,
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 4,
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 5,
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 6,
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 7,
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 8,
+                    reiveMobBase(sihGatesID) + 3,
+                    reiveMobBase(sihGatesID) + 4,
+                    reiveMobBase(sihGatesID) + 5,
+                    reiveMobBase(sihGatesID) + 6,
+                    reiveMobBase(sihGatesID) + 7,
+                    reiveMobBase(sihGatesID) + 8,
                 },
                 obstacles =
                 {
-                    sihGatesID.mob.REIVE_MOB_OFFSET,
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 1,
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 2,
+                    reiveMobBase(sihGatesID),
+                    reiveMobBase(sihGatesID) + 1,
+                    reiveMobBase(sihGatesID) + 2,
                 },
                 collision =
                 {
-                    sihGatesID.npc.REIVE_COLLISION_OFFSET,
-                    sihGatesID.npc.REIVE_COLLISION_OFFSET + 1,
+                    reiveNpcCol(sihGatesID),
+                    reiveNpcCol(sihGatesID) + 1,
                 },
             },
 
@@ -1248,23 +1256,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 12,
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 13,
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 14,
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 15,
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 16,
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 17,
+                    reiveMobBase(sihGatesID) + 12,
+                    reiveMobBase(sihGatesID) + 13,
+                    reiveMobBase(sihGatesID) + 14,
+                    reiveMobBase(sihGatesID) + 15,
+                    reiveMobBase(sihGatesID) + 16,
+                    reiveMobBase(sihGatesID) + 17,
                 },
                 obstacles =
                 {
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 9,
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 10,
-                    sihGatesID.mob.REIVE_MOB_OFFSET + 11,
+                    reiveMobBase(sihGatesID) + 9,
+                    reiveMobBase(sihGatesID) + 10,
+                    reiveMobBase(sihGatesID) + 11,
                 },
                 collision =
                 {
-                    sihGatesID.npc.REIVE_COLLISION_OFFSET + 2,
-                    sihGatesID.npc.REIVE_COLLISION_OFFSET + 3,
+                    reiveNpcCol(sihGatesID) + 2,
+                    reiveNpcCol(sihGatesID) + 3,
                 },
             },
         },
@@ -1282,20 +1290,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    wohGatesID.mob.REIVE_MOB_OFFSET + 2,
-                    wohGatesID.mob.REIVE_MOB_OFFSET + 3,
-                    wohGatesID.mob.REIVE_MOB_OFFSET + 4,
-                    wohGatesID.mob.REIVE_MOB_OFFSET + 5,
+                    reiveMobBase(wohGatesID) + 2,
+                    reiveMobBase(wohGatesID) + 3,
+                    reiveMobBase(wohGatesID) + 4,
+                    reiveMobBase(wohGatesID) + 5,
                 },
                 obstacles =
                 {
-                    wohGatesID.mob.REIVE_MOB_OFFSET,
-                    wohGatesID.mob.REIVE_MOB_OFFSET + 1,
+                    reiveMobBase(wohGatesID),
+                    reiveMobBase(wohGatesID) + 1,
                 },
                 collision =
                 {
-                    wohGatesID.npc.REIVE_COLLISION_OFFSET,
-                    wohGatesID.npc.REIVE_COLLISION_OFFSET + 1,
+                    reiveNpcCol(wohGatesID),
+                    reiveNpcCol(wohGatesID) + 1,
                 },
             },
 
@@ -1304,20 +1312,20 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    wohGatesID.mob.REIVE_MOB_OFFSET + 8,
-                    wohGatesID.mob.REIVE_MOB_OFFSET + 9,
-                    wohGatesID.mob.REIVE_MOB_OFFSET + 10,
-                    wohGatesID.mob.REIVE_MOB_OFFSET + 11,
+                    reiveMobBase(wohGatesID) + 8,
+                    reiveMobBase(wohGatesID) + 9,
+                    reiveMobBase(wohGatesID) + 10,
+                    reiveMobBase(wohGatesID) + 11,
                 },
                 obstacles =
                 {
-                    wohGatesID.mob.REIVE_MOB_OFFSET + 6,
-                    wohGatesID.mob.REIVE_MOB_OFFSET + 7,
+                    reiveMobBase(wohGatesID) + 6,
+                    reiveMobBase(wohGatesID) + 7,
                 },
                 collision =
                 {
-                    wohGatesID.npc.REIVE_COLLISION_OFFSET + 2,
-                    wohGatesID.npc.REIVE_COLLISION_OFFSET + 3,
+                    reiveNpcCol(wohGatesID) + 2,
+                    reiveNpcCol(wohGatesID) + 3,
                 },
             },
         },
@@ -1334,23 +1342,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 17,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 18,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 19,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 20,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 21,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 22,
+                    reiveMobBase(yahseHuntingGroundsID) + 17,
+                    reiveMobBase(yahseHuntingGroundsID) + 18,
+                    reiveMobBase(yahseHuntingGroundsID) + 19,
+                    reiveMobBase(yahseHuntingGroundsID) + 20,
+                    reiveMobBase(yahseHuntingGroundsID) + 21,
+                    reiveMobBase(yahseHuntingGroundsID) + 22,
                 },
                 obstacles =
                 {
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 14,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 15,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 16,
+                    reiveMobBase(yahseHuntingGroundsID) + 14,
+                    reiveMobBase(yahseHuntingGroundsID) + 15,
+                    reiveMobBase(yahseHuntingGroundsID) + 16,
                 },
                 collision =
                 {
-                    yahseHuntingGroundsID.npc.REIVE_COLLISION_OFFSET + 8,
-                    yahseHuntingGroundsID.npc.REIVE_COLLISION_OFFSET + 9,
+                    reiveNpcCol(yahseHuntingGroundsID) + 8,
+                    reiveNpcCol(yahseHuntingGroundsID) + 9,
                 },
             },
 
@@ -1359,23 +1367,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 26,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 27,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 28,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 29,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 30,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 31,
+                    reiveMobBase(yahseHuntingGroundsID) + 26,
+                    reiveMobBase(yahseHuntingGroundsID) + 27,
+                    reiveMobBase(yahseHuntingGroundsID) + 28,
+                    reiveMobBase(yahseHuntingGroundsID) + 29,
+                    reiveMobBase(yahseHuntingGroundsID) + 30,
+                    reiveMobBase(yahseHuntingGroundsID) + 31,
                 },
                 obstacles =
                 {
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 23,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 24,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 25,
+                    reiveMobBase(yahseHuntingGroundsID) + 23,
+                    reiveMobBase(yahseHuntingGroundsID) + 24,
+                    reiveMobBase(yahseHuntingGroundsID) + 25,
                 },
                 collision =
                 {
-                    yahseHuntingGroundsID.npc.REIVE_COLLISION_OFFSET + 4,
-                    yahseHuntingGroundsID.npc.REIVE_COLLISION_OFFSET + 5,
+                    reiveNpcCol(yahseHuntingGroundsID) + 4,
+                    reiveNpcCol(yahseHuntingGroundsID) + 5,
                 },
             },
 
@@ -1384,21 +1392,21 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 10,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 11,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 12,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 13,
+                    reiveMobBase(yahseHuntingGroundsID) + 10,
+                    reiveMobBase(yahseHuntingGroundsID) + 11,
+                    reiveMobBase(yahseHuntingGroundsID) + 12,
+                    reiveMobBase(yahseHuntingGroundsID) + 13,
                 },
                 obstacles =
                 {
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 7,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 8,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 9,
+                    reiveMobBase(yahseHuntingGroundsID) + 7,
+                    reiveMobBase(yahseHuntingGroundsID) + 8,
+                    reiveMobBase(yahseHuntingGroundsID) + 9,
                 },
                 collision =
                 {
-                    yahseHuntingGroundsID.npc.REIVE_COLLISION_OFFSET + 0,
-                    yahseHuntingGroundsID.npc.REIVE_COLLISION_OFFSET + 1,
+                    reiveNpcCol(yahseHuntingGroundsID) + 0,
+                    reiveNpcCol(yahseHuntingGroundsID) + 1,
                 },
             },
 
@@ -1407,23 +1415,23 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 35,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 36,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 37,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 38,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 39,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 40,
+                    reiveMobBase(yahseHuntingGroundsID) + 35,
+                    reiveMobBase(yahseHuntingGroundsID) + 36,
+                    reiveMobBase(yahseHuntingGroundsID) + 37,
+                    reiveMobBase(yahseHuntingGroundsID) + 38,
+                    reiveMobBase(yahseHuntingGroundsID) + 39,
+                    reiveMobBase(yahseHuntingGroundsID) + 40,
                 },
                 obstacles =
                 {
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 32,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 33,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 34,
+                    reiveMobBase(yahseHuntingGroundsID) + 32,
+                    reiveMobBase(yahseHuntingGroundsID) + 33,
+                    reiveMobBase(yahseHuntingGroundsID) + 34,
                 },
                 collision =
                 {
-                    yahseHuntingGroundsID.npc.REIVE_COLLISION_OFFSET + 6,
-                    yahseHuntingGroundsID.npc.REIVE_COLLISION_OFFSET + 7,
+                    reiveNpcCol(yahseHuntingGroundsID) + 6,
+                    reiveNpcCol(yahseHuntingGroundsID) + 7,
                 },
             },
 
@@ -1432,21 +1440,21 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 3,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 4,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 5,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 6,
+                    reiveMobBase(yahseHuntingGroundsID) + 3,
+                    reiveMobBase(yahseHuntingGroundsID) + 4,
+                    reiveMobBase(yahseHuntingGroundsID) + 5,
+                    reiveMobBase(yahseHuntingGroundsID) + 6,
                 },
                 obstacles =
                 {
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 0,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 1,
-                    yahseHuntingGroundsID.mob.REIVE_MOB_OFFSET + 2,
+                    reiveMobBase(yahseHuntingGroundsID) + 0,
+                    reiveMobBase(yahseHuntingGroundsID) + 1,
+                    reiveMobBase(yahseHuntingGroundsID) + 2,
                 },
                 collision =
                 {
-                    yahseHuntingGroundsID.npc.REIVE_COLLISION_OFFSET + 2,
-                    yahseHuntingGroundsID.npc.REIVE_COLLISION_OFFSET + 3,
+                    reiveNpcCol(yahseHuntingGroundsID) + 2,
+                    reiveNpcCol(yahseHuntingGroundsID) + 3,
                 },
             },
         },
@@ -1464,19 +1472,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 2,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 3,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 4,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 5,
+                    reiveMobBase(yorciaWealdID) + 2,
+                    reiveMobBase(yorciaWealdID) + 3,
+                    reiveMobBase(yorciaWealdID) + 4,
+                    reiveMobBase(yorciaWealdID) + 5,
                 },
                 obstacles =
                 {
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 0,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 1,
+                    reiveMobBase(yorciaWealdID) + 0,
+                    reiveMobBase(yorciaWealdID) + 1,
                 },
                 collision =
                 {
-                    yorciaWealdID.npc.REIVE_COLLISION_OFFSET + 0,
+                    reiveNpcCol(yorciaWealdID) + 0,
                 },
             },
 
@@ -1485,19 +1493,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 8,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 9,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 10,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 11,
+                    reiveMobBase(yorciaWealdID) + 8,
+                    reiveMobBase(yorciaWealdID) + 9,
+                    reiveMobBase(yorciaWealdID) + 10,
+                    reiveMobBase(yorciaWealdID) + 11,
                 },
                 obstacles =
                 {
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 6,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 7,
+                    reiveMobBase(yorciaWealdID) + 6,
+                    reiveMobBase(yorciaWealdID) + 7,
                 },
                 collision =
                 {
-                    yorciaWealdID.npc.REIVE_COLLISION_OFFSET + 3,
+                    reiveNpcCol(yorciaWealdID) + 3,
                 },
             },
 
@@ -1506,19 +1514,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 14,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 15,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 16,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 17,
+                    reiveMobBase(yorciaWealdID) + 14,
+                    reiveMobBase(yorciaWealdID) + 15,
+                    reiveMobBase(yorciaWealdID) + 16,
+                    reiveMobBase(yorciaWealdID) + 17,
                 },
                 obstacles =
                 {
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 12,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 13,
+                    reiveMobBase(yorciaWealdID) + 12,
+                    reiveMobBase(yorciaWealdID) + 13,
                 },
                 collision =
                 {
-                    yorciaWealdID.npc.REIVE_COLLISION_OFFSET + 1,
+                    reiveNpcCol(yorciaWealdID) + 1,
                 },
             },
 
@@ -1527,19 +1535,19 @@ xi.reives.zoneData =
             {
                 mob =
                 {
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 20,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 21,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 22,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 23,
+                    reiveMobBase(yorciaWealdID) + 20,
+                    reiveMobBase(yorciaWealdID) + 21,
+                    reiveMobBase(yorciaWealdID) + 22,
+                    reiveMobBase(yorciaWealdID) + 23,
                 },
                 obstacles =
                 {
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 18,
-                    yorciaWealdID.mob.REIVE_MOB_OFFSET + 19,
+                    reiveMobBase(yorciaWealdID) + 18,
+                    reiveMobBase(yorciaWealdID) + 19,
                 },
                 collision =
                 {
-                    yorciaWealdID.npc.REIVE_COLLISION_OFFSET + 2,
+                    reiveNpcCol(yorciaWealdID) + 2,
                 },
             },
         },
