@@ -5788,6 +5788,18 @@ INSERT INTO `mob_spell_lists` VALUES ('Chemical_Cook_Chemachiq',565,112,1,255); 
 -- Next Available: 566
 
 /*!40000 ALTER TABLE `mob_spell_lists` ENABLE KEYS */;
+-- TRUST_ALDO_UC Ninjutsu
+INSERT INTO `mob_spell_lists` VALUES (1122, 320, 1, 99); -- Katon: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 323, 1, 99); -- Hyoton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 326, 1, 99); -- Huton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 329, 1, 99); -- Doton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 332, 1, 99); -- Raiton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 335, 1, 99); -- Suiton: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 338, 1, 99); -- Utsusemi: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 341, 1, 99); -- Jubaku: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 344, 1, 99); -- Hojo: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 347, 1, 99); -- Kurayami: Ichi
+INSERT INTO `mob_spell_lists` VALUES (1122, 350, 1, 99); -- Dokumori: Ichi
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
