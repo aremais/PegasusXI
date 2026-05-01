@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2018 Darkstar Dev Teams
@@ -43,8 +43,10 @@
 #include "recast_container.h"
 #include "status_effect_container.h"
 #include "utils/battleutils.h"
+#include "utils/charutils.h"
 #include "utils/messageutils.h"
 #include "utils/trustutils.h"
+#include <algorithm>
 
 CTrustEntity::CTrustEntity(CCharEntity* PChar)
 : CMobEntity()
@@ -119,6 +121,36 @@ void CTrustEntity::Spawn()
     // we need to skip CMobEntity's spawn because it calculates stats (and our stats are already calculated)
     CBattleEntity::Spawn();
     luautils::OnMobSpawn(this);
+
+    auto* PMasterChar = dynamic_cast<CCharEntity*>(PMaster);
+
+    if (PMasterChar && PMasterChar->GetMLevel() >= 99)
+    {
+        const uint8 avgItemLevel = charutils::getItemLevelDifference(PMasterChar) + 99;
+        const uint8 bonus        = std::clamp<uint8>(avgItemLevel - 99, 0, 20);
+
+        if (bonus > 0)
+        {
+            addModifier(Mod::ACC, bonus * 8);
+            addModifier(Mod::EVA, bonus * 8);
+            addModifier(Mod::MACC, bonus * 8);
+            addModifier(Mod::MEVA, bonus * 8);
+            addModifier(Mod::ATT, bonus * 6);
+            addModifier(Mod::DEF, bonus * 6);
+
+            addModifier(Mod::STR, bonus * 2);
+            addModifier(Mod::DEX, bonus * 2);
+            addModifier(Mod::VIT, bonus * 2);
+            addModifier(Mod::AGI, bonus * 2);
+            addModifier(Mod::INT, bonus * 2);
+            addModifier(Mod::MND, bonus * 2);
+            addModifier(Mod::CHR, bonus * 2);
+
+            addModifier(Mod::HPP, bonus * 2);
+            addModifier(Mod::MPP, bonus);
+        }
+    }
+
     static_cast<CCharEntity*>(PMaster)->pushPacket<CEntitySetNamePacket>(this);
 }
 
