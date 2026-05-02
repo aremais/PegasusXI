@@ -10,16 +10,7 @@ mobskillObject.onMobSkillCheck = function(target, mob, skill)
 end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
-    local tp = skill:getTP()
-    local healAmount = 500
-
-    if tp >= 2000 then
-        healAmount = 650
-    end
-
-    if tp >= 3000 then
-        healAmount = 800
-    end
+    local healAmount = 650
 
     skill:setMsg(xi.mobskills.mobHealMove(target, healAmount))
     return healAmount
