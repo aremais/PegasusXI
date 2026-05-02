@@ -2,7 +2,7 @@
 -- Trust: Mnejing
 -----------------------------------
 require('scripts/globals/trust')
-require('scripts/globals/ai')
+require('scripts/globals/gambits')
 
 ---@type TSpellTrust
 local spellObject = {}
