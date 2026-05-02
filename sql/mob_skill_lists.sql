@@ -3558,7 +3558,12 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,3237); -- Victory 
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Margret',1077,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Chacharoon',1078,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Lhe_Lhangavo',1079,0);
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,0);
+-- TRUST_Arciela
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3115); -- bellatrix_of_light
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3116); -- bellatrix_of_shadows
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3451); -- dynastic_gravitas
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3452); -- illustrious_aid
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3453); -- guiding_light
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Mayakov',1081,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Qultada',1082,33);  -- Burning Blade
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Qultada',1082,42);  -- Savage Blade
