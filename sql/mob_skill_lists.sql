@@ -3546,7 +3546,10 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rahal', 1066, 41); -- Swift Blade
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Jakoh_Wahcondalo_UC',1071,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Flaviria_UC',1072,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Babban',1073,0);
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,581); -- blow
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,584); -- uppercut
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,586); -- blank_gaze
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,587); -- antiphase
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,49);   -- Power Slash
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,54);   -- Sickle Moon
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,56);   -- Ground Strike
