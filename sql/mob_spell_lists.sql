@@ -3721,6 +3721,8 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kukki-Chebukki',374,500,87,255); --
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kukki-Chebukki',374,501,84,255); -- waterja (84~255)
 
 -- TRUST_Arciela (378)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,260,32,255); -- dispel (32~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,286,83,255); -- addle (83~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,43,7,255);   -- protect (7~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,44,27,255);  -- protect_ii (27~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,45,47,255);  -- protect_iii (47~255)
