@@ -849,6 +849,12 @@ void init(IPP mapIPP, bool isRunningInCI)
         // Now that the list is verified, overwrite it with the same list; without "scripts"
         parts = std::vector<std::string>(it + 1, parts.end());
 
+        // Spec meta and test helper files are only used for tooling/tests, not runtime cache entries.
+        if (parts[0] == "specs" || parts[0] == "tests")
+        {
+            return;
+        }
+
         // Handle Globals then return
         // Globals need to be nil'd before they're reloaded
         if (parts[0] == "globals" && path.extension() == ".lua")
