@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -47,6 +47,7 @@
 #include "packets/s2c/0x020_item_attr.h"
 #include "packets/s2c/0x026_item_subcontainer.h"
 #include "packets/s2c/0x02d_battle_message2.h"
+#include "packets/s2c/0x04f_equip_clear.h"
 #include "packets/s2c/0x050_equip_list.h"
 #include "packets/s2c/0x051_grap_list.h"
 #include "packets/s2c/0x055_scenarioitem.h"
@@ -2022,6 +2023,9 @@ uint32 UpdateItem(CCharEntity* PChar, uint8 LocationID, uint8 slotID, int32 quan
             }
         }
         luautils::OnItemDrop(PChar, PItem);
+
+        // Remove soon to be stale PItem pointer from sync state
+        PChar->inventorySyncState().removeEquipChange(PItem);
     }
     return ItemID;
 }
@@ -3350,8 +3354,14 @@ void EquipItem(CCharEntity* PChar, uint8 slotID, uint8 equipSlotID, uint8 contai
                 PChar->PLatentEffectContainer->CheckLatentsEquip(equipSlotID);
                 PChar->addPetModifiers(&PItem->petModList);
 
-                // Only call the lua onEquip if its a valid equip - e.g. has passed EquipArmor and other checks above
+                // Only call the lua onEquip if it's a valid equip - e.g. has passed EquipArmor and other checks above
                 luautils::OnItemEquip(PChar, PItem);
+
+                // queue look update on valid equip
+                if (PItem != nullptr && PItem->isType(ITEM_EQUIPMENT))
+                {
+                    PChar->inventorySyncState().queueEquipChange(static_cast<CONTAINER_ID>(containerID), slotID, static_cast<SLOTTYPE>(equipSlotID), PItem, Equipping::Yes);
+                }
             }
         }
     }
@@ -3377,11 +3387,6 @@ void EquipItem(CCharEntity* PChar, uint8 slotID, uint8 equipSlotID, uint8 contai
 
     charutils::BuildingCharSkillsTable(PChar);
     PChar->UpdateHealth();
-
-    if (PItem != nullptr && PItem->isType(ITEM_EQUIPMENT))
-    {
-        PChar->inventorySyncState().queueEquipChange(static_cast<CONTAINER_ID>(containerID), slotID, static_cast<SLOTTYPE>(equipSlotID), PItem, Equipping::Yes);
-    }
 
     PChar->updatemask |= UPDATE_HP;
     PChar->updatemask |= UPDATE_LOOK;
@@ -5292,7 +5297,7 @@ void DistributeExperiencePoints(CCharEntity* PChar, CMobEntity* PMob)
 
                     exp = charutils::AddExpBonus(PMember, exp);
 
-                    charutils::AddExperiencePoints(false, PMember, PMob, (uint32)exp, mobCheck, chainactive);
+                    charutils::AddExperiencePoints(false, true, false, PMember, PMob, (uint32)exp, mobCheck, chainactive);
                 }
             }
         });
@@ -5612,7 +5617,7 @@ void DelExperiencePoints(CCharEntity* PChar, float retainPercent, uint16 forcedX
  *                                                                       *
  ************************************************************************/
 
-void AddExperiencePoints(bool expFromRaise, CCharEntity* PChar, CBaseEntity* PMob, uint32 exp, EMobDifficulty mobCheck, bool isexpchain)
+void AddExperiencePoints(bool expFromRaise, bool awardRegionPoints, bool fromScripts, CCharEntity* PChar, CBaseEntity* PMob, uint32 exp, EMobDifficulty mobCheck, bool isexpchain)
 {
     TracyZoneScoped;
 
@@ -5621,7 +5626,8 @@ void AddExperiencePoints(bool expFromRaise, CCharEntity* PChar, CBaseEntity* PMo
         return;
     }
 
-    if (!expFromRaise)
+    // Scripts have their own settings in main.lua settings. This is for exp from combat.
+    if (!expFromRaise && !fromScripts)
     {
         exp = (uint32)(exp * settings::get<float>("map.EXP_RATE"));
     }
@@ -5697,7 +5703,7 @@ void AddExperiencePoints(bool expFromRaise, CCharEntity* PChar, CBaseEntity* PMo
         PChar->jobs.exp[PChar->GetMJob()] += exp;
     }
 
-    if (!expFromRaise)
+    if (!expFromRaise && !fromScripts && awardRegionPoints)
     {
         REGION_TYPE region = PChar->loc.zone->GetRegionID();
 
@@ -5714,6 +5720,8 @@ void AddExperiencePoints(bool expFromRaise, CCharEntity* PChar, CBaseEntity* PMo
             charutils::AddPoints(PChar, "imperial_standing", (int32)(exp * 0.1f));
             PChar->pushPacket<GP_SERV_COMMAND_CONQUEST>(PChar);
         }
+
+        // TODO: WOTG Expansion Sigil
 
         // Cruor Drops in Abyssea zones.
         uint16 Pzone = PChar->getZone();
@@ -7383,6 +7391,10 @@ void SendDisconnect(CCharEntity* PChar)
     {
         PChar->setPetZoningInfo();
     }
+
+    // Release the account session immediately for logout/shutdown so another
+    // character on the same account is not blocked waiting for map cleanup.
+    db::preparedStmt("DELETE FROM accounts_sessions WHERE charid = ?", PChar->id);
 
     PChar->pushPacket<GP_SERV_COMMAND_LOGOUT>(GP_GAME_LOGOUT_STATE::LOGOUT, IPP());
 }

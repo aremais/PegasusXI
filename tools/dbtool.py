@@ -387,13 +387,20 @@ def check_protected():
     global import_protected, express_enabled
     if not cur:
         connect()
-    import_protected.clear()
-    for table in player_data:
-        import_protected.append("'" + table[:-4] + "'")
-    cur.execute(
-        f"SELECT TABLE_NAME FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = '{database}' AND `TABLE_NAME` IN ({', '.join(import_protected)})"
+    quoted_tables = ["'" + table[:-4] + "'" for table in player_data]
+    q = (
+        "SELECT TABLE_NAME FROM `information_schema`.`tables` "
+        f"WHERE `TABLE_SCHEMA` = '{database}' AND `TABLE_NAME` IN ({', '.join(quoted_tables)})"
     )
-    tables = cur.fetchall()
+    try:
+        cur.execute(q)
+        tables = cur.fetchall()
+    except (mariadb.InterfaceError, mariadb.Error) as err:
+        if isinstance(err, mariadb.Error) and getattr(err, "errno", None) != 2006:
+            raise
+        connect()
+        cur.execute(q)
+        tables = cur.fetchall()
     import_protected.clear()
     for value in tables:
         import_protected.append("".join(value) + ".sql")
@@ -508,8 +515,26 @@ def import_file(file):
     _ = db_query(query)
 
 
+def _disconnect_mysql():
+    """Close the connector-managed MariaDB session (best-effort)."""
+    global db, cur
+    if cur is not None:
+        try:
+            cur.close()
+        except Exception:
+            pass
+        cur = None
+    if db is not None:
+        try:
+            db.close()
+        except Exception:
+            pass
+        db = None
+
+
 def connect():
     global db, cur
+    _disconnect_mysql()
     try:
         db = mariadb.connect(
             host=host, user=login, passwd=password, db=database, port=port
@@ -558,8 +583,7 @@ def connect():
 def close():
     if db:
         print("Closing connection...")
-        cur.close()
-        db.close()
+    _disconnect_mysql()
     time.sleep(0.5)
     quit()
 
@@ -610,6 +634,9 @@ def backup_db(silent=False, lite=False):
             fetch_errors("Dumping database", result)
             print_green("Database saved!")
             time.sleep(0.5)
+            # mysqldump runs outside this connector; the server may close our idle socket.
+            if db is not None:
+                connect()
 
 
 def express_update(silent=False):

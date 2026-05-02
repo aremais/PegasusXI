@@ -6,6 +6,11 @@
 xi = xi or {}
 xi.reives = xi.reives or {}
 
+-- reive data may use 0+offsets when GetFirstID is nil; real map entity ids are always large.
+local function reiveIdUsable(id)
+    return type(id) == 'number' and id >= 0x1000000
+end
+
 -- NOTE: Reives collision blockers act like doors and blockers in other parts of the game.
 --       One NPC acts as the visual element and another acts as the collision
 --       blocker.
@@ -55,6 +60,10 @@ xi.reives.checkObjectiveStatus = function(zoneID, reiveNum)
 
     -- Iterate over each obstacle in the reive's obstacle table.
     for _, id in ipairs(reiveData.obstacles) do
+        if not reiveIdUsable(id) then
+            return false
+        end
+
         local mob = GetMobByID(id)
 
         -- Ensure the mob is valid before calling isDead.
@@ -143,41 +152,47 @@ xi.reives.enableReive = function(zoneID, reiveNum)
 
     -- Handle mobs
     for _, entryId in pairs(reiveData.mob) do
-        local mob = GetMobByID(entryId)
-        if mob then
-            if not mob:isAlive() then
-                SpawnMob(entryId)  -- Spawn the reive defenders
-                -- TODO: Set name flags (sword)
-            end
+        if reiveIdUsable(entryId) then
+            local mob = GetMobByID(entryId)
+            if mob then
+                if not mob:isAlive() then
+                    SpawnMob(entryId)  -- Spawn the reive defenders
+                    -- TODO: Set name flags (sword)
+                end
 
-            mob:setRespawnTime(reiveMobRespawnTime)  -- Set respawn time of the reive defenders
+                mob:setRespawnTime(reiveMobRespawnTime)  -- Set respawn time of the reive defenders
+            end
         end
     end
 
     -- Handle obstacles
     for _, entryId in pairs(reiveData.obstacles) do
-        local mob = GetMobByID(entryId)
-        if mob then
-            if not mob:isAlive() then
-                SpawnMob(entryId)  -- Spawn the reive obstacles
-                mob:setAnimation(xi.animation.CLOSE_DOOR)
-            end
+        if reiveIdUsable(entryId) then
+            local mob = GetMobByID(entryId)
+            if mob then
+                if not mob:isAlive() then
+                    SpawnMob(entryId)  -- Spawn the reive obstacles
+                    mob:setAnimation(xi.animation.CLOSE_DOOR)
+                end
 
-            mob:setAutoAttackEnabled(false)         -- Obstacles do not auto attack.
-            mob:setMobAbilityEnabled(false)         -- Obstacles should not use mobskills.
-            mob:setMobMod(xi.mobMod.NO_MOVE, 1)     -- Obstacles do not move.
-            mob:setMobMod(xi.mobMod.NO_REST, 1)     -- Obstacles do not recover HP when not in combat.
-            mob:setRespawnTime(reiveObjRespawnTime) -- Set the respawn time of obstacles to 0 while reive is active.
-            -- TODO: Handle mob damage reduction based on keyitems the player has or doesn't have.
-            -- TODO: Defender mobs should not aggro by default unless players are already in combat with the objectives.
+                mob:setAutoAttackEnabled(false)         -- Obstacles do not auto attack.
+                mob:setMobAbilityEnabled(false)         -- Obstacles should not use mobskills.
+                mob:setMobMod(xi.mobMod.NO_MOVE, 1)     -- Obstacles do not move.
+                mob:setMobMod(xi.mobMod.NO_REST, 1)     -- Obstacles do not recover HP when not in combat.
+                mob:setRespawnTime(reiveObjRespawnTime) -- Set the respawn time of obstacles to 0 while reive is active.
+                -- TODO: Handle mob damage reduction based on keyitems the player has or doesn't have.
+                -- TODO: Defender mobs should not aggro by default unless players are already in combat with the objectives.
+            end
         end
     end
 
     -- Handle collision objects
     for _, entryId in pairs(reiveData.collision) do
-        local npc = GetNPCByID(entryId)
-        if npc then
-            npc:setAnimation(xi.animation.CLOSE_DOOR)  -- Close the collision blocker
+        if reiveIdUsable(entryId) then
+            local npc = GetNPCByID(entryId)
+            if npc then
+                npc:setAnimation(xi.animation.CLOSE_DOOR)  -- Close the collision blocker
+            end
         end
     end
 
@@ -210,34 +225,40 @@ xi.reives.disableReive = function(zoneID, reiveNum)
 
     -- Handle mobs
     for _, entryId in pairs(reiveData.mob) do
-        local mob = GetMobByID(entryId)
-        if mob then
-            mob:setRespawnTime(reiveMobRespawnTime) -- Sets RespawnTime of Adds to 0 so they don't respawn until the reive begins again.
-            if mob:isSpawned() then
-                DespawnMob(entryId) -- Despawn defender mobs on reive end.
-                -- TODO: Mobs should go grey and fade away, instead of plain despawn
+        if reiveIdUsable(entryId) then
+            local mob = GetMobByID(entryId)
+            if mob then
+                mob:setRespawnTime(reiveMobRespawnTime) -- Sets RespawnTime of Adds to 0 so they don't respawn until the reive begins again.
+                if mob:isSpawned() then
+                    DespawnMob(entryId) -- Despawn defender mobs on reive end.
+                    -- TODO: Mobs should go grey and fade away, instead of plain despawn
+                end
             end
         end
     end
 
     -- Handle obstacles
     for _, entryId in pairs(reiveData.obstacles) do
-        local mob = GetMobByID(entryId)
-        if mob then
-            mob:setAnimation(xi.animation.OPEN_DOOR)
-            mob:setRespawnTime(reiveObjRespawnTime) -- Set the time for the next reive spawn
-            if mob:isSpawned() then
-                DespawnMob(entryId)
+        if reiveIdUsable(entryId) then
+            local mob = GetMobByID(entryId)
+            if mob then
+                mob:setAnimation(xi.animation.OPEN_DOOR)
+                mob:setRespawnTime(reiveObjRespawnTime) -- Set the time for the next reive spawn
+                if mob:isSpawned() then
+                    DespawnMob(entryId)
+                end
             end
         end
     end
 
     -- Handle collision objects
     for _, entryId in pairs(reiveData.collision) do
-        local npc = GetNPCByID(entryId)
-        if npc then
-            npc:setAnimation(xi.animation.OPEN_DOOR) -- Open the collision blocker until the next reive spawns
-            -- print('collision open', reiveNum)
+        if reiveIdUsable(entryId) then
+            local npc = GetNPCByID(entryId)
+            if npc then
+                npc:setAnimation(xi.animation.OPEN_DOOR) -- Open the collision blocker until the next reive spawns
+                -- print('collision open', reiveNum)
+            end
         end
     end
 

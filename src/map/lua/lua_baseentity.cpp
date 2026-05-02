@@ -9259,7 +9259,7 @@ void CLuaBaseEntity::addExp(uint32 exp)
 
     auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
 
-    charutils::AddExperiencePoints(false, PChar, m_PBaseEntity, exp);
+    charutils::AddExperiencePoints(false, false, true, PChar, m_PBaseEntity, exp);
 }
 
 /************************************************************************
@@ -17302,7 +17302,7 @@ void CLuaBaseEntity::setMobLevel(uint8 level, sol::optional<bool> recover)
 /************************************************************************
  *  Function: getEcosystem()
  *  Purpose : Returns integer value of system associated with an Entity
- *  Example : if pet:getEcosystem() ~= xi.ecosystem.AVATAR then -- Not an avatar
+ *  Example : if pet:getEcosystem() ~= xi.ecosystem.ELEMENTAL then -- Not an elemental
  *  Notes   :
  ************************************************************************/
 
