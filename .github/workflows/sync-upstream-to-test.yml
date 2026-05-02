@@ -1,17 +1,7 @@
 name: Sync upstream into test
 
 on:
-  workflow_dispatch:
-    inputs:
-      conflict_strategy:
-        description: "How should non-settings conflicts be handled?"
-        required: true
-        type: choice
-        options:
-          - manual
-          - ours
-          - theirs
-        default: manual
+  workflow_dispatch: {}
   schedule:
     - cron: "0 10 * * *"
 
@@ -41,26 +31,23 @@ jobs:
       - name: Add upstream remote if missing
         run: |
           $remotes = git remote
+
           if ($remotes -notcontains "upstream") {
             git remote add upstream https://github.com/LandSandBoat/server.git
           }
 
           git fetch upstream --tags
 
-      - name: Merge upstream, preserve settings, block workflow-file changes, and handle remaining conflicts
+      - name: Merge upstream, preserve settings, block workflow-file changes, and keep test branch conflicts
         run: |
           git checkout test
 
-          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
-            $strategy = "${{ github.event.inputs.conflict_strategy }}"
-          } else {
-            $strategy = "manual"
-          }
-
-          Write-Host "Conflict strategy: $strategy"
+          Write-Host "Conflict strategy: always keep TEST branch version"
 
           git merge upstream/base --no-commit --no-ff
           $mergeExit = $LASTEXITCODE
+
+          Write-Host "Merge exit code: $mergeExit"
 
           Write-Host "Restoring test version of settings/ and settings/default/"
           git restore --source=HEAD --staged --worktree -- settings settings/default 2>$null
@@ -68,6 +55,7 @@ jobs:
 
           Write-Host "Auto-preserving conflicted workflow files from test"
           $workflowConflicts = @(git diff --name-only --diff-filter=U -- .github/workflows)
+
           if ($workflowConflicts.Count -gt 0) {
             foreach ($file in $workflowConflicts) {
               Write-Host "Keeping TEST version of workflow file: $file"
@@ -78,15 +66,18 @@ jobs:
 
           Write-Host "Removing any staged workflow-file changes before commit"
           $workflowChanges = @(git diff --name-only --cached -- .github/workflows)
+
           if ($workflowChanges.Count -gt 0) {
             foreach ($file in $workflowChanges) {
               Write-Host "Reverting staged workflow file: $file"
 
               git show "HEAD:$file" > $null 2>&1
+
               if ($LASTEXITCODE -eq 0) {
                 git checkout HEAD -- "$file"
               } else {
                 git rm --cached --force -- "$file" 2>$null
+
                 if (Test-Path $file) {
                   Remove-Item -Force "$file"
                 }
@@ -97,6 +88,7 @@ jobs:
           }
 
           $stillWorkflowChanges = @(git diff --name-only --cached -- .github/workflows)
+
           if ($stillWorkflowChanges.Count -gt 0) {
             Write-Host "Workflow files still staged:"
             $stillWorkflowChanges | ForEach-Object { Write-Host " - $_" }
@@ -106,52 +98,32 @@ jobs:
           $remainingConflicts = @(git diff --name-only --diff-filter=U)
 
           if ($remainingConflicts.Count -gt 0) {
-            Write-Host "Remaining non-settings conflicts detected:"
+            Write-Host "Remaining non-settings conflicts detected. Keeping TEST branch version for all:"
             $remainingConflicts | ForEach-Object { Write-Host " - $_" }
 
-            switch ($strategy) {
-              "manual" {
-                Add-Content $env:GITHUB_STEP_SUMMARY "## Merge conflicts need your decision"
-                Add-Content $env:GITHUB_STEP_SUMMARY ""
-                Add-Content $env:GITHUB_STEP_SUMMARY "The following non-settings files still conflict:"
-                Add-Content $env:GITHUB_STEP_SUMMARY ""
+            foreach ($file in $remainingConflicts) {
+              Write-Host "Keeping TEST version of $file"
 
-                foreach ($file in $remainingConflicts) {
-                  Add-Content $env:GITHUB_STEP_SUMMARY "- $file"
+              git checkout --ours -- "$file" 2>$null
+
+              if ($LASTEXITCODE -eq 0) {
+                git add "$file"
+              } else {
+                Write-Host "TEST branch does not have $file, keeping it deleted."
+
+                git rm --cached --force -- "$file" 2>$null
+
+                if (Test-Path $file) {
+                  Remove-Item -Force "$file"
                 }
 
-                Add-Content $env:GITHUB_STEP_SUMMARY ""
-                Add-Content $env:GITHUB_STEP_SUMMARY "### Your choices"
-                Add-Content $env:GITHUB_STEP_SUMMARY "- Re-run this workflow with **conflict_strategy = ours** to keep the current **test** version of the conflicted files."
-                Add-Content $env:GITHUB_STEP_SUMMARY "- Re-run this workflow with **conflict_strategy = theirs** to keep the **upstream** version of the conflicted files."
-                Add-Content $env:GITHUB_STEP_SUMMARY "- Or resolve the conflicts manually in Git and push the result to **test**."
-
-                throw "Manual decision required. Re-run with conflict_strategy=ours or conflict_strategy=theirs."
-              }
-
-              "ours" {
-                foreach ($file in $remainingConflicts) {
-                  Write-Host "Keeping TEST version of $file"
-                  git checkout --ours -- "$file"
-                  git add "$file"
-                }
-              }
-
-              "theirs" {
-                foreach ($file in $remainingConflicts) {
-                  Write-Host "Keeping UPSTREAM version of $file"
-                  git checkout --theirs -- "$file"
-                  git add "$file"
-                }
-              }
-
-              default {
-                throw "Unknown conflict strategy: $strategy"
+                $global:LASTEXITCODE = 0
               }
             }
           }
 
           $stillConflicted = @(git diff --name-only --diff-filter=U)
+
           if ($stillConflicted.Count -gt 0) {
             Write-Host "Unresolved conflicts still remain:"
             $stillConflicted | ForEach-Object { Write-Host " - $_" }
@@ -159,10 +131,14 @@ jobs:
           }
 
           git diff --cached --quiet
+
           if ($LASTEXITCODE -eq 0) {
             Write-Host "No changes to commit."
             exit 0
           }
 
-          git commit -m "Sync upstream/base into test (preserve settings/workflows; strategy: $strategy)"
+          git status --short
+
+          git commit -m "Sync upstream/base into test"
+
           git push origin test
