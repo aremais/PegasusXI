@@ -4970,7 +4970,7 @@ int32 HandleStoneskin(CBattleEntity* PDefender, int32 damage)
 auto HandleSevereDamage(CBattleEntity* PDefender, int32 damage, bool isPhysical) -> int32
 {
     damage = HandleSevereDamageEffect(PDefender, EFFECT_MIGAWARI, damage, true);
-    // TODO: Earthen Armor effect
+    damage = HandleSevereDamageEffect(PDefender, EFFECT_EARTHEN_ARMOR, damage, false);
     // TODO: Sentinel's Scherzo effect
 
     if (isPhysical && PDefender->objtype == TYPE_PET && PDefender->getMod(Mod::AUTO_SCHURZEN) != 0 && damage >= PDefender->health.hp &&
