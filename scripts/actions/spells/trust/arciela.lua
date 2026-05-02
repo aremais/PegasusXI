@@ -7,7 +7,6 @@ local spellObject = {}
 local bellatrixOfLight   = 3115
 local bellatrixOfShadows = 3116
 local dynasticGravitas   = 3451
-local illustriousAid     = 3452
 local guidingLight       = 3453
 
 spellObject.onMagicCastingCheck = function(caster, target, spell)
@@ -21,7 +20,7 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.NO_MOVE)
+    mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.MELEE)
 
     mob:addMod(xi.mod.REGAIN, 25)
 
@@ -57,8 +56,7 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, bellatrixOfLight })
     mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, bellatrixOfShadows })
     mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, guidingLight })
-    mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 75 }, { ai.r.MS, ai.s.SPECIFIC, illustriousAid })
-    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, dynasticGravitas })
+    mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 2000 }, { ai.r.MS, ai.s.SPECIFIC, dynasticGravitas })
 end
 
 spellObject.onMobDespawn = function(mob)
