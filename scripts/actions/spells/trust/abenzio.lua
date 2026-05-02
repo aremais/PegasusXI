@@ -36,15 +36,15 @@ spellObject.onMobSpawn = function(mob)
     local blankGaze = 586
     local antiphase = 587
 
-    -- AoE silence.
-    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, antiphase })
-
-    -- Gaze utility.
-    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, blankGaze })
-
     -- Damage/stun-style attacks.
-    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, uppercut })
-    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, blow })
+    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, uppercut }, 30)
+    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, blow }, 30)
+
+    -- Gaze utility. Do not spam if the target is already paralyzed.
+    mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.PARALYSIS }, { ai.r.MS, ai.s.SPECIFIC, blankGaze }, 90)
+
+    -- AoE silence. Do not spam if the target is already silenced.
+    mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.SILENCE }, { ai.r.MS, ai.s.SPECIFIC, antiphase }, 120)
 end
 
 spellObject.onMobDespawn = function(mob)
