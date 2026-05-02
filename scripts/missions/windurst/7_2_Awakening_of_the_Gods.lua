@@ -179,7 +179,7 @@ mission.sections =
         {
             ['_4fx'] =
             {
-                -- Cutscene is on trade (event 23), not on trigger. Clicking from the south (Z >= 332)
+                -- Cutscene is on trade (event 23), not on trigger. Clicking from the south (Z >= 333)
                 -- runs retail event 26, whose dialog in the client DAT is a debug line ("Granite" meme).
                 onTrigger = function(player, npc)
                     local missionStatus = player:getMissionStatus(mission.areaId)
@@ -193,13 +193,28 @@ mission.sections =
                 end,
 
                 onTrade = function(player, npc, trade)
+                    -- Cursed key must be handled here whenever this mission is active. Returning nil
+                    -- would fall back to the zone default _4fx script (event 25 / key breaks), which is
+                    -- not the M7-2 cutscene and could consume the key on the wrong state.
+                    if not npcUtil.tradeHasExactly(trade, xi.item.CURSED_KEY) then
+                        return
+                    end
+
+                    local doorText      = zones[xi.zone.TEMPLE_OF_UGGALEPIH].text
+                    local missionStatus = player:getMissionStatus(mission.areaId)
+                    -- Door plane ~332; 333 still counts as in front of the door on retail; 332 was too strict.
+                    local inFrontOfDoor = player:getZPos() < 333
+
                     if
-                        npcUtil.tradeHasExactly(trade, xi.item.CURSED_KEY) and
-                        player:getZPos() < 332 and
-                        player:getMissionStatus(mission.areaId) >= 3
+                        inFrontOfDoor and
+                        missionStatus >= 3 and
+                        missionStatus < 5 and
+                        player:hasKeyItem(xi.ki.BLANK_BOOK_OF_THE_GODS)
                     then
                         return mission:progressEvent(23)
                     end
+
+                    return mission:messageSpecial(doorText.NOTHING_HAPPENS):progress()
                 end,
             },
 

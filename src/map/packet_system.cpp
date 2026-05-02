@@ -268,6 +268,16 @@ void ValidatedPacketHandler(MapSession* const PSession, CCharEntity* const PChar
         {
             ShowDebugFmt("Invalid 0x{:03X} packet from {}: {}", packetType, PChar->name, error);
         }
+        // Client can resend 0x050 (equip) frequently during events/cutscenes; we still reject it.
+        else if (packetType == 0x050 && error == "Invalid state: InEvent")
+        {
+            ShowDebugFmt("Invalid 0x{:03X} packet from {}: {}", packetType, PChar->name, error);
+        }
+        // 0x0E1 (GET LS message) is sent opportunistically; ignore during event without warning spam.
+        else if (packetType == 0x0E1 && error == "Invalid state: InEvent")
+        {
+            ShowDebugFmt("Invalid 0x{:03X} packet from {}: {}", packetType, PChar->name, error);
+        }
         else
         {
             ShowWarningFmt("Invalid 0x{:03X} packet from {}: {}", packetType, PChar->name, error);

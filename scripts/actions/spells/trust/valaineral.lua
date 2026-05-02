@@ -132,7 +132,7 @@ spellObject.onMobSpawn = function(mob)
             { ai.c.TP_GTE, 900 },
             { ai.c.NOT_HAS_TOP_ENMITY, 0 },
         },
-        { ai.r.WS, ai.s.SPECIFIC, xi.ws.URIEL_BLADE }
+        { ai.r.WS, ai.s.SPECIFIC, xi.weaponskill.URIEL_BLADE }
     )
 
     mob:addGambit(ai.t.TARGET,

@@ -3546,7 +3546,10 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rahal', 1066, 41); -- Swift Blade
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Jakoh_Wahcondalo_UC',1071,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Flaviria_UC',1072,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Babban',1073,0);
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,581); -- blow
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,584); -- uppercut
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,586); -- blank_gaze
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,587); -- antiphase
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,49);   -- Power Slash
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,54);   -- Sickle Moon
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,56);   -- Ground Strike
@@ -3555,7 +3558,12 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,3237); -- Victory 
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Margret',1077,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Chacharoon',1078,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Lhe_Lhangavo',1079,0);
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,0);
+-- TRUST_Arciela
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3115); -- bellatrix_of_light
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3116); -- bellatrix_of_shadows
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3451); -- dynastic_gravitas
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3452); -- illustrious_aid
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3453); -- guiding_light
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Mayakov',1081,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Qultada',1082,33);  -- Burning Blade
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Qultada',1082,42);  -- Savage Blade
@@ -3622,7 +3630,38 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_AAGK',1111,3725); -- Tachi: Kasha
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_AAGK',1111,3726); -- Tachi: Fudo
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Iroha',1112,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Ygnas',1113,0);
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,0);
+-- Trust Monberaux: mix skills (mob_skills.sql); list 1114 matches mob_pools.skill_list_id for pool 5999.
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4231);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4232);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4233);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4234);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4235);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4236);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4237);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4238);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4239);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4240);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4241);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4242);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4243);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4244);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4245);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4246);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4247);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4248);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4249);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4250);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4251);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4252);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4253);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4254);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4255);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4256);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4257);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4258);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4259);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4260);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4261);
 -- Reserved for future Trust 6000 (ID: 1115)
 -- Reserved for future Trust 6001 (ID: 1116)
 -- Reserved for future Trust 6002 (ID: 1117)

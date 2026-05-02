@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -7391,6 +7391,10 @@ void SendDisconnect(CCharEntity* PChar)
     {
         PChar->setPetZoningInfo();
     }
+
+    // Release the account session immediately for logout/shutdown so another
+    // character on the same account is not blocked waiting for map cleanup.
+    db::preparedStmt("DELETE FROM accounts_sessions WHERE charid = ?", PChar->id);
 
     PChar->pushPacket<GP_SERV_COMMAND_LOGOUT>(GP_GAME_LOGOUT_STATE::LOGOUT, IPP());
 }

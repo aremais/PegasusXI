@@ -386,4 +386,12 @@ content.groups =
     },
 }
 
+function content:entryRequirement(player, npc, isRegistrant, trade)
+    if xi.battlefield.shouldHideOtherBfDuringCopThreePathsUlmiaMissionBf(player, 7) then
+        return false
+    end
+
+    return true
+end
+
 return content:register()

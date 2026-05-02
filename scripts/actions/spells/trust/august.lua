@@ -87,6 +87,8 @@ spellObject.onMobSpawn = function(mob)
         local daybreakRecast  = 180 -- 3 minutes
         local daybreakEndTime = mobArg:getLocalVar('DaybreakEndTime')
         local daybreakUsed    = mobArg:getLocalVar('DaybreakUsed')
+        local daybreakHolyTime = mobArg:getLocalVar('DaybreakHolyTime')
+        local divineEmblemTime = mobArg:getLocalVar('DivineEmblemTime')
         local hppLow          = mobArg:getHPP() <= 66
         local now             = GetSystemTime()
         if
@@ -97,7 +99,18 @@ spellObject.onMobSpawn = function(mob)
             daybreakUsed ~= 1
         then
             mobArg:useMobAbility(xi.mobSkill.DAYBREAK_TRUST)
-            daybreakUsed = 1
+            mobArg:setLocalVar('DaybreakUsed', 1)
+        end
+
+        -- During Daybreak, use Divine Emblem and then Holy.
+        if mobArg:getAnimationSub() == 5 then
+            if mobArg:getStatusEffect(xi.effect.DIVINE_EMBLEM) == nil and now >= divineEmblemTime then
+                mobArg:useJobAbility(xi.ja.DIVINE_EMBLEM)
+                mobArg:setLocalVar('DivineEmblemTime', now + 3)
+            elseif mobArg:getStatusEffect(xi.effect.DIVINE_EMBLEM) ~= nil and now >= daybreakHolyTime then
+                mobArg:castSpell(xi.magic.spell.HOLY)
+                mobArg:setLocalVar('DaybreakHolyTime', now + 8)
+            end
         end
     end)
 
@@ -113,14 +126,6 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.PARTY,                      { ai.c.HPP_LT,             50                      }, { ai.r.MA, ai.s.HIGHEST,     xi.magic.spellFamily.CURE })
     mob:addGambit(ai.t.SELF,                       { ai.c.NOT_STATUS,         xi.effect.PALISADE      }, { ai.r.JA, ai.s.SPECIFIC,    xi.ja.PALISADE            })
 
-    -- Only uses Divine Emblen and Holy when daybreak active (subAnimation 5)
-    mob:addGambit(ai.t.SELF, {
-        { ai.c.SUB_ANIMATION,      5                       },
-        { ai.c.NOT_STATUS,         xi.effect.DIVINE_EMBLEM },                                         }, { ai.r.JA, ai.s.SPECIFIC,    xi.ja.DIVINE_EMBLEM       })
-    mob:addGambit(ai.t.TRIGGER_SELF_ACTION_TARGET, {
-        { ai.c.SUB_ANIMATION,      5                       },
-        { ai.c.STATUS,             xi.effect.DIVINE_EMBLEM },                                         }, { ai.r.MA, ai.s.HIGHEST,     xi.magic.spellFamily.HOLY })
-
     mob:setMobSkillAttack(1197)
 
     mob:setTrustTPSkillSettings(ai.tp.OPENER, ai.s.SPECIAL_AUGUST)
@@ -134,6 +139,8 @@ spellObject.onMobSpawn = function(mob)
             -- Come! Show me your finest form!
             xi.trust.message(mobArg, xi.trust.messageOffset.SPECIAL_MOVE_1)
             mobArg:setLocalVar('DaybreakUsed', 0)
+            mobArg:setLocalVar('DivineEmblemTime', 0)
+            mobArg:setLocalVar('DaybreakHolyTime', 0)
             mob:timer(1000, function()
                 mob:entityAnimationPacket('ids2') -- Wings off
             end)

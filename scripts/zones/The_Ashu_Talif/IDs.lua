@@ -50,8 +50,9 @@ zones[xi.zone.THE_ASHU_TALIF] =
     mob =
     {
         GESSHO              = GetFirstID('Gessho'),
-        ASHU_CREW_OFFSET    = GetFirstID('Ashu_Talif_Crew_mnk'),
-        ASHU_CAPTAIN_OFFSET = GetFirstID('Ashu_Talif_Captain'),
+        -- First mobid for each pool (sql/mob_spawn_points) when GetFirstID returns nil (e.g. spawn SQL not imported).
+        ASHU_CREW_OFFSET    = GetFirstID('Ashu_Talif_Crew_mnk') or 17022980,
+        ASHU_CAPTAIN_OFFSET = GetFirstID('Ashu_Talif_Captain') or 17022985,
         GOWAM               = GetFirstID('Gowam'),
         YAZQUHL             = GetFirstID('Yazquhl'),
     },

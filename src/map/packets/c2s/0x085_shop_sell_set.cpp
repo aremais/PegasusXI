@@ -24,7 +24,6 @@
 #include "common/settings.h"
 #include "entities/charentity.h"
 #include "enums/msg_std.h"
-#include "enums/packet_c2s.h"
 #include "packets/s2c/0x009_message.h"
 #include "packets/s2c/0x01d_item_same.h"
 #include "trade_container.h"
@@ -57,16 +56,23 @@ auto GP_CLI_COMMAND_SHOP_SELL_SET::validate(MapSession* PSession, const CCharEnt
 {
     return PacketValidator(PChar)
         .blockedBy({ BlockedState::InEvent, BlockedState::Crafting })
-        .requiresPriorPacket(PacketC2S::GP_CLI_COMMAND_SHOP_SELL_REQ)
         .mustEqual(this->SellFlag, 1, "SellFlag not 1");
 }
 
 void GP_CLI_COMMAND_SHOP_SELL_SET::process(MapSession* PSession, CCharEntity* PChar) const
 {
-    // Retrieve item-to-sell from last slot of the shop's container
-    uint32      quantity = PChar->Container->getQuantity(PChar->Container->getExSize());
-    uint16      itemId   = PChar->Container->getItemID(PChar->Container->getExSize());
-    const uint8 slotId   = PChar->Container->getInvSlotID(PChar->Container->getExSize());
+    // Pending sell is written to the last shop slot by GP_CLI_COMMAND_SHOP_SELL_REQ (0x084).
+    const uint8 pendingSlot = PChar->Container->getExSize();
+    uint32        quantity  = PChar->Container->getQuantity(pendingSlot);
+    uint16        itemId    = PChar->Container->getItemID(pendingSlot);
+    const uint8   slotId    = PChar->Container->getInvSlotID(pendingSlot);
+
+    if (itemId == 0 || slotId == 0xFF)
+    {
+        ShowWarningFmt("GP_CLI_COMMAND_SHOP_SELL_SET: Player {} confirmed a vendor sale with no pending appraisal (run 0x084 first or stale shop state).",
+                       PChar->getName());
+        return;
+    }
 
     if (const CItem* PGilItem = PChar->getStorage(LOC_INVENTORY)->GetItem(0); !PGilItem || !PGilItem->isType(ITEM_CURRENCY))
     {
@@ -125,5 +131,5 @@ void GP_CLI_COMMAND_SHOP_SELL_SET::process(MapSession* PSession, CCharEntity* PC
     ShowInfo("GP_CLI_COMMAND_SHOP_SELL_SET: Player '%s' sold %u of itemID %u (Total: %u gil) [to VENDOR] ", PChar->getName(), quantity, itemId, cost);
     PChar->pushPacket<GP_SERV_COMMAND_MESSAGE>(nullptr, itemId, quantity, MsgStd::Sell);
     PChar->pushPacket<GP_SERV_COMMAND_ITEM_SAME>(PChar);
-    PChar->Container->setItem(PChar->Container->getExSize(), 0, -1, 0);
+    PChar->Container->setItem(pendingSlot, 0, -1, 0);
 }

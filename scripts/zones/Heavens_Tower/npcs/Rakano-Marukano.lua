@@ -54,7 +54,11 @@ entity.onEventFinish = function(player, csid, option, npc)
         end
 
         player:setNation(newNation)
-        player:setRank(1) -- New citizen rank; was missing and left conquest UI / purchases inconsistent
+        -- Only apply starter rank for nations with no real military progress; returning citizens keep rank_*.
+        if player:getRank(newNation) < 2 then
+            player:setRank(1) -- Fixes rank 0; rank 1 is default for first-time immigrants
+        end
+
         player:setGil(player:getGil() - cost)
         player:setRankPoints(0)
     end

@@ -6,4 +6,4 @@
 --
 -- Run once against your database, then restart the map server (or reload the zone).
 INSERT IGNORE INTO `npc_list`
-VALUES (17723822,'blank','',0,0.000,0.000,0.000,0,50,50,0,0,0,2,3,0x0000320000000000000000000000000000000000,0,NULL,1);
+VALUES (17723822,'blank','',0,0.000,0.000,0.000,0,50,50,0,0,8,2,3,0x0000320000000000000000000000000000000000,0,NULL,1);

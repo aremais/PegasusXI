@@ -293,7 +293,16 @@ void init(IPP mapIPP, bool isRunningInCI)
     lua.set_function("GarbageCollectStep", &luautils::garbageCollectStep);
     lua.set_function("GarbageCollectFull", &luautils::garbageCollectFull);
     lua.set_function("GetZone", &luautils::GetZone);
-    lua.set_function("GetItemByID", &luautils::GetItemByID);
+    lua.set_function("GetItemByID", [](uint32 itemId) -> sol::object {
+        TracyZoneScoped;
+
+        if (const CItem* PItem = GetItemByID(itemId))
+        {
+            return sol::make_object(lua, CLuaItem(PItem));
+        }
+
+        return sol::lua_nil;
+    });
     lua.set_function("GetNPCByID", &luautils::GetNPCByID);
     lua.set_function("GetMobByID", &luautils::GetMobByID);
     lua.set_function("GetEntityByID", &luautils::GetEntityByID);
@@ -356,7 +365,16 @@ void init(IPP mapIPP, bool isRunningInCI)
     lua.set_function("NearLocation", &luautils::NearLocation);
     lua.set_function("GetFurthestValidPosition", &luautils::GetFurthestValidPosition);
     lua.set_function("Terminate", &luautils::Terminate);
-    lua.set_function("GetReadOnlyItem", &luautils::GetReadOnlyItem);
+    lua.set_function("GetReadOnlyItem", [](uint32 id) -> sol::object {
+        TracyZoneScoped;
+
+        if (const CItem* PItem = GetReadOnlyItem(id))
+        {
+            return sol::make_object(lua, CLuaItem(PItem));
+        }
+
+        return sol::lua_nil;
+    });
     lua.set_function("GetAbility", &luautils::GetAbility);
     lua.set_function("GetSpell", &luautils::GetSpell);
     lua.set_function("SelectDailyItem", &luautils::SelectDailyItem);
