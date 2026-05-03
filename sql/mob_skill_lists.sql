@@ -981,10 +981,10 @@ INSERT INTO `mob_skill_lists` VALUES ('Slime',230,433);
 INSERT INTO `mob_skill_lists` VALUES ('Slug',231,2183);
 INSERT INTO `mob_skill_lists` VALUES ('Slug',231,2184);
 INSERT INTO `mob_skill_lists` VALUES ('Slug',231,2185);
-INSERT INTO `mob_skill_lists` VALUES ('Snoll',232,526); -- Berserk
-INSERT INTO `mob_skill_lists` VALUES ('Snoll',232,527); -- Freeze Rush
-INSERT INTO `mob_skill_lists` VALUES ('Snoll',232,528); -- Cold Wave
-INSERT INTO `mob_skill_lists` VALUES ('Snoll',232,529); -- Hypothermal Combustion
+INSERT INTO `mob_skill_lists` VALUES ('Snoll',232,1644);
+INSERT INTO `mob_skill_lists` VALUES ('Snoll',232,1645);
+INSERT INTO `mob_skill_lists` VALUES ('Snoll',232,1646);
+INSERT INTO `mob_skill_lists` VALUES ('Snoll',232,1647);
 INSERT INTO `mob_skill_lists` VALUES ('Soulflayer',233,1963); -- Mind Blast
 INSERT INTO `mob_skill_lists` VALUES ('Soulflayer',233,1964); -- Immortal Mind
 INSERT INTO `mob_skill_lists` VALUES ('Soulflayer',233,1965); -- Immortal Shield
@@ -2283,13 +2283,7 @@ INSERT INTO `mob_skill_lists` VALUES ('Cyranuce_M_Cutauleon',498,816); -- Fang R
 INSERT INTO `mob_skill_lists` VALUES ('Cyranuce_M_Cutauleon',498,817); -- Dread Shriek
 INSERT INTO `mob_skill_lists` VALUES ('Cyranuce_M_Cutauleon',498,818); -- Tail Crush
 INSERT INTO `mob_skill_lists` VALUES ('Cyranuce_M_Cutauleon',498,822); -- Chaos Breath
-INSERT INTO `mob_skill_lists` VALUES ('Bomb_COP',499,510); -- Berserk
-INSERT INTO `mob_skill_lists` VALUES ('Bomb_COP',499,342); -- Vulcanian Impact
-INSERT INTO `mob_skill_lists` VALUES ('Bomb_COP',499,512); -- Heat Wave
-INSERT INTO `mob_skill_lists` VALUES ('Bomb_COP',499,509); -- Self-destruct
--- 500 free
--- 501 free
--- 502 free
+-- 499 to 699: free
 INSERT INTO `mob_skill_lists` VALUES ('Mammet',503,347);
 INSERT INTO `mob_skill_lists` VALUES ('Mammet',503,419);
 INSERT INTO `mob_skill_lists` VALUES ('Mammet',503,422);
@@ -2300,7 +2294,6 @@ INSERT INTO `mob_skill_lists` VALUES ('Mammet',503,464);
 INSERT INTO `mob_skill_lists` VALUES ('Mammet',503,471);
 INSERT INTO `mob_skill_lists` VALUES ('Mammet',503,487);
 INSERT INTO `mob_skill_lists` VALUES ('Mammet',503,540);
--- 504 - 699 free
 INSERT INTO `mob_skill_lists` VALUES ('Demonic_Tiphia',700,334);
 INSERT INTO `mob_skill_lists` VALUES ('Demonic_Tiphia',700,335);
 INSERT INTO `mob_skill_lists` VALUES ('Demonic_Tiphia',700,336);
@@ -2420,10 +2413,10 @@ INSERT INTO `mob_skill_lists` VALUES ('Proto-Ultima_Phase1',729,1269); -- chemic
 INSERT INTO `mob_skill_lists` VALUES ('Tiamat-Flying-Attack',730,1278);
 INSERT INTO `mob_skill_lists` VALUES ('Ouryu-Flying-Attack',731,1298);
 INSERT INTO `mob_skill_lists` VALUES ('Jormungand-Flying-Attack',732,1288);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Hare',733,672);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Hare',733,673);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Hare',733,674);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Hare',733,735);
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Hare',733,3840); -- foot_kick
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Hare',733,3841); -- dust_cloud
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Hare',733,3842); -- whirl_claws
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Hare',733,3903); -- wild_carrot
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Mandragora',734,675);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Mandragora',734,676);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Mandragora',734,677);
@@ -2444,11 +2437,11 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_Sheep',737,689);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Sheep',737,690);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Sheep',737,691);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Sheep',737,692);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Crab',738,693);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Crab',738,694);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Crab',738,695);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Crab',738,696);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Crab',738,697);
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Crab',738,3861); -- bubble_shower
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Crab',738,3862); -- bubble_curtain
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Crab',738,3863); -- big_scissors
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Crab',738,3864); -- scissor_guard
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Crab',738,3865); -- metallic_body
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Cactuar',739,698);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Cactuar',739,699);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Funguar',740,700);
@@ -2495,17 +2488,17 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_SnowHare',749,735);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Ladybug',750,736);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Ladybug',750,737);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Ladybug',750,738);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Raptor',751,743);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Raptor',751,744);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Raptor',751,745);
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Raptor',751,3909); -- scythe_tail
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Raptor',751,3910); -- ripper_fang
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Raptor',751,3911); -- chomp_rush
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Slug',752,747);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Slug',752,748);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,749);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,750);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,751);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,752);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,797);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,798);
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,3915); -- back_heel
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,3916); -- jettatura
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,3917); -- choke_breath
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,3918); -- fantod
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,3961); -- hoof_volley
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,3962); -- nihility_song
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Adamantoise',754,753);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Adamantoise',754,754);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Adamantoise',754,755);
@@ -2516,11 +2509,11 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_Pugil',756,759);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Pugil',756,760);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Chapuli',757,761);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Chapuli',757,762);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Tulfaire',758,763);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Tulfaire',758,764);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Tulfaire',758,767);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Raaz',759,765);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Raaz',759,766);
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Tulfaire',758,3929); -- molting_plumage
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Tulfaire',758,3930); -- swooping_frenzy
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Tulfaire',758,3933); -- pentapeck
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Raaz',759,3931); -- sweeping_gouge
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Raaz',759,3932); -- zealous_snort
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Snapweed',760,768);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Snapweed',760,769);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Snapweed',760,770);
@@ -2529,10 +2522,10 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_FlyHi',761,713);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_FlyHi',761,772);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Acuex',762,774);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Acuex',762,775);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Colibri',763,776);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Spider',764,777);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Spider',764,778);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Spider',764,779);
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Colibri',763,3941); -- pecking_flurry
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Spider',764,3942); -- sickle_slash
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Spider',764,3943); -- acid_spray
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Spider',764,3944); -- spider_web
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Lynx',765,730);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Lynx',765,731);
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Lynx',765,746);
@@ -3490,14 +3483,11 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Lehko_Habhoka',1037,3233); -- Lunar
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Nashmeira',1038,3243); -- Imperial Authority
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Zazarg',1039,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Ovjang',1040,0);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Mnejing',1041,1940); -- Chimera Ripper
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Mnejing',1041,1941); -- String Clipper
+-- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Mnejing',1041,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Sakura',1042,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Luzaf',1043,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Najelith',1044,0);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Aldo',1045,16); -- Wasp Sting
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Aldo',1045,23); -- Dancing Edge
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Aldo',1045,25); -- Evisceration
+-- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Aldo',1045,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Moogle',1046,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Fablinix',1047,3261); -- Bomb Toss
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Fablinix',1047,3262); -- Goblin Rush
@@ -3546,10 +3536,7 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rahal', 1066, 41); -- Swift Blade
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Jakoh_Wahcondalo_UC',1071,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Flaviria_UC',1072,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Babban',1073,0);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,581); -- blow
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,584); -- uppercut
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,586); -- blank_gaze
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,587); -- antiphase
+-- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,49);   -- Power Slash
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,54);   -- Sickle Moon
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,56);   -- Ground Strike
@@ -3558,12 +3545,7 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,3237); -- Victory 
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Margret',1077,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Chacharoon',1078,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Lhe_Lhangavo',1079,0);
--- TRUST_Arciela
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3115); -- bellatrix_of_light
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3116); -- bellatrix_of_shadows
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3451); -- dynastic_gravitas
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3452); -- illustrious_aid
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,3453); -- guiding_light
+-- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Mayakov',1081,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Qultada',1082,33);  -- Burning Blade
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Qultada',1082,42);  -- Savage Blade
@@ -3573,10 +3555,9 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Adelheid',1083,3466); -- Paralyzing
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Adelheid',1083,3467); -- Silencing Microtube
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Adelheid',1083,3468); -- Binding Microtube
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Adelheid',1083,3469); -- Twirling Dervish
--- Order weakest → strongest: TryTrustSkill HIGHEST uses .back() as opener / fallback
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Amchuchu',1084,61); -- Dimidiation
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Amchuchu',1084,49); -- Power Slash
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Amchuchu',1084,54); -- Sickle Moon
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Amchuchu',1084,61); -- Dimidiation
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Brygid',1085,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Mildaurion',1086,3470); -- Great Wheel
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Mildaurion',1086,3471); -- Light Blade
@@ -3630,38 +3611,7 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_AAGK',1111,3725); -- Tachi: Kasha
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_AAGK',1111,3726); -- Tachi: Fudo
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Iroha',1112,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Ygnas',1113,0);
--- Trust Monberaux: mix skills (mob_skills.sql); list 1114 matches mob_pools.skill_list_id for pool 5999.
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4231);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4232);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4233);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4234);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4235);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4236);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4237);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4238);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4239);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4240);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4241);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4242);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4243);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4244);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4245);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4246);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4247);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4248);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4249);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4250);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4251);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4252);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4253);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4254);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4255);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4256);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4257);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4258);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4259);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4260);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4261);
+-- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,0);
 -- Reserved for future Trust 6000 (ID: 1115)
 -- Reserved for future Trust 6001 (ID: 1116)
 -- Reserved for future Trust 6002 (ID: 1117)
@@ -3669,8 +3619,7 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4261);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Excenmille_S',1119,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Ayame_UC',1120,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Maat_UC',1121,3496);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Aldo_UC',1122,25);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Aldo_UC',1122,26);
+-- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Aldo_UC',1122,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Naja_Salaheem_UC',1123,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Lion_II',1124,3491); -- Grapeshot
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Lion_II',1124,3492); -- Pirate Pummel
@@ -3938,21 +3887,10 @@ INSERT INTO `mob_skill_lists` VALUES ('Fairy_Ring_TP',2009,314);  -- silence Gas
 INSERT INTO `mob_skill_lists` VALUES ('Fairy_Ring_TP',2009,315);  -- dark Spore
 INSERT INTO `mob_skill_lists` VALUES ('Fairy_Ring_TP',2009,1621); -- frogkick
 
-INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1604); -- miasmic_breath (weaker tier, timed NM defeated)
 INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1605); -- miasmic_breath
-INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1606); -- fragrant_breath (weaker tier)
 INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1607); -- fragrant_breath
-INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1608); -- putrid_breath (weaker tier)
 INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1609); -- putrid_breath
-INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1610); -- extremely_bad_breath
 INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1611); -- vampiric_lash
-INSERT INTO `mob_skill_lists` VALUES ('Cirrate_Christelle',2010,1337); -- charm
-
-INSERT INTO `mob_skill_lists` VALUES ('Arch_Christelle',2099,316); -- Impale
-INSERT INTO `mob_skill_lists` VALUES ('Arch_Christelle',2099,317); -- Vampiric Lash
-INSERT INTO `mob_skill_lists` VALUES ('Arch_Christelle',2099,319); -- Bad Breath
-INSERT INTO `mob_skill_lists` VALUES ('Arch_Christelle',2099,320); -- Sweet Breath
-INSERT INTO `mob_skill_lists` VALUES ('Arch_Christelle',2099,1337); -- charm
 
 INSERT INTO `mob_skill_lists` VALUE ('Nantina',2011,1617); -- blow
 
@@ -4358,26 +4296,30 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_Slime',2093,792); -- Fluid Toss
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Slime',2093,793); -- Fluid Spread
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Slime',2093,794); -- Digest
 
-INSERT INTO `mob_skill_lists` VALUES ('Jug_CrabHi',2094,788); -- Venom Shower
-INSERT INTO `mob_skill_lists` VALUES ('Jug_CrabHi',2094,694); -- Bubble Curtain
-INSERT INTO `mob_skill_lists` VALUES ('Jug_CrabHi',2094,789); -- Mega Scissor
-INSERT INTO `mob_skill_lists` VALUES ('Jug_CrabHi',2094,696); -- Scissor Guard
-INSERT INTO `mob_skill_lists` VALUES ('Jug_CrabHi',2094,697); -- Metallic Body
+INSERT INTO `mob_skill_lists` VALUES ('Jug_CrabHi',2094,3952); -- venom_shower
+INSERT INTO `mob_skill_lists` VALUES ('Jug_CrabHi',2094,3862); -- bubble_curtain
+INSERT INTO `mob_skill_lists` VALUES ('Jug_CrabHi',2094,3953); -- mega_scissors
+INSERT INTO `mob_skill_lists` VALUES ('Jug_CrabHi',2094,3864); -- scissor_guard
+INSERT INTO `mob_skill_lists` VALUES ('Jug_CrabHi',2094,3865); -- metallic_body
 
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Lucani',2095,786); -- Disembowel
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Lucani',2095,787); -- Extirpating Salvo
 
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Mosquito',2096,781); -- Infected Leech 
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Mosquito',2096,782); -- Gloom Spray
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Mosquito',2096,3945); -- infected_leech
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Mosquito',2096,3946); -- gloom_spray
 
-INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,707); -- Power Attack
-INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,708); -- High-Frequency Field
-INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,709); -- Rhino Attack
-INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,710); -- Rhino Guard
-INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,711); -- Spoil 
-INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,791); -- Rhinowrecker
+INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3875); -- power_attack
+INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3876); -- hi-freq_field
+INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3877); -- rhino_attack
+INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3878); -- rhino_guard
+INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3879); -- spoil
+INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3955); -- rhinowrecker
 
--- Next ID : 2098
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Frog',2098,3868); -- frogkick
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Frog',2098,3893); -- toxic_spit
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Frog',2098,3938); -- somersault
+
+-- Next ID : 2099
 -- ------------------------------------------------------------
 -- Start of Ambuscade section
 -- NOTE: The mobs are changed every update in the DATs, so using out-of-date

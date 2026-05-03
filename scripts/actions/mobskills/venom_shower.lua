@@ -1,7 +1,7 @@
 -----------------------------------
--- Bubble Shower
--- Family: Crab
--- Description: Deals Water elemental damage to enemies within area of effect.
+-- Venom Shower
+-- Family: Barnacled Crab
+-- Description: Deals Water elemental damage to enemies in an area of effect.
 --              Additional Effect: STR Down. Area of effect varies with TP.
 -- Type: Magical
 -- Utsusemi/Blink absorb: Ignores shadows
@@ -31,18 +31,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     if xi.mobskills.processDamage(mob, target, skill, action, info) then
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)
 
-        local tp = skill:getTP()
-        local duration
-
-        if tp >= 2000 then
-            duration = 120 -- 2 minutes
-        elseif tp >= 1000 then
-            duration = 90  -- 1.5 minutes
-        else
-            duration = 60  -- 1 minute
-        end
-
-        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.STR_DOWN, 20, 0, duration) -- TODO: Verify power
+        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.STR_DOWN, 20, 0, 60) -- TODO: Verify power/duration
     end
 
     return info.damage
