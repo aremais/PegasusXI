@@ -5,8 +5,6 @@
 local spellObject = {}
 
 local bellatrixOfLight   = 3115
-local bellatrixOfShadows = 3116
-local dynasticGravitas   = 3451
 local guidingLight       = 3453
 
 spellObject.onMagicCastingCheck = function(caster, target, spell)
@@ -54,9 +52,7 @@ spellObject.onMobSpawn = function(mob)
 
     -- Unique Arciela mob skills
     mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, bellatrixOfLight })
-    mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, bellatrixOfShadows })
     mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, guidingLight })
-    mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 2000 }, { ai.r.MS, ai.s.SPECIFIC, dynasticGravitas })
 end
 
 spellObject.onMobDespawn = function(mob)
