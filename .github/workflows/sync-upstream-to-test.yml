@@ -53,7 +53,7 @@ jobs:
           git restore --source=HEAD --staged --worktree -- settings settings/default 2>$null
           $global:LASTEXITCODE = 0
 
-          Write-Host "Auto-preserving conflicted workflow files from test"
+          Write-Host "Auto-preserving conflicted workflow files from Test"
           $workflowConflicts = @(git diff --name-only --diff-filter=U -- .github/workflows)
 
           if ($workflowConflicts.Count -gt 0) {
