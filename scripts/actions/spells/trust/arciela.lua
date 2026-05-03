@@ -3,10 +3,6 @@
 -----------------------------------
 ---@type TSpellTrust
 local spellObject = {}
-
-local bellatrixOfLight   = 3115
-local guidingLight       = 3453
-
 spellObject.onMagicCastingCheck = function(caster, target, spell)
     return xi.trust.canCast(caster, spell, xi.magic.spell.ARCIELA_II)
 end
@@ -49,10 +45,6 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.PARALYSIS }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.PARALYZE })
 
     mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.ADDLE }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ADDLE })
-
-    -- Unique Arciela mob skills
-    mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, bellatrixOfLight })
-    mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, guidingLight })
 end
 
 spellObject.onMobDespawn = function(mob)
