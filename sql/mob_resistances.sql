@@ -149,7 +149,7 @@ INSERT INTO `mob_resistances` VALUES (107,'Eruca',0,0,0,0,0,0,0,0,0,0,0,0,0,1,-1
 INSERT INTO `mob_resistances` VALUES (108,'Eruca - Energetic_Eruca',-10000,0,0,-10000,0,0,0,0,0,0,0,0,0,1,-1,-1,0,-1,-2,0,-1,-1,-1,-1,0,-2,0,-1,-1);
 INSERT INTO `mob_resistances` VALUES (109,'Euvhi',0,0,0,0,0,0,0,0,0,0,0,0,0,-3,-1,-1,-1,-1,3,3,-1,-1,-1,-1,-1,3,3,-1,-1);
 INSERT INTO `mob_resistances` VALUES (110,'Evil_Weapon',0,0,0,0,0,0,0,0,0,0,0,0,0,-3,0,-2,-2,-2,-2,-3,0,0,0,-2,-2,-2,-3,0,0);
--- 111 free
+INSERT INTO `mob_resistances` VALUES (111,'Toad',0,0,0,0,0,0,0,0,0,0,0,0,0,-2,-3,-2,-2,-3,2,-2,-2,-3,-3,-2,-2,2,-2,-2,-2); -- TODO: Verify SDT/rank values from retail captures (Aquan baseline; BGwiki unavailable at time of writing)
 INSERT INTO `mob_resistances` VALUES (112,'Flan',-1250,0,-2500,-2500,0,0,0,0,0,0,0,0,0,-1,1,1,1,-1,3,-1,2,1,1,1,1,3,-1,2,2);
 INSERT INTO `mob_resistances` VALUES (113,'Fly',0,2500,0,0,0,0,0,0,0,0,0,0,0,-2,-3,0,0,-2,-2,-2,-2,-3,-3,0,0,-2,-2,-2,-2);
 INSERT INTO `mob_resistances` VALUES (114,'Flytrap',0,0,0,0,0,0,0,0,0,0,0,0,0,-3,-1,3,0,0,3,3,-1,-1,-1,3,0,3,3,-1,-1);
