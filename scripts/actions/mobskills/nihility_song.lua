@@ -1,10 +1,11 @@
 -----------------------------------
 -- Nihility Song
 -- Family: Hippogryph
--- Description: A song dispels a positive effect in an area of effect, including food.
+-- Description: Removes one beneficial magic effect (including food) from all enemies
+--              within area of effect around pet. Area of effect varies with TP.
 -- Type: Enfeebling
 -- Utsusemi/Blink absorb: Ignores shadows
--- Range: Radial 12.5'
+-- Range: AoE (range varies with TP — controlled via SQL/skill data)
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}

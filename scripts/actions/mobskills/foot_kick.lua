@@ -1,7 +1,13 @@
 -----------------------------------
 -- Foot Kick
 -- Family: Rabbit
--- Description: Deals critical damage to a single target.
+-- Description: Deals physical damage to a single target.
+--              Critical hit rate varies with TP.
+-- Type: Physical
+-- Utsusemi/Blink absorb: 1 shadow
+-- Range: Single target
+-- Skillchain: Reverberation
+-- TODO: Verify fTP and criticalChance from retail captures.
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -17,13 +23,13 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     params.numHits         = 1
     params.fTP             = { 1.0, 1.0, 1.0 }
     params.attackType      = xi.attackType.PHYSICAL
-    params.damageType      = xi.damageType.SLASHING
+    params.damageType      = xi.damageType.BLUNT
     params.shadowBehavior  = xi.mobskills.shadowBehavior.NUMSHADOWS_1
     params.canCrit         = true
-    params.criticalChance  = { 1.0, 1.0, 1.0 }
+    params.criticalChance  = { 0.25, 0.50, 0.75 } -- Critical hit rate varies with TP
 
     if mob:getMainLvl() >= 50 then
-        params.fTP = { 2, 2, 2 }
+        params.fTP = { 2.0, 2.0, 2.0 }
     end
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)

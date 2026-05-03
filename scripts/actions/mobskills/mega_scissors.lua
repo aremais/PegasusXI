@@ -1,11 +1,11 @@
 -----------------------------------
--- Back Heel
--- Family: Hippogryph
--- Description: Deals physical damage to a single target. Damage varies with TP.
+-- Mega Scissors
+-- Family: Barnacled Crab
+-- Description: Deals physical damage to a target. Critical hit rate varies with TP.
 -- Type: Physical
--- Utsusemi/Blink absorb: 1 shadow
+-- Utsusemi/Blink absorb: 2 shadows
 -- Range: Single target
--- Skillchain: Reverberation
+-- Skillchain: Gravitation / Scission
 -- TODO: Verify fTP from retail captures.
 -----------------------------------
 ---@type TMobSkill
@@ -18,12 +18,14 @@ end
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
-    params.baseDamage     = mob:getWeaponDmg()
-    params.numHits        = 1
-    params.fTP            = { 2.5, 3.0, 3.5 } -- TODO: Verify from retail captures
-    params.attackType     = xi.attackType.PHYSICAL
-    params.damageType     = xi.damageType.BLUNT
-    params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1
+    params.baseDamage      = mob:getWeaponDmg()
+    params.numHits         = 2
+    params.fTP             = { 1.5, 2.0, 2.5 } -- TODO: Verify from retail captures
+    params.attackType      = xi.attackType.PHYSICAL
+    params.damageType      = xi.damageType.SLASHING
+    params.shadowBehavior  = xi.mobskills.shadowBehavior.NUMSHADOWS_2
+    params.canCrit         = true
+    params.criticalChance  = { 0.25, 0.50, 0.75 } -- Critical hit rate varies with TP
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 
