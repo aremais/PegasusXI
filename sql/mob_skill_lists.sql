@@ -3634,7 +3634,15 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Nashmeira_II',1127,3243); -- Imperi
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Tenzen_II',1129,3542); -- Oisoya
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Mumor_II',1130,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Ingrid_II',1131,0);
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela_II',1132,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela_II',1132,3697); -- Ascension
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela_II',1132,3698); -- Descension
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela_II',1132,3699); -- Expunge Magic
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela_II',1132,3700); -- Harmonic Displacement
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela_II',1132,3701); -- Sight Unseen
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela_II',1132,3702); -- Darkest Hour
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela_II',1132,3703); -- Unceasing Dread
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela_II',1132,3704); -- Dignified Awe
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela_II',1132,3705); -- Naakual's Vengeance
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Iroha_II',1133,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Shantotto_II',1134,3740); -- final_exam
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Shantotto_II',1134,3741); -- doctors_orders
