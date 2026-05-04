@@ -38,11 +38,8 @@ abilityObject.onPetAbility = function(target, pet, petskill, summoner, action)
     end
 
     if affected > 0 then
-        if target:getID() == action:getPrimaryTargetID() then
-            petskill:setMsg(xi.msg.basic.SKILL_GAIN_EFFECT_2)
-        else
-            petskill:setMsg(xi.msg.basic.JA_GAIN_EFFECT)
-        end
+        -- "<user> uses <ability>. <target>'s enmity decreases."
+        petskill:setMsg(xi.msg.basic.JA_ENMITY_DECREASE)
     else
         petskill:setMsg(xi.msg.basic.JA_NO_EFFECT_2)
     end
