@@ -47,6 +47,7 @@
 #include "lua_battlefield.h"
 #include "lua_instance.h"
 #include "lua_item.h"
+#include "lua_item_puppet.h"
 #include "lua_loot.h"
 #include "lua_mobskill.h"
 #include "lua_petskill.h"
@@ -430,6 +431,7 @@ void init(IPP mapIPP, bool isRunningInCI)
         CLuaTreasurePool::Register();
         CLuaZone::Register();
         CLuaItem::Register();
+        CLuaItemPuppet::Register();
 
         // Load global enums
         for (auto const& entry : sorted_directory_iterator<std::filesystem::directory_iterator>("./scripts/enum"))
@@ -2704,7 +2706,7 @@ void OnAttachmentEquip(CBattleEntity* PEntity, const CItemPuppet* attachment)
         return;
     }
 
-    auto result = onEquip(PEntity, attachment);
+    auto result = onEquip(PEntity, CLuaItemPuppet(attachment));
     if (!result.valid())
     {
         sol::error err = result;
@@ -2724,7 +2726,7 @@ void OnAttachmentUnequip(CBattleEntity* PEntity, const CItemPuppet* attachment)
         return;
     }
 
-    auto result = onUnequip(PEntity, attachment);
+    auto result = onUnequip(PEntity, CLuaItemPuppet(attachment));
     if (!result.valid())
     {
         sol::error err = result;
@@ -2744,7 +2746,7 @@ void OnManeuverGain(CBattleEntity* PEntity, const CItemPuppet* attachment, uint8
         return;
     }
 
-    auto result = onManeuverGain(PEntity, attachment, maneuvers);
+    auto result = onManeuverGain(PEntity, CLuaItemPuppet(attachment), maneuvers);
     if (!result.valid())
     {
         sol::error err = result;
@@ -2764,7 +2766,7 @@ void OnManeuverLose(CBattleEntity* PEntity, const CItemPuppet* attachment, uint8
         return;
     }
 
-    auto result = onManeuverLose(PEntity, attachment, maneuvers);
+    auto result = onManeuverLose(PEntity, CLuaItemPuppet(attachment), maneuvers);
     if (!result.valid())
     {
         sol::error err = result;
@@ -2784,7 +2786,7 @@ void OnUpdateAttachment(CBattleEntity* PEntity, const CItemPuppet* attachment, u
         return;
     }
 
-    auto result = onUpdate(PEntity, attachment, maneuvers);
+    auto result = onUpdate(PEntity, CLuaItemPuppet(attachment), maneuvers);
     if (!result.valid())
     {
         sol::error err = result;
