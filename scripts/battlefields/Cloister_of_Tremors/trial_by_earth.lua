@@ -23,6 +23,7 @@ content.groups =
     {
         mobs = { 'Titan_Prime_TBE' },
         allDeath = function(battlefield, mob)
+            battlefield:setLocalVar('cutsceneTimer', content.delayToExit)
             battlefield:setStatus(xi.battlefield.status.WON)
         end,
     },

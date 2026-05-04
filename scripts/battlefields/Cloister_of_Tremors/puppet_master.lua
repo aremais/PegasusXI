@@ -15,7 +15,7 @@ local content = BattlefieldQuest:new({
     index            = 1,
     entryNpc         = 'EP_Entrance',
     exitNpc          = 'Earth_Protocrystal',
-    requiredItems    = { xi.item.EARTH_PENDULUM, keep = true },
+    requiredItems    = { xi.item.EARTH_PENDULUM },
     requiredVar      = 'Quest[2][81]Prog',
     requiredValue    = 1,
 
@@ -34,6 +34,7 @@ content.groups =
         },
 
         allDeath = function(battlefield, mob)
+            battlefield:setLocalVar('cutsceneTimer', content.delayToExit)
             battlefield:setStatus(xi.battlefield.status.WON)
         end,
     },
