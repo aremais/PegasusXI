@@ -23,6 +23,12 @@ local content = BattlefieldQuest:new({
     quest     = xi.quest.id.windurst.THE_PUPPET_MASTER,
 })
 
+function content:onEventFinishWin(player, csid, option, npc)
+    if player:getVar('Quest[2][81]Prog') == 1 then
+        player:setVar('Quest[2][81]Prog', 2)
+    end
+end
+
 content.groups =
 {
     {
@@ -34,7 +40,6 @@ content.groups =
         },
 
         allDeath = function(battlefield, mob)
-            battlefield:setLocalVar('cutsceneTimer', content.delayToExit)
             battlefield:setStatus(xi.battlefield.status.WON)
         end,
     },
