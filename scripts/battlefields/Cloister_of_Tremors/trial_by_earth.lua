@@ -18,12 +18,16 @@ local content = BattlefieldQuest:new({
     quest     = xi.quest.id.bastok.TRIAL_BY_EARTH,
 })
 
+function content:onEventFinishWin(player, csid, option, npc)
+    player:addTitle(xi.title.HEIR_OF_THE_GREAT_EARTH)
+    npcUtil.giveKeyItem(player, xi.ki.WHISPER_OF_TREMORS)
+end
+
 content.groups =
 {
     {
         mobs = { 'Titan_Prime_TBE' },
         allDeath = function(battlefield, mob)
-            battlefield:setLocalVar('cutsceneTimer', content.delayToExit)
             battlefield:setStatus(xi.battlefield.status.WON)
         end,
     },
