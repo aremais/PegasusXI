@@ -73,6 +73,8 @@ local function hasEnspell(actor)
         [12] = xi.effect.ENWATER_II,
         [13] = xi.effect.ENLIGHT,
         [14] = xi.effect.ENDARK,
+        [15] = xi.effect.ENDRAIN, -- Fenrir: Heavenward Howl
+        [16] = xi.effect.ENASPIR, -- Fenrir: Heavenward Howl
     }
 
     for i = 1, #enspellTable do

@@ -301,6 +301,15 @@ def db_query(query):
     return result
 
 
+def is_connection_lost_error(err):
+    errno = getattr(err, "errno", None)
+    if errno in (2006, 2013):
+        return True
+    if isinstance(err, mariadb.InterfaceError):
+        return "server has gone away" in str(err).lower()
+    return False
+
+
 def fetch_credentials():
     global settings, database, host, port, login, password
     database = (
@@ -396,7 +405,7 @@ def check_protected():
         cur.execute(q)
         tables = cur.fetchall()
     except (mariadb.InterfaceError, mariadb.Error) as err:
-        if isinstance(err, mariadb.Error) and getattr(err, "errno", None) != 2006:
+        if not is_connection_lost_error(err):
             raise
         connect()
         cur.execute(q)
