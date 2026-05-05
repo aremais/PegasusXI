@@ -851,6 +851,14 @@ void CalculateAvatarStats(CBattleEntity* PMaster, CPetEntity* PPet)
     // attack is madly high for avatars (roughly x2)
     PPet->setModifier(Mod::ATT, 2 * battleutils::GetMaxSkill(SKILL_CLUB, JOB_WHM, mLvl > 99 ? 99 : mLvl));
     PPet->setModifier(Mod::ACC, battleutils::GetMaxSkill(SKILL_CLUB, JOB_WHM, mLvl > 99 ? 99 : mLvl));
+
+    // Fenrir has a documented +30% Attack bonus on top of the base avatar ATT.
+    if (petID == PETID_FENRIR)
+    {
+        int16 fenrirAttBonus = static_cast<int16>(std::floor(2 * battleutils::GetMaxSkill(SKILL_CLUB, JOB_WHM, mLvl > 99 ? 99 : mLvl) * 0.30f));
+        PPet->addModifier(Mod::ATT, fenrirAttBonus);
+    }
+
     // Set E evasion and def
     PPet->setModifier(Mod::EVA, battleutils::GetMaxSkill(SKILL_THROWING, JOB_WHM, mLvl > 99 ? 99 : mLvl));
     PPet->setModifier(Mod::DEF, battleutils::GetMaxSkill(SKILL_THROWING, JOB_WHM, mLvl > 99 ? 99 : mLvl));
