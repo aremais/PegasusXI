@@ -68,7 +68,9 @@ enum ENSPELL
     ENSPELL_DRAIN_SAMBA      = 19,
     ENSPELL_ASPIR_SAMBA      = 20,
     ENSPELL_HASTE_SAMBA      = 21,
-    ENSPELL_SOUL_ENSLAVEMENT = 22
+    ENSPELL_SOUL_ENSLAVEMENT = 22,
+    ENSPELL_ENDRAIN          = 23, // Fenrir: Heavenward Howl (en-drain, moon phase dependent)
+    ENSPELL_ENASPIR          = 24, // Fenrir: Heavenward Howl (en-aspir, moon phase dependent)
 };
 
 enum SPIKES

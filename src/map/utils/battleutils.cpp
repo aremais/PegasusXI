@@ -1521,6 +1521,56 @@ void HandleEnspell(CBattleEntity* PAttacker, CBattleEntity* PDefender, action_re
                 PDefender->takeDamage(Action->addEffectParam, PAttacker, ATTACK_TYPE::MAGICAL, GetEnspellDamageType((ENSPELL)enspell));
             }
         }
+        else if (enspell == ENSPELL_ENDRAIN || enspell == ENSPELL_ENASPIR)
+        {
+            // Fenrir Heavenward Howl: Endrain / Enaspir.
+            // Unlike Drain Samba or Blood Weapon this causes EXTRA dark magic damage (not converted melee damage).
+            // The power stored in Mod::ENSPELL_DMG is the moon-phase percentage (5/8/12/15 for drain, 1/2/4/5 for aspir).
+            // Drain amount = floor(melee_damage * power / 100), dealt as dark additional damage and then healed.
+            // Undead are immune.
+            if (PDefender->m_EcoSystem != ECOSYSTEM::UNDEAD)
+            {
+                int32 pct    = PAttacker->getMod(Mod::ENSPELL_DMG);
+                int32 damage = std::max(0, static_cast<int32>(std::floor(finaldamage * pct / 100.0)));
+
+                if (damage > 0)
+                {
+                    // Apply dark magic resistance and modifiers.
+                    damage = MagicDmgTaken(PDefender, damage, ELEMENT_DARK);
+                    damage = std::max(damage - PDefender->getMod(Mod::PHALANX), 0);
+                    damage = HandleStoneskin(PDefender, damage);
+
+                    if (damage > 0)
+                    {
+                        Action->additionalEffect = ActionProcAddEffect::DarkDamage;
+                        Action->addEffectParam   = damage;
+                        PDefender->takeDamage(damage, PAttacker, ATTACK_TYPE::MAGICAL, DAMAGE_TYPE::DARK);
+
+                        if (enspell == ENSPELL_ENDRAIN)
+                        {
+                            Action->addEffectMessage = MsgBasic::AddEffectHPDrained;
+                            PAttacker->addHP(damage);
+                            if (PAttacker->objtype == TYPE_PC)
+                            {
+                                static_cast<CCharEntity*>(PAttacker)->updatemask |= UPDATE_HP;
+                            }
+                        }
+                        else // ENSPELL_ENASPIR
+                        {
+                            int32 mpDrained          = std::min(damage, static_cast<int32>(PDefender->health.mp));
+                            Action->addEffectMessage = MsgBasic::AddEffectMPDrained;
+                            Action->addEffectParam   = mpDrained;
+                            PDefender->addMP(-mpDrained);
+                            PAttacker->addMP(mpDrained);
+                            if (PAttacker->objtype == TYPE_PC)
+                            {
+                                static_cast<CCharEntity*>(PAttacker)->updatemask |= UPDATE_HP;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     // check weapon for additional effects only if priority hasn't been checked already
     else if (!checkedPriorityWeaponAddEffect && checkWeaponAdditionalEffect())
