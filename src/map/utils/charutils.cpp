@@ -6916,6 +6916,13 @@ auto CheckAbilityAddtype(CCharEntity* PChar, const CAbility* PAbility) -> bool
     }
     if (PAbility->getAddType() & ADDTYPE_LEARNED)
     {
+        const auto maxLearnedAbilityId = sizeof(PChar->m_LearnedAbilities) * 8;
+        if (PAbility->getID() >= maxLearnedAbilityId)
+        {
+            ShowWarning("charutils::CheckAbilityAddtype: Learned ability ID %u is out of range.", PAbility->getID());
+            return false;
+        }
+
         if (!hasLearnedAbility(PChar, PAbility->getID()))
         {
             return false;
