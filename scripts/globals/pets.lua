@@ -124,16 +124,17 @@ xi.pet.spawnPet = function(caster, petID, state, target)
             end
         elseif petID == xi.petId.ATOMOS then
             if target then
-                -- Use Deconstruction on the target 3 seconds after spawning.
                 local pet = caster:getPet()
                 if pet then
-                    -- Timed sequence after spawning, wait -> Deconstruction -> wait -> Chronoshift (despawn pet after complete)
+                    -- Atomos automatically performs its abilities then despawns — no Astral Flow required.
+                    -- Step 1: Deconstruction on the enemy target (steals a buff).
                     pet:timer(3000, function()
                         pet:usePetAbility(xi.jobAbility.DECONSTRUCTION, target)
                     end)
 
+                    -- Step 2: Chronoshift on the summoner (transfers the stolen buff to the party).
                     pet:timer(10000, function()
-                        pet:usePetAbility(xi.jobAbility.CHRONOSHIFT, pet)
+                        pet:usePetAbility(xi.jobAbility.CHRONOSHIFT, caster)
                     end)
                 end
             end
