@@ -19,7 +19,8 @@ end
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
-    params.baseDamage     = mob:getWeaponDmg()
+    local wdmg = mob:getWeaponDmg()
+    params.baseDamage     = (wdmg > 0) and wdmg or mob:getMainLvl()
     params.numHits        = 5
     params.fTP            = { 1.0, 1.25, 1.5 } -- TODO: Verify from retail captures
     params.attackType     = xi.attackType.PHYSICAL
