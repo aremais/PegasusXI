@@ -96,6 +96,7 @@ std::unordered_map<uint32, CPetSkill*>        g_PPetSkillList;    // List of pet
 
 std::array<std::list<CWeaponSkill*>, MAX_SKILLTYPE> g_PWeaponSkillsList;
 std::unordered_map<uint16, std::vector<uint16>>     g_PMobSkillLists; // List of mob skills defined from mob_skill_lists.sql
+std::unordered_map<uint16, uint16>                  g_MobSkillIdToPetSkillId; // Maps mob_skill_id -> pet_skill_id (for JUG_PET ability packet lookup)
 
 namespace battleutils
 {
@@ -279,6 +280,12 @@ void LoadPetSkillsList()
         PPetSkill->setTertiarySkillchain(rset->get<uint8>("tertiary_sc"));
         PPetSkill->setMobSkillID(rset->get<uint16>("mob_skill_id"));
         g_PPetSkillList[PPetSkill->getID()] = PPetSkill;
+
+        // Build reverse map: mob_skill_id -> pet_skill_id for JUG_PET ability packet lookup
+        if (PPetSkill->getMobSkillID() > 0)
+        {
+            g_MobSkillIdToPetSkillId[PPetSkill->getMobSkillID()] = PPetSkill->getID();
+        }
 
         auto filename = fmt::format("./scripts/actions/abilities/pets/{}.lua", PPetSkill->getName());
         luautils::CacheLuaObjectFromFile(filename);
@@ -511,6 +518,25 @@ CPetSkill* GetPetSkill(uint16 SkillID)
 const std::vector<uint16>& GetMobSkillList(uint16 ListID)
 {
     return g_PMobSkillLists[ListID];
+}
+
+/************************************************************************
+ *                                                                       *
+ *  Get the BST ability ID (pet_skill_id) for a given mob_skill_id.     *
+ *  Used by BuildingCharPetAbilityTable so JUG_PET mobs can use new-    *
+ *  style mob_skill_ids in mob_skill_lists while still mapping correctly *
+ *  to the BST ability packet offset (petSkillId - ABILITY_HEALING_RUBY)*
+ *                                                                       *
+ ************************************************************************/
+
+uint16 GetPetSkillIdByMobSkillId(uint16 mobSkillId)
+{
+    auto it = g_MobSkillIdToPetSkillId.find(mobSkillId);
+    if (it != g_MobSkillIdToPetSkillId.end())
+    {
+        return it->second;
+    }
+    return 0;
 }
 
 // TODO: Apply fire in generous quantities. Replace with existing lua functions.
