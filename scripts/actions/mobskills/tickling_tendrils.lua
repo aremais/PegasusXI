@@ -1,13 +1,12 @@
 -----------------------------------
--- Sensilla Blades
--- Family: Chapuli
--- Description: Deals physical damage to enemies within a fan-shaped area. Damage varies with TP.
+-- Tickling Tendrils
+-- Family: Snapweed
+-- Description: Deals physical damage to a single target. Additional Effect: Bind.
 -- Type: Physical
--- Utsusemi/Blink absorb: 3 shadows
--- Range: Fan-shaped AoE (7 yalms)
--- Skillchain: Scission
--- Notes: Used by Scissorleg Xerin and Bouncing Bertha jug pets.
--- TODO: Verify fTP values from retail captures.
+-- Utsusemi/Blink absorb: 1 shadow
+-- Range: Single target
+-- Skillchain: Reverberation
+-- TODO: Verify fTP, Bind duration, and skillchain from retail captures.
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -22,15 +21,18 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local wdmg = mob:getWeaponDmg()
     params.baseDamage     = (wdmg > 0) and wdmg or mob:getMainLvl()
     params.numHits        = 1
-    params.fTP            = { 2.0, 2.5, 3.0 } -- TODO: Verify from retail captures
+    params.fTP            = { 1.5, 2.0, 2.5 } -- TODO: Verify from retail captures
     params.attackType     = xi.attackType.PHYSICAL
     params.damageType     = xi.damageType.SLASHING
-    params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_3
+    params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 
     if xi.mobskills.processDamage(mob, target, skill, action, info) then
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)
+
+        -- Additional Effect: Bind for 30 seconds
+        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.BIND, 1, 0, 30)
     end
 
     return info.damage
