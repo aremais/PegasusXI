@@ -68,6 +68,7 @@ INSERT INTO `mob_family_mods` VALUES (34,56,-1,1); -- HP_STANDBACK: -1
 
 -- Avatar-Diabolos
 INSERT INTO `mob_family_mods` VALUES (35,56,-1,1); -- HP_STANDBACK: -1
+INSERT INTO `mob_family_mods` VALUES (35,63,30,0);  -- DEFP: +30%
 
 -- Avatar-Fenrir
 INSERT INTO `mob_family_mods` VALUES (36,56,-1,1); -- HP_STANDBACK: -1
