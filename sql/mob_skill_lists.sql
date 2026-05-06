@@ -3536,7 +3536,10 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rahal', 1066, 41); -- Swift Blade
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Apururu_UC',1070,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Jakoh_Wahcondalo_UC',1071,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Flaviria_UC',1072,0);
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Babban',1073,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Babban',1073,3351);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Babban',1073,3352);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Babban',1073,3353);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Babban',1073,3354);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abenzio',1074,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,49);   -- Power Slash
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,54);   -- Sickle Moon
@@ -3577,7 +3580,10 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Mildaurion',1086,3473); -- Stellar 
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abquhbah',1097,1); -- Combo
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abquhbah',1097,4); -- Backhand Blow
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Abquhbah',1097,3541); -- Salaheem Spirit
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Balamor',1098,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Balamor',1098,3617); -- Feast of Arrows
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Balamor',1098,3618); -- Regurgitated Swarm
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Balamor',1098,3619); -- Setting the Stage
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Balamor',1098,3620); -- Last Laugh
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_August',1099,3653); -- Tartaric Sigil
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_August',1099,3654); -- Null Field
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_August',1099,3655); -- Alabaster Burst
