@@ -68,6 +68,7 @@ MapNetworking::MapNetworking(Scheduler& scheduler, MapStatistics& mapStatistics,
 : scheduler_(scheduler)
 , mapStatistics_(mapStatistics)
 , mapIPP_(config.ipp) // TODO: Refactor to not use this, since we have config_ in here
+, mapSessions_(scheduler)
 , config_(config)
 {
     TracyZoneScoped;
