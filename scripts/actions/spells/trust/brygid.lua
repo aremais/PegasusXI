@@ -45,7 +45,7 @@ local function applyBrygidAura(mobArg)
                 member:setLocalVar('BrygidAura', 1)
             end
 
-            member:setLocalVar('BrygidAuraExpires', os.time() + 10)
+            member:setLocalVar('BrygidAuraExpires', GetSystemTime() + 10)
         else
             removeBrygidAura(member)
         end
@@ -89,7 +89,7 @@ spellObject.onMobSpawn = function(mob)
 
     -- Apply once immediately so Brygid's aura is active as soon as she is summoned.
     applyBrygidAura(mob)
-    mob:setLocalVar('BrygidAuraTick', os.time() + 3)
+    mob:setLocalVar('BrygidAuraTick', GetSystemTime() + 3)
 end
 
 spellObject.onMobFight = function(mob, target)
@@ -99,7 +99,7 @@ spellObject.onMobFight = function(mob, target)
         return
     end
 
-    local now = os.time()
+    local now = GetSystemTime()
 
     if now >= mob:getLocalVar('BrygidAuraTick') then
         mob:setLocalVar('BrygidAuraTick', now + 3)
