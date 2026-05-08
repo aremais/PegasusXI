@@ -129,6 +129,7 @@ CPetSkill*    GetPetSkill(uint16 SkillID);
 
 const std::list<CWeaponSkill*>& GetWeaponSkills(uint8 skill);
 const std::vector<uint16>&      GetMobSkillList(uint16 ListID);
+uint16                          GetPetSkillIdByMobSkillId(uint16 mobSkillId);
 
 void FreeWeaponSkillsList();
 void FreeMobSkillList();

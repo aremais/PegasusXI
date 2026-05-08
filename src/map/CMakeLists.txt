@@ -258,6 +258,10 @@ if(PCH_ENABLE)
     target_precompile_headers(xi_map_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
 endif()
 
+if(MSVC)
+    disable_lto(xi_map_lib)
+endif()
+
 if (APPLE)
     disable_lto(xi_map)
 endif()

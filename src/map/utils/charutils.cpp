@@ -3655,9 +3655,15 @@ void BuildingCharPetAbilityTable(CCharEntity* PChar, CPetEntity* PPet, uint32 Pe
     if (PPet->getPetType() == PET_TYPE::JUG_PET)
     {
         auto skillList{ battleutils::GetMobSkillList(PPet->m_MobSkillList) };
-        for (auto&& abilityid : skillList)
+        for (auto&& mobSkillId : skillList)
         {
-            addPetAbility(PChar, abilityid - ABILITY_HEALING_RUBY);
+            // Translate mob_skill_id (new-style 3840+) -> pet_skill_id (BST ability ID 672-796)
+            // so the ability packet offset calculation (petSkillId - ABILITY_HEALING_RUBY) is correct.
+            uint16 petSkillId = battleutils::GetPetSkillIdByMobSkillId(mobSkillId);
+            if (petSkillId >= ABILITY_HEALING_RUBY)
+            {
+                addPetAbility(PChar, petSkillId - ABILITY_HEALING_RUBY);
+            }
         }
     }
     PChar->pushPacket<GP_SERV_COMMAND_COMMAND_DATA>(PChar);
@@ -6916,6 +6922,13 @@ auto CheckAbilityAddtype(CCharEntity* PChar, const CAbility* PAbility) -> bool
     }
     if (PAbility->getAddType() & ADDTYPE_LEARNED)
     {
+        const auto maxLearnedAbilityId = sizeof(PChar->m_LearnedAbilities) * 8;
+        if (PAbility->getID() >= maxLearnedAbilityId)
+        {
+            ShowWarning("charutils::CheckAbilityAddtype: Learned ability ID %u is out of range.", PAbility->getID());
+            return false;
+        }
+
         if (!hasLearnedAbility(PChar, PAbility->getID()))
         {
             return false;
@@ -8064,10 +8077,13 @@ void forceSynthCritFail(const std::string& sourceFunction, CCharEntity* PChar)
     // The broken rod can never be lost in a normal failed synth. It will only be lost if the synth is
     // interrupted in some way, such as by being attacked or moving to another area (e.g. ship docking).
 
-    ShowWarning("%s: %s attempting to zone in the middle of a synth, failing their synth!", sourceFunction, PChar->getName());
+    ShowWarning("%s: Force crit-failing %s synthesis!", sourceFunction, PChar->getName());
     synthutils::doSynthCriticalFail(PChar);
 
     PChar->CraftContainer->Clean(); // Clean to reset m_ItemCount to 0
+    PChar->animation = ANIMATION_NONE;
+    PChar->updatemask |= UPDATE_HP;
+    PChar->pushPacket<CCharStatusPacket>(PChar);
 }
 
 void removeCharFromZone(CCharEntity* PChar)
