@@ -1129,7 +1129,7 @@ INSERT INTO `mob_groups` VALUES (12,1384,28,'Fomor_Dragoon',960,0,866,0,0,0,NULL
 INSERT INTO `mob_groups` VALUES (13,1396,28,'Fomors_Wyvern',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (14,1382,28,'Fomor_Black_Mage',960,0,862,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (15,1381,28,'Fomor_Beastmaster',960,0,860,0,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (16,7347,28,'Fomors_Bats',0,128,0,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (16,1394,28,'Fomors_Bats',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (17,1385,28,'Fomor_Monk',960,0,869,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (18,1389,28,'Fomor_Red_Mage',960,0,876,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (19,1390,28,'Fomor_Samurai',960,0,879,0,0,0,NULL);
@@ -2744,7 +2744,7 @@ INSERT INTO `mob_groups` VALUES (6,714,51,'Chigoe_pet',0,128,466,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (7,2396,51,'Lesser_Colibri',300,0,1509,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (8,4650,51,'Fomor_Thief',300,1,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (9,6518,51,'Fomor_Beastmaster',300,1,0,0,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (10,7349,51,'Fomors_Bats',0,128,0,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (10,1394,51,'Fomors_Bats',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (11,6524,51,'Fomor_Paladin',300,1,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (12,6516,51,'Fomor_Bard',300,1,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (13,3698,51,'Soldier_Pephredo',300,0,2293,0,0,0,NULL);
@@ -2884,7 +2884,7 @@ INSERT INTO `mob_groups` VALUES (5,2616,52,'Mercurial_Makara',0,128,463,0,0,0,NU
 INSERT INTO `mob_groups` VALUES (6,67,52,'Aht_Urhgan_Attercop',300,0,34,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (7,2396,52,'Lesser_Colibri',300,0,1509,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (8,6518,52,'Fomor_Beastmaster',300,1,0,0,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (9,7348,52,'Fomors_Bats',0,128,0,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (9,1394,52,'Fomors_Bats',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (10,6516,52,'Fomor_Bard',300,1,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (11,1900,52,'Haunt',300,1,1279,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (12,6524,52,'Fomor_Paladin',300,1,0,0,0,0,NULL);
