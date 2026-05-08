@@ -126,6 +126,7 @@ enum class G_SELECT : uint16
     DEF_BAR_ELEMENT     = 16,
     RUNE_DAY            = 17,
     PARTY_SKILLCHAIN    = 18, // Prefer mob SC closer, else best WS vs any party PC last WS, else strongest opener
+    SPECIAL_AUGUST      = 19, // Trust August: prefer WS that skillchains off master's last weaponskill (same as SPECIAL_AYAME)
 };
 
 enum class G_TP_TRIGGER : uint16

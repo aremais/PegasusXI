@@ -52,6 +52,7 @@ static_assert(static_cast<uint16_t>(G_TP_TRIGGER::OPENER) == 2U);
 static_assert(static_cast<uint16_t>(G_TP_TRIGGER::CLOSER) == 3U);
 static_assert(static_cast<uint16_t>(G_TP_TRIGGER::CLOSER_UNTIL_TP) == 4U);
 static_assert(static_cast<uint16_t>(G_SELECT::PARTY_SKILLCHAIN) == 18U);
+static_assert(static_cast<uint16_t>(G_SELECT::SPECIAL_AUGUST) == 19U);
 
 // Return a new unique identifier for a gambit
 auto CGambitsContainer::NewGambitIdentifier(const Gambit_t& gambit) const -> std::string
@@ -1299,6 +1300,7 @@ bool CGambitsContainer::TryTrustSkill()
                 break;
             }
             case G_SELECT::SPECIAL_AYAME:
+            case G_SELECT::SPECIAL_AUGUST:
             {
                 auto* PMaster                = static_cast<CCharEntity*>(POwner->PMaster);
                 auto* PMasterController      = static_cast<CPlayerController*>(PMaster->PAI->GetController());
