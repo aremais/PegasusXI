@@ -3085,30 +3085,61 @@ void SaveJobChangeGear(CCharEntity* PChar)
     uint16 ring2  = getEquipIdFromSlot(PChar, SLOT_RING2);
     uint16 back   = getEquipIdFromSlot(PChar, SLOT_BACK);
 
-    db::preparedStmt("REPLACE INTO char_equip_saved SET "
-                     "charid = ?, jobid = ?, main = ?, sub = ?, "
-                     "ranged = ?, ammo = ?, head = ?, body = ?, "
-                     "hands = ?, legs = ?, feet = ?, neck = ?, "
-                     "waist = ?, ear1 = ?, ear2 = ?, ring1 = ?, "
-                     "ring2 = ?, back = ?",
-                     PChar->id,
-                     PChar->GetMJob(),
-                     main,
-                     sub,
-                     ranged,
-                     ammo,
-                     head,
-                     body,
-                     hands,
-                     legs,
-                     feet,
-                     neck,
-                     waist,
-                     ear1,
-                     ear2,
-                     ring1,
-                     ring2,
-                     back);
+    db::preparedStmt(
+        "INSERT INTO char_equip_saved SET "
+        "charid = ?, "
+        "jobid = ?, "
+        "main = ?, "
+        "sub = ?, "
+        "ranged = ?, "
+        "ammo = ?, "
+        "head = ?, "
+        "body = ?, "
+        "hands = ?, "
+        "legs = ?, "
+        "feet = ?, "
+        "neck = ?, "
+        "waist = ?, "
+        "ear1 = ?, "
+        "ear2 = ?, "
+        "ring1 = ?, "
+        "ring2 = ?, "
+        "back = ? "
+        "ON DUPLICATE KEY UPDATE "
+        "main = VALUES(main), "
+        "sub = VALUES(sub), "
+        "ranged = VALUES(ranged), "
+        "ammo = VALUES(ammo), "
+        "head = VALUES(head), "
+        "body = VALUES(body), "
+        "hands = VALUES(hands), "
+        "legs = VALUES(legs), "
+        "feet = VALUES(feet), "
+        "neck = VALUES(neck), "
+        "waist = VALUES(waist), "
+        "ear1 = VALUES(ear1), "
+        "ear2 = VALUES(ear2), "
+        "ring1 = VALUES(ring1), "
+        "ring2 = VALUES(ring2), "
+        "back = VALUES(back)",
+        PChar->id,
+        PChar->GetMJob(),
+        main,
+        sub,
+        ranged,
+        ammo,
+        head,
+        body,
+        hands,
+        legs,
+        feet,
+        neck,
+        waist,
+        ear1,
+        ear2,
+        ring1,
+        ring2,
+        back);
 }
 
 void LoadJobChangeGear(CCharEntity* PChar)
@@ -3595,7 +3626,9 @@ void BuildingCharPetAbilityTable(CCharEntity* PChar, CPetEntity* PPet, uint32 Pe
                 }
                 else if (PetID == PETID_DIABOLOS)
                 {
-                    if (PAbility->getID() >= ABILITY_CAMISADO && PAbility->getID() <= ABILITY_PERFECT_DEFENSE)
+                    // Range covers Diabolos-specific abilities only (Camisado through Blindside).
+                    // Deconstruction (668) and Chronoshift (669) belong to Atomos and must not appear here.
+                    if (PAbility->getID() >= ABILITY_CAMISADO && PAbility->getID() <= ABILITY_BLINDSIDE)
                     {
                         addPetAbility(PChar, PAbility->getID() - ABILITY_HEALING_RUBY);
                     }
@@ -3622,9 +3655,15 @@ void BuildingCharPetAbilityTable(CCharEntity* PChar, CPetEntity* PPet, uint32 Pe
     if (PPet->getPetType() == PET_TYPE::JUG_PET)
     {
         auto skillList{ battleutils::GetMobSkillList(PPet->m_MobSkillList) };
-        for (auto&& abilityid : skillList)
+        for (auto&& mobSkillId : skillList)
         {
-            addPetAbility(PChar, abilityid - ABILITY_HEALING_RUBY);
+            // Translate mob_skill_id (new-style 3840+) -> pet_skill_id (BST ability ID 672-796)
+            // so the ability packet offset calculation (petSkillId - ABILITY_HEALING_RUBY) is correct.
+            uint16 petSkillId = battleutils::GetPetSkillIdByMobSkillId(mobSkillId);
+            if (petSkillId >= ABILITY_HEALING_RUBY)
+            {
+                addPetAbility(PChar, petSkillId - ABILITY_HEALING_RUBY);
+            }
         }
     }
     PChar->pushPacket<GP_SERV_COMMAND_COMMAND_DATA>(PChar);
@@ -6883,6 +6922,13 @@ auto CheckAbilityAddtype(CCharEntity* PChar, const CAbility* PAbility) -> bool
     }
     if (PAbility->getAddType() & ADDTYPE_LEARNED)
     {
+        const auto maxLearnedAbilityId = sizeof(PChar->m_LearnedAbilities) * 8;
+        if (PAbility->getID() >= maxLearnedAbilityId)
+        {
+            ShowWarning("charutils::CheckAbilityAddtype: Learned ability ID %u is out of range.", PAbility->getID());
+            return false;
+        }
+
         if (!hasLearnedAbility(PChar, PAbility->getID()))
         {
             return false;
@@ -7817,26 +7863,53 @@ void WriteHistory(const CCharEntity* PChar)
         return;
     }
 
-    // Replace will also handle insert if it doesn't exist
-    db::preparedStmt("REPLACE INTO char_history "
-                     "(charid, enemies_defeated, times_knocked_out, mh_entrances, joined_parties, joined_alliances, spells_cast, "
-                     "abilities_used, ws_used, items_used, chats_sent, npc_interactions, battles_fought, gm_calls, distance_travelled) "
-                     "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                     PChar->id,
-                     PChar->m_charHistory.enemiesDefeated,
-                     PChar->m_charHistory.timesKnockedOut,
-                     PChar->m_charHistory.mhEntrances,
-                     PChar->m_charHistory.joinedParties,
-                     PChar->m_charHistory.joinedAlliances,
-                     PChar->m_charHistory.spellsCast,
-                     PChar->m_charHistory.abilitiesUsed,
-                     PChar->m_charHistory.wsUsed,
-                     PChar->m_charHistory.itemsUsed,
-                     PChar->m_charHistory.chatsSent,
-                     PChar->m_charHistory.npcInteractions,
-                     PChar->m_charHistory.battlesFought,
-                     PChar->m_charHistory.gmCalls,
-                     PChar->m_charHistory.distanceTravelled);
+    db::preparedStmt(
+        "INSERT INTO char_history SET "
+        "charid = ?, "
+        "enemies_defeated = ?, "
+        "times_knocked_out = ?, "
+        "mh_entrances = ?, "
+        "joined_parties = ?, "
+        "joined_alliances = ?, "
+        "spells_cast = ?, "
+        "abilities_used = ?, "
+        "ws_used = ?, "
+        "items_used = ?, "
+        "chats_sent = ?, "
+        "npc_interactions = ?, "
+        "battles_fought = ?, "
+        "gm_calls = ?, "
+        "distance_travelled = ? "
+        "ON DUPLICATE KEY UPDATE "
+        "enemies_defeated = VALUES(enemies_defeated), "
+        "times_knocked_out = VALUES(times_knocked_out), "
+        "mh_entrances = VALUES(mh_entrances), "
+        "joined_parties = VALUES(joined_parties), "
+        "joined_alliances = VALUES(joined_alliances), "
+        "spells_cast = VALUES(spells_cast), "
+        "abilities_used = VALUES(abilities_used), "
+        "ws_used = VALUES(ws_used), "
+        "items_used = VALUES(items_used), "
+        "chats_sent = VALUES(chats_sent), "
+        "npc_interactions = VALUES(npc_interactions), "
+        "battles_fought = VALUES(battles_fought), "
+        "gm_calls = VALUES(gm_calls), "
+        "distance_travelled = VALUES(distance_travelled)",
+        PChar->id,
+        PChar->m_charHistory.enemiesDefeated,
+        PChar->m_charHistory.timesKnockedOut,
+        PChar->m_charHistory.mhEntrances,
+        PChar->m_charHistory.joinedParties,
+        PChar->m_charHistory.joinedAlliances,
+        PChar->m_charHistory.spellsCast,
+        PChar->m_charHistory.abilitiesUsed,
+        PChar->m_charHistory.wsUsed,
+        PChar->m_charHistory.itemsUsed,
+        PChar->m_charHistory.chatsSent,
+        PChar->m_charHistory.npcInteractions,
+        PChar->m_charHistory.battlesFought,
+        PChar->m_charHistory.gmCalls,
+        PChar->m_charHistory.distanceTravelled);
 }
 
 uint8 getMaxItemLevel(CCharEntity* PChar)
@@ -8004,10 +8077,13 @@ void forceSynthCritFail(const std::string& sourceFunction, CCharEntity* PChar)
     // The broken rod can never be lost in a normal failed synth. It will only be lost if the synth is
     // interrupted in some way, such as by being attacked or moving to another area (e.g. ship docking).
 
-    ShowWarning("%s: %s attempting to zone in the middle of a synth, failing their synth!", sourceFunction, PChar->getName());
+    ShowWarning("%s: Force crit-failing %s synthesis!", sourceFunction, PChar->getName());
     synthutils::doSynthCriticalFail(PChar);
 
     PChar->CraftContainer->Clean(); // Clean to reset m_ItemCount to 0
+    PChar->animation = ANIMATION_NONE;
+    PChar->updatemask |= UPDATE_HP;
+    PChar->pushPacket<CCharStatusPacket>(PChar);
 }
 
 void removeCharFromZone(CCharEntity* PChar)

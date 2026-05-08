@@ -109,20 +109,6 @@ quest.sections =
             },
         },
 
-        [xi.zone.CLOISTER_OF_TREMORS] =
-        {
-            onEventFinish =
-            {
-                [32001] = function(player, csid, option, npc)
-                    if
-                        player:getLocalVar('battlefieldWin') == xi.battlefield.id.PUPPET_MASTER and
-                        quest:getVar(player, 'Prog') == 1
-                    then
-                        quest:setVar(player, 'Prog', 2)
-                    end
-                end,
-            },
-        },
     },
 
     {

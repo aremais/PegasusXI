@@ -57,12 +57,11 @@
 #include "items.h"
 #include "items/item_weapon.h"
 #include "job_points.h"
-#include "los/zone_los.h"
+#include "map/navmesh/navmesh.h"
 #include "map_engine.h"
 #include "mob_modifier.h"
 #include "mobskill.h"
 #include "modifier.h"
-#include "navmesh.h"
 #include "notoriety_container.h"
 #include "packets/pet_sync.h"
 #include "packets/s2c/0x029_battle_message.h"
@@ -80,6 +79,8 @@
 #include "weapon_skill.h"
 #include "zoneutils.h"
 
+#include <map/ximesh/ximesh.h>
+
 /************************************************************************
  *                                                                       *
  *  Lists used in battleutils                                            *
@@ -96,6 +97,7 @@ std::unordered_map<uint32, CPetSkill*>        g_PPetSkillList;    // List of pet
 
 std::array<std::list<CWeaponSkill*>, MAX_SKILLTYPE> g_PWeaponSkillsList;
 std::unordered_map<uint16, std::vector<uint16>>     g_PMobSkillLists; // List of mob skills defined from mob_skill_lists.sql
+std::unordered_map<uint16, uint16>                  g_MobSkillIdToPetSkillId; // Maps mob_skill_id -> pet_skill_id (for JUG_PET ability packet lookup)
 
 namespace battleutils
 {
@@ -279,6 +281,12 @@ void LoadPetSkillsList()
         PPetSkill->setTertiarySkillchain(rset->get<uint8>("tertiary_sc"));
         PPetSkill->setMobSkillID(rset->get<uint16>("mob_skill_id"));
         g_PPetSkillList[PPetSkill->getID()] = PPetSkill;
+
+        // Build reverse map: mob_skill_id -> pet_skill_id for JUG_PET ability packet lookup
+        if (PPetSkill->getMobSkillID() > 0)
+        {
+            g_MobSkillIdToPetSkillId[PPetSkill->getMobSkillID()] = PPetSkill->getID();
+        }
 
         auto filename = fmt::format("./scripts/actions/abilities/pets/{}.lua", PPetSkill->getName());
         luautils::CacheLuaObjectFromFile(filename);
@@ -511,6 +519,25 @@ CPetSkill* GetPetSkill(uint16 SkillID)
 const std::vector<uint16>& GetMobSkillList(uint16 ListID)
 {
     return g_PMobSkillLists[ListID];
+}
+
+/************************************************************************
+ *                                                                       *
+ *  Get the BST ability ID (pet_skill_id) for a given mob_skill_id.     *
+ *  Used by BuildingCharPetAbilityTable so JUG_PET mobs can use new-    *
+ *  style mob_skill_ids in mob_skill_lists while still mapping correctly *
+ *  to the BST ability packet offset (petSkillId - ABILITY_HEALING_RUBY)*
+ *                                                                       *
+ ************************************************************************/
+
+uint16 GetPetSkillIdByMobSkillId(uint16 mobSkillId)
+{
+    auto it = g_MobSkillIdToPetSkillId.find(mobSkillId);
+    if (it != g_MobSkillIdToPetSkillId.end())
+    {
+        return it->second;
+    }
+    return 0;
 }
 
 // TODO: Apply fire in generous quantities. Replace with existing lua functions.
@@ -1521,6 +1548,56 @@ void HandleEnspell(CBattleEntity* PAttacker, CBattleEntity* PDefender, action_re
                 PDefender->takeDamage(Action->addEffectParam, PAttacker, ATTACK_TYPE::MAGICAL, GetEnspellDamageType((ENSPELL)enspell));
             }
         }
+        else if (enspell == ENSPELL_ENDRAIN || enspell == ENSPELL_ENASPIR)
+        {
+            // Fenrir Heavenward Howl: Endrain / Enaspir.
+            // Unlike Drain Samba or Blood Weapon this causes EXTRA dark magic damage (not converted melee damage).
+            // The power stored in Mod::ENSPELL_DMG is the moon-phase percentage (5/8/12/15 for drain, 1/2/4/5 for aspir).
+            // Drain amount = floor(melee_damage * power / 100), dealt as dark additional damage and then healed.
+            // Undead are immune.
+            if (PDefender->m_EcoSystem != ECOSYSTEM::UNDEAD)
+            {
+                int32 pct    = PAttacker->getMod(Mod::ENSPELL_DMG);
+                int32 damage = std::max(0, static_cast<int32>(std::floor(finaldamage * pct / 100.0)));
+
+                if (damage > 0)
+                {
+                    // Apply dark magic resistance and modifiers.
+                    damage = MagicDmgTaken(PDefender, damage, ELEMENT_DARK);
+                    damage = std::max(damage - PDefender->getMod(Mod::PHALANX), 0);
+                    damage = HandleStoneskin(PDefender, damage);
+
+                    if (damage > 0)
+                    {
+                        Action->additionalEffect = ActionProcAddEffect::DarkDamage;
+                        Action->addEffectParam   = damage;
+                        PDefender->takeDamage(damage, PAttacker, ATTACK_TYPE::MAGICAL, DAMAGE_TYPE::DARK);
+
+                        if (enspell == ENSPELL_ENDRAIN)
+                        {
+                            Action->addEffectMessage = MsgBasic::AddEffectHPDrained;
+                            PAttacker->addHP(damage);
+                            if (PAttacker->objtype == TYPE_PC)
+                            {
+                                static_cast<CCharEntity*>(PAttacker)->updatemask |= UPDATE_HP;
+                            }
+                        }
+                        else // ENSPELL_ENASPIR
+                        {
+                            int32 mpDrained          = std::min(damage, static_cast<int32>(PDefender->health.mp));
+                            Action->addEffectMessage = MsgBasic::AddEffectMPDrained;
+                            Action->addEffectParam   = mpDrained;
+                            PDefender->addMP(-mpDrained);
+                            PAttacker->addMP(mpDrained);
+                            if (PAttacker->objtype == TYPE_PC)
+                            {
+                                static_cast<CCharEntity*>(PAttacker)->updatemask |= UPDATE_HP;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     // check weapon for additional effects only if priority hasn't been checked already
     else if (!checkedPriorityWeaponAddEffect && checkWeaponAdditionalEffect())
@@ -2257,11 +2334,6 @@ int32 TakePhysicalDamage(CBattleEntity* PAttacker, CBattleEntity* PDefender, PHY
         ((CMobEntity*)PDefender)->PEnmityContainer->UpdateEnmityFromDamage(PAttacker, 0);
     }
 
-    if (PAttacker->objtype == TYPE_PC && !isRanged && !isCounter)
-    {
-        PAttacker->StatusEffectContainer->DelStatusEffectsByFlag(EFFECTFLAG_ATTACK);
-    }
-
     return damage;
 }
 
@@ -2438,11 +2510,6 @@ int32 TakeWeaponskillDamage(CBattleEntity* PAttacker, CBattleEntity* PDefender, 
     else if (PDefender->objtype == TYPE_MOB)
     {
         ((CMobEntity*)PDefender)->PEnmityContainer->UpdateEnmityFromDamage(PAttacker, 0);
-    }
-
-    if (!isRanged)
-    {
-        PAttacker->StatusEffectContainer->DelStatusEffectsByFlag(EFFECTFLAG_ATTACK);
     }
 
     // Apply TP
@@ -4392,13 +4459,7 @@ int32 getOverWhelmDamageBonus(CBattleEntity* PAttacker, CBattleEntity* PDefender
     return damage;
 }
 
-/************************************************************************
- *                                                                       *
- *  Calculate/Handle Barrage shot count                                  *
- *                                                                       *
- ************************************************************************/
-
-uint8 getBarrageShotCount(CCharEntity* PChar)
+uint8 getBarrageShotCount(CBattleEntity* PBattleEntity)
 {
     /*
     Ranger level 30, four shots.
@@ -4408,29 +4469,9 @@ uint8 getBarrageShotCount(CCharEntity* PChar)
     Ranger level 99, eight shots.
     */
 
-    // only archery + marksmanship can use barrage
-    CItemWeapon* PItem = (CItemWeapon*)PChar->getEquip(SLOT_RANGED);
-
-    if (PItem && PItem->getSkillType() != 25 && PItem->getSkillType() != 26)
-    {
-        return 0;
-    }
-
-    uint8 lvl       = PChar->jobs.job[JOB_RNG]; // Get Ranger level of char
-    uint8 shotCount = 0;                        // the total number of extra hits
-
-    if (PChar->GetSJob() == JOB_RNG)
-    { // if rng is sub then use the sub level
-        lvl = PChar->GetSLevel();
-    }
-
-    // Hunters bracers+1 will add an extra shot
-    CItemEquipment* PItemHands = PChar->getEquip(SLOT_HANDS);
-
-    if (PItemHands && PItemHands->getID() == 14900)
-    {
-        shotCount++;
-    }
+    // TODO: verify all RNG trusts that use Barrage have RNG main job
+    uint16 lvl       = PBattleEntity->GetMJob() == JOB_RNG ? PBattleEntity->GetMLevel() : PBattleEntity->GetSLevel();
+    uint8  shotCount = 0;
 
     if (lvl < 30)
     {
@@ -4438,33 +4479,48 @@ uint8 getBarrageShotCount(CCharEntity* PChar)
     }
     else if (lvl < 50)
     {
-        shotCount += 3;
+        shotCount = 3;
     }
     else if (lvl < 75)
     {
-        shotCount += 4;
+        shotCount = 4;
     }
     else if (lvl < 90)
     {
-        shotCount += 5;
+        shotCount = 5;
     }
     else if (lvl < 99)
     {
-        shotCount += 6;
+        shotCount = 6;
     }
     else
     {
-        shotCount += 7;
+        shotCount = 7;
     }
 
-    shotCount += PChar->getMod(Mod::BARRAGE_COUNT);
+    shotCount += PBattleEntity->getMod(Mod::BARRAGE_COUNT);
 
-    // make sure we have enough ammo for all these shots
-    CItemWeapon* PAmmo = (CItemWeapon*)PChar->getEquip(SLOT_AMMO);
-
-    if (PAmmo && PAmmo->getQuantity() < shotCount)
+    // only archery + marksmanship can use barrage
+    if (PBattleEntity->objtype == TYPE_PC)
     {
-        shotCount = PAmmo->getQuantity() - 1;
+        if (auto* PChar = dynamic_cast<CCharEntity*>(PBattleEntity); PChar)
+        {
+            CItemWeapon* PItem = dynamic_cast<CItemWeapon*>(PChar->getEquip(SLOT_RANGED));
+
+            if (PItem && PItem->getSkillType() != SKILL_ARCHERY && PItem->getSkillType() != SKILL_MARKSMANSHIP)
+            {
+                return 0;
+            }
+
+            // make sure we have enough ammo for all these shots
+            CItemWeapon* PAmmo = dynamic_cast<CItemWeapon*>(PChar->getEquip(SLOT_AMMO));
+
+            // TODO: Check if this should be here. Recycle can proc and potentially allow more shots to land
+            if (PAmmo && PAmmo->getQuantity() < shotCount + 1u) // This function is additive to the first shot. So one ammo is already consumed before we get here
+            {
+                shotCount = PAmmo->getQuantity() - 1;
+            }
+        }
     }
 
     return shotCount;
@@ -5063,7 +5119,7 @@ int32 HandleStoneskin(CBattleEntity* PDefender, int32 damage)
 auto HandleSevereDamage(CBattleEntity* PDefender, int32 damage, bool isPhysical) -> int32
 {
     damage = HandleSevereDamageEffect(PDefender, EFFECT_MIGAWARI, damage, true);
-    // TODO: Earthen Armor effect
+    damage = HandleSevereDamageEffect(PDefender, EFFECT_EARTHEN_ARMOR, damage, false);
     // TODO: Sentinel's Scherzo effect
 
     if (isPhysical && PDefender->objtype == TYPE_PET && PDefender->getMod(Mod::AUTO_SCHURZEN) != 0 && damage >= PDefender->health.hp &&
@@ -5378,24 +5434,19 @@ void DrawIn(CBattleEntity* PTarget, const position_t pos, const float offset, co
         return;
     }
 
-    // Make sure we can raycast to that position
-    // from the position's "eyeline" to the ground where we want to draw players in to
-    if (PTarget->loc.zone->lineOfSight)
+    // If geometry blocks the path from the source eyeline to the draw-in point, abort the
+    // draw-in - navmesh snapToValidPosition below will handle snapping to a valid position.
+    constexpr float ENTITY_HEIGHT = 2.0f;
+
+    const auto src = Vector3{ pos.x, pos.y - ENTITY_HEIGHT, pos.z };
+    const auto dst = Vector3{ nearEntity.x, nearEntity.y, nearEntity.z };
+    if (PTarget->loc.zone->xiMesh()->rayIntersect(src, dst))
     {
-        const auto entityHeight = 2.0f;
-        const auto posEyeline   = position_t{ pos.x, pos.y - entityHeight, pos.z, 0, 0 };
-        if (const auto optHit = PTarget->loc.zone->lineOfSight->Raycast(posEyeline, nearEntity))
-        {
-            auto hit   = *optHit;
-            nearEntity = { hit.x, hit.y, hit.z, 0, 0 };
-        }
+        return;
     }
 
     // Snap nearEntity to a guaranteed valid position
-    if (PTarget->loc.zone->m_navMesh)
-    {
-        PTarget->loc.zone->m_navMesh->snapToValidPosition(nearEntity);
-    }
+    PTarget->loc.zone->navMesh()->snapToValidPosition(nearEntity);
 
     // Move the target a little higher, just in case
     nearEntity.y -= 1.0f;

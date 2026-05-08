@@ -1,7 +1,12 @@
 -----------------------------------
 -- Pecking Flurry
 -- Family: Colibri
--- Description: Delivers a fourfold attack.
+-- Description: Delivers a fourfold attack. Damage varies with TP.
+-- Type: Physical
+-- Utsusemi/Blink absorb: 4 shadows
+-- Range: Single target
+-- Skillchain: Transfixion
+-- TODO: Verify fTP from retail captures.
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -15,11 +20,10 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
 
     params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 4
-    params.fTP            = { 0.75, 0.75, 0.75 }
+    params.fTP            = { 0.75, 1.0, 1.25 } -- TODO: Verify from retail captures
     params.attackType     = xi.attackType.PHYSICAL
-    params.damageType     = xi.damageType.SLASHING
+    params.damageType     = xi.damageType.PIERCING
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_4
-    -- TODO: Possible accuracy multiplier
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 

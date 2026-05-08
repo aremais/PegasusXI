@@ -68,6 +68,7 @@ MapNetworking::MapNetworking(Scheduler& scheduler, MapStatistics& mapStatistics,
 : scheduler_(scheduler)
 , mapStatistics_(mapStatistics)
 , mapIPP_(config.ipp) // TODO: Refactor to not use this, since we have config_ in here
+, mapSessions_(scheduler)
 , config_(config)
 {
     TracyZoneScoped;
@@ -605,6 +606,8 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
     uint8  packets                  = 0;
     bool   incrementKeyAfterEncrypt = false;
 
+    constexpr auto maxCryptoPayloadSize = 1300 - FFXI_HEADER_SIZE - 16; // max size for client to accept
+
     TotalPacketsToSendPerTick += static_cast<uint32>(PChar->getPacketCount());
 
 #ifdef LOG_OUTGOING_PACKETS
@@ -655,9 +658,6 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
                     map_session_data->zone_type = IPPacket->zoneType();
 
                     incrementKeyAfterEncrypt = true;
-
-                    // Set client port to zero, indicating the client tried to zone out and no longer has a port until the next 0x00A
-                    db::preparedStmt("UPDATE accounts_sessions SET client_port = 0, last_zoneout_time = NOW() WHERE charid = ?", map_session_data->charID);
                 }
 
                 std::memcpy(buff + *buffsize, *PSmallPacket, PSmallPacket->getSize());
@@ -667,7 +667,10 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
                 packets++;
             }
 
-            PacketCount -= PacketCount / 3;
+            if (PacketCount > 0)
+            {
+                PacketCount -= std::max<size_t>(1, PacketCount / 3);
+            }
 
             // Compress the data without regard to the header
             // The returned size is 8 times the real data
@@ -684,14 +687,24 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
 
             cryptoPayloadSize = (uint32)zlib_compressed_size(cryptoPayloadSize) + 4;
 
-        } while (PacketCount > 0 && cryptoPayloadSize > 1300 - FFXI_HEADER_SIZE - 16); // max size for client to accept
+        } while (PacketCount > 0 && cryptoPayloadSize > maxCryptoPayloadSize);
 
-        if (cryptoPayloadSize == static_cast<uint32>(-1))
+        if (cryptoPayloadSize == static_cast<uint32>(-1) || cryptoPayloadSize > maxCryptoPayloadSize)
         {
             if (PChar->getPacketCount() > 0)
             {
+                ShowWarningFmt("Dropping oversized packet for char {} (payload size: {}, packet count: {})",
+                               PChar->name,
+                               cryptoPayloadSize,
+                               packets);
                 PChar->erasePackets(1);
-                PacketCount = PChar->getPacketCount();
+                if (PChar->getPacketCount() == 0)
+                {
+                    *buffsize = 0;
+                    return -1;
+                }
+
+                PacketCount = std::clamp<size_t>(PChar->getPacketCount(), 0, kMaxPacketPerCompression);
             }
             else
             {
@@ -699,7 +712,7 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
                 return -1;
             }
         }
-    } while (cryptoPayloadSize == static_cast<uint32>(-1));
+    } while (cryptoPayloadSize == static_cast<uint32>(-1) || cryptoPayloadSize > maxCryptoPayloadSize);
 
     PChar->erasePackets(packets);
     TotalPacketsSentPerTick += packets;
@@ -772,7 +785,8 @@ int32 MapNetworking::send_parse(uint8* buff, size_t* buffsize, MapSession* map_s
     {
         map_session_data->incrementBlowfish();
 
-        db::preparedStmt("UPDATE accounts_sessions SET session_key = ? WHERE charid = ? LIMIT 1",
+        // Mark the session as zoning and persist the next key in one round trip.
+        db::preparedStmt("UPDATE accounts_sessions SET client_port = 0, last_zoneout_time = NOW(), session_key = ? WHERE charid = ? LIMIT 1",
                          map_session_data->blowfish.key,
                          PChar->id);
 

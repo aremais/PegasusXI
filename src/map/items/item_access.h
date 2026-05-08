@@ -29,10 +29,44 @@
 
 #include <magic_enum/magic_enum.hpp>
 
+class Transaction;
+
 namespace xi::items::detail
 {
 struct ItemAccess
 {
+    // Privileged InTransaction transitions, only callable from Transaction subclasses.
+    [[nodiscard]] static auto enterTransaction(CItem* item, xi::Badge<Transaction>) -> bool
+    {
+        if (item == nullptr)
+        {
+            ShowErrorFmt("ItemAccess::enterTransaction: null item");
+            return false;
+        }
+
+        if (item->state() != ItemState::Free)
+        {
+            ShowErrorFmt("ItemAccess::enterTransaction: item {} not Free (current={})",
+                         item->getID(),
+                         magic_enum::enum_name(item->state()));
+            return false;
+        }
+
+        item->setState(ItemState::InTransaction, xi::Badge<ItemAccess>{});
+        return true;
+    }
+
+    static void exitTransaction(CItem* item, xi::Badge<Transaction>)
+    {
+        if (item == nullptr)
+        {
+            ShowErrorFmt("ItemAccess::exitTransaction: null item");
+            return;
+        }
+
+        item->setState(ItemState::Free, xi::Badge<ItemAccess>{});
+    }
+
     [[nodiscard]] static auto mark(CItem* item, const ItemState target) -> bool
     {
         if (item == nullptr)
@@ -45,7 +79,7 @@ struct ItemAccess
         // Refuse on either side of the transition.
         if (target == ItemState::InTransaction || item->state() == ItemState::InTransaction)
         {
-            ShowErrorFmt("ItemAccess::mark: illegal tx transition for item {} (current={}, target={}) — use tx commit/rollback path",
+            ShowErrorFmt("ItemAccess::mark: illegal tx transition for item {} (current={}, target={}) - use tx commit/rollback path",
                          item->getID(),
                          magic_enum::enum_name(item->state()),
                          magic_enum::enum_name(target));

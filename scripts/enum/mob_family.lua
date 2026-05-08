@@ -214,3 +214,5 @@ xi.mobFamily =
     STATUE              = 205,
     ULTIMA              = 206,
 }
+
+return xi.mobFamily
