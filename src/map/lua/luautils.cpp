@@ -299,10 +299,11 @@ void init(IPP mapIPP, bool isRunningInCI)
 
         if (const CItem* PItem = GetItemByID(itemId))
         {
-            // Push CItem* so sol uses sol_lua_push(types<CItem*>, ...) and the CItem usertype
-            // metatable is applied. make_object(lua, CLuaItem(PItem)) pushed by value and could
-            // yield plain userdata without :isType / other method bindings (Lua "attempt to index").
-            return sol::make_object(lua, const_cast<CItem*>(PItem));
+            // sol::make_object(lua, CItem*) can bypass sol_lua_push and yield raw userdata without
+            // the CItem/CLuaItem metatable (Lua: "attempt to index ... (a userdata value)" on :isType).
+            lua_State* L = lua.lua_state();
+            sol::stack::push(L, CLuaItem(PItem));
+            return sol::stack::pop<sol::object>(L);
         }
 
         return sol::lua_nil;
@@ -374,8 +375,9 @@ void init(IPP mapIPP, bool isRunningInCI)
 
         if (const CItem* PItem = GetReadOnlyItem(id))
         {
-            // Same as GetItemByID: push through CItem* so userdata gets CItem usertype bindings.
-            return sol::make_object(lua, const_cast<CItem*>(PItem));
+            lua_State* L = lua.lua_state();
+            sol::stack::push(L, CLuaItem(PItem));
+            return sol::stack::pop<sol::object>(L);
         }
 
         return sol::lua_nil;
