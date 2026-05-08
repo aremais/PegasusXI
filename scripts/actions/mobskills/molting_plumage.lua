@@ -32,7 +32,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)
 
         -- Dispel (Light-based): removes one beneficial effect
-        target:dispelStatusEffect(xi.dispelType.BENEFICIAL)
+        target:dispelStatusEffect(xi.effectFlag.DISPELABLE)
     end
 
     return info.damage
