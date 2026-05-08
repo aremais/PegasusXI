@@ -1,7 +1,12 @@
 -----------------------------------
--- Rhino_Attack
+-- Rhino Attack
 -- Family: Beetle
--- Description: Deals damage to a single target. Additional Effect: Knockback
+-- Description: Deals physical damage to a single target. Damage varies with TP.
+-- Type: Physical
+-- Utsusemi/Blink absorb: 1 shadow
+-- Range: Single target
+-- Skillchain: Detonation
+-- TODO: Verify fTP from retail captures.
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -15,13 +20,10 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
 
     params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 1
-    params.fTP            = { 1.0, 1.0, 1.0 }
+    params.fTP            = { 2.0, 2.5, 3.0 } -- TODO: Verify from retail captures
     params.attackType     = xi.attackType.PHYSICAL
-    params.damageType     = xi.damageType.BLUNT
+    params.damageType     = xi.damageType.SLASHING
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1
-    params.attackMultiplier = { 2.0, 2.0, 2.0 }
-    params.canCrit        = true
-    params.criticalChance = { 0.10, 0.20, 0.25 } -- TODO: Capture crit rate
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 

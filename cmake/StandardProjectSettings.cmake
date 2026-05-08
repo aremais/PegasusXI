@@ -115,8 +115,15 @@ function(set_target_output_directory target)
 endfunction()
 
 function(disable_lto target)
-    target_compile_options(${target} PRIVATE -fno-lto)
-    target_link_options(${target} PRIVATE -fno-lto)
+    set_target_properties(${target} PROPERTIES INTERPROCEDURAL_OPTIMIZATION OFF)
+
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /GL-)
+        target_link_options(${target} PRIVATE /LTCG:OFF)
+    else()
+        target_compile_options(${target} PRIVATE -fno-lto)
+        target_link_options(${target} PRIVATE -fno-lto)
+    endif()
 endfunction()
 
 # If we're on Unix and the system is 32-bit (void* is 4-bytes wide),

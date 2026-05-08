@@ -1,7 +1,12 @@
 -----------------------------------
---  Back Heel
---  Family: Hippogryph
---  Description: Deals damage to a single target. Additional Effect: Knockback
+-- Back Heel
+-- Family: Hippogryph
+-- Description: Deals physical damage to a single target. Damage varies with TP.
+-- Type: Physical
+-- Utsusemi/Blink absorb: 1 shadow
+-- Range: Single target
+-- Skillchain: Reverberation
+-- TODO: Verify fTP from retail captures.
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -15,7 +20,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
 
     params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 1
-    params.fTP            = { 3.0, 3.0, 3.0 }
+    params.fTP            = { 2.5, 3.0, 3.5 } -- TODO: Verify from retail captures
     params.attackType     = xi.attackType.PHYSICAL
     params.damageType     = xi.damageType.BLUNT
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1

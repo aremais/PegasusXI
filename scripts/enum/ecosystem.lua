@@ -33,3 +33,5 @@ xi.ecosystem =
 
 ---@alias xi.eco xi.ecosystem
 xi.eco = xi.ecosystem
+
+return xi.ecosystem

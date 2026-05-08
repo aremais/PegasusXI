@@ -3653,6 +3653,7 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,1,1,255);    -- cur
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,2,11,255);   -- cure_ii (11~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,3,21,255);   -- cure_iii (21~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,4,41,255);   -- cure_iv (41~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,12,50,255);  -- raise (50~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,21,55,255);  -- holy (55~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,112,37,255); -- flash (37~255)
 
@@ -3721,6 +3722,8 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kukki-Chebukki',374,500,87,255); --
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kukki-Chebukki',374,501,84,255); -- waterja (84~255)
 
 -- TRUST_Arciela (378)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,260,32,255); -- dispel (32~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,286,83,255); -- addle (83~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,43,7,255);   -- protect (7~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,44,27,255);  -- protect_ii (27~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,45,47,255);  -- protect_iii (47~255)
@@ -4308,6 +4311,16 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Ingrid_II',425,29,30,64);  -- banis
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Ingrid_II',425,30,65,89);  -- banish_iii (65~89)
 
 -- TRUST_Arciela_II (426)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,43,7,255);   -- protect (7~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,44,27,255);  -- protect_ii (27~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,45,47,255);  -- protect_iii (47~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,46,63,255);  -- protect_iv (63~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,47,76,255);  -- protect_v (76~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,48,17,255);  -- shell (17~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,49,37,255);  -- shell_ii (37~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,50,57,255);  -- shell_iii (57~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,51,68,255);  -- shell_iv (68~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,52,76,255);  -- shell_v (76~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,56,13,255);  -- slow (13~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,57,40,255);  -- haste (40~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,58,4,255);   -- paralyze (4~255)
@@ -5788,17 +5801,50 @@ INSERT INTO `mob_spell_lists` VALUES ('Chemical_Cook_Chemachiq',565,112,1,255); 
 -- Next Available: 566
 
 /*!40000 ALTER TABLE `mob_spell_lists` ENABLE KEYS */;
--- TRUST_Aldo_UC Ninjutsu (spell_list_id 1122; matches mob_skill_lists)
+-- TRUST_Aldo Ninjutsu
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,320,1,99); -- Katon: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,321,1,99); -- Katon: Ni
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,323,1,99); -- Hyoton: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,324,1,99); -- Hyoton: Ni
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,326,1,99); -- Huton: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,327,1,99); -- Huton: Ni
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,329,1,99); -- Doton: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,330,1,99); -- Doton: Ni
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,332,1,99); -- Raiton: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,333,1,99); -- Raiton: Ni
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,335,1,99); -- Suiton: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,336,1,99); -- Suiton: Ni
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,338,1,99); -- Utsusemi: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,339,1,99); -- Utsusemi: Ni
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,341,1,99); -- Jubaku: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,342,1,99); -- Jubaku: Ni
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,344,1,99); -- Hojo: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,345,1,99); -- Hojo: Ni
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,347,1,99); -- Kurayami: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,348,1,99); -- Kurayami: Ni
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo',1045,350,1,99); -- Dokumori: Ichi
+
+-- TRUST_Aldo_UC Ninjutsu
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,320,1,99); -- Katon: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,321,1,99); -- Katon: Ni
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,323,1,99); -- Hyoton: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,324,1,99); -- Hyoton: Ni
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,326,1,99); -- Huton: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,327,1,99); -- Huton: Ni
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,329,1,99); -- Doton: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,330,1,99); -- Doton: Ni
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,332,1,99); -- Raiton: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,333,1,99); -- Raiton: Ni
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,335,1,99); -- Suiton: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,336,1,99); -- Suiton: Ni
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,338,1,99); -- Utsusemi: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,339,1,99); -- Utsusemi: Ni
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,341,1,99); -- Jubaku: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,342,1,99); -- Jubaku: Ni
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,344,1,99); -- Hojo: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,345,1,99); -- Hojo: Ni
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,347,1,99); -- Kurayami: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,348,1,99); -- Kurayami: Ni
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,350,1,99); -- Dokumori: Ichi
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

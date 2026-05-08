@@ -44,6 +44,7 @@ spellObject.onMobSpawn = function(mob)
     mob:addMod(xi.mod.TRIPLE_ATTACK, 10)
 
     -- THF JA
+    -- THF JAs
     safeAddGambit(mob,
         ai.t.TARGET,
         { ai.c.ALWAYS, 0 },

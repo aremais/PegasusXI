@@ -555,6 +555,17 @@ end
 function CBaseEntity:setCarefulPathing(careful)
 end
 
+---@nodiscard
+---@param target CBaseEntity
+---@return boolean
+function CBaseEntity:canSee(target)
+end
+
+---@nodiscard
+---@return boolean
+function CBaseEntity:inWater()
+end
+
 ---@param seconds integer?
 ---@return nil
 function CBaseEntity:openDoor(seconds)
@@ -3830,6 +3841,16 @@ end
 ---@param state boolean
 ---@return nil
 function CBaseEntity:setAutoAttackEnabled(state)
+end
+
+---@param state boolean
+---@return nil
+function CBaseEntity:setRangedAttackEnabled(state)
+end
+
+---@nodiscard
+---@return boolean
+function CBaseEntity:isRangedAttackEnabled()
 end
 
 ---@param state boolean

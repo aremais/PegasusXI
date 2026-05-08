@@ -490,3 +490,5 @@ xi.mobSpecies =
     YAGUDO_STATUE          = 481,
     ULTIMA                 = 482,
 }
+
+return xi.mobSpecies
