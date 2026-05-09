@@ -13262,7 +13262,7 @@ bool CLuaBaseEntity::isDualWielding()
     CBattleEntity* PBattleEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
     if (PBattleEntity)
     {
-        return PBattleEntity->m_dualWield;
+        return PBattleEntity->IsDualWielding();
     }
     else
     {
