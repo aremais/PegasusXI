@@ -2,12 +2,12 @@
 -- Area: Rabao
 --  NPC: Nomad Moogle
 -----------------------------------
-local ID = zones[xi.zone.RABAO]
------------------------------------
 ---@type TNpcEntity
 local entity = {}
 
 entity.onTrigger = function(player, npc)
+    local ID = zones[xi.zone.RABAO]
+
     player:showText(npc, ID.text.NOMAD_MOOGLE_DIALOG)
     player:sendMenu(xi.menuType.MOOGLE)
 end
