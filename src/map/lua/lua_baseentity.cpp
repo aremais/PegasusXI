@@ -2262,6 +2262,37 @@ void CLuaBaseEntity::setCarefulPathing(bool careful)
 }
 
 /************************************************************************
+ *  Function: canSee(...)
+ *  Purpose : Execute a raycast between ENTITY_HEIGHT and the found at target's feet
+ *  Example : player:canSee(mob)
+ ************************************************************************/
+
+bool CLuaBaseEntity::canSee(const CLuaBaseEntity* PTarget)
+{
+    if (!PTarget)
+    {
+        ShowWarning("Attempting to see invalid entity (from %s).", m_PBaseEntity->getName());
+        return false;
+    }
+
+    return m_PBaseEntity->CanSeeTarget(PTarget->GetBaseEntity());
+}
+
+/************************************************************************
+ *  Function: inWater()
+ *  Purpose : Execute an ximesh cell search downwards to check if entity is in water
+ *  Example : if player:inWater() then ...
+ ************************************************************************/
+
+bool CLuaBaseEntity::inWater()
+{
+    // NOTE: Same logic as in PathFind::InWater
+    const auto& pos     = m_PBaseEntity->loc.p;
+    const auto  terrain = m_PBaseEntity->loc.zone->xiMesh()->getTerrainAt(pos.x, pos.y, pos.z);
+    return terrain == TerrainType::ShallowWater || terrain == TerrainType::DeepWater;
+}
+
+/************************************************************************
  *  Function: openDoor()
  *  Purpose : Opens a door for 7 seconds; different time can be specified
  *  Example : npc:openDoor(30) -- Open for 30 sec; npc:openDoor() -- 7 sec
@@ -19981,6 +20012,8 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("hasFollowTarget", CLuaBaseEntity::hasFollowTarget);
     SOL_REGISTER("unfollow", CLuaBaseEntity::unfollow);
     SOL_REGISTER("setCarefulPathing", CLuaBaseEntity::setCarefulPathing);
+    SOL_REGISTER("canSee", CLuaBaseEntity::canSee);
+    SOL_REGISTER("inWater", CLuaBaseEntity::inWater);
 
     SOL_REGISTER("openDoor", CLuaBaseEntity::openDoor);
     SOL_REGISTER("closeDoor", CLuaBaseEntity::closeDoor);

@@ -2458,6 +2458,7 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_Beetle',741,3879); -- spoil
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Beetle',741,3955); -- rhinowrecker
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Fly',742,3880); -- cursed_sphere
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Fly',742,3881); -- venom
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Fly',742,3938); -- somersault
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Antlion',743,3882); -- sandblast
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Antlion',743,3883); -- sandpit
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Antlion',743,3884); -- venom_spray
@@ -2469,6 +2470,7 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_Eft',745,3889); -- geist_wall
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Eft',745,3890); -- numbing_noise
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Eft',745,3891); -- nimble_snap
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Eft',745,3892); -- cyclotail
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Eft',745,3893); -- toxic_spit
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Diremite',746,3894); -- double_claw
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Diremite',746,3895); -- grapple
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Diremite',746,3896); -- filamented_hold
@@ -2484,13 +2486,10 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_Leech',748,3908); -- tp_drainkiss
 INSERT INTO `mob_skill_lists` VALUES ('Jug_SnowHare',749,3840); -- foot_kick
 INSERT INTO `mob_skill_lists` VALUES ('Jug_SnowHare',749,3841); -- dust_cloud
 INSERT INTO `mob_skill_lists` VALUES ('Jug_SnowHare',749,3842); -- whirl_claws
-INSERT INTO `mob_skill_lists` VALUES ('Jug_SnowHare',749,3902); -- snow_cloud
 INSERT INTO `mob_skill_lists` VALUES ('Jug_SnowHare',749,3903); -- wild_carrot
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Ladybug',750,3904); -- sudden_lunge
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Ladybug',750,3905); -- spiral_spin
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Ladybug',750,3906); -- noisome_powder
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Ladybug',750,3913); -- purulent_ooze
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Ladybug',750,3914); -- corrosive_ooze
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Raptor',751,3909); -- scythe_tail
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Raptor',751,3910); -- ripper_fang
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Raptor',751,3911); -- chomp_rush
@@ -2509,6 +2508,7 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_Apkallu',755,3922); -- wing_slap
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Apkallu',755,3923); -- beak_lunge
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Pugil',756,3924); -- intimidate
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Pugil',756,3925); -- recoil_dive
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Pugil',756,3926); -- water_wall
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Chapuli',757,3927); -- sensilla_blades
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Chapuli',757,3928); -- tegmina_buffet
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Tulfaire',758,3929); -- molting_plumage
@@ -2520,9 +2520,8 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_Snapweed',760,3934); -- tickling_tend
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Snapweed',760,3935); -- stink_bomb
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Snapweed',760,3936); -- nectarous_deluge
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Snapweed',760,3937); -- nepenthic_plunge
-INSERT INTO `mob_skill_lists` VALUES ('Jug_FlyHi',761,3939); -- foul_waters
-INSERT INTO `mob_skill_lists` VALUES ('Jug_FlyHi',761,3940); -- pestilent_plume
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Acuex',762,3926); -- water_wall
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Acuex',762,3939); -- foul_waters
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Acuex',762,3940); -- pestilent_plume
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Colibri',763,3941); -- pecking_flurry
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Spider',764,3942); -- sickle_slash
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Spider',764,3943); -- acid_spray
@@ -2532,7 +2531,6 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_Lynx',765,3899); -- blaster
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Lynx',765,3912); -- charged_whisker
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Lynx',765,3954); -- frenzied_rage
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Citrullus',766,3843); -- head_butt
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Citrullus',766,3844); -- dream_flower
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Citrullus',766,3845); -- wild_oats
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Citrullus',766,3846); -- leaf_dagger
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Citrullus',766,3847); -- scream
@@ -4333,9 +4331,6 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3878); -- rhino_guard
 INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3879); -- spoil
 INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3955); -- rhinowrecker
 
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Frog',2098,3868); -- frogkick
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Frog',2098,3893); -- toxic_spit
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Frog',2098,3938); -- somersault
 
 -- Next ID : 2099
 -- ------------------------------------------------------------

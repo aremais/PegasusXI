@@ -125,6 +125,7 @@ ai.select =
     DEF_BAR_ELEMENT     = 16,
     RUNE_DAY            = 17,
     PARTY_SKILLCHAIN    = 18, -- Must match C++ G_SELECT::PARTY_SKILLCHAIN (gambits_container.h); see static_assert in gambits_container.cpp
+    SPECIAL_AUGUST      = 19, -- Must match C++ G_SELECT::SPECIAL_AUGUST; trust August TP WS pick (same geometry as SPECIAL_AYAME)
 }
 ai.s = ai.select
 
