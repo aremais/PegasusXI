@@ -15429,24 +15429,24 @@ INSERT INTO `mob_spawn_points` VALUES (17051674,0,'Raubahn','Raubahn',3,70,70,0,
 INSERT INTO `mob_spawn_points` VALUES (17051675,0,'Raubahn','Raubahn',3,70,70,-240,48,-240,161);
 
 -- Moment of Truth
-INSERT INTO `mob_spawn_points` VALUES (17051676,0,'Shadowhand_Kajeel_Ja','Shadowhand Kajeel Ja',4,75,75,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051677,0,'Blacktattoo_Vedool_Ja','Blacktattoo Vedool Ja',5,75,75,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051678,0,'Whitetattoo_Rahool_Ja','Whitetattoo Rahool Ja',6,75,75,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051679,0,'Wabjahl','Wabjahl',7,1,1,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051680,0,'Tiyaash','Tiyaash',8,1,1,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051681,0,'Jasweem','Jasweem',9,1,1,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051682,0,'Shadowhand_Kajeel_Ja','Shadowhand Kajeel Ja',4,75,75,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051683,0,'Blacktattoo_Vedool_Ja','Blacktattoo Vedool Ja',5,75,75,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051684,0,'Whitetattoo_Rahool_Ja','Whitetattoo Rahool Ja',6,75,75,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051685,0,'Wabjahl','Wabjahl',7,1,1,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051686,0,'Tiyaash','Tiyaash',8,1,1,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051687,0,'Jasweem','Jasweem',9,1,1,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051688,0,'Shadowhand_Kajeel_Ja','Shadowhand Kajeel Ja',4,75,75,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051689,0,'Blacktattoo_Vedool_Ja','Blacktattoo Vedool Ja',5,75,75,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051690,0,'Whitetattoo_Rahool_Ja','Whitetattoo Rahool Ja',6,75,75,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051691,0,'Wabjahl','Wabjahl',7,1,1,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051692,0,'Tiyaash','Tiyaash',8,1,1,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17051693,0,'Jasweem','Jasweem',9,1,1,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17051676,0,'Shadowhand_Kajeel_Ja','Shadowhand Kajeel Ja',4,65,65,240.000,-31.500,240.000,161);
+INSERT INTO `mob_spawn_points` VALUES (17051677,0,'Blacktattoo_Vedool_Ja','Blacktattoo Vedool Ja',5,65,65,241.733,-31.500,241.960,161);
+INSERT INTO `mob_spawn_points` VALUES (17051678,0,'Whitetattoo_Rahool_Ja','Whitetattoo Rahool Ja',6,65,65,238.186,-31.368,237.123,161);
+INSERT INTO `mob_spawn_points` VALUES (17051679,0,'Wabjahl','Wabjahl',7,50,50,243.526,-31.269,237.983,161);
+INSERT INTO `mob_spawn_points` VALUES (17051680,0,'Tiyaash','Tiyaash',8,50,50,242.895,-31.240,237.164,161);
+INSERT INTO `mob_spawn_points` VALUES (17051681,0,'Jasweem','Jasweem',9,50,50,242.492,-31.162,236.115,161);
+INSERT INTO `mob_spawn_points` VALUES (17051682,0,'Shadowhand_Kajeel_Ja','Shadowhand Kajeel Ja',4,65,65,0,8,0,161);
+INSERT INTO `mob_spawn_points` VALUES (17051683,0,'Blacktattoo_Vedool_Ja','Blacktattoo Vedool Ja',5,65,65,1.733,8,1.960,161);
+INSERT INTO `mob_spawn_points` VALUES (17051684,0,'Whitetattoo_Rahool_Ja','Whitetattoo Rahool Ja',6,65,65,-1.814,8,-2.877,161);
+INSERT INTO `mob_spawn_points` VALUES (17051685,0,'Wabjahl','Wabjahl',7,50,50,3.526,7.769,-2.017,161);
+INSERT INTO `mob_spawn_points` VALUES (17051686,0,'Tiyaash','Tiyaash',8,50,50,2.895,7.740,-2.836,161);
+INSERT INTO `mob_spawn_points` VALUES (17051687,0,'Jasweem','Jasweem',9,50,50,2.492,7.662,-3.885,161);
+INSERT INTO `mob_spawn_points` VALUES (17051688,0,'Shadowhand_Kajeel_Ja','Shadowhand Kajeel Ja',4,65,65,-240,48,-240,161);
+INSERT INTO `mob_spawn_points` VALUES (17051689,0,'Blacktattoo_Vedool_Ja','Blacktattoo Vedool Ja',5,65,65,-238.267,48,-238.040,161);
+INSERT INTO `mob_spawn_points` VALUES (17051690,0,'Whitetattoo_Rahool_Ja','Whitetattoo Rahool Ja',6,65,65,-241.814,48,-242.887,161);
+INSERT INTO `mob_spawn_points` VALUES (17051691,0,'Wabjahl','Wabjahl',7,50,50,-236.474,48,-242.017,161);
+INSERT INTO `mob_spawn_points` VALUES (17051692,0,'Tiyaash','Tiyaash',8,50,50,-237.105,48,-237.164,161);
+INSERT INTO `mob_spawn_points` VALUES (17051693,0,'Jasweem','Jasweem',9,50,50,-237.508,48,-243.885,161);
 
 -- ToAU 29: Puppet in Peril
 INSERT INTO `mob_spawn_points` VALUES (17051694,0,'Lancelord_Gaheel_Ja','Lancelord Gaheel Ja',10,80,80,238.707,-32.000,240.117,170);
