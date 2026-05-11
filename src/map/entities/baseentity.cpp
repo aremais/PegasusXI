@@ -27,8 +27,6 @@
 
 #include "battlefield.h"
 #include "instance.h"
-#include "los/zone_los.h"
-#include "navmesh.h"
 #include "utils/zoneutils.h"
 #include "zone.h"
 
@@ -183,20 +181,26 @@ bool CBaseEntity::isWideScannable()
     return status != STATUS_TYPE::DISAPPEAR && !IsNameHidden() && !GetUntargetable();
 }
 
+bool CBaseEntity::CanSeeTarget(CBaseEntity* target)
+{
+    return CanSeeTarget(target, true);
+}
+
 bool CBaseEntity::CanSeeTarget(CBaseEntity* target, bool fallbackNavMesh)
 {
     return CanSeeTarget(target->loc.p, fallbackNavMesh);
 }
 
+bool CBaseEntity::CanSeeTarget(const position_t& targetPointBase)
+{
+    return CanSeeTarget(targetPointBase, true);
+}
+
 bool CBaseEntity::CanSeeTarget(const position_t& targetPointBase, bool fallbackNavMesh)
 {
-    if (loc.zone->lineOfSight)
+    if (fallbackNavMesh && loc.zone != nullptr)
     {
-        return loc.zone->lineOfSight->CanEntitySee(this, targetPointBase);
-    }
-    else if (fallbackNavMesh && loc.zone->m_navMesh)
-    {
-        return loc.zone->m_navMesh->raycast(loc.p, targetPointBase);
+        return loc.zone->navMesh()->raycast(loc.p, targetPointBase);
     }
 
     return true;
