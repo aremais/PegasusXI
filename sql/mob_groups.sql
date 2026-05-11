@@ -15856,7 +15856,7 @@ INSERT INTO `mob_groups` VALUES (92,6992,289,'Ark_Angels_Wyvern',0,128,0,0,0,0,N
 INSERT INTO `mob_groups` VALUES (93,5697,289,'Warder_of_Courage',0,128,0,0,99999,0,NULL);
 INSERT INTO `mob_groups` VALUES (94,5698,289,'Warders_Wynav',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (95,5631,289,'Balamor',0,128,0,0,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (96,5634,289,'Naga_Raja',0,128,0,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (96,5634,289,'Naga_Raja',0,128,0,200000,99999,0,NULL);
 INSERT INTO `mob_groups` VALUES (97,5635,289,'Naga_Rajas_Lamia_1',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (98,5636,289,'Naga_Rajas_Lamia_2',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (99,0,289,'Mireu',0,128,0,0,0,0,NULL);
@@ -15964,7 +15964,7 @@ INSERT INTO `mob_groups` VALUES (85,5609,291,'Onychophora',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (86,5610,291,'Onycophoras_Sandworm',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (87,5611,291,'Erinys',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (88,5612,291,'Boobrie',0,128,0,0,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (89,5613,291,'Quetzalcoatl',0,128,0,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (89,5613,291,'Quetzalcoatl',0,128,0,200000,99999,0,NULL);
 INSERT INTO `mob_groups` VALUES (90,5614,291,'Quetzalcoatls_Sibilus',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (91,0,291,'Mireu',0,128,0,0,0,0,NULL);
 

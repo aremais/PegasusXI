@@ -64,3 +64,11 @@ xi.domainInvasion.awardDomainPoints = function(mob, title)
         end
     end
 end
+
+xi.domainInvasion.spawnMobIfMissing = function(mobId)
+    local mob = GetMobByID(mobId)
+
+    if mob ~= nil and not mob:isSpawned() then
+        SpawnMob(mobId)
+    end
+end
