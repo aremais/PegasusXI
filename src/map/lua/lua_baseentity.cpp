@@ -46,8 +46,8 @@
 #include "instance.h"
 #include "ipc_client.h"
 #include "item_container.h"
-#include "items/exdata.h"
 #include "items.h"
+#include "items/exdata.h"
 #include "job_points.h"
 #include "latent_effect_container.h"
 #include "linkshell.h"
@@ -272,12 +272,12 @@ void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageI
 
             if (faceArg.get_type() == sol::type::number)
             {
-                face = faceArg.as<uint8>();
+                face      = faceArg.as<uint8>();
                 faceGiven = true;
             }
             else if (faceArg.get_type() == sol::type::boolean && faceArg.as<bool>())
             {
-                face = worldAngle(PTarget->loc.p, m_PBaseEntity->loc.p);
+                face      = worldAngle(PTarget->loc.p, m_PBaseEntity->loc.p);
                 faceGiven = true;
             }
 
@@ -500,7 +500,7 @@ void CLuaBaseEntity::messageName(uint16 messageID, const sol::object& entity, co
     int32 param2 = (p2 != sol::lua_nil) ? p2.as<int32>() : 0;
     int32 param3 = (p3 != sol::lua_nil) ? p3.as<int32>() : 0;
 
-    int32 chatType = (chat != sol::lua_nil) ? chat.as<int32>() : 4;
+    int32 chatType     = (chat != sol::lua_nil) ? chat.as<int32>() : 4;
     bool  useRawMesNum = (showSender != sol::lua_nil) && showSender.as<bool>();
 
     if (CCharEntity* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
@@ -12885,8 +12885,6 @@ void CLuaBaseEntity::timer(int ms, sol::function func)
         return;
     }
 
-
-
     sol::function luaCallback = std::move(func);
     m_PBaseEntity->PAI->QueueAction(queueAction_t(
         std::chrono::milliseconds(ms),
@@ -18167,6 +18165,42 @@ void CLuaBaseEntity::setAutoAttackEnabled(bool state)
 }
 
 /************************************************************************
+ *  Function: setRangedAttackEnabled()
+ *  Purpose : Enables/disables ranged auto-attack for a Mob
+ *  Example : mob:setRangedAttackEnabled(false)
+ *  Notes   :
+ ************************************************************************/
+
+void CLuaBaseEntity::setRangedAttackEnabled(bool state)
+{
+    if (m_PBaseEntity->objtype & TYPE_NPC || m_PBaseEntity->objtype & TYPE_PC)
+    {
+        ShowError("function call on invalid entity! (name: %s type: %d)", m_PBaseEntity->name, m_PBaseEntity->objtype);
+        return;
+    }
+
+    m_PBaseEntity->PAI->GetController()->SetRangedAttackEnabled(state);
+}
+
+/************************************************************************
+ *  Function: isRangedAttackEnabled()
+ *  Purpose : Returns whether ranged auto-attack is enabled for a Mob
+ *  Example : if mob:isRangedAttackEnabled() then
+ *  Notes   :
+ ************************************************************************/
+
+bool CLuaBaseEntity::isRangedAttackEnabled()
+{
+    if (m_PBaseEntity->objtype & TYPE_NPC || m_PBaseEntity->objtype & TYPE_PC)
+    {
+        ShowError("function call on invalid entity! (name: %s type: %d)", m_PBaseEntity->name, m_PBaseEntity->objtype);
+        return false;
+    }
+
+    return m_PBaseEntity->PAI->GetController()->IsRangedAttackEnabled();
+}
+
+/************************************************************************
  *  Function: setMagicCastingEnabled()
  *  Purpose : Used to enable/disable the casting of spells for a Mob
  *  Example : mob:setMagicCastingEnabled(false)
@@ -20722,6 +20756,8 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("hasSpellList", CLuaBaseEntity::hasSpellList);
     SOL_REGISTER("setSpellList", CLuaBaseEntity::setSpellList);
     SOL_REGISTER("setAutoAttackEnabled", CLuaBaseEntity::setAutoAttackEnabled);
+    SOL_REGISTER("setRangedAttackEnabled", CLuaBaseEntity::setRangedAttackEnabled);
+    SOL_REGISTER("isRangedAttackEnabled", CLuaBaseEntity::isRangedAttackEnabled);
     SOL_REGISTER("setMagicCastingEnabled", CLuaBaseEntity::setMagicCastingEnabled);
     SOL_REGISTER("setMobAbilityEnabled", CLuaBaseEntity::setMobAbilityEnabled);
     SOL_REGISTER("setMobSkillAttack", CLuaBaseEntity::setMobSkillAttack);

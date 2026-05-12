@@ -2484,7 +2484,7 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_Leech',748,3901); -- drainkiss
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Leech',748,3907); -- acid_mist
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Leech',748,3908); -- tp_drainkiss
 INSERT INTO `mob_skill_lists` VALUES ('Jug_SnowHare',749,3840); -- foot_kick
-INSERT INTO `mob_skill_lists` VALUES ('Jug_SnowHare',749,3841); -- dust_cloud
+INSERT INTO `mob_skill_lists` VALUES ('Jug_SnowHare',749,3902); -- snow_cloud
 INSERT INTO `mob_skill_lists` VALUES ('Jug_SnowHare',749,3842); -- whirl_claws
 INSERT INTO `mob_skill_lists` VALUES ('Jug_SnowHare',749,3903); -- wild_carrot
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Ladybug',750,3904); -- sudden_lunge
@@ -2493,8 +2493,8 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_Ladybug',750,3906); -- noisome_powder
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Raptor',751,3909); -- scythe_tail
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Raptor',751,3910); -- ripper_fang
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Raptor',751,3911); -- chomp_rush
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Slug',752,747);
-INSERT INTO `mob_skill_lists` VALUES ('Jug_Slug',752,748);
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Slug',752,3913); -- purulent_ooze
+INSERT INTO `mob_skill_lists` VALUES ('Jug_Slug',752,3914); -- corrosive_ooze
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,3915); -- back_heel
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,3916); -- jettatura
 INSERT INTO `mob_skill_lists` VALUES ('Jug_Hippogryph',753,3917); -- choke_breath
@@ -4330,7 +4330,6 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3877); -- rhino_attack
 INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3878); -- rhino_guard
 INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3879); -- spoil
 INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3955); -- rhinowrecker
-
 
 -- Next ID : 2099
 -- ------------------------------------------------------------
