@@ -85472,6 +85472,68 @@ INSERT INTO `item_mods` VALUES (27498,384,300);  -- HASTE_GEAR: 3%
 INSERT INTO `item_mods` VALUES (27498,27,-5);    -- ENMITY: -5
 INSERT INTO `item_mods` VALUES (27498,161,-200); -- DMGPHYS: -2%
 
+
+-- Zurim Domain Invasion reward: 800 Point Reisenjima Armor - Merlinic
+-- Merlinic Jubbah
+INSERT INTO `item_mods` VALUES (25719,1,124);    -- DEF: 124
+INSERT INTO `item_mods` VALUES (25719,2,41);     -- HP: 41
+INSERT INTO `item_mods` VALUES (25719,5,67);     -- MP: 67
+INSERT INTO `item_mods` VALUES (25719,8,16);     -- STR: 16
+INSERT INTO `item_mods` VALUES (25719,9,19);     -- DEX: 19
+INSERT INTO `item_mods` VALUES (25719,10,16);    -- VIT: 16
+INSERT INTO `item_mods` VALUES (25719,11,16);    -- AGI: 16
+INSERT INTO `item_mods` VALUES (25719,12,40);    -- INT: 40
+INSERT INTO `item_mods` VALUES (25719,13,33);    -- MND: 33
+INSERT INTO `item_mods` VALUES (25719,14,32);    -- CHR: 32
+INSERT INTO `item_mods` VALUES (25719,68,38);    -- EVA: 38
+INSERT INTO `item_mods` VALUES (25719,31,91);    -- MEVA: 91
+INSERT INTO `item_mods` VALUES (25719,30,20);    -- MACC: 20
+INSERT INTO `item_mods` VALUES (25719,28,20);    -- MATT: 20
+INSERT INTO `item_mods` VALUES (25719,29,7);     -- MDEF: 7
+INSERT INTO `item_mods` VALUES (25719,384,300);  -- HASTE_GEAR: 3%
+INSERT INTO `item_mods` VALUES (25719,27,-5);    -- ENMITY: -5
+INSERT INTO `item_mods` VALUES (25719,170,6);    -- FASTCAST: 6
+INSERT INTO `item_mods` VALUES (25719,161,-200); -- DMGPHYS: -2%
+
+-- Merlinic Dastanas
+INSERT INTO `item_mods` VALUES (27141,1,84);    -- DEF: 84
+INSERT INTO `item_mods` VALUES (27141,2,9);     -- HP: 9
+INSERT INTO `item_mods` VALUES (27141,5,20);    -- MP: 20
+INSERT INTO `item_mods` VALUES (27141,8,3);     -- STR: 3
+INSERT INTO `item_mods` VALUES (27141,9,23);    -- DEX: 23
+INSERT INTO `item_mods` VALUES (27141,10,20);   -- VIT: 20
+INSERT INTO `item_mods` VALUES (27141,11,2);    -- AGI: 2
+INSERT INTO `item_mods` VALUES (27141,12,26);   -- INT: 26
+INSERT INTO `item_mods` VALUES (27141,13,37);   -- MND: 37
+INSERT INTO `item_mods` VALUES (27141,14,21);   -- CHR: 21
+INSERT INTO `item_mods` VALUES (27141,68,19);   -- EVA: 19
+INSERT INTO `item_mods` VALUES (27141,31,48);   -- MEVA: 48
+INSERT INTO `item_mods` VALUES (27141,29,3);    -- MDEF: 3
+INSERT INTO `item_mods` VALUES (27141,384,300); -- HASTE_GEAR: 3%
+INSERT INTO `item_mods` VALUES (27141,990,20);  -- PET_ATK_DEF: 20
+INSERT INTO `item_mods` VALUES (27141,28,20);   -- MATT: 20
+INSERT INTO `item_mods` VALUES (27141,27,5);    -- ENMITY: 5
+INSERT INTO `item_mods` VALUES (27141,126,5);   -- BP_DAMAGE: 5
+
+-- Merlinic Shalwar
+INSERT INTO `item_mods` VALUES (25843,1,106);   -- DEF: 106
+INSERT INTO `item_mods` VALUES (25843,2,29);    -- HP: 29
+INSERT INTO `item_mods` VALUES (25843,5,44);    -- MP: 44
+INSERT INTO `item_mods` VALUES (25843,8,19);    -- STR: 19
+INSERT INTO `item_mods` VALUES (25843,10,6);    -- VIT: 6
+INSERT INTO `item_mods` VALUES (25843,11,14);   -- AGI: 14
+INSERT INTO `item_mods` VALUES (25843,12,43);   -- INT: 43
+INSERT INTO `item_mods` VALUES (25843,13,28);   -- MND: 28
+INSERT INTO `item_mods` VALUES (25843,14,21);   -- CHR: 21
+INSERT INTO `item_mods` VALUES (25843,30,20);   -- MACC: 20
+INSERT INTO `item_mods` VALUES (25843,311,13);  -- MAGIC_DAMAGE: 13
+INSERT INTO `item_mods` VALUES (25843,68,24);   -- EVA: 24
+INSERT INTO `item_mods` VALUES (25843,31,118);  -- MEVA: 118
+INSERT INTO `item_mods` VALUES (25843,28,15);   -- MATT: 15
+INSERT INTO `item_mods` VALUES (25843,29,6);    -- MDEF: 6
+INSERT INTO `item_mods` VALUES (25843,384,500); -- HASTE_GEAR: 5%
+INSERT INTO `item_mods` VALUES (25843,27,-5);   -- ENMITY: -5
+
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -85483,6 +85545,7 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
 
 
 
