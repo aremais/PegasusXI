@@ -1,39 +1,37 @@
 -----------------------------------
--- Crosswind
--- Family: Puks
--- Description: Deals Wind damage to enemies within a fan-shaped area. Additional Effect: Knockback
+-- Poison Breath
+-- Family: Dragons
+-- Description: Deals Water damage to enemies within a fan-shaped area originating from the caster. Additional Effect: Poison.
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
 
 mobskillObject.onMobSkillCheck = function(target, mob, skill)
-    if
-        mob:getFamily() == xi.mobSpecies.WARDEN and -- Pandemonium Warden TODO: Set skill lists
-        mob:getModelId() ~= 1746
-    then
-        return 1
-    end
-
     return 0
 end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
-    params.percentMultipier = 0.0833
-    params.damageCap        = 333
+    params.percentMultipier = 0.10
+    params.damageCap        = 400
     params.bonusDamage      = 0
     params.mAccuracyBonus   = { 0, 0, 0 }
     params.resistStat       = xi.mod.INT
-    params.element          = xi.element.WIND
+    params.element          = xi.element.WATER
     params.attackType       = xi.attackType.BREATH
-    params.damageType       = xi.damageType.WIND
+    params.damageType       = xi.damageType.WATER
     params.shadowBehavior   = xi.mobskills.shadowBehavior.IGNORE_SHADOWS
 
     local info = xi.mobskills.mobBreathMove(mob, target, skill, action, params)
 
     if xi.mobskills.processDamage(mob, target, skill, action, info) then
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)
+
+        local power    = 50 -- Observed 50 from Lv82 Dynamis Dragon TODO : Capture more data points.
+        local duration = math.random(120, 180)
+
+        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.POISON, power, 3, duration)
     end
 
     return info.damage
