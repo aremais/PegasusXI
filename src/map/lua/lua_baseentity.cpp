@@ -18136,6 +18136,42 @@ void CLuaBaseEntity::setAutoAttackEnabled(bool state)
 }
 
 /************************************************************************
+ *  Function: setRangedAttackEnabled()
+ *  Purpose : Enables/disables ranged auto-attack for a Mob
+ *  Example : mob:setRangedAttackEnabled(false)
+ *  Notes   :
+ ************************************************************************/
+
+void CLuaBaseEntity::setRangedAttackEnabled(bool state)
+{
+    if (m_PBaseEntity->objtype & TYPE_NPC || m_PBaseEntity->objtype & TYPE_PC)
+    {
+        ShowError("function call on invalid entity! (name: %s type: %d)", m_PBaseEntity->name, m_PBaseEntity->objtype);
+        return;
+    }
+
+    m_PBaseEntity->PAI->GetController()->SetRangedAttackEnabled(state);
+}
+
+/************************************************************************
+ *  Function: isRangedAttackEnabled()
+ *  Purpose : Returns whether ranged auto-attack is enabled for a Mob
+ *  Example : if mob:isRangedAttackEnabled() then
+ *  Notes   :
+ ************************************************************************/
+
+bool CLuaBaseEntity::isRangedAttackEnabled()
+{
+    if (m_PBaseEntity->objtype & TYPE_NPC || m_PBaseEntity->objtype & TYPE_PC)
+    {
+        ShowError("function call on invalid entity! (name: %s type: %d)", m_PBaseEntity->name, m_PBaseEntity->objtype);
+        return false;
+    }
+
+    return m_PBaseEntity->PAI->GetController()->IsRangedAttackEnabled();
+}
+
+/************************************************************************
  *  Function: setMagicCastingEnabled()
  *  Purpose : Used to enable/disable the casting of spells for a Mob
  *  Example : mob:setMagicCastingEnabled(false)
@@ -20689,6 +20725,8 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("hasSpellList", CLuaBaseEntity::hasSpellList);
     SOL_REGISTER("setSpellList", CLuaBaseEntity::setSpellList);
     SOL_REGISTER("setAutoAttackEnabled", CLuaBaseEntity::setAutoAttackEnabled);
+    SOL_REGISTER("setRangedAttackEnabled", CLuaBaseEntity::setRangedAttackEnabled);
+    SOL_REGISTER("isRangedAttackEnabled", CLuaBaseEntity::isRangedAttackEnabled);
     SOL_REGISTER("setMagicCastingEnabled", CLuaBaseEntity::setMagicCastingEnabled);
     SOL_REGISTER("setMobAbilityEnabled", CLuaBaseEntity::setMobAbilityEnabled);
     SOL_REGISTER("setMobSkillAttack", CLuaBaseEntity::setMobSkillAttack);
