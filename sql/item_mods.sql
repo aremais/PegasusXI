@@ -43881,8 +43881,6 @@ INSERT INTO `item_mods` VALUES (21147,73,10);   -- STORETP: 10
 INSERT INTO `item_mods` VALUES (21147,345,500); -- TP_BONUS: 500
 INSERT INTO `item_mods` VALUES (21147,902,30);  -- OCCULT_ACUMEN: 30
 
-
-
 -- Reikikon
 INSERT INTO `item_mods` VALUES (21152,12,32);   -- INT: 32
 INSERT INTO `item_mods` VALUES (21152,13,32);   -- MND: 32
@@ -84963,7 +84961,6 @@ INSERT INTO `item_mods` VALUES (26104,122,10); -- BLUE: 10
 INSERT INTO `item_mods` VALUES (26105,123,10); -- GEOMANCY_SKILL: 10
 INSERT INTO `item_mods` VALUES (26106,124,10); -- HANDBELL_SKILL: 10
 
-
 -- Zurim Domain Invasion reward: Hauksbok Ammo
 INSERT INTO `item_mods` VALUES (22294,11,10);  -- AGI: 10
 INSERT INTO `item_mods` VALUES (22294,30,30);  -- MACC: 30
@@ -85016,7 +85013,6 @@ INSERT INTO `item_mods` VALUES (26354,890,10); -- ENH_MAGIC_DURATION: 10
 INSERT INTO `item_mods` VALUES (26355,1,18);    -- DEF: 18
 INSERT INTO `item_mods` VALUES (26355,168,10);  -- SPELLINTERRUPT: 10
 INSERT INTO `item_mods` VALUES (26355,161,-400); -- DMGPHYS: -4%
-
 
 -- Zurim Domain Invasion reward: 200 Point Escha Ru'Aun Weapons
 -- Enchufla
@@ -85154,7 +85150,6 @@ INSERT INTO `item_mods` VALUES (21698,23,10);    -- ATT: 10
 INSERT INTO `item_mods` VALUES (21698,1017,3);   -- LIEMENT_DURATION: 3
 INSERT INTO `item_mods` VALUES (21698,160,-500);   -- DMG: -5%
 
-
 -- Zurim Domain Invasion reward: 800 Point Reisenjima Weapons
 -- Skinflayer
 INSERT INTO `item_mods` VALUES (20579,25,15);  -- ACC: 15
@@ -85217,7 +85212,6 @@ INSERT INTO `item_mods` VALUES (21072,112,18);  -- HEALING: 18
 INSERT INTO `item_mods` VALUES (21072,113,18);  -- ENHANCE: 18
 INSERT INTO `item_mods` VALUES (21072,114,18);  -- ENFEEBLE: 18
 INSERT INTO `item_mods` VALUES (21072,374,18);  -- CURE_POTENCY: 18
-
 
 -- Zurim Domain Invasion reward: 800 Point Reisenjima Armor
 -- Odyssean Helm
@@ -85472,7 +85466,6 @@ INSERT INTO `item_mods` VALUES (27498,384,300);  -- HASTE_GEAR: 3%
 INSERT INTO `item_mods` VALUES (27498,27,-5);    -- ENMITY: -5
 INSERT INTO `item_mods` VALUES (27498,161,-200); -- DMGPHYS: -2%
 
-
 -- Zurim Domain Invasion reward: 800 Point Reisenjima Armor - Merlinic
 -- Merlinic Jubbah
 INSERT INTO `item_mods` VALUES (25719,1,124);    -- DEF: 124
@@ -85533,7 +85526,6 @@ INSERT INTO `item_mods` VALUES (25843,28,15);   -- MATT: 15
 INSERT INTO `item_mods` VALUES (25843,29,6);    -- MDEF: 6
 INSERT INTO `item_mods` VALUES (25843,384,500); -- HASTE_GEAR: 5%
 INSERT INTO `item_mods` VALUES (25843,27,-5);   -- ENMITY: -5
-
 
 -- Zurim Domain Invasion reward: 40 Point DI Armor Base Stats
 -- Hervor Galea
@@ -85779,7 +85771,6 @@ INSERT INTO `item_mods` VALUES (23752,31,134);  -- MEVA: 134
 INSERT INTO `item_mods` VALUES (23752,29,6);    -- MDEF: 6
 INSERT INTO `item_mods` VALUES (23752,384,300); -- HASTE_GEAR: 3%
 
-
 -- Zurim Domain Invasion reward: Voluspa Base Ammo and Shield Stats
 -- Voluspa Arrow
 INSERT INTO `item_mods` VALUES (22289,26,20);  -- RACC: 20
@@ -85808,13 +85799,3 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
-
-
-
-
-
-
-
-
-
