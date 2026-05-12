@@ -66,7 +66,7 @@ local function distanceSquared(player, mob)
 end
 
 xi.domainInvasion.getActiveIndex = function()
-    return math.floor(os.time() / xi.domainInvasion.rotationDuration) % #xi.domainInvasion.rotation + 1
+    return math.floor(GetSystemTime() / xi.domainInvasion.rotationDuration) % #xi.domainInvasion.rotation + 1
 end
 
 xi.domainInvasion.getActiveEntry = function()
