@@ -9476,7 +9476,7 @@ INSERT INTO `mob_groups` VALUES (5,980,127,'Demonic_Weapon',300,0,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (6,2442,127,'Lost_Soul_blm',300,1,1541,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (7,2585,127,'Master_Coeurl',900,0,1640,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (8,407,127,'Bhuta',300,1,264,0,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (9,387,127,'Behemoth',0,128,251,60000,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (9,387,127,'Behemoth',0,128,251,65000,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (10,2255,127,'King_Behemoth',0,128,1450,75000,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (11,3135,127,'Picklix_Longindex',0,128,0,9400,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (12,2767,127,'Moxnix_Nightgoggle',0,128,0,8700,0,0,NULL);
@@ -15752,7 +15752,7 @@ INSERT INTO `mob_groups` VALUES (60,5719,288,'Umdhlebi',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (61,5720,288,'Fleetstalker',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (62,5721,288,'Shockmaw',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (63,5722,288,'Urmahlullu',0,128,0,0,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (64,5699,288,'Azi_Dahaka',0,128,0,200000,99999,0,NULL);
+INSERT INTO `mob_groups` VALUES (64,5699,288,'Azi_Dahaka',0,128,0,1450000,99999,0,NULL);
 INSERT INTO `mob_groups` VALUES (65,5700,288,'Azi_Dahakas_Dragon',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (66,0,288,'Mireu',0,128,0,0,0,0,NULL);
 
@@ -15856,7 +15856,7 @@ INSERT INTO `mob_groups` VALUES (92,6992,289,'Ark_Angels_Wyvern',0,128,0,0,0,0,N
 INSERT INTO `mob_groups` VALUES (93,5697,289,'Warder_of_Courage',0,128,0,0,99999,0,NULL);
 INSERT INTO `mob_groups` VALUES (94,5698,289,'Warders_Wynav',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (95,5631,289,'Balamor',0,128,0,0,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (96,5634,289,'Naga_Raja',0,128,0,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (96,5634,289,'Naga_Raja',0,128,0,1450000,99999,0,NULL);
 INSERT INTO `mob_groups` VALUES (97,5635,289,'Naga_Rajas_Lamia_1',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (98,5636,289,'Naga_Rajas_Lamia_2',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (99,0,289,'Mireu',0,128,0,0,0,0,NULL);
@@ -15964,7 +15964,7 @@ INSERT INTO `mob_groups` VALUES (85,5609,291,'Onychophora',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (86,5610,291,'Onycophoras_Sandworm',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (87,5611,291,'Erinys',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (88,5612,291,'Boobrie',0,128,0,0,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (89,5613,291,'Quetzalcoatl',0,128,0,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (89,5613,291,'Quetzalcoatl',0,128,0,1450000,99999,0,NULL);
 INSERT INTO `mob_groups` VALUES (90,5614,291,'Quetzalcoatls_Sibilus',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (91,0,291,'Mireu',0,128,0,0,0,0,NULL);
 

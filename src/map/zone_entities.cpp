@@ -48,6 +48,7 @@
 
 #include "battlefield.h"
 #include "enums/weather.h"
+#include "items/transactions/synth.h"
 #include "packets/s2c/0x05f_music.h"
 #include "utils/battleutils.h"
 #include "utils/charutils.h"
@@ -382,17 +383,37 @@ void CZoneEntities::FindPartyForMob(CBaseEntity* PEntity)
                 continue;
             }
 
-            if (
-                PCurrentMob->PParty && PCurrentMob->allegiance == PMob->allegiance &&
-                ((forceLink && PCurrentMob->ShouldForceLink()) ||
-                 (PCurrentMob->m_Link && PCurrentMob->m_Family == PMob->m_Family) ||
-                 (sublink && sublink == PCurrentMob->getMobMod(MOBMOD_SUBLINK))))
+            if (PCurrentMob->PParty == nullptr || PCurrentMob->allegiance != PMob->allegiance)
             {
-                if (PCurrentMob->PMaster == nullptr || PCurrentMob->PMaster->objtype == TYPE_MOB)
-                {
-                    PCurrentMob->PParty->AddMember(PMob);
-                    return;
-                }
+                continue;
+            }
+
+            // Determine if these mobs should be in the same party.
+            // Force-link mobs with SUPERLINK only group with mobs sharing the same
+            // SUPERLINK value (used by BCNMs/Dynamis to link all mobs in an instance).
+            // Otherwise, mobs link by family or sublink as normal.
+            bool  match     = false;
+            int16 superlink = PMob->getMobMod(MOBMOD_SUPERLINK);
+            if (superlink)
+            {
+                match = PCurrentMob->getMobMod(MOBMOD_SUPERLINK) == superlink;
+            }
+            else if (forceLink)
+            {
+                match = PCurrentMob->ShouldForceLink() &&
+                        ((PCurrentMob->m_Link && PCurrentMob->m_SuperFamily == PMob->m_SuperFamily) ||
+                         (sublink && sublink == PCurrentMob->getMobMod(MOBMOD_SUBLINK)));
+            }
+            else
+            {
+                match = (PCurrentMob->m_Link && PCurrentMob->m_SuperFamily == PMob->m_SuperFamily) ||
+                        (sublink && sublink == PCurrentMob->getMobMod(MOBMOD_SUBLINK));
+            }
+
+            if (match && (PCurrentMob->PMaster == nullptr || PCurrentMob->PMaster->objtype == TYPE_MOB))
+            {
+                PCurrentMob->PParty->AddMember(PMob);
+                return;
             }
         }
         PMob->PParty = new CParty(PMob);
@@ -555,14 +576,13 @@ void CZoneEntities::DecreaseZoneCounter(CCharEntity* PChar)
     }
 
     // Duplicated from charUtils, it is theoretically possible through d/c magic to hit this block and not sendToZone
-    if (PChar->CraftContainer && PChar->CraftContainer->getItemsCount() > 0)
+    if (PChar->activeTransaction<SynthTransaction>())
     {
         charutils::forceSynthCritFail("DecreaseZoneCounter", PChar);
     }
 
     if (PChar->animation == ANIMATION_SYNTH)
     {
-        PChar->CraftContainer->setQuantity(0, synthutils::SYNTHESIS_FAIL);
         synthutils::sendSynthDone(PChar);
     }
 

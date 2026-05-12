@@ -115,6 +115,20 @@ auto calculateAutomatonModel(const AutomatonFrame frame, const AutomatonHead hea
 
     return 0x07B9; // Fallback: Harlequin frame + Harlequin head
 }
+
+// Optic Fiber / II raise elemental attachment capacity for every element and do not consume capacity (see attachment equip validation).
+auto opticFiberCapacityBonus(uint8 attachmentId) -> uint8
+{
+    switch (static_cast<AutomatonAttachment>(attachmentId))
+    {
+        case AutomatonAttachment::OpticFiber:
+            return 1;
+        case AutomatonAttachment::OpticFiberII:
+            return 2;
+        default:
+            return 0;
+    }
+}
 } // namespace
 
 void LoadAutomaton(CCharEntity* PChar)
@@ -321,6 +335,17 @@ void setAttachment(CCharEntity* PChar, uint8 slotId, uint8 attachment)
     {
         if (PAttachment && PAttachment->getEquipSlot() == ITEM_PUPPET_ATTACHMENT)
         {
+            const uint8 fiberBonus = opticFiberCapacityBonus(attachment);
+            if (fiberBonus != 0)
+            {
+                for (int element = 0; element < 8; element++)
+                {
+                    PChar->setAutomatonElementMax(element, PChar->getAutomatonElementMax(element) + fiberBonus);
+                }
+                PChar->setAutomatonAttachment(slotId, attachment);
+                return;
+            }
+
             bool valid = true;
 
             // Validate if the attachment fits the current automaton head/frame element capacity
@@ -361,6 +386,33 @@ void setAttachment(CCharEntity* PChar, uint8 slotId, uint8 attachment)
 
             if (PAttachment && PAttachment->getEquipSlot() == ITEM_PUPPET_ATTACHMENT)
             {
+                const uint8 fiberBonus = opticFiberCapacityBonus(attachment);
+                if (fiberBonus != 0)
+                {
+                    bool canRemove = true;
+                    for (int element = 0; element < 8; element++)
+                    {
+                        const uint8 maxVal = PChar->getAutomatonElementMax(element);
+                        const uint8 used   = PChar->getAutomatonElementCapacity(element);
+                        if (maxVal < fiberBonus || used > maxVal - fiberBonus)
+                        {
+                            canRemove = false;
+                            break;
+                        }
+                    }
+
+                    if (canRemove)
+                    {
+                        for (int element = 0; element < 8; element++)
+                        {
+                            const uint8 maxVal = PChar->getAutomatonElementMax(element);
+                            PChar->setAutomatonElementMax(element, maxVal - fiberBonus);
+                        }
+                        PChar->setAutomatonAttachment(slotId, 0);
+                    }
+                    return;
+                }
+
                 for (int element = 0; element < 8; element++)
                 {
                     PChar->addAutomatonElementCapacity(element, -static_cast<int8>((PAttachment->getElementSlots() >> (element * 4)) & 0xF));
