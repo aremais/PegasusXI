@@ -46,8 +46,8 @@
 #include "instance.h"
 #include "ipc_client.h"
 #include "item_container.h"
-#include "items/exdata.h"
 #include "items.h"
+#include "items/exdata.h"
 #include "job_points.h"
 #include "latent_effect_container.h"
 #include "linkshell.h"
@@ -272,12 +272,12 @@ void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageI
 
             if (faceArg.get_type() == sol::type::number)
             {
-                face = faceArg.as<uint8>();
+                face      = faceArg.as<uint8>();
                 faceGiven = true;
             }
             else if (faceArg.get_type() == sol::type::boolean && faceArg.as<bool>())
             {
-                face = worldAngle(PTarget->loc.p, m_PBaseEntity->loc.p);
+                face      = worldAngle(PTarget->loc.p, m_PBaseEntity->loc.p);
                 faceGiven = true;
             }
 
@@ -500,7 +500,7 @@ void CLuaBaseEntity::messageName(uint16 messageID, const sol::object& entity, co
     int32 param2 = (p2 != sol::lua_nil) ? p2.as<int32>() : 0;
     int32 param3 = (p3 != sol::lua_nil) ? p3.as<int32>() : 0;
 
-    int32 chatType = (chat != sol::lua_nil) ? chat.as<int32>() : 4;
+    int32 chatType     = (chat != sol::lua_nil) ? chat.as<int32>() : 4;
     bool  useRawMesNum = (showSender != sol::lua_nil) && showSender.as<bool>();
 
     if (CCharEntity* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
@@ -12853,8 +12853,6 @@ void CLuaBaseEntity::timer(int ms, sol::function func)
         ShowWarning("CLuaBaseEntity::timer: invalid lua function (%s).", m_PBaseEntity->getName().c_str());
         return;
     }
-
-
 
     sol::function luaCallback = std::move(func);
     m_PBaseEntity->PAI->QueueAction(queueAction_t(
