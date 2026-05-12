@@ -4325,7 +4325,6 @@ INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3878); -- rhino_guard
 INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3879); -- spoil
 INSERT INTO `mob_skill_lists` VALUES ('Jug_BeetleHi',2097,3955); -- rhinowrecker
 
-
 -- Next ID : 2099
 -- ------------------------------------------------------------
 -- Start of Ambuscade section
