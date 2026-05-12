@@ -7,6 +7,8 @@ xi.domainInvasion = xi.domainInvasion or {}
 
 xi.domainInvasion.baseReward = 10
 xi.domainInvasion.dailyCap = 80
+xi.domainInvasion.siltReward = 100
+xi.domainInvasion.beadReward = 10
 xi.domainInvasion.rewardRange = 120
 xi.domainInvasion.rotationDuration = 30 * 60
 xi.domainInvasion.elvorsealDuration = 30 * 60
@@ -214,33 +216,37 @@ xi.domainInvasion.awardDomainPoints = function(mob, title)
         then
             local dailyPoints = player:getCurrency('domain_points_daily') or 0
             local totalPoints = player:getCurrency('domain_points') or 0
+            local domainPointReward = 0
 
             if dailyPoints < xi.domainInvasion.dailyCap then
-                local reward = math.min(xi.domainInvasion.baseReward, xi.domainInvasion.dailyCap - dailyPoints)
+                domainPointReward = math.min(xi.domainInvasion.baseReward, xi.domainInvasion.dailyCap - dailyPoints)
 
-                player:addCurrency('domain_points', reward)
-                player:addCurrency('domain_points_daily', reward)
-
-                if title ~= nil then
-                    player:addTitle(title)
-                end
-
-                player:printToPlayer(string.format(
-                    'You earned %u Domain Point%s. Daily total: %u/%u. Current total: %u.',
-                    reward,
-                    reward == 1 and '' or 's',
-                    dailyPoints + reward,
-                    xi.domainInvasion.dailyCap,
-                    totalPoints + reward
-                ))
-            else
-                player:printToPlayer(string.format(
-                    "You have reached today's Domain Point limit. Daily total: %u/%u. Current total: %u.",
-                    dailyPoints,
-                    xi.domainInvasion.dailyCap,
-                    totalPoints
-                ))
+                player:addCurrency('domain_points', domainPointReward)
+                player:addCurrency('domain_points_daily', domainPointReward)
             end
+
+            player:addCurrency('escha_silt', xi.domainInvasion.siltReward)
+            player:addCurrency('escha_beads', xi.domainInvasion.beadReward)
+
+            if title ~= nil then
+                player:addTitle(title)
+            end
+
+            if player:isDead() then
+                player:sendRaise(1)
+            end
+
+            player:printToPlayer(string.format(
+                'You earned %u Domain Point%s, %u escha silt, and %u escha bead%s. Daily total: %u/%u. Current Domain Points: %u.',
+                domainPointReward,
+                domainPointReward == 1 and '' or 's',
+                xi.domainInvasion.siltReward,
+                xi.domainInvasion.beadReward,
+                xi.domainInvasion.beadReward == 1 and '' or 's',
+                dailyPoints + domainPointReward,
+                xi.domainInvasion.dailyCap,
+                totalPoints + domainPointReward
+            ))
         end
     end
 end
