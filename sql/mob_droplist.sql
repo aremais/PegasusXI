@@ -28996,6 +28996,36 @@ INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,18121,250); -- Valkyrie's F
 INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,16117,250); -- Valhalla Helm (Group 5, Very Common, 24% - 25%)
 INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,14577,250); -- Valhalla Breastplate (Group 5, Very Common, 24% - 25%)
 
+-- ZoneID: 288 - Escha Zi'Tah upgrade materials
+INSERT INTO `mob_droplist` VALUES (3500,0,0,1000,9084,@RARE);   -- Eschalixir (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3500,0,0,1000,9085,@VRARE);  -- Eschalixir +1 (Very Rare, 1%)
+
+-- ZoneID: 288 - Escha Zi'Tah Geas Fete upgrade materials
+INSERT INTO `mob_droplist` VALUES (3501,0,0,1000,9084,@COMMON); -- Eschalixir (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (3501,0,0,1000,9085,@RARE);   -- Eschalixir +1 (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3501,0,0,1000,9086,@VRARE);  -- Eschalixir +2 (Very Rare, 1%)
+
+-- ZoneID: 289 - Escha Ru'Aun upgrade materials
+INSERT INTO `mob_droplist` VALUES (3502,0,0,1000,9084,@RARE);   -- Eschalixir (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3502,0,0,1000,9085,@VRARE);  -- Eschalixir +1 (Very Rare, 1%)
+
+-- ZoneID: 289 - Escha Ru'Aun Geas Fete upgrade materials
+INSERT INTO `mob_droplist` VALUES (3503,0,0,1000,9084,@COMMON); -- Eschalixir (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (3503,0,0,1000,9085,@RARE);   -- Eschalixir +1 (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3503,0,0,1000,9086,@VRARE);  -- Eschalixir +2 (Very Rare, 1%)
+
+-- ZoneID: 291 - Reisenjima upgrade materials
+INSERT INTO `mob_droplist` VALUES (3504,0,0,1000,9210,@RARE);   -- Pellucid Stone (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3504,0,0,1000,9211,@RARE);   -- Fern Stone (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3504,0,0,1000,9212,@RARE);   -- Taupe Stone (Rare, 5%)
+
+-- ZoneID: 291 - Reisenjima Geas Fete upgrade materials
+INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9084,@RARE);   -- Eschalixir (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9085,@VRARE);  -- Eschalixir +1 (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9210,@COMMON); -- Pellucid Stone (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9211,@COMMON); -- Fern Stone (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9212,@COMMON); -- Taupe Stone (Common, 15%)
+
 /*!40000 ALTER TABLE `mob_droplist` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
