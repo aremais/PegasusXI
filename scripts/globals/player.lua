@@ -28,6 +28,7 @@ local function addEschaSiltFromExperience(player, expGained)
         player:addCurrency('escha_silt', silt)
     end
 end
+
 -----------------------------------
 
 local startingRaceInfo =
