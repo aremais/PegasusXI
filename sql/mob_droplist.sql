@@ -28996,7 +28996,6 @@ INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,18121,250); -- Valkyrie's F
 INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,16117,250); -- Valhalla Helm (Group 5, Very Common, 24% - 25%)
 INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,14577,250); -- Valhalla Breastplate (Group 5, Very Common, 24% - 25%)
 
-
 -- ZoneID: 288 - Escha Zi'Tah upgrade materials
 INSERT INTO `mob_droplist` VALUES (3500,0,0,1000,9084,@RARE);   -- Eschalixir (Rare, 5%)
 INSERT INTO `mob_droplist` VALUES (3500,0,0,1000,9085,@VRARE);  -- Eschalixir +1 (Very Rare, 1%)
