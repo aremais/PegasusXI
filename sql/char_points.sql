@@ -158,7 +158,7 @@ CREATE TABLE `char_points` (
   `pellucid_stone` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `fern_stone` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `taupe_stone` tinyint(3) unsigned NOT NULL DEFAULT 0,
-  `escha_beads` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `escha_beads` int(10) unsigned NOT NULL DEFAULT 0,
   `escha_silt` int(10) unsigned NOT NULL DEFAULT 0,
   `potpourri` int(10) unsigned NOT NULL DEFAULT 0,
   `current_hallmarks` int(10) unsigned NOT NULL DEFAULT 0,
