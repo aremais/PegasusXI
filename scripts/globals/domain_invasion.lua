@@ -6,7 +6,8 @@ xi = xi or {}
 xi.domainInvasion = xi.domainInvasion or {}
 
 xi.domainInvasion.baseReward = 10
-xi.domainInvasion.dailyCap = 80
+xi.domainInvasion.firstWinMultiplier = 2
+xi.domainInvasion.dailyCap = 200
 xi.domainInvasion.siltReward = 100
 xi.domainInvasion.beadReward = 10
 xi.domainInvasion.rewardRange = 120
@@ -58,6 +59,20 @@ xi.domainInvasion.rotation =
         rotation = 225,
     },
 }
+
+local function resetDailyPointsIfNeeded(player)
+    local nextMidnight = JstMidnight()
+
+    if player:getCharVar('[DI]NextDailyReset') ~= nextMidnight then
+        local dailyPoints = player:getCurrency('domain_points_daily') or 0
+
+        if dailyPoints > 0 then
+            player:delCurrency('domain_points_daily', dailyPoints)
+        end
+
+        player:setCharVar('[DI]NextDailyReset', nextMidnight)
+    end
+end
 
 local function distanceSquared(player, mob)
     local dx = player:getXPos() - mob:getXPos()
@@ -214,12 +229,20 @@ xi.domainInvasion.awardDomainPoints = function(mob, title)
             player:getMainLvl() >= 99 and
             distanceSquared(player, mob) <= rewardRangeSquared
         then
+            resetDailyPointsIfNeeded(player)
+
             local dailyPoints = player:getCurrency('domain_points_daily') or 0
             local totalPoints = player:getCurrency('domain_points') or 0
             local domainPointReward = 0
 
             if dailyPoints < xi.domainInvasion.dailyCap then
-                domainPointReward = math.min(xi.domainInvasion.baseReward, xi.domainInvasion.dailyCap - dailyPoints)
+                local baseReward = xi.domainInvasion.baseReward
+
+                if dailyPoints == 0 then
+                    baseReward = baseReward * xi.domainInvasion.firstWinMultiplier
+                end
+
+                domainPointReward = math.min(baseReward, xi.domainInvasion.dailyCap - dailyPoints)
 
                 player:addCurrency('domain_points', domainPointReward)
                 player:addCurrency('domain_points_daily', domainPointReward)
