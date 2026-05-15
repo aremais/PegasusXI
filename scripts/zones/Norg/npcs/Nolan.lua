@@ -35,28 +35,28 @@ entity.onTrigger = function(player, npc)
         options =
         {
             {
-                'Buy Eschalixir',
+                'Eschalixir',
                 function(playerArg)
                     buyEschalixir(playerArg, xi.item.ESCHALIXIR, 10)
                 end,
             },
 
             {
-                'Buy Eschalixir +1',
+                'Eschalixir+1',
                 function(playerArg)
                     buyEschalixir(playerArg, xi.item.ESCHALIXIR_P1, 50)
                 end,
             },
 
             {
-                'Buy Eschalixir +2',
+                'Eschalixir+2',
                 function(playerArg)
                     buyEschalixir(playerArg, xi.item.ESCHALIXIR_P2, 2000)
                 end,
             },
 
             {
-                'Show Prices',
+                'Prices',
                 function(playerArg)
                     showPrices(playerArg)
                 end,
