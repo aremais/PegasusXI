@@ -43,8 +43,8 @@ local function grantStarterPack(player)
     player:addKeyItem(xi.ki.SAN_DORIA_TRUST_PERMIT)
 
     -- Adds nation items for starting nation
-    player:addItem(14429)
-    player:addItem(17584)
+    player:addItem(xi.item.REPUBLIC_AKETON)
+    player:addItem(xi.item.REPUBLIC_SIGNET_STAFF)
 
     -- Grants gil and gives the appropriate message
     player:addGil(10000000)
@@ -64,7 +64,7 @@ entity.onTrade = function(player, npc, trade)
 
         -- Optional: simple feedback line
         if player.printToPlayer then
-            player:printToPlayer("Starter pack granted.")
+            player:printToPlayer('Starter pack granted.')
         end
     end
 end

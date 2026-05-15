@@ -25,6 +25,7 @@ return {
     ['Linkshell_Concierge'] = function(player, npc)
         xi.linkshellConcierge.onTrigger(player, npc)
     end,
+
     ['Medicine_Eagle']       = { event = 25 },
     ['Mydon']                = { event = 20 },
     ['Nangst']               = { event = 24 },

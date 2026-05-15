@@ -23,6 +23,7 @@ local yorciaWealdID         = zones[xi.zone.YORCIA_WEALD]
 local function reiveMobBase(z)
     return (z and z.mob and z.mob.REIVE_MOB_OFFSET) or 0
 end
+
 local function reiveNpcCol(z)
     return (z and z.npc and z.npc.REIVE_COLLISION_OFFSET) or 0
 end

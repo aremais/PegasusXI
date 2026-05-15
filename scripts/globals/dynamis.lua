@@ -399,7 +399,6 @@ end
 xi.dynamis.entryNpcOnTrigger = function(player, npc)
     local zoneId        = player:getZoneID()
     local info          = entryInfo[zoneId]
-    local ID            = zones[zoneId]
     local dynaMask      = player:getCharVar('Dynamis_Status')
     local unlockingDyna = utils.mask.getBit(dynaMask, 0)
     local tavnaziaFirst = false
@@ -553,7 +552,6 @@ end
 xi.dynamis.zoneOnZoneIn = function(player, prevZone)
     local zoneId = player:getZoneID()
     local info   = dynaInfo[zoneId]
-    local ID     = zones[zoneId]
 
     local cs = -1
 
@@ -606,7 +604,6 @@ end
 xi.dynamis.somnialThresholdOnEventFinish = function(player, csid, option, npc)
     local zoneId = player:getZoneID()
     local info   = dynaInfo[zoneId]
-    local ID     = zones[zoneId]
 
     if csid == 100 then
         player:setPos(unpack(info.ejectPos))

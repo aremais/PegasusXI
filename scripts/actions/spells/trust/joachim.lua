@@ -34,7 +34,7 @@ spellObject.onMobSpawn = function(mob)
     -----------------------------------
     -- HEALING (priority over songs)
     -----------------------------------
-   
+
     mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 33 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.CURE })
     mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 66 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.CURE_II })
 
@@ -74,8 +74,6 @@ spellObject.onMobSpawn = function(mob)
         { ai.c.NOT_STATUS, xi.effect.MINNE },
         { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.KNIGHTS_MINNE }
     )
-
-
 
     -- Try and ranged attack every 60s
     mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.RATTACK, 0, 0 }, 60)

@@ -5,4 +5,3 @@
 ALTER TABLE `status_effects`
 ADD COLUMN IF NOT EXISTS `wear_off_message_id` smallint(5) unsigned DEFAULT NULL
 AFTER `sort_key`;
-
