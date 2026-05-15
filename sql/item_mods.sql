@@ -87950,6 +87950,68 @@ INSERT INTO `item_mods` VALUES (23752,31,134);  -- MEVA: 134
 INSERT INTO `item_mods` VALUES (23752,29,6);    -- MDEF: 6
 INSERT INTO `item_mods` VALUES (23752,384,300); -- HASTE_GEAR: 3%
 
+-- Zurim Domain Invasion reward: Voluspa Weapon Stats
+-- Voluspa Knuckles
+INSERT INTO `item_mods` VALUES (21510,25,10); -- ACC: 10
+INSERT INTO `item_mods` VALUES (21510,23,10); -- ATT: 10
+
+-- Voluspa Knife
+INSERT INTO `item_mods` VALUES (21566,25,10); -- ACC: 10
+INSERT INTO `item_mods` VALUES (21566,23,10); -- ATT: 10
+
+-- Voluspa Sword
+INSERT INTO `item_mods` VALUES (21622,25,10); -- ACC: 10
+INSERT INTO `item_mods` VALUES (21622,23,10); -- ATT: 10
+
+-- Voluspa Blade
+INSERT INTO `item_mods` VALUES (21665,25,10); -- ACC: 10
+INSERT INTO `item_mods` VALUES (21665,23,10); -- ATT: 10
+
+-- Voluspa Axe
+INSERT INTO `item_mods` VALUES (21712,25,10); -- ACC: 10
+INSERT INTO `item_mods` VALUES (21712,23,10); -- ATT: 10
+
+-- Voluspa Chopper
+INSERT INTO `item_mods` VALUES (21769,25,10); -- ACC: 10
+INSERT INTO `item_mods` VALUES (21769,23,10); -- ATT: 10
+
+-- Voluspa Scythe
+INSERT INTO `item_mods` VALUES (21822,25,10); -- ACC: 10
+INSERT INTO `item_mods` VALUES (21822,23,10); -- ATT: 10
+
+-- Voluspa Lance
+INSERT INTO `item_mods` VALUES (21864,25,10); -- ACC: 10
+INSERT INTO `item_mods` VALUES (21864,23,10); -- ATT: 10
+
+-- Voluspa Katana
+INSERT INTO `item_mods` VALUES (21912,25,10); -- ACC: 10
+INSERT INTO `item_mods` VALUES (21912,23,10); -- ATT: 10
+
+-- Voluspa Tachi
+INSERT INTO `item_mods` VALUES (21976,25,10); -- ACC: 10
+INSERT INTO `item_mods` VALUES (21976,23,10); -- ATT: 10
+
+-- Voluspa Hammer
+INSERT INTO `item_mods` VALUES (22006,25,10); -- ACC: 10
+INSERT INTO `item_mods` VALUES (22006,23,10); -- ATT: 10
+
+-- Voluspa Pole
+INSERT INTO `item_mods` VALUES (22088,30,10);  -- MACC: 10
+INSERT INTO `item_mods` VALUES (22088,28,10);  -- MATT: 10
+INSERT INTO `item_mods` VALUES (22088,311,75); -- MAGIC_DAMAGE: 75
+
+-- Voluspa Bow
+INSERT INTO `item_mods` VALUES (22133,26,10); -- RACC: 10
+INSERT INTO `item_mods` VALUES (22133,24,10); -- RATT: 10
+
+-- Voluspa Gun
+INSERT INTO `item_mods` VALUES (22144,26,10); -- RACC: 10
+INSERT INTO `item_mods` VALUES (22144,24,10); -- RATT: 10
+
+-- Voluspa Grip
+INSERT INTO `item_mods` VALUES (22219,25,5); -- ACC: 5
+INSERT INTO `item_mods` VALUES (22219,30,5); -- MACC: 5
+
 -- Zurim Domain Invasion reward: Voluspa Base Ammo and Shield Stats
 -- Voluspa Arrow
 INSERT INTO `item_mods` VALUES (22289,26,20);  -- RACC: 20
