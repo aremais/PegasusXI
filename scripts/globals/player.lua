@@ -7,6 +7,30 @@ require('scripts/events/login_campaign')
 require('scripts/quests/full_speed_ahead')
 -----------------------------------
 
+local eschaSiltZones =
+{
+    [xi.zone.ESCHA_ZITAH] = true,
+    [xi.zone.ESCHA_RUAUN] = true,
+    [xi.zone.REISENJIMA] = true,
+}
+
+local function addEschaSiltFromExperience(player, expGained)
+    if
+        expGained <= 0 or
+        not eschaSiltZones[player:getZoneID()]
+    then
+        return
+    end
+
+    local silt = math.floor(expGained * 0.01)
+
+    if silt > 0 then
+        player:addCurrency('escha_silt', silt)
+    end
+end
+
+-----------------------------------
+
 local startingRaceInfo =
 {
     [xi.race.HUME_M  ] = { gear = { body = xi.item.HUME_TUNIC,        hand = xi.item.HUME_M_GLOVES,     leg = xi.item.HUME_SLACKS,       feet = xi.item.HUME_M_BOOTS       }, homeNation = xi.nation.BASTOK   },
@@ -266,6 +290,15 @@ xi.player.onGameIn = function(player, firstLogin, zoning)
 
     -- Clearing ZoningIn + login campaign after 2.5s is scheduled from C++ (luautils::OnGameIn) to avoid
     -- sol::function timer crashes on some environments.
+
+    player:removeListener('ESCHA_SILT_EXP')
+    player:addListener(
+        'EXPERIENCE_POINTS',
+        'ESCHA_SILT_EXP',
+        function(playerObj, mobObj, expGained)
+            addEschaSiltFromExperience(playerObj, expGained)
+        end
+    )
 
     -- Enforce that gameLogin is always set to 0 once this method exits
     -- This assists with ensuring Abyssea visitant status is handled properly on logins
