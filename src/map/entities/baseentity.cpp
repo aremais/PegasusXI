@@ -27,8 +27,6 @@
 
 #include "battlefield.h"
 #include "instance.h"
-#include "los/zone_los.h"
-#include "navmesh.h"
 #include "utils/zoneutils.h"
 #include "zone.h"
 
@@ -190,13 +188,9 @@ bool CBaseEntity::CanSeeTarget(CBaseEntity* target, bool fallbackNavMesh)
 
 bool CBaseEntity::CanSeeTarget(const position_t& targetPointBase, bool fallbackNavMesh)
 {
-    if (loc.zone->lineOfSight)
+    if (fallbackNavMesh && loc.zone != nullptr)
     {
-        return loc.zone->lineOfSight->CanEntitySee(this, targetPointBase);
-    }
-    else if (fallbackNavMesh && loc.zone->m_navMesh)
-    {
-        return loc.zone->m_navMesh->raycast(loc.p, targetPointBase);
+        return loc.zone->navMesh()->raycast(loc.p, targetPointBase);
     }
 
     return true;
