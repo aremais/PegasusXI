@@ -79,6 +79,7 @@ entity.spawnPoints =
 
 entity.onMobInitialize = function(mob)
     xi.mob.updateNMSpawnPoint(mob)
+    -- setRespawnTime belongs in onMobDespawn only; calling it here defers the first spawn for days (SpawnHandler registration).
 
     mob:addImmunity(xi.immunity.BIND)
     mob:addImmunity(xi.immunity.BLIND)
@@ -89,7 +90,6 @@ entity.onMobInitialize = function(mob)
     mob:setMobMod(xi.mobMod.AOE_HIT_ALL, 1)
 
     mob:setCarefulPathing(true)
-    mob:setRespawnTime(math.random(144, 240) * 1800) -- 3 to 5 days in 30 minute windows
 end
 
 entity.onMobSpawn = function(mob)

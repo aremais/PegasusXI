@@ -4065,7 +4065,12 @@ xi.item =
     ARCANIC_CELL                        = 9072,
     CLUMP_OF_BEE_POLLEN                 = 9082,
     MANDRAGORA_DEWDROP                  = 9083,
+    ESCHALIXIR                          = 9084,
+    ESCHALIXIR_P1                       = 9085,
     ESCHALIXIR_P2                       = 9086,
+    PELLUCID_STONE                      = 9210,
+    FERN_STONE                          = 9211,
+    TAUPE_STONE                         = 9212,
     MOG_KUPON_AW_VGR                    = 9087,
     MOG_KUPON_AW_VGRII                  = 9088,
     MOG_KUPON_W_PULSE                   = 9089,
@@ -7316,6 +7321,7 @@ xi.item =
     CROCODILE_COLLAR                    = 16294,
     VARIUS_TORQUE                       = 16295,
     FOCUS_COLLAR                        = 16301,
+    SANCTUS_ROSARY                      = 16305,
     SCHOLARS_PANTS                      = 16311,
     IRON_RAM_BREECHES                   = 16312,
     FOURTH_DIVISION_CUISSES             = 16313,
@@ -12280,3 +12286,5 @@ xi.item =
     MOOGLE_STORAGE_SLIP_33              = 29344,
     GIL                                 = 65535,
 }
+
+return xi.item

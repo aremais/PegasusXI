@@ -74,7 +74,6 @@ if(MSVC)
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /INCREMENTAL:NO /LTCG /OPT:REF /OPT:ICF")
         list(APPEND FLAGS_AND_DEFINES
             /Oi # Generate Intrinsic Functions
-            /GL # Whole Program Optimization
             /Gy # Enable Function Level Linking
             /TP # C++ Source Files
         )

@@ -285,7 +285,9 @@ public:
     virtual bool isWideScannable();       // checks if the entity should show up on wide scan
 
     bool CanSeeTarget(CBaseEntity* target);
+    bool CanSeeTarget(CBaseEntity* target, bool fallbackNavMesh);
     bool CanSeeTarget(const position_t& targetPoint);
+    bool CanSeeTarget(const position_t& targetPoint, bool fallbackNavMesh);
 
     CBaseEntity* GetEntity(uint16 targid, uint8 filter = -1) const;
     void         SendZoneUpdate();

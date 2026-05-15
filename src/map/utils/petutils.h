@@ -182,6 +182,7 @@ struct Pet_t
     float MPscale; // MP boost percentage
 
     uint16      cmbDelay;
+    uint16      dmgMult;
     DAMAGE_TYPE m_dmgType;
     uint8       speed;
     // stat ranks
@@ -252,6 +253,7 @@ struct Pet_t
     , HPscale(0.f)
     , MPscale(0.f)
     , cmbDelay(0)
+    , dmgMult(100)
     , m_dmgType(DAMAGE_TYPE::NONE)
     , speed(0)
     , strRank(0)

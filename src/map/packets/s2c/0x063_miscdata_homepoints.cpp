@@ -27,6 +27,8 @@ GP_SERV_COMMAND_MISCDATA::HOMEPOINTS::HOMEPOINTS(const CCharEntity* PChar)
 {
     auto& packet = this->data();
 
+    std::memset(&packet, 0, sizeof(packet));
+
     packet.type      = GP_SERV_COMMAND_MISCDATA_TYPE::Homepoints;
     packet.unknown06 = sizeof(PacketData);
 
