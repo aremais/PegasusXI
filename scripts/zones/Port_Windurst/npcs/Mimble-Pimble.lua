@@ -13,14 +13,14 @@ require('scripts/globals/htbf')
 ---@type TNpcEntity
 local entity = {}
 
-local MENU_TITLE = 'Phantom Gem Registration'
-local LOW_LVL_MSG =
-    "Oh my oh my, you are far too small-and-all to be entering a battlefield " ..
-    "of this caliber! Come back when your main job has reachedy-reached level " ..
-    "ninety-five, yes yes!"
+local menuTitle = 'Phantom Gem Registration'
+local lowLvlMsg =
+    'Oh my oh my, you are far too small-and-all to be entering a battlefield ' ..
+    'of this caliber! Come back when your main job has reachedy-reached level ' ..
+    'ninety-five, yes yes!'
 
 entity.onTrigger = function(player, npc)
-    xi.htbf.onTrigger(player, npc, MENU_TITLE, LOW_LVL_MSG)
+    xi.htbf.onTrigger(player, npc, menuTitle, lowLvlMsg)
 end
 
 return entity

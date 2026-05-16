@@ -21,10 +21,10 @@ xi      = xi or {}
 xi.htbf = xi.htbf or {}
 
 -- Number of gems shown per menu page.
-local ITEMS_PER_PAGE = 5
+local itemsPerPage = 5
 
 -- Minimum main-job level required to purchase any Phantom Gem.
-local MIN_LEVEL = 95
+local minLevel = 95
 
 ---@class PhantomGemEntry
 ---@field ki    xi.keyItem  Key item ID
@@ -107,7 +107,7 @@ local function tryPurchase(player, gem)
     -- Duplicate check
     if player:hasKeyItem(gem.ki) then
         player:printToPlayer(
-            string.format("You already possess a %s.", gem.name),
+            string.format('You already possess a %s.', gem.name),
             xi.msg.channel.NS_SAY
         )
         return
@@ -118,7 +118,7 @@ local function tryPurchase(player, gem)
     if available < gem.cost then
         player:printToPlayer(
             string.format(
-                "You do not have enough merit points. (%u required, %u available)",
+                'You do not have enough merit points. (%u required, %u available)',
                 gem.cost,
                 available
             ),
@@ -133,13 +133,13 @@ local function tryPurchase(player, gem)
 end
 
 ---Build and display the Phantom Gem selection menu.
----Uses a paginated layout (ITEMS_PER_PAGE gems per page) with
+---Uses a paginated layout (itemsPerPage gems per page) with
 ---Previous/Next navigation.
 ---@param player   CBaseEntity
 ---@param menuTitle string  Title string shown at the top of the menu
 local function showMenu(player, menuTitle)
     local totalGems  = #gemList
-    local totalPages = math.ceil(totalGems / ITEMS_PER_PAGE)
+    local totalPages = math.ceil(totalGems / itemsPerPage)
     local menu       = { title = menuTitle, options = {} }
 
     -- Build options for a given page and (re)display the menu.
@@ -148,8 +148,8 @@ local function showMenu(player, menuTitle)
     local function buildPage(pageNum, useTimer)
         local function draw(p)
             local options  = {}
-            local first    = (pageNum - 1) * ITEMS_PER_PAGE + 1
-            local last     = math.min(pageNum * ITEMS_PER_PAGE, totalGems)
+            local first    = (pageNum - 1) * itemsPerPage + 1
+            local last     = math.min(pageNum * itemsPerPage, totalGems)
 
             for i = first, last do
                 local gem   = gemList[i]
@@ -191,7 +191,9 @@ local function showMenu(player, menuTitle)
         end
 
         if useTimer then
-            player:timer(50, function(p) draw(p) end)
+            player:timer(50, function(p)
+                draw(p)
+            end)
         else
             draw(player)
         end
@@ -204,10 +206,10 @@ end
 ---@param player    CBaseEntity
 ---@param npc       CBaseEntity  (unused, reserved for future use)
 ---@param menuTitle string       NPC-specific menu title
----@param lowLvlMsg string       Message shown when player is below MIN_LEVEL
+---@param lowLvlMsg string       Message shown when player is below minLevel
 function xi.htbf.onTrigger(player, npc, menuTitle, lowLvlMsg)
     -- Level requirement
-    if player:getMainLvl() < MIN_LEVEL then
+    if player:getMainLvl() < minLevel then
         player:printToPlayer(lowLvlMsg, xi.msg.channel.NS_SAY)
         return
     end
