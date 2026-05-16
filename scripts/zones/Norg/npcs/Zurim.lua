@@ -169,8 +169,8 @@ local domainInvasionItems =
             [15] = { item = xi.item.VENERIAN_ABJURATION_BODY, cost = 400 },
             [16] = { item = xi.item.VENERIAN_ABJURATION_HANDS, cost = 400 },
         },
-                [4] =
-                    {
+        [4] =
+        {
             [1] = { item = xi.item.VENERIAN_ABJURATION_LEGS, cost = 400 },
             [2] = { item = xi.item.VENERIAN_ABJURATION_FEET, cost = 400 },
             [3] = { item = xi.item.CYLLENIAN_ABJURATION_HEAD, cost = 400 },
@@ -178,7 +178,7 @@ local domainInvasionItems =
             [5] = { item = xi.item.CYLLENIAN_ABJURATION_HANDS, cost = 400 },
             [6] = { item = xi.item.CYLLENIAN_ABJURATION_LEGS, cost = 400 },
             [7] = { item = xi.item.CYLLENIAN_ABJURATION_FEET, cost = 400 },
-                    },
+        },
     },
     [7] =
     {

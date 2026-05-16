@@ -49,7 +49,8 @@ entity.onTrigger = function(player, npc)
             },
             {
                 'Cancel',
-                function(_) end,
+                function(_)
+                end,
             },
         },
     })

@@ -1109,6 +1109,7 @@ INSERT INTO `mob_droplist` VALUES (127,0,0,1000,17662,@RARE);    -- Company Swor
 INSERT INTO `mob_droplist` VALUES (127,0,0,1000,1432,@UNCOMMON); -- Paladins Testimony (Uncommon, 10%)
 INSERT INTO `mob_droplist` VALUES (127,0,0,1000,645,@ALWAYS);    -- Chunk Of Darksteel Ore (Always, 100%)
 INSERT INTO `mob_droplist` VALUES (127,0,0,1000,1118,@COMMON);   -- Antican Pauldron (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (127,2,0,1000,748,0);          -- Gold Beastcoin (Steal)
 
 -- ZoneID: 208 - Antican Magister
 INSERT INTO `mob_droplist` VALUES (128,0,0,1000,16686,@UNCOMMON); -- Arcanabane (Uncommon, 10%)
@@ -1127,6 +1128,7 @@ INSERT INTO `mob_droplist` VALUES (130,0,0,1000,645,@VCOMMON);   -- Chunk Of Dar
 INSERT INTO `mob_droplist` VALUES (130,0,0,1000,1429,@VCOMMON);  -- Black Mages Testimony (Very Common, 24%)
 INSERT INTO `mob_droplist` VALUES (130,0,0,1000,4770,@UNCOMMON); -- Scroll Of Stone Iv (Uncommon, 10%)
 INSERT INTO `mob_droplist` VALUES (130,0,0,1000,4799,@UNCOMMON); -- Scroll Of Stonega Iii (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (130,2,0,1000,748,0);          -- Gold Beastcoin (Steal)
 
 -- ZoneID: 208 - Antican Princeps
 INSERT INTO `mob_droplist` VALUES (131,0,0,1000,16995,@COMMON);  -- Piece Of Rotten Meat (Common, 15%)
@@ -28995,6 +28997,42 @@ INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,17745,250); -- Hofud (Group
 INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,18121,250); -- Valkyrie's Fork (Group 5, Very Common, 24% - 25%)
 INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,16117,250); -- Valhalla Helm (Group 5, Very Common, 24% - 25%)
 INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,14577,250); -- Valhalla Breastplate (Group 5, Very Common, 24% - 25%)
+
+-- ZoneID: 288 - Escha Zi'Tah upgrade materials
+INSERT INTO `mob_droplist` VALUES (3500,0,0,1000,9084,@RARE);   -- Eschalixir (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3500,0,0,1000,9085,@VRARE);  -- Eschalixir +1 (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (3500,0,0,1000,6391,@VRARE);  -- Silt Pouch (Very Rare, 1%)
+
+-- ZoneID: 288 - Escha Zi'Tah Geas Fete upgrade materials
+INSERT INTO `mob_droplist` VALUES (3501,0,0,1000,9084,@COMMON); -- Eschalixir (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (3501,0,0,1000,9085,@RARE);   -- Eschalixir +1 (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3501,0,0,1000,9086,@VRARE);  -- Eschalixir +2 (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (3501,0,0,1000,6391,@RARE);   -- Silt Pouch (Rare, 5%)
+
+-- ZoneID: 289 - Escha Ru'Aun upgrade materials
+INSERT INTO `mob_droplist` VALUES (3502,0,0,1000,9084,@RARE);   -- Eschalixir (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3502,0,0,1000,9085,@VRARE);  -- Eschalixir +1 (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (3502,0,0,1000,6391,@VRARE);  -- Silt Pouch (Very Rare, 1%)
+
+-- ZoneID: 289 - Escha Ru'Aun Geas Fete upgrade materials
+INSERT INTO `mob_droplist` VALUES (3503,0,0,1000,9084,@COMMON); -- Eschalixir (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (3503,0,0,1000,9085,@RARE);   -- Eschalixir +1 (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3503,0,0,1000,9086,@VRARE);  -- Eschalixir +2 (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (3503,0,0,1000,6391,@RARE);   -- Silt Pouch (Rare, 5%)
+
+-- ZoneID: 291 - Reisenjima upgrade materials
+INSERT INTO `mob_droplist` VALUES (3504,0,0,1000,9210,@RARE);   -- Pellucid Stone (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3504,0,0,1000,9211,@RARE);   -- Fern Stone (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3504,0,0,1000,9212,@RARE);   -- Taupe Stone (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3504,0,0,1000,6391,@VRARE);  -- Silt Pouch (Very Rare, 1%)
+
+-- ZoneID: 291 - Reisenjima Geas Fete upgrade materials
+INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9084,@RARE);   -- Eschalixir (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9085,@VRARE);  -- Eschalixir +1 (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9210,@COMMON); -- Pellucid Stone (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9211,@COMMON); -- Fern Stone (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9212,@COMMON); -- Taupe Stone (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,6391,@RARE);   -- Silt Pouch (Rare, 5%)
 
 /*!40000 ALTER TABLE `mob_droplist` ENABLE KEYS */;
 UNLOCK TABLES;

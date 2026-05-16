@@ -730,7 +730,6 @@ INSERT INTO `status_effects` VALUES (803,'full_speed_ahead',@FLAG_ON_ZONE | @FLA
 INSERT INTO `status_effects` VALUES (805,'tomahawk',@FLAG_DEATH | @FLAG_NO_LOSS_MESSAGE,0,0,0,0,0,0,0,0,NULL);
 INSERT INTO `status_effects` VALUES (806,'nuke_wall',@FLAG_DEATH | @FLAG_ON_ZONE,0,0,0,0,0,0,0,0,NULL);
 
-
 /*!40000 ALTER TABLE `status_effects` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
