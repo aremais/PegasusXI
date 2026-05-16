@@ -89165,7 +89165,7 @@ INSERT INTO `item_mods` VALUES (22291,24,20);  -- RATT: 20
 INSERT INTO `item_mods` VALUES (26413,1,40);    -- DEF: 40
 INSERT INTO `item_mods` VALUES (26413,109,112); -- SHIELD: 112
 
--- ===================================================
+-- ===========================================================
 -- Ambuscade Armor Sets: Hizamaru, Inyanga, Meghanada, Jhakri,
 -- Flamma, Tali'ah, Mummu, Ayanmo, Mallquis
 -- 51 items added (2 +2 variants already present: 25576, 25948)
@@ -90245,7 +90245,6 @@ INSERT INTO `item_mods` VALUES (26213,30,6);     -- MACC: 6
 INSERT INTO `item_mods` VALUES (26213,311,12);   -- MAGIC_DAMAGE: 12
 INSERT INTO `item_mods` VALUES (26213,901,-3);   -- ELEMENTAL_CELERITY: -3%
 
-=======
 -- ------------------------------------------------------------
 -- Missing Reforged Empyrean Armor item modifiers
 -- Generated from BG Wiki source comparison
