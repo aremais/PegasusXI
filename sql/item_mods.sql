@@ -59971,6 +59971,46 @@ INSERT INTO `item_mods` VALUES (25654,384,600); -- HASTE_GEAR: 6%
 INSERT INTO `item_mods` VALUES (25654,170,7);  -- FASTCAST: 7
 INSERT INTO `item_mods` VALUES (25654,902,10); -- OCCULT_ACUMEN: 10
 
+-- Sulevia's Mask
+INSERT INTO `item_mods` VALUES (25659,1,113); -- DEF: 113
+INSERT INTO `item_mods` VALUES (25659,2,40); -- HP: 40
+INSERT INTO `item_mods` VALUES (25659,5,40); -- MP: 40
+INSERT INTO `item_mods` VALUES (25659,8,25); -- STR: 25
+INSERT INTO `item_mods` VALUES (25659,9,11); -- DEX: 11
+INSERT INTO `item_mods` VALUES (25659,10,32); -- VIT: 32
+INSERT INTO `item_mods` VALUES (25659,11,12); -- AGI: 12
+INSERT INTO `item_mods` VALUES (25659,12,11); -- INT: 11
+INSERT INTO `item_mods` VALUES (25659,13,14); -- MND: 14
+INSERT INTO `item_mods` VALUES (25659,14,14); -- CHR: 14
+INSERT INTO `item_mods` VALUES (25659,23,30); -- ATT: 30
+INSERT INTO `item_mods` VALUES (25659,25,26); -- ACC: 26
+INSERT INTO `item_mods` VALUES (25659,29,1); -- MDEF: 1
+INSERT INTO `item_mods` VALUES (25659,31,43); -- MEVA: 43
+INSERT INTO `item_mods` VALUES (25659,68,27); -- EVA: 27
+INSERT INTO `item_mods` VALUES (25659,73,5); -- STORETP: 5
+INSERT INTO `item_mods` VALUES (25659,160,-400); -- DMG: -400
+INSERT INTO `item_mods` VALUES (25659,384,300); -- HASTE_GEAR: 300
+
+-- Sulevia's Mask +1
+INSERT INTO `item_mods` VALUES (25660,1,118); -- DEF: 118
+INSERT INTO `item_mods` VALUES (25660,2,40); -- HP: 40
+INSERT INTO `item_mods` VALUES (25660,5,40); -- MP: 40
+INSERT INTO `item_mods` VALUES (25660,8,30); -- STR: 30
+INSERT INTO `item_mods` VALUES (25660,9,16); -- DEX: 16
+INSERT INTO `item_mods` VALUES (25660,10,37); -- VIT: 37
+INSERT INTO `item_mods` VALUES (25660,11,12); -- AGI: 12
+INSERT INTO `item_mods` VALUES (25660,12,11); -- INT: 11
+INSERT INTO `item_mods` VALUES (25660,13,19); -- MND: 19
+INSERT INTO `item_mods` VALUES (25660,14,19); -- CHR: 19
+INSERT INTO `item_mods` VALUES (25660,23,42); -- ATT: 42
+INSERT INTO `item_mods` VALUES (25660,25,38); -- ACC: 38
+INSERT INTO `item_mods` VALUES (25660,29,1); -- MDEF: 1
+INSERT INTO `item_mods` VALUES (25660,31,43); -- MEVA: 43
+INSERT INTO `item_mods` VALUES (25660,68,27); -- EVA: 27
+INSERT INTO `item_mods` VALUES (25660,73,8); -- STORETP: 8
+INSERT INTO `item_mods` VALUES (25660,160,-500); -- DMG: -500
+INSERT INTO `item_mods` VALUES (25660,384,300); -- HASTE_GEAR: 300
+
 -- Meghanada Visor
 INSERT INTO `item_mods` VALUES (25661,1,101);    -- DEF: 101
 INSERT INTO `item_mods` VALUES (25661,2,25);     -- HP: 25
@@ -60519,6 +60559,46 @@ INSERT INTO `item_mods` VALUES (25729,27,6);   -- ENMITY: 6
 INSERT INTO `item_mods` VALUES (25729,288,3);  -- DOUBLE_ATTACK: 3
 INSERT INTO `item_mods` VALUES (25729,165,3);  -- CRITHITRATE: 3
 
+-- Sulevia's Platemail
+INSERT INTO `item_mods` VALUES (25745,1,143); -- DEF: 143
+INSERT INTO `item_mods` VALUES (25745,2,70); -- HP: 70
+INSERT INTO `item_mods` VALUES (25745,5,70); -- MP: 70
+INSERT INTO `item_mods` VALUES (25745,8,33); -- STR: 33
+INSERT INTO `item_mods` VALUES (25745,9,16); -- DEX: 16
+INSERT INTO `item_mods` VALUES (25745,10,33); -- VIT: 33
+INSERT INTO `item_mods` VALUES (25745,11,16); -- AGI: 16
+INSERT INTO `item_mods` VALUES (25745,12,16); -- INT: 16
+INSERT INTO `item_mods` VALUES (25745,13,19); -- MND: 19
+INSERT INTO `item_mods` VALUES (25745,14,19); -- CHR: 19
+INSERT INTO `item_mods` VALUES (25745,23,32); -- ATT: 32
+INSERT INTO `item_mods` VALUES (25745,25,28); -- ACC: 28
+INSERT INTO `item_mods` VALUES (25745,29,3); -- MDEF: 3
+INSERT INTO `item_mods` VALUES (25745,31,59); -- MEVA: 59
+INSERT INTO `item_mods` VALUES (25745,68,36); -- EVA: 36
+INSERT INTO `item_mods` VALUES (25745,160,-700); -- DMG: -700
+INSERT INTO `item_mods` VALUES (25745,175,500); -- SKILLCHAINDMG: 500
+INSERT INTO `item_mods` VALUES (25745,384,100); -- HASTE_GEAR: 100
+
+-- Sulevia's Platemail +1
+INSERT INTO `item_mods` VALUES (25746,1,148); -- DEF: 148
+INSERT INTO `item_mods` VALUES (25746,2,70); -- HP: 70
+INSERT INTO `item_mods` VALUES (25746,5,70); -- MP: 70
+INSERT INTO `item_mods` VALUES (25746,8,38); -- STR: 38
+INSERT INTO `item_mods` VALUES (25746,9,21); -- DEX: 21
+INSERT INTO `item_mods` VALUES (25746,10,38); -- VIT: 38
+INSERT INTO `item_mods` VALUES (25746,11,16); -- AGI: 16
+INSERT INTO `item_mods` VALUES (25746,12,16); -- INT: 16
+INSERT INTO `item_mods` VALUES (25746,13,24); -- MND: 24
+INSERT INTO `item_mods` VALUES (25746,14,24); -- CHR: 24
+INSERT INTO `item_mods` VALUES (25746,23,44); -- ATT: 44
+INSERT INTO `item_mods` VALUES (25746,25,40); -- ACC: 40
+INSERT INTO `item_mods` VALUES (25746,29,3); -- MDEF: 3
+INSERT INTO `item_mods` VALUES (25746,31,59); -- MEVA: 59
+INSERT INTO `item_mods` VALUES (25746,68,36); -- EVA: 36
+INSERT INTO `item_mods` VALUES (25746,160,-800); -- DMG: -800
+INSERT INTO `item_mods` VALUES (25746,175,600); -- SKILLCHAINDMG: 600
+INSERT INTO `item_mods` VALUES (25746,384,100); -- HASTE_GEAR: 100
+
 -- Meghanada Cuirie
 INSERT INTO `item_mods` VALUES (25747,1,123);    -- DEF: 123
 INSERT INTO `item_mods` VALUES (25747,2,40);     -- HP: 40
@@ -60966,6 +61046,26 @@ INSERT INTO `item_mods` VALUES (25789,246,90);  -- PETRIFYRES: 90
 INSERT INTO `item_mods` VALUES (25789,384,400); -- HASTE_GEAR: 400
 -- TODO: "True Shot" +5
 
+-- Sulevia's Platemail +2
+INSERT INTO `item_mods` VALUES (25790,1,153); -- DEF: 153
+INSERT INTO `item_mods` VALUES (25790,2,70); -- HP: 70
+INSERT INTO `item_mods` VALUES (25790,5,70); -- MP: 70
+INSERT INTO `item_mods` VALUES (25790,8,41); -- STR: 41
+INSERT INTO `item_mods` VALUES (25790,9,24); -- DEX: 24
+INSERT INTO `item_mods` VALUES (25790,10,41); -- VIT: 41
+INSERT INTO `item_mods` VALUES (25790,11,16); -- AGI: 16
+INSERT INTO `item_mods` VALUES (25790,12,16); -- INT: 16
+INSERT INTO `item_mods` VALUES (25790,13,27); -- MND: 27
+INSERT INTO `item_mods` VALUES (25790,14,27); -- CHR: 27
+INSERT INTO `item_mods` VALUES (25790,23,50); -- ATT: 50
+INSERT INTO `item_mods` VALUES (25790,25,46); -- ACC: 46
+INSERT INTO `item_mods` VALUES (25790,29,3); -- MDEF: 3
+INSERT INTO `item_mods` VALUES (25790,31,59); -- MEVA: 59
+INSERT INTO `item_mods` VALUES (25790,68,36); -- EVA: 36
+INSERT INTO `item_mods` VALUES (25790,160,-900); -- DMG: -900
+INSERT INTO `item_mods` VALUES (25790,175,700); -- SKILLCHAINDMG: 700
+INSERT INTO `item_mods` VALUES (25790,384,100); -- HASTE_GEAR: 100
+
 -- Jhakri Robe +2
 INSERT INTO `item_mods` VALUES (25794,1,119);   -- DEF: 119
 INSERT INTO `item_mods` VALUES (25794,8,37);    -- STR: 37
@@ -60983,6 +61083,42 @@ INSERT INTO `item_mods` VALUES (25794,30,46);   -- MACC: 46
 INSERT INTO `item_mods` VALUES (25794,68,33);   -- EVA: 33
 INSERT INTO `item_mods` VALUES (25794,369,4);   -- REFRESH: 4
 INSERT INTO `item_mods` VALUES (25794,384,600); -- HASTE_GEAR: 600
+
+-- Sulevia's Gauntlets
+INSERT INTO `item_mods` VALUES (25800,1,101); -- DEF: 101
+INSERT INTO `item_mods` VALUES (25800,2,30); -- HP: 30
+INSERT INTO `item_mods` VALUES (25800,5,30); -- MP: 30
+INSERT INTO `item_mods` VALUES (25800,8,15); -- STR: 15
+INSERT INTO `item_mods` VALUES (25800,9,26); -- DEX: 26
+INSERT INTO `item_mods` VALUES (25800,10,37); -- VIT: 37
+INSERT INTO `item_mods` VALUES (25800,12,6); -- INT: 6
+INSERT INTO `item_mods` VALUES (25800,13,24); -- MND: 24
+INSERT INTO `item_mods` VALUES (25800,14,19); -- CHR: 19
+INSERT INTO `item_mods` VALUES (25800,23,29); -- ATT: 29
+INSERT INTO `item_mods` VALUES (25800,25,25); -- ACC: 25
+INSERT INTO `item_mods` VALUES (25800,31,37); -- MEVA: 37
+INSERT INTO `item_mods` VALUES (25800,68,16); -- EVA: 16
+INSERT INTO `item_mods` VALUES (25800,160,-300); -- DMG: -300
+INSERT INTO `item_mods` VALUES (25800,288,3); -- DOUBLE_ATTACK: 3
+INSERT INTO `item_mods` VALUES (25800,384,300); -- HASTE_GEAR: 300
+
+-- Sulevia's Gauntlets +1
+INSERT INTO `item_mods` VALUES (25801,1,106); -- DEF: 106
+INSERT INTO `item_mods` VALUES (25801,2,30); -- HP: 30
+INSERT INTO `item_mods` VALUES (25801,5,30); -- MP: 30
+INSERT INTO `item_mods` VALUES (25801,8,20); -- STR: 20
+INSERT INTO `item_mods` VALUES (25801,9,31); -- DEX: 31
+INSERT INTO `item_mods` VALUES (25801,10,42); -- VIT: 42
+INSERT INTO `item_mods` VALUES (25801,12,6); -- INT: 6
+INSERT INTO `item_mods` VALUES (25801,13,29); -- MND: 29
+INSERT INTO `item_mods` VALUES (25801,14,24); -- CHR: 24
+INSERT INTO `item_mods` VALUES (25801,23,41); -- ATT: 41
+INSERT INTO `item_mods` VALUES (25801,25,37); -- ACC: 37
+INSERT INTO `item_mods` VALUES (25801,31,37); -- MEVA: 37
+INSERT INTO `item_mods` VALUES (25801,68,16); -- EVA: 16
+INSERT INTO `item_mods` VALUES (25801,160,-400); -- DMG: -400
+INSERT INTO `item_mods` VALUES (25801,288,5); -- DOUBLE_ATTACK: 5
+INSERT INTO `item_mods` VALUES (25801,384,300); -- HASTE_GEAR: 300
 
 -- Meghanada Gloves
 INSERT INTO `item_mods` VALUES (25802,1,88);     -- DEF: 88
@@ -61332,6 +61468,24 @@ INSERT INTO `item_mods` VALUES (25827,832,2);   -- AQUAVEIL_COUNT: 2
 INSERT INTO `item_mods` VALUES (25827,1151,20); -- ENF_MAG_DURATION: 20
 -- TODO: non-AQUAVEIL MODS
 
+-- Sulevia's Gauntlets +2
+INSERT INTO `item_mods` VALUES (25828,1,111); -- DEF: 111
+INSERT INTO `item_mods` VALUES (25828,2,30); -- HP: 30
+INSERT INTO `item_mods` VALUES (25828,5,30); -- MP: 30
+INSERT INTO `item_mods` VALUES (25828,8,23); -- STR: 23
+INSERT INTO `item_mods` VALUES (25828,9,34); -- DEX: 34
+INSERT INTO `item_mods` VALUES (25828,10,45); -- VIT: 45
+INSERT INTO `item_mods` VALUES (25828,12,6); -- INT: 6
+INSERT INTO `item_mods` VALUES (25828,13,32); -- MND: 32
+INSERT INTO `item_mods` VALUES (25828,14,27); -- CHR: 27
+INSERT INTO `item_mods` VALUES (25828,23,47); -- ATT: 47
+INSERT INTO `item_mods` VALUES (25828,25,43); -- ACC: 43
+INSERT INTO `item_mods` VALUES (25828,31,37); -- MEVA: 37
+INSERT INTO `item_mods` VALUES (25828,68,16); -- EVA: 16
+INSERT INTO `item_mods` VALUES (25828,160,-500); -- DMG: -500
+INSERT INTO `item_mods` VALUES (25828,288,6); -- DOUBLE_ATTACK: 6
+INSERT INTO `item_mods` VALUES (25828,384,300); -- HASTE_GEAR: 300
+
 -- Fancy Trunks
 INSERT INTO `item_mods` VALUES (25838,1,2); -- DEF: 2
 INSERT INTO `item_mods` VALUES (25838,15,10); -- FIRE_MEVA: 10 (Summer Tidings)
@@ -61438,6 +61592,63 @@ INSERT INTO `item_mods` VALUES (25853,455,10);  -- SONG_SPELLCASTING_TIME: 10
 
 -- Ilm Lappas
 INSERT INTO `item_mods` VALUES (25857,1,1); -- DEF: 1
+
+-- Sulevia's Cuisses
+INSERT INTO `item_mods` VALUES (25858,1,125); -- DEF: 125
+INSERT INTO `item_mods` VALUES (25858,2,50); -- HP: 50
+INSERT INTO `item_mods` VALUES (25858,5,50); -- MP: 50
+INSERT INTO `item_mods` VALUES (25858,8,39); -- STR: 39
+INSERT INTO `item_mods` VALUES (25858,10,25); -- VIT: 25
+INSERT INTO `item_mods` VALUES (25858,11,14); -- AGI: 14
+INSERT INTO `item_mods` VALUES (25858,12,24); -- INT: 24
+INSERT INTO `item_mods` VALUES (25858,13,12); -- MND: 12
+INSERT INTO `item_mods` VALUES (25858,14,10); -- CHR: 10
+INSERT INTO `item_mods` VALUES (25858,23,31); -- ATT: 31
+INSERT INTO `item_mods` VALUES (25858,25,27); -- ACC: 27
+INSERT INTO `item_mods` VALUES (25858,29,2); -- MDEF: 2
+INSERT INTO `item_mods` VALUES (25858,31,75); -- MEVA: 75
+INSERT INTO `item_mods` VALUES (25858,68,16); -- EVA: 16
+INSERT INTO `item_mods` VALUES (25858,160,-500); -- DMG: -500
+INSERT INTO `item_mods` VALUES (25858,302,2); -- TRIPLE_ATTACK: 2
+INSERT INTO `item_mods` VALUES (25858,384,200); -- HASTE_GEAR: 200
+
+-- Sulevia's Cuisses +1
+INSERT INTO `item_mods` VALUES (25859,1,130); -- DEF: 130
+INSERT INTO `item_mods` VALUES (25859,2,50); -- HP: 50
+INSERT INTO `item_mods` VALUES (25859,5,50); -- MP: 50
+INSERT INTO `item_mods` VALUES (25859,8,44); -- STR: 44
+INSERT INTO `item_mods` VALUES (25859,10,30); -- VIT: 30
+INSERT INTO `item_mods` VALUES (25859,11,14); -- AGI: 14
+INSERT INTO `item_mods` VALUES (25859,12,24); -- INT: 24
+INSERT INTO `item_mods` VALUES (25859,13,17); -- MND: 17
+INSERT INTO `item_mods` VALUES (25859,14,15); -- CHR: 15
+INSERT INTO `item_mods` VALUES (25859,23,43); -- ATT: 43
+INSERT INTO `item_mods` VALUES (25859,25,39); -- ACC: 39
+INSERT INTO `item_mods` VALUES (25859,29,2); -- MDEF: 2
+INSERT INTO `item_mods` VALUES (25859,31,75); -- MEVA: 75
+INSERT INTO `item_mods` VALUES (25859,68,16); -- EVA: 16
+INSERT INTO `item_mods` VALUES (25859,160,-600); -- DMG: -600
+INSERT INTO `item_mods` VALUES (25859,302,3); -- TRIPLE_ATTACK: 3
+INSERT INTO `item_mods` VALUES (25859,384,200); -- HASTE_GEAR: 200
+
+-- Sulevia's Cuisses +2
+INSERT INTO `item_mods` VALUES (25879,1,135); -- DEF: 135
+INSERT INTO `item_mods` VALUES (25879,2,50); -- HP: 50
+INSERT INTO `item_mods` VALUES (25879,5,50); -- MP: 50
+INSERT INTO `item_mods` VALUES (25879,8,47); -- STR: 47
+INSERT INTO `item_mods` VALUES (25879,10,33); -- VIT: 33
+INSERT INTO `item_mods` VALUES (25879,11,14); -- AGI: 14
+INSERT INTO `item_mods` VALUES (25879,12,24); -- INT: 24
+INSERT INTO `item_mods` VALUES (25879,13,20); -- MND: 20
+INSERT INTO `item_mods` VALUES (25879,14,18); -- CHR: 18
+INSERT INTO `item_mods` VALUES (25879,23,49); -- ATT: 49
+INSERT INTO `item_mods` VALUES (25879,25,45); -- ACC: 45
+INSERT INTO `item_mods` VALUES (25879,29,2); -- MDEF: 2
+INSERT INTO `item_mods` VALUES (25879,31,75); -- MEVA: 75
+INSERT INTO `item_mods` VALUES (25879,68,16); -- EVA: 16
+INSERT INTO `item_mods` VALUES (25879,160,-700); -- DMG: -700
+INSERT INTO `item_mods` VALUES (25879,302,4); -- TRIPLE_ATTACK: 4
+INSERT INTO `item_mods` VALUES (25879,384,200); -- HASTE_GEAR: 200
 
 -- Meghanada Chausses
 INSERT INTO `item_mods` VALUES (25860,1,105);    -- DEF: 105
@@ -62108,6 +62319,44 @@ INSERT INTO `item_mods` VALUES (25911,1,1); -- DEF: 1
 INSERT INTO `item_mods` VALUES (25912,1,2);    -- DEF: 2
 INSERT INTO `item_mods` VALUES (25912,1133,1); -- DIG_RARE_ABILITY: 1
 
+-- Sulevia's Leggings
+INSERT INTO `item_mods` VALUES (25925,1,83); -- DEF: 83
+INSERT INTO `item_mods` VALUES (25925,2,20); -- HP: 20
+INSERT INTO `item_mods` VALUES (25925,5,20); -- MP: 20
+INSERT INTO `item_mods` VALUES (25925,8,21); -- STR: 21
+INSERT INTO `item_mods` VALUES (25925,9,11); -- DEX: 11
+INSERT INTO `item_mods` VALUES (25925,10,21); -- VIT: 21
+INSERT INTO `item_mods` VALUES (25925,11,26); -- AGI: 26
+INSERT INTO `item_mods` VALUES (25925,13,10); -- MND: 10
+INSERT INTO `item_mods` VALUES (25925,14,24); -- CHR: 24
+INSERT INTO `item_mods` VALUES (25925,23,28); -- ATT: 28
+INSERT INTO `item_mods` VALUES (25925,25,24); -- ACC: 24
+INSERT INTO `item_mods` VALUES (25925,29,1); -- MDEF: 1
+INSERT INTO `item_mods` VALUES (25925,31,75); -- MEVA: 75
+INSERT INTO `item_mods` VALUES (25925,68,44); -- EVA: 44
+INSERT INTO `item_mods` VALUES (25925,160,-200); -- DMG: -200
+INSERT INTO `item_mods` VALUES (25925,384,100); -- HASTE_GEAR: 100
+INSERT INTO `item_mods` VALUES (25925,840,5); -- ALL_WSDMG_ALL_HITS: 5
+
+-- Sulevia's Leggings +1
+INSERT INTO `item_mods` VALUES (25926,1,88); -- DEF: 88
+INSERT INTO `item_mods` VALUES (25926,2,20); -- HP: 20
+INSERT INTO `item_mods` VALUES (25926,5,20); -- MP: 20
+INSERT INTO `item_mods` VALUES (25926,8,26); -- STR: 26
+INSERT INTO `item_mods` VALUES (25926,9,16); -- DEX: 16
+INSERT INTO `item_mods` VALUES (25926,10,26); -- VIT: 26
+INSERT INTO `item_mods` VALUES (25926,11,26); -- AGI: 26
+INSERT INTO `item_mods` VALUES (25926,13,15); -- MND: 15
+INSERT INTO `item_mods` VALUES (25926,14,29); -- CHR: 29
+INSERT INTO `item_mods` VALUES (25926,23,40); -- ATT: 40
+INSERT INTO `item_mods` VALUES (25926,25,36); -- ACC: 36
+INSERT INTO `item_mods` VALUES (25926,29,1); -- MDEF: 1
+INSERT INTO `item_mods` VALUES (25926,31,75); -- MEVA: 75
+INSERT INTO `item_mods` VALUES (25926,68,44); -- EVA: 44
+INSERT INTO `item_mods` VALUES (25926,160,-300); -- DMG: -300
+INSERT INTO `item_mods` VALUES (25926,384,100); -- HASTE_GEAR: 100
+INSERT INTO `item_mods` VALUES (25926,840,6); -- ALL_WSDMG_ALL_HITS: 6
+
 -- Meghanada Jambeaux
 INSERT INTO `item_mods` VALUES (25927,1,68);     -- DEF: 68
 INSERT INTO `item_mods` VALUES (25927,2,20);     -- HP: 20
@@ -62413,6 +62662,25 @@ INSERT INTO `item_mods` VALUES (25945,68,60);   -- EVA: 60
 INSERT INTO `item_mods` VALUES (25945,311,46);  -- MAGIC_DAMAGE: 46
 INSERT INTO `item_mods` VALUES (25945,384,200); -- HASTE_GEAR: 200
 INSERT INTO `item_mods` VALUES (25945,516,10);  -- ABSORB_DMG_TO_MP: 10
+
+-- Sulevia's Leggings +2
+INSERT INTO `item_mods` VALUES (25946,1,93); -- DEF: 93
+INSERT INTO `item_mods` VALUES (25946,2,20); -- HP: 20
+INSERT INTO `item_mods` VALUES (25946,5,20); -- MP: 20
+INSERT INTO `item_mods` VALUES (25946,8,29); -- STR: 29
+INSERT INTO `item_mods` VALUES (25946,9,19); -- DEX: 19
+INSERT INTO `item_mods` VALUES (25946,10,29); -- VIT: 29
+INSERT INTO `item_mods` VALUES (25946,11,26); -- AGI: 26
+INSERT INTO `item_mods` VALUES (25946,13,18); -- MND: 18
+INSERT INTO `item_mods` VALUES (25946,14,32); -- CHR: 32
+INSERT INTO `item_mods` VALUES (25946,23,46); -- ATT: 46
+INSERT INTO `item_mods` VALUES (25946,25,42); -- ACC: 42
+INSERT INTO `item_mods` VALUES (25946,29,1); -- MDEF: 1
+INSERT INTO `item_mods` VALUES (25946,31,75); -- MEVA: 75
+INSERT INTO `item_mods` VALUES (25946,68,44); -- EVA: 44
+INSERT INTO `item_mods` VALUES (25946,160,-400); -- DMG: -400
+INSERT INTO `item_mods` VALUES (25946,384,100); -- HASTE_GEAR: 100
+INSERT INTO `item_mods` VALUES (25946,840,7); -- ALL_WSDMG_ALL_HITS: 7
 
 -- Hizamaru Sune-Ate +2
 INSERT INTO `item_mods` VALUES (25948,1,85);    -- DEF: 85
@@ -63522,6 +63790,12 @@ INSERT INTO `item_mods` VALUES (26202,76,18);  -- MOVE_SPEED_GEAR_BONUS: 18
 INSERT INTO `item_mods` VALUES (26202,246,17); -- PETRIFYRES: 17
 INSERT INTO `item_mods` VALUES (26202,247,17); -- BINDRES: 17
 INSERT INTO `item_mods` VALUES (26202,249,17); -- GRAVITYRES: 17
+
+-- Sulevia's Ring
+INSERT INTO `item_mods` VALUES (26204,1,10); -- DEF: 10
+INSERT INTO `item_mods` VALUES (26204,23,6); -- ATT: 6
+INSERT INTO `item_mods` VALUES (26204,25,6); -- ACC: 6
+INSERT INTO `item_mods` VALUES (26204,160,-300); -- DMG: -300
 
 -- Epaminondass Ring
 INSERT INTO `item_mods` VALUES (26214,73,-10); -- STORETP: -10
@@ -88888,6 +89162,1086 @@ INSERT INTO `item_mods` VALUES (22291,24,20);  -- RATT: 20
 -- Voluspa Shield
 INSERT INTO `item_mods` VALUES (26413,1,40);    -- DEF: 40
 INSERT INTO `item_mods` VALUES (26413,109,112); -- SHIELD: 112
+
+-- ===========================================================
+-- Ambuscade Armor Sets: Hizamaru, Inyanga, Meghanada, Jhakri,
+-- Flamma, Tali'ah, Mummu, Ayanmo, Mallquis
+-- 51 items added (2 +2 variants already present: 25576, 25948)
+-- ===========================================================
+
+-- ============================================================
+-- 25663 = Hizamaru Somen (base head)
+-- DEF:105 HP+60 STR+25 DEX+21 VIT+19 AGI+16 INT+12 MND+10 CHR+12
+-- ACC+26 ATT+26 EVA+72 MEVA+59 MDEF+3 Haste+6% Martial Arts+7
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25663,1,105);   -- DEF: 105
+INSERT INTO `item_mods` VALUES (25663,2,60);    -- HP: 60
+INSERT INTO `item_mods` VALUES (25663,8,25);    -- STR: 25
+INSERT INTO `item_mods` VALUES (25663,9,21);    -- DEX: 21
+INSERT INTO `item_mods` VALUES (25663,10,19);   -- VIT: 19
+INSERT INTO `item_mods` VALUES (25663,11,16);   -- AGI: 16
+INSERT INTO `item_mods` VALUES (25663,12,12);   -- INT: 12
+INSERT INTO `item_mods` VALUES (25663,13,10);   -- MND: 10
+INSERT INTO `item_mods` VALUES (25663,14,12);   -- CHR: 12
+INSERT INTO `item_mods` VALUES (25663,23,26);   -- ATT: 26
+INSERT INTO `item_mods` VALUES (25663,25,26);   -- ACC: 26
+INSERT INTO `item_mods` VALUES (25663,29,3);    -- MDEF: 3
+INSERT INTO `item_mods` VALUES (25663,31,59);   -- MEVA: 59
+INSERT INTO `item_mods` VALUES (25663,68,72);   -- EVA: 72
+INSERT INTO `item_mods` VALUES (25663,173,7);   -- MARTIAL_ARTS: 7
+INSERT INTO `item_mods` VALUES (25663,384,600); -- HASTE_GEAR: 6%
+
+-- ============================================================
+-- 25664 = Hizamaru Somen +1 (head)
+-- DEF:110 HP+60 STR+30 DEX+26 VIT+24 AGI+21 INT+12 MND+10 CHR+17
+-- ACC+38 ATT+26 EVA+84 MEVA+59 MDEF+3 Haste+6% Martial Arts+10
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25664,1,110);   -- DEF: 110
+INSERT INTO `item_mods` VALUES (25664,2,60);    -- HP: 60
+INSERT INTO `item_mods` VALUES (25664,8,30);    -- STR: 30
+INSERT INTO `item_mods` VALUES (25664,9,26);    -- DEX: 26
+INSERT INTO `item_mods` VALUES (25664,10,24);   -- VIT: 24
+INSERT INTO `item_mods` VALUES (25664,11,21);   -- AGI: 21
+INSERT INTO `item_mods` VALUES (25664,12,12);   -- INT: 12
+INSERT INTO `item_mods` VALUES (25664,13,10);   -- MND: 10
+INSERT INTO `item_mods` VALUES (25664,14,17);   -- CHR: 17
+INSERT INTO `item_mods` VALUES (25664,23,26);   -- ATT: 26
+INSERT INTO `item_mods` VALUES (25664,25,38);   -- ACC: 38
+INSERT INTO `item_mods` VALUES (25664,29,3);    -- MDEF: 3
+INSERT INTO `item_mods` VALUES (25664,31,59);   -- MEVA: 59
+INSERT INTO `item_mods` VALUES (25664,68,84);   -- EVA: 84
+INSERT INTO `item_mods` VALUES (25664,173,10);  -- MARTIAL_ARTS: 10
+INSERT INTO `item_mods` VALUES (25664,384,600); -- HASTE_GEAR: 6%
+
+-- ============================================================
+-- 25749 = Hizamaru Haramaki (base body)
+-- DEF:131 HP+100 STR+32 DEX+28 VIT+26 AGI+20 INT+20 MND+17 CHR+20
+-- ACC+28 ATT+28 EVA+77 MEVA+69 MDEF+6 Haste+4% Regen+7
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25749,1,131);   -- DEF: 131
+INSERT INTO `item_mods` VALUES (25749,2,100);   -- HP: 100
+INSERT INTO `item_mods` VALUES (25749,8,32);    -- STR: 32
+INSERT INTO `item_mods` VALUES (25749,9,28);    -- DEX: 28
+INSERT INTO `item_mods` VALUES (25749,10,26);   -- VIT: 26
+INSERT INTO `item_mods` VALUES (25749,11,20);   -- AGI: 20
+INSERT INTO `item_mods` VALUES (25749,12,20);   -- INT: 20
+INSERT INTO `item_mods` VALUES (25749,13,17);   -- MND: 17
+INSERT INTO `item_mods` VALUES (25749,14,20);   -- CHR: 20
+INSERT INTO `item_mods` VALUES (25749,23,28);   -- ATT: 28
+INSERT INTO `item_mods` VALUES (25749,25,28);   -- ACC: 28
+INSERT INTO `item_mods` VALUES (25749,29,6);    -- MDEF: 6
+INSERT INTO `item_mods` VALUES (25749,31,69);   -- MEVA: 69
+INSERT INTO `item_mods` VALUES (25749,68,77);   -- EVA: 77
+INSERT INTO `item_mods` VALUES (25749,370,7);   -- REGEN: 7
+INSERT INTO `item_mods` VALUES (25749,384,400); -- HASTE_GEAR: 4%
+
+-- ============================================================
+-- 25750 = Hizamaru Haramaki +1 (body)
+-- DEF:136 HP+100 STR+37 DEX+33 VIT+31 AGI+25 INT+20 MND+17 CHR+25
+-- ACC+40 ATT+28 EVA+89 MEVA+69 MDEF+6 Haste+4% Regen+10
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25750,1,136);   -- DEF: 136
+INSERT INTO `item_mods` VALUES (25750,2,100);   -- HP: 100
+INSERT INTO `item_mods` VALUES (25750,8,37);    -- STR: 37
+INSERT INTO `item_mods` VALUES (25750,9,33);    -- DEX: 33
+INSERT INTO `item_mods` VALUES (25750,10,31);   -- VIT: 31
+INSERT INTO `item_mods` VALUES (25750,11,25);   -- AGI: 25
+INSERT INTO `item_mods` VALUES (25750,12,20);   -- INT: 20
+INSERT INTO `item_mods` VALUES (25750,13,17);   -- MND: 17
+INSERT INTO `item_mods` VALUES (25750,14,25);   -- CHR: 25
+INSERT INTO `item_mods` VALUES (25750,23,28);   -- ATT: 28
+INSERT INTO `item_mods` VALUES (25750,25,40);   -- ACC: 40
+INSERT INTO `item_mods` VALUES (25750,29,6);    -- MDEF: 6
+INSERT INTO `item_mods` VALUES (25750,31,69);   -- MEVA: 69
+INSERT INTO `item_mods` VALUES (25750,68,89);   -- EVA: 89
+INSERT INTO `item_mods` VALUES (25750,370,10);  -- REGEN: 10
+INSERT INTO `item_mods` VALUES (25750,384,400); -- HASTE_GEAR: 4%
+
+-- ============================================================
+-- 25791 = Meghanada Cuirie +2 (body)
+-- DEF:133 HP+40 STR+34 DEX+45 VIT+23 AGI+41 INT+19 MND+28 CHR+29
+-- ACC+50 ATT+46 RACC+50 RATT+46 MDEF+6 MEVA+64 EVA+55
+-- Physical_dmg_taken-8% CRIT_DMG_INCREASE+6% Haste+2%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25791,1,133);    -- DEF: 133
+INSERT INTO `item_mods` VALUES (25791,2,40);     -- HP: 40
+INSERT INTO `item_mods` VALUES (25791,8,34);     -- STR: 34
+INSERT INTO `item_mods` VALUES (25791,9,45);     -- DEX: 45
+INSERT INTO `item_mods` VALUES (25791,10,23);    -- VIT: 23
+INSERT INTO `item_mods` VALUES (25791,11,41);    -- AGI: 41
+INSERT INTO `item_mods` VALUES (25791,12,19);    -- INT: 19
+INSERT INTO `item_mods` VALUES (25791,13,28);    -- MND: 28
+INSERT INTO `item_mods` VALUES (25791,14,29);    -- CHR: 29
+INSERT INTO `item_mods` VALUES (25791,23,46);    -- ATT: 46
+INSERT INTO `item_mods` VALUES (25791,24,46);    -- RATT: 46
+INSERT INTO `item_mods` VALUES (25791,25,50);    -- ACC: 50
+INSERT INTO `item_mods` VALUES (25791,26,50);    -- RACC: 50
+INSERT INTO `item_mods` VALUES (25791,29,6);     -- MDEF: 6
+INSERT INTO `item_mods` VALUES (25791,31,64);    -- MEVA: 64
+INSERT INTO `item_mods` VALUES (25791,68,55);    -- EVA: 55
+INSERT INTO `item_mods` VALUES (25791,161,-800); -- DMGPHYS: -8%
+INSERT INTO `item_mods` VALUES (25791,164,-800); -- DMGRANGE: -8%
+INSERT INTO `item_mods` VALUES (25791,384,200);  -- HASTE_GEAR: 2%
+INSERT INTO `item_mods` VALUES (25791,421,6);    -- CRIT_DMG_INCREASE: 6%
+
+-- ============================================================
+-- 25792 = Hizamaru Haramaki +2 (body)
+-- DEF:141 HP+100 STR+40 DEX+36 VIT+34 AGI+28 INT+20 MND+17 CHR+28
+-- ACC+46 ATT+28 EVA+95 MEVA+69 MDEF+6 Haste+4% Regen+12
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25792,1,141);   -- DEF: 141
+INSERT INTO `item_mods` VALUES (25792,2,100);   -- HP: 100
+INSERT INTO `item_mods` VALUES (25792,8,40);    -- STR: 40
+INSERT INTO `item_mods` VALUES (25792,9,36);    -- DEX: 36
+INSERT INTO `item_mods` VALUES (25792,10,34);   -- VIT: 34
+INSERT INTO `item_mods` VALUES (25792,11,28);   -- AGI: 28
+INSERT INTO `item_mods` VALUES (25792,12,20);   -- INT: 20
+INSERT INTO `item_mods` VALUES (25792,13,17);   -- MND: 17
+INSERT INTO `item_mods` VALUES (25792,14,28);   -- CHR: 28
+INSERT INTO `item_mods` VALUES (25792,23,28);   -- ATT: 28
+INSERT INTO `item_mods` VALUES (25792,25,46);   -- ACC: 46
+INSERT INTO `item_mods` VALUES (25792,29,6);    -- MDEF: 6
+INSERT INTO `item_mods` VALUES (25792,31,69);   -- MEVA: 69
+INSERT INTO `item_mods` VALUES (25792,68,95);   -- EVA: 95
+INSERT INTO `item_mods` VALUES (25792,370,12);  -- REGEN: 12
+INSERT INTO `item_mods` VALUES (25792,384,400); -- HASTE_GEAR: 4%
+
+-- ============================================================
+-- 25793 = Inyanga Jubbah +2 (body)
+-- DEF:129 HP+85 MP+90 STR+16 DEX+19 VIT+24 AGI+23 INT+48 MND+43 CHR+42
+-- MDEF+11 MEVA+120 DMGMAGIC-8% FASTCAST+14% Haste+2%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25793,1,129);    -- DEF: 129
+INSERT INTO `item_mods` VALUES (25793,2,85);     -- HP: 85
+INSERT INTO `item_mods` VALUES (25793,5,90);     -- MP: 90
+INSERT INTO `item_mods` VALUES (25793,8,16);     -- STR: 16
+INSERT INTO `item_mods` VALUES (25793,9,19);     -- DEX: 19
+INSERT INTO `item_mods` VALUES (25793,10,24);    -- VIT: 24
+INSERT INTO `item_mods` VALUES (25793,11,23);    -- AGI: 23
+INSERT INTO `item_mods` VALUES (25793,12,48);    -- INT: 48
+INSERT INTO `item_mods` VALUES (25793,13,43);    -- MND: 43
+INSERT INTO `item_mods` VALUES (25793,14,42);    -- CHR: 42
+INSERT INTO `item_mods` VALUES (25793,29,11);    -- MDEF: 11
+INSERT INTO `item_mods` VALUES (25793,31,120);   -- MEVA: 120
+INSERT INTO `item_mods` VALUES (25793,163,-800); -- DMGMAGIC: -8%
+INSERT INTO `item_mods` VALUES (25793,170,14);   -- FASTCAST: 14%
+INSERT INTO `item_mods` VALUES (25793,384,200);  -- HASTE_GEAR: 2%
+
+-- ============================================================
+-- 25795 = Ayanmo Corazza +2 (body)
+-- DEF:153 HP+57 MP+59 STR+28 DEX+48 VIT+24 AGI+33 INT+21 MND+31 CHR+21
+-- ACC+46 MACC+46 MDEF+6 MEVA+64 EVA+38 DOUBLE_ATTACK+7% DMG-6% Haste+4%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25795,1,153);    -- DEF: 153
+INSERT INTO `item_mods` VALUES (25795,2,57);     -- HP: 57
+INSERT INTO `item_mods` VALUES (25795,5,59);     -- MP: 59
+INSERT INTO `item_mods` VALUES (25795,8,28);     -- STR: 28
+INSERT INTO `item_mods` VALUES (25795,9,48);     -- DEX: 48
+INSERT INTO `item_mods` VALUES (25795,10,24);    -- VIT: 24
+INSERT INTO `item_mods` VALUES (25795,11,33);    -- AGI: 33
+INSERT INTO `item_mods` VALUES (25795,12,21);    -- INT: 21
+INSERT INTO `item_mods` VALUES (25795,13,31);    -- MND: 31
+INSERT INTO `item_mods` VALUES (25795,14,21);    -- CHR: 21
+INSERT INTO `item_mods` VALUES (25795,25,46);    -- ACC: 46
+INSERT INTO `item_mods` VALUES (25795,29,6);     -- MDEF: 6
+INSERT INTO `item_mods` VALUES (25795,30,46);    -- MACC: 46
+INSERT INTO `item_mods` VALUES (25795,31,64);    -- MEVA: 64
+INSERT INTO `item_mods` VALUES (25795,68,38);    -- EVA: 38
+INSERT INTO `item_mods` VALUES (25795,160,-600); -- DMG: -6%
+INSERT INTO `item_mods` VALUES (25795,288,7);    -- DOUBLE_ATTACK: 7%
+INSERT INTO `item_mods` VALUES (25795,384,400);  -- HASTE_GEAR: 4%
+
+-- ============================================================
+-- 25796 = Tali'ah Manteel +2 (body)
+-- DEF:129 HP+70 MP+73 STR+28 DEX+45 VIT+37 AGI+33 INT+21 MND+20 CHR+21
+-- ACC+46 MACC+46 MDEF+6 MEVA+64 EVA+38 TRIPLE_ATTACK+6% Haste+4%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25796,1,129);   -- DEF: 129
+INSERT INTO `item_mods` VALUES (25796,2,70);    -- HP: 70
+INSERT INTO `item_mods` VALUES (25796,5,73);    -- MP: 73
+INSERT INTO `item_mods` VALUES (25796,8,28);    -- STR: 28
+INSERT INTO `item_mods` VALUES (25796,9,45);    -- DEX: 45
+INSERT INTO `item_mods` VALUES (25796,10,37);   -- VIT: 37
+INSERT INTO `item_mods` VALUES (25796,11,33);   -- AGI: 33
+INSERT INTO `item_mods` VALUES (25796,12,21);   -- INT: 21
+INSERT INTO `item_mods` VALUES (25796,13,20);   -- MND: 20
+INSERT INTO `item_mods` VALUES (25796,14,21);   -- CHR: 21
+INSERT INTO `item_mods` VALUES (25796,25,46);   -- ACC: 46
+INSERT INTO `item_mods` VALUES (25796,29,6);    -- MDEF: 6
+INSERT INTO `item_mods` VALUES (25796,30,46);   -- MACC: 46
+INSERT INTO `item_mods` VALUES (25796,31,64);   -- MEVA: 64
+INSERT INTO `item_mods` VALUES (25796,68,38);   -- EVA: 38
+INSERT INTO `item_mods` VALUES (25796,302,6);   -- TRIPLE_ATTACK: 6%
+INSERT INTO `item_mods` VALUES (25796,384,400); -- HASTE_GEAR: 4%
+
+-- ============================================================
+-- 25797 = Flamma Korazin +2 (body)
+-- DEF:153 HP+140 MP+35 STR+43 DEX+39 VIT+32 AGI+20 INT+20 MND+20 CHR+20
+-- ACC+46 MACC+46 MDEF+6 MEVA+69 EVA+55 STORETP+9 Subtle_Blow+17 Haste+2%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25797,1,153);   -- DEF: 153
+INSERT INTO `item_mods` VALUES (25797,2,140);   -- HP: 140
+INSERT INTO `item_mods` VALUES (25797,5,35);    -- MP: 35
+INSERT INTO `item_mods` VALUES (25797,8,43);    -- STR: 43
+INSERT INTO `item_mods` VALUES (25797,9,39);    -- DEX: 39
+INSERT INTO `item_mods` VALUES (25797,10,32);   -- VIT: 32
+INSERT INTO `item_mods` VALUES (25797,11,20);   -- AGI: 20
+INSERT INTO `item_mods` VALUES (25797,12,20);   -- INT: 20
+INSERT INTO `item_mods` VALUES (25797,13,20);   -- MND: 20
+INSERT INTO `item_mods` VALUES (25797,14,20);   -- CHR: 20
+INSERT INTO `item_mods` VALUES (25797,25,46);   -- ACC: 46
+INSERT INTO `item_mods` VALUES (25797,29,6);    -- MDEF: 6
+INSERT INTO `item_mods` VALUES (25797,30,46);   -- MACC: 46
+INSERT INTO `item_mods` VALUES (25797,31,69);   -- MEVA: 69
+INSERT INTO `item_mods` VALUES (25797,68,55);   -- EVA: 55
+INSERT INTO `item_mods` VALUES (25797,73,9);    -- STORETP: 9
+INSERT INTO `item_mods` VALUES (25797,289,17);  -- SUBTLE_BLOW: 17
+INSERT INTO `item_mods` VALUES (25797,384,200); -- HASTE_GEAR: 2%
+
+-- ============================================================
+-- 25798 = Mummu Jacket +2 (body)
+-- DEF:141 HP+60 MP+35 STR+28 DEX+48 VIT+24 AGI+44 INT+21 MND+20 CHR+24
+-- ACC+46 RACC+46 MACC+46 MDEF+6 MEVA+80 EVA+69 STORETP+6 CRITHITRATE+9% Haste+4%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25798,1,141);   -- DEF: 141
+INSERT INTO `item_mods` VALUES (25798,2,60);    -- HP: 60
+INSERT INTO `item_mods` VALUES (25798,5,35);    -- MP: 35
+INSERT INTO `item_mods` VALUES (25798,8,28);    -- STR: 28
+INSERT INTO `item_mods` VALUES (25798,9,48);    -- DEX: 48
+INSERT INTO `item_mods` VALUES (25798,10,24);   -- VIT: 24
+INSERT INTO `item_mods` VALUES (25798,11,44);   -- AGI: 44
+INSERT INTO `item_mods` VALUES (25798,12,21);   -- INT: 21
+INSERT INTO `item_mods` VALUES (25798,13,20);   -- MND: 20
+INSERT INTO `item_mods` VALUES (25798,14,24);   -- CHR: 24
+INSERT INTO `item_mods` VALUES (25798,25,46);   -- ACC: 46
+INSERT INTO `item_mods` VALUES (25798,26,46);   -- RACC: 46
+INSERT INTO `item_mods` VALUES (25798,29,6);    -- MDEF: 6
+INSERT INTO `item_mods` VALUES (25798,30,46);   -- MACC: 46
+INSERT INTO `item_mods` VALUES (25798,31,80);   -- MEVA: 80
+INSERT INTO `item_mods` VALUES (25798,68,69);   -- EVA: 69
+INSERT INTO `item_mods` VALUES (25798,73,6);    -- STORETP: 6
+INSERT INTO `item_mods` VALUES (25798,165,9);   -- CRITHITRATE: 9%
+INSERT INTO `item_mods` VALUES (25798,384,400); -- HASTE_GEAR: 4%
+
+-- ============================================================
+-- 25799 = Mallquis Saio +2 (body)
+-- DEF:129 HP+68 MP+53 STR+16 DEX+19 VIT+30 AGI+16 INT+54 MND+33 CHR+32
+-- MACC+46 MAGIC_DAMAGE+58 MATT+15 MDEF+7 MEVA+69 EVA+38
+-- ELEMENTAL_CELERITY-9% DMG-8% Haste+2%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25799,1,129);    -- DEF: 129
+INSERT INTO `item_mods` VALUES (25799,2,68);     -- HP: 68
+INSERT INTO `item_mods` VALUES (25799,5,53);     -- MP: 53
+INSERT INTO `item_mods` VALUES (25799,8,16);     -- STR: 16
+INSERT INTO `item_mods` VALUES (25799,9,19);     -- DEX: 19
+INSERT INTO `item_mods` VALUES (25799,10,30);    -- VIT: 30
+INSERT INTO `item_mods` VALUES (25799,11,16);    -- AGI: 16
+INSERT INTO `item_mods` VALUES (25799,12,54);    -- INT: 54
+INSERT INTO `item_mods` VALUES (25799,13,33);    -- MND: 33
+INSERT INTO `item_mods` VALUES (25799,14,32);    -- CHR: 32
+INSERT INTO `item_mods` VALUES (25799,28,15);    -- MATT: 15
+INSERT INTO `item_mods` VALUES (25799,29,7);     -- MDEF: 7
+INSERT INTO `item_mods` VALUES (25799,30,46);    -- MACC: 46
+INSERT INTO `item_mods` VALUES (25799,31,69);    -- MEVA: 69
+INSERT INTO `item_mods` VALUES (25799,68,38);    -- EVA: 38
+INSERT INTO `item_mods` VALUES (25799,160,-800); -- DMG: -8%
+INSERT INTO `item_mods` VALUES (25799,311,58);   -- MAGIC_DAMAGE: 58
+INSERT INTO `item_mods` VALUES (25799,384,200);  -- HASTE_GEAR: 2%
+INSERT INTO `item_mods` VALUES (25799,901,-9);   -- ELEMENTAL_CELERITY: -9%
+
+-- ============================================================
+-- 25804 = Hizamaru Kote (base hands)
+-- DEF:96 HP+40 STR+12 DEX+35 VIT+30 AGI+8 INT+7 MND+21 CHR+17
+-- ACC+25 ATT+25 EVA+58 MEVA+43 MDEF+2 Haste+4% Tactical Parry+15
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25804,1,96);    -- DEF: 96
+INSERT INTO `item_mods` VALUES (25804,2,40);    -- HP: 40
+INSERT INTO `item_mods` VALUES (25804,8,12);    -- STR: 12
+INSERT INTO `item_mods` VALUES (25804,9,35);    -- DEX: 35
+INSERT INTO `item_mods` VALUES (25804,10,30);   -- VIT: 30
+INSERT INTO `item_mods` VALUES (25804,11,8);    -- AGI: 8
+INSERT INTO `item_mods` VALUES (25804,12,7);    -- INT: 7
+INSERT INTO `item_mods` VALUES (25804,13,21);   -- MND: 21
+INSERT INTO `item_mods` VALUES (25804,14,17);   -- CHR: 17
+INSERT INTO `item_mods` VALUES (25804,23,25);   -- ATT: 25
+INSERT INTO `item_mods` VALUES (25804,25,25);   -- ACC: 25
+INSERT INTO `item_mods` VALUES (25804,29,2);    -- MDEF: 2
+INSERT INTO `item_mods` VALUES (25804,31,43);   -- MEVA: 43
+INSERT INTO `item_mods` VALUES (25804,68,58);   -- EVA: 58
+INSERT INTO `item_mods` VALUES (25804,384,400); -- HASTE_GEAR: 4%
+INSERT INTO `item_mods` VALUES (25804,486,15);  -- TACTICAL_PARRY: 15
+
+-- ============================================================
+-- 25805 = Hizamaru Kote +1 (hands)
+-- DEF:101 HP+40 STR+17 DEX+40 VIT+35 AGI+13 INT+7 MND+21 CHR+22
+-- ACC+37 ATT+25 EVA+70 MEVA+43 MDEF+2 Haste+4% Tactical Parry+20
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25805,1,101);   -- DEF: 101
+INSERT INTO `item_mods` VALUES (25805,2,40);    -- HP: 40
+INSERT INTO `item_mods` VALUES (25805,8,17);    -- STR: 17
+INSERT INTO `item_mods` VALUES (25805,9,40);    -- DEX: 40
+INSERT INTO `item_mods` VALUES (25805,10,35);   -- VIT: 35
+INSERT INTO `item_mods` VALUES (25805,11,13);   -- AGI: 13
+INSERT INTO `item_mods` VALUES (25805,12,7);    -- INT: 7
+INSERT INTO `item_mods` VALUES (25805,13,21);   -- MND: 21
+INSERT INTO `item_mods` VALUES (25805,14,22);   -- CHR: 22
+INSERT INTO `item_mods` VALUES (25805,23,25);   -- ATT: 25
+INSERT INTO `item_mods` VALUES (25805,25,37);   -- ACC: 37
+INSERT INTO `item_mods` VALUES (25805,29,2);    -- MDEF: 2
+INSERT INTO `item_mods` VALUES (25805,31,43);   -- MEVA: 43
+INSERT INTO `item_mods` VALUES (25805,68,70);   -- EVA: 70
+INSERT INTO `item_mods` VALUES (25805,384,400); -- HASTE_GEAR: 4%
+INSERT INTO `item_mods` VALUES (25805,486,20);  -- TACTICAL_PARRY: 20
+
+-- ============================================================
+-- 25829 = Meghanada Gloves +2 (hands)
+-- DEF:98 HP+30 STR+23 DEX+50 VIT+29 AGI+19 INT+11 MND+34 CHR+27
+-- ACC+47 ATT+43 RACC+47 RATT+43 MDEF+2 MEVA+37 EVA+36
+-- Physical_dmg_taken-4% WS_damage+7% Haste+4%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25829,1,98);     -- DEF: 98
+INSERT INTO `item_mods` VALUES (25829,2,30);     -- HP: 30
+INSERT INTO `item_mods` VALUES (25829,8,23);     -- STR: 23
+INSERT INTO `item_mods` VALUES (25829,9,50);     -- DEX: 50
+INSERT INTO `item_mods` VALUES (25829,10,29);    -- VIT: 29
+INSERT INTO `item_mods` VALUES (25829,11,19);    -- AGI: 19
+INSERT INTO `item_mods` VALUES (25829,12,11);    -- INT: 11
+INSERT INTO `item_mods` VALUES (25829,13,34);    -- MND: 34
+INSERT INTO `item_mods` VALUES (25829,14,27);    -- CHR: 27
+INSERT INTO `item_mods` VALUES (25829,23,43);    -- ATT: 43
+INSERT INTO `item_mods` VALUES (25829,24,43);    -- RATT: 43
+INSERT INTO `item_mods` VALUES (25829,25,47);    -- ACC: 47
+INSERT INTO `item_mods` VALUES (25829,26,47);    -- RACC: 47
+INSERT INTO `item_mods` VALUES (25829,29,2);     -- MDEF: 2
+INSERT INTO `item_mods` VALUES (25829,31,37);    -- MEVA: 37
+INSERT INTO `item_mods` VALUES (25829,68,36);    -- EVA: 36
+INSERT INTO `item_mods` VALUES (25829,161,-400); -- DMGPHYS: -4%
+INSERT INTO `item_mods` VALUES (25829,164,-400); -- DMGRANGE: -4%
+INSERT INTO `item_mods` VALUES (25829,384,400);  -- HASTE_GEAR: 4%
+INSERT INTO `item_mods` VALUES (25829,841,7);    -- ALL_WSDMG_FIRST_HIT: 7%
+
+-- ============================================================
+-- 25830 = Hizamaru Kote +2 (hands)
+-- DEF:106 HP+40 STR+20 DEX+43 VIT+38 AGI+16 INT+7 MND+21 CHR+25
+-- ACC+43 ATT+25 EVA+76 MEVA+43 MDEF+2 Haste+4% Tactical Parry+25
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25830,1,106);   -- DEF: 106
+INSERT INTO `item_mods` VALUES (25830,2,40);    -- HP: 40
+INSERT INTO `item_mods` VALUES (25830,8,20);    -- STR: 20
+INSERT INTO `item_mods` VALUES (25830,9,43);    -- DEX: 43
+INSERT INTO `item_mods` VALUES (25830,10,38);   -- VIT: 38
+INSERT INTO `item_mods` VALUES (25830,11,16);   -- AGI: 16
+INSERT INTO `item_mods` VALUES (25830,12,7);    -- INT: 7
+INSERT INTO `item_mods` VALUES (25830,13,21);   -- MND: 21
+INSERT INTO `item_mods` VALUES (25830,14,25);   -- CHR: 25
+INSERT INTO `item_mods` VALUES (25830,23,25);   -- ATT: 25
+INSERT INTO `item_mods` VALUES (25830,25,43);   -- ACC: 43
+INSERT INTO `item_mods` VALUES (25830,29,2);    -- MDEF: 2
+INSERT INTO `item_mods` VALUES (25830,31,43);   -- MEVA: 43
+INSERT INTO `item_mods` VALUES (25830,68,76);   -- EVA: 76
+INSERT INTO `item_mods` VALUES (25830,384,400); -- HASTE_GEAR: 4%
+INSERT INTO `item_mods` VALUES (25830,486,25);  -- TACTICAL_PARRY: 25
+
+-- ============================================================
+-- 25831 = Inyanga Dastanas +2 (hands)
+-- DEF:88 HP+35 MP+40 STR+3 DEX+23 VIT+28 AGI+9 INT+34 MND+47 CHR+32
+-- MACC+43 EVA+19 MEVA+77 MDEF+5 All_magic_skills+20 DMGMAGIC-4% Haste+4%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25831,1,88);     -- DEF: 88
+INSERT INTO `item_mods` VALUES (25831,2,35);     -- HP: 35
+INSERT INTO `item_mods` VALUES (25831,5,40);     -- MP: 40
+INSERT INTO `item_mods` VALUES (25831,8,3);      -- STR: 3
+INSERT INTO `item_mods` VALUES (25831,9,23);     -- DEX: 23
+INSERT INTO `item_mods` VALUES (25831,10,28);    -- VIT: 28
+INSERT INTO `item_mods` VALUES (25831,11,9);     -- AGI: 9
+INSERT INTO `item_mods` VALUES (25831,12,34);    -- INT: 34
+INSERT INTO `item_mods` VALUES (25831,13,47);    -- MND: 47
+INSERT INTO `item_mods` VALUES (25831,14,32);    -- CHR: 32
+INSERT INTO `item_mods` VALUES (25831,29,5);     -- MDEF: 5
+INSERT INTO `item_mods` VALUES (25831,30,43);    -- MACC: 43
+INSERT INTO `item_mods` VALUES (25831,31,77);    -- MEVA: 77
+INSERT INTO `item_mods` VALUES (25831,68,19);    -- EVA: 19
+INSERT INTO `item_mods` VALUES (25831,111,20);   -- DIVINE: 20
+INSERT INTO `item_mods` VALUES (25831,112,20);   -- HEALING: 20
+INSERT INTO `item_mods` VALUES (25831,113,20);   -- ENHANCE: 20
+INSERT INTO `item_mods` VALUES (25831,114,20);   -- ENFEEBLE: 20
+INSERT INTO `item_mods` VALUES (25831,115,20);   -- ELEM: 20
+INSERT INTO `item_mods` VALUES (25831,116,20);   -- DARK: 20
+INSERT INTO `item_mods` VALUES (25831,117,20);   -- SUMMONING: 20
+INSERT INTO `item_mods` VALUES (25831,118,20);   -- NINJUTSU: 20
+INSERT INTO `item_mods` VALUES (25831,119,20);   -- SINGING: 20
+INSERT INTO `item_mods` VALUES (25831,120,20);   -- STRING: 20
+INSERT INTO `item_mods` VALUES (25831,121,20);   -- WIND: 20
+INSERT INTO `item_mods` VALUES (25831,122,20);   -- BLUE: 20
+INSERT INTO `item_mods` VALUES (25831,163,-400); -- DMGMAGIC: -4%
+INSERT INTO `item_mods` VALUES (25831,384,400);  -- HASTE_GEAR: 4%
+
+-- ============================================================
+-- 25832 = Jhakri Cuffs +2 (hands)
+-- DEF:79 STR+18 DEX+41 VIT+17 AGI+2 INT+36 MND+35 CHR+20
+-- ACC+43 ATT+43 MACC+43 MATT+40 EVA+13 MEVA+32 MDEF+1 WS_damage+7%
+-- No HP, no MP, no Haste
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25832,1,79);    -- DEF: 79
+INSERT INTO `item_mods` VALUES (25832,8,18);    -- STR: 18
+INSERT INTO `item_mods` VALUES (25832,9,41);    -- DEX: 41
+INSERT INTO `item_mods` VALUES (25832,10,17);   -- VIT: 17
+INSERT INTO `item_mods` VALUES (25832,11,2);    -- AGI: 2
+INSERT INTO `item_mods` VALUES (25832,12,36);   -- INT: 36
+INSERT INTO `item_mods` VALUES (25832,13,35);   -- MND: 35
+INSERT INTO `item_mods` VALUES (25832,14,20);   -- CHR: 20
+INSERT INTO `item_mods` VALUES (25832,23,43);   -- ATT: 43
+INSERT INTO `item_mods` VALUES (25832,25,43);   -- ACC: 43
+INSERT INTO `item_mods` VALUES (25832,28,40);   -- MATT: 40
+INSERT INTO `item_mods` VALUES (25832,29,1);    -- MDEF: 1
+INSERT INTO `item_mods` VALUES (25832,30,43);   -- MACC: 43
+INSERT INTO `item_mods` VALUES (25832,31,32);   -- MEVA: 32
+INSERT INTO `item_mods` VALUES (25832,68,13);   -- EVA: 13
+INSERT INTO `item_mods` VALUES (25832,841,7);   -- ALL_WSDMG_FIRST_HIT: 7%
+
+-- ============================================================
+-- 25833 = Ayanmo Manopolas +2 (hands)
+-- DEF:111 HP+22 MP+14 STR+16 DEX+53 VIT+30 AGI+11 INT+14 MND+37 CHR+19
+-- ACC+43 MACC+43 MDEF+2 MEVA+37 EVA+19 ENSPELL_DMG_BONUS+17 DMG-3% Haste+4%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25833,1,111);    -- DEF: 111
+INSERT INTO `item_mods` VALUES (25833,2,22);     -- HP: 22
+INSERT INTO `item_mods` VALUES (25833,5,14);     -- MP: 14
+INSERT INTO `item_mods` VALUES (25833,8,16);     -- STR: 16
+INSERT INTO `item_mods` VALUES (25833,9,53);     -- DEX: 53
+INSERT INTO `item_mods` VALUES (25833,10,30);    -- VIT: 30
+INSERT INTO `item_mods` VALUES (25833,11,11);    -- AGI: 11
+INSERT INTO `item_mods` VALUES (25833,12,14);    -- INT: 14
+INSERT INTO `item_mods` VALUES (25833,13,37);    -- MND: 37
+INSERT INTO `item_mods` VALUES (25833,14,19);    -- CHR: 19
+INSERT INTO `item_mods` VALUES (25833,25,43);    -- ACC: 43
+INSERT INTO `item_mods` VALUES (25833,29,2);     -- MDEF: 2
+INSERT INTO `item_mods` VALUES (25833,30,43);    -- MACC: 43
+INSERT INTO `item_mods` VALUES (25833,31,37);    -- MEVA: 37
+INSERT INTO `item_mods` VALUES (25833,68,19);    -- EVA: 19
+INSERT INTO `item_mods` VALUES (25833,160,-300); -- DMG: -3%
+INSERT INTO `item_mods` VALUES (25833,384,400);  -- HASTE_GEAR: 4%
+INSERT INTO `item_mods` VALUES (25833,432,17);   -- ENSPELL_DMG_BONUS: 17
+
+-- ============================================================
+-- 25834 = Tali'ah Gages +2 (hands)
+-- DEF:88 HP+27 MP+20 STR+16 DEX+50 VIT+44 AGI+11 INT+14 MND+26 CHR+19
+-- ACC+43 MACC+43 MDEF+2 MEVA+37 EVA+19 CRITHITRATE+8% Haste+5%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25834,1,88);    -- DEF: 88
+INSERT INTO `item_mods` VALUES (25834,2,27);    -- HP: 27
+INSERT INTO `item_mods` VALUES (25834,5,20);    -- MP: 20
+INSERT INTO `item_mods` VALUES (25834,8,16);    -- STR: 16
+INSERT INTO `item_mods` VALUES (25834,9,50);    -- DEX: 50
+INSERT INTO `item_mods` VALUES (25834,10,44);   -- VIT: 44
+INSERT INTO `item_mods` VALUES (25834,11,11);   -- AGI: 11
+INSERT INTO `item_mods` VALUES (25834,12,14);   -- INT: 14
+INSERT INTO `item_mods` VALUES (25834,13,26);   -- MND: 26
+INSERT INTO `item_mods` VALUES (25834,14,19);   -- CHR: 19
+INSERT INTO `item_mods` VALUES (25834,25,43);   -- ACC: 43
+INSERT INTO `item_mods` VALUES (25834,29,2);    -- MDEF: 2
+INSERT INTO `item_mods` VALUES (25834,30,43);   -- MACC: 43
+INSERT INTO `item_mods` VALUES (25834,31,37);   -- MEVA: 37
+INSERT INTO `item_mods` VALUES (25834,68,19);   -- EVA: 19
+INSERT INTO `item_mods` VALUES (25834,165,8);   -- CRITHITRATE: 8%
+INSERT INTO `item_mods` VALUES (25834,384,500); -- HASTE_GEAR: 5%
+
+-- ============================================================
+-- 25835 = Flamma Manopolas +2 (hands)
+-- DEF:111 HP+60 MP+15 STR+23 DEX+46 VIT+35 AGI+8 INT+7 MND+24 CHR+17
+-- ACC+43 MACC+43 MDEF+2 MEVA+48 EVA+36 STORETP+6 CRITHITRATE+8% Haste+4%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25835,1,111);   -- DEF: 111
+INSERT INTO `item_mods` VALUES (25835,2,60);    -- HP: 60
+INSERT INTO `item_mods` VALUES (25835,5,15);    -- MP: 15
+INSERT INTO `item_mods` VALUES (25835,8,23);    -- STR: 23
+INSERT INTO `item_mods` VALUES (25835,9,46);    -- DEX: 46
+INSERT INTO `item_mods` VALUES (25835,10,35);   -- VIT: 35
+INSERT INTO `item_mods` VALUES (25835,11,8);    -- AGI: 8
+INSERT INTO `item_mods` VALUES (25835,12,7);    -- INT: 7
+INSERT INTO `item_mods` VALUES (25835,13,24);   -- MND: 24
+INSERT INTO `item_mods` VALUES (25835,14,17);   -- CHR: 17
+INSERT INTO `item_mods` VALUES (25835,25,43);   -- ACC: 43
+INSERT INTO `item_mods` VALUES (25835,29,2);    -- MDEF: 2
+INSERT INTO `item_mods` VALUES (25835,30,43);   -- MACC: 43
+INSERT INTO `item_mods` VALUES (25835,31,48);   -- MEVA: 48
+INSERT INTO `item_mods` VALUES (25835,68,36);   -- EVA: 36
+INSERT INTO `item_mods` VALUES (25835,73,6);    -- STORETP: 6
+INSERT INTO `item_mods` VALUES (25835,165,8);   -- CRITHITRATE: 8%
+INSERT INTO `item_mods` VALUES (25835,384,400); -- HASTE_GEAR: 4%
+
+-- ============================================================
+-- 25836 = Mummu Wrists +2 (hands)
+-- DEF:106 HP+45 MP+15 STR+16 DEX+53 VIT+30 AGI+22 INT+14 MND+26 CHR+21
+-- ACC+43 RACC+43 MACC+43 MDEF+2 MEVA+43 EVA+49 DOUBLE_ATTACK+6% CRITHITRATE+6% Haste+5%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25836,1,106);   -- DEF: 106
+INSERT INTO `item_mods` VALUES (25836,2,45);    -- HP: 45
+INSERT INTO `item_mods` VALUES (25836,5,15);    -- MP: 15
+INSERT INTO `item_mods` VALUES (25836,8,16);    -- STR: 16
+INSERT INTO `item_mods` VALUES (25836,9,53);    -- DEX: 53
+INSERT INTO `item_mods` VALUES (25836,10,30);   -- VIT: 30
+INSERT INTO `item_mods` VALUES (25836,11,22);   -- AGI: 22
+INSERT INTO `item_mods` VALUES (25836,12,14);   -- INT: 14
+INSERT INTO `item_mods` VALUES (25836,13,26);   -- MND: 26
+INSERT INTO `item_mods` VALUES (25836,14,21);   -- CHR: 21
+INSERT INTO `item_mods` VALUES (25836,25,43);   -- ACC: 43
+INSERT INTO `item_mods` VALUES (25836,26,43);   -- RACC: 43
+INSERT INTO `item_mods` VALUES (25836,29,2);    -- MDEF: 2
+INSERT INTO `item_mods` VALUES (25836,30,43);   -- MACC: 43
+INSERT INTO `item_mods` VALUES (25836,31,43);   -- MEVA: 43
+INSERT INTO `item_mods` VALUES (25836,68,49);   -- EVA: 49
+INSERT INTO `item_mods` VALUES (25836,165,6);   -- CRITHITRATE: 6%
+INSERT INTO `item_mods` VALUES (25836,288,6);   -- DOUBLE_ATTACK: 6%
+INSERT INTO `item_mods` VALUES (25836,384,500); -- HASTE_GEAR: 5%
+
+-- ============================================================
+-- 25837 = Mallquis Cuffs +2 (hands)
+-- DEF:88 HP+27 MP+26 STR+3 DEX+23 VIT+34 AGI+2 INT+40 MND+37 CHR+21
+-- MACC+43 MAGIC_DAMAGE+49 MATT+15 MDEF+3 MEVA+48 EVA+19
+-- ELEMENTAL_CELERITY-6% ENMITY-9 Haste+4%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25837,1,88);     -- DEF: 88
+INSERT INTO `item_mods` VALUES (25837,2,27);     -- HP: 27
+INSERT INTO `item_mods` VALUES (25837,5,26);     -- MP: 26
+INSERT INTO `item_mods` VALUES (25837,8,3);      -- STR: 3
+INSERT INTO `item_mods` VALUES (25837,9,23);     -- DEX: 23
+INSERT INTO `item_mods` VALUES (25837,10,34);    -- VIT: 34
+INSERT INTO `item_mods` VALUES (25837,11,2);     -- AGI: 2
+INSERT INTO `item_mods` VALUES (25837,12,40);    -- INT: 40
+INSERT INTO `item_mods` VALUES (25837,13,37);    -- MND: 37
+INSERT INTO `item_mods` VALUES (25837,14,21);    -- CHR: 21
+INSERT INTO `item_mods` VALUES (25837,27,-9);    -- ENMITY: -9
+INSERT INTO `item_mods` VALUES (25837,28,15);    -- MATT: 15
+INSERT INTO `item_mods` VALUES (25837,29,3);     -- MDEF: 3
+INSERT INTO `item_mods` VALUES (25837,30,43);    -- MACC: 43
+INSERT INTO `item_mods` VALUES (25837,31,48);    -- MEVA: 48
+INSERT INTO `item_mods` VALUES (25837,68,19);    -- EVA: 19
+INSERT INTO `item_mods` VALUES (25837,311,49);   -- MAGIC_DAMAGE: 49
+INSERT INTO `item_mods` VALUES (25837,384,400);  -- HASTE_GEAR: 4%
+INSERT INTO `item_mods` VALUES (25837,901,-6);   -- ELEMENTAL_CELERITY: -6%
+
+-- ============================================================
+-- 25862 = Hizamaru Hizayoroi (base legs)
+-- DEF:113 HP+60 STR+42 VIT+24 AGI+16 INT+24 MND+11 CHR+11
+-- ACC+27 ATT+27 EVA+63 MEVA+75 MDEF+5 Haste+9% WS_damage+3%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25862,1,113);   -- DEF: 113
+INSERT INTO `item_mods` VALUES (25862,2,60);    -- HP: 60
+INSERT INTO `item_mods` VALUES (25862,8,42);    -- STR: 42
+INSERT INTO `item_mods` VALUES (25862,10,24);   -- VIT: 24
+INSERT INTO `item_mods` VALUES (25862,11,16);   -- AGI: 16
+INSERT INTO `item_mods` VALUES (25862,12,24);   -- INT: 24
+INSERT INTO `item_mods` VALUES (25862,13,11);   -- MND: 11
+INSERT INTO `item_mods` VALUES (25862,14,11);   -- CHR: 11
+INSERT INTO `item_mods` VALUES (25862,23,27);   -- ATT: 27
+INSERT INTO `item_mods` VALUES (25862,25,27);   -- ACC: 27
+INSERT INTO `item_mods` VALUES (25862,29,5);    -- MDEF: 5
+INSERT INTO `item_mods` VALUES (25862,31,75);   -- MEVA: 75
+INSERT INTO `item_mods` VALUES (25862,68,63);   -- EVA: 63
+INSERT INTO `item_mods` VALUES (25862,384,900); -- HASTE_GEAR: 9%
+INSERT INTO `item_mods` VALUES (25862,841,3);   -- ALL_WSDMG_FIRST_HIT: 3%
+
+-- ============================================================
+-- 25863 = Hizamaru Hizayoroi +1 (legs)
+-- DEF:118 HP+60 STR+47 VIT+29 AGI+21 INT+24 MND+11 CHR+16
+-- ACC+39 ATT+27 EVA+75 MEVA+75 MDEF+5 Haste+9% WS_damage+5%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25863,1,118);   -- DEF: 118
+INSERT INTO `item_mods` VALUES (25863,2,60);    -- HP: 60
+INSERT INTO `item_mods` VALUES (25863,8,47);    -- STR: 47
+INSERT INTO `item_mods` VALUES (25863,10,29);   -- VIT: 29
+INSERT INTO `item_mods` VALUES (25863,11,21);   -- AGI: 21
+INSERT INTO `item_mods` VALUES (25863,12,24);   -- INT: 24
+INSERT INTO `item_mods` VALUES (25863,13,11);   -- MND: 11
+INSERT INTO `item_mods` VALUES (25863,14,16);   -- CHR: 16
+INSERT INTO `item_mods` VALUES (25863,23,27);   -- ATT: 27
+INSERT INTO `item_mods` VALUES (25863,25,39);   -- ACC: 39
+INSERT INTO `item_mods` VALUES (25863,29,5);    -- MDEF: 5
+INSERT INTO `item_mods` VALUES (25863,31,75);   -- MEVA: 75
+INSERT INTO `item_mods` VALUES (25863,68,75);   -- EVA: 75
+INSERT INTO `item_mods` VALUES (25863,384,900); -- HASTE_GEAR: 9%
+INSERT INTO `item_mods` VALUES (25863,841,5);   -- ALL_WSDMG_FIRST_HIT: 5%
+
+-- ============================================================
+-- 25881 = Hizamaru Hizayoroi +2 (legs)
+-- DEF:123 HP+60 STR+50 VIT+32 AGI+24 INT+24 MND+11 CHR+19
+-- ACC+45 ATT+27 EVA+81 MEVA+75 MDEF+5 Haste+9% WS_damage+7%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25881,1,123);   -- DEF: 123
+INSERT INTO `item_mods` VALUES (25881,2,60);    -- HP: 60
+INSERT INTO `item_mods` VALUES (25881,8,50);    -- STR: 50
+INSERT INTO `item_mods` VALUES (25881,10,32);   -- VIT: 32
+INSERT INTO `item_mods` VALUES (25881,11,24);   -- AGI: 24
+INSERT INTO `item_mods` VALUES (25881,12,24);   -- INT: 24
+INSERT INTO `item_mods` VALUES (25881,13,11);   -- MND: 11
+INSERT INTO `item_mods` VALUES (25881,14,19);   -- CHR: 19
+INSERT INTO `item_mods` VALUES (25881,23,27);   -- ATT: 27
+INSERT INTO `item_mods` VALUES (25881,25,45);   -- ACC: 45
+INSERT INTO `item_mods` VALUES (25881,29,5);    -- MDEF: 5
+INSERT INTO `item_mods` VALUES (25881,31,75);   -- MEVA: 75
+INSERT INTO `item_mods` VALUES (25881,68,81);   -- EVA: 81
+INSERT INTO `item_mods` VALUES (25881,384,900); -- HASTE_GEAR: 9%
+INSERT INTO `item_mods` VALUES (25881,841,7);   -- ALL_WSDMG_FIRST_HIT: 7%
+
+-- ============================================================
+-- 25882 = Inyanga Shalwar +2 (legs)
+-- DEF:110 HP+55 MP+60 STR+19 VIT+14 AGI+20 INT+51 MND+38 CHR+32
+-- MACC+45 EVA+24 MEVA+147 MDEF+9 Song_duration+17 DMGMAGIC-6% Haste+4%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25882,1,110);    -- DEF: 110
+INSERT INTO `item_mods` VALUES (25882,2,55);     -- HP: 55
+INSERT INTO `item_mods` VALUES (25882,5,60);     -- MP: 60
+INSERT INTO `item_mods` VALUES (25882,8,19);     -- STR: 19
+INSERT INTO `item_mods` VALUES (25882,10,14);    -- VIT: 14
+INSERT INTO `item_mods` VALUES (25882,11,20);    -- AGI: 20
+INSERT INTO `item_mods` VALUES (25882,12,51);    -- INT: 51
+INSERT INTO `item_mods` VALUES (25882,13,38);    -- MND: 38
+INSERT INTO `item_mods` VALUES (25882,14,32);    -- CHR: 32
+INSERT INTO `item_mods` VALUES (25882,29,9);     -- MDEF: 9
+INSERT INTO `item_mods` VALUES (25882,30,45);    -- MACC: 45
+INSERT INTO `item_mods` VALUES (25882,31,147);   -- MEVA: 147
+INSERT INTO `item_mods` VALUES (25882,68,24);    -- EVA: 24
+INSERT INTO `item_mods` VALUES (25882,163,-600); -- DMGMAGIC: -6%
+INSERT INTO `item_mods` VALUES (25882,384,400);  -- HASTE_GEAR: 4%
+INSERT INTO `item_mods` VALUES (25882,454,17);   -- SONG_DURATION_BONUS: 17
+
+-- ============================================================
+-- 25883 = Jhakri Slops +2 (legs)
+-- DEF:101 STR+47 VIT+3 AGI+14 INT+52 MND+26 CHR+20
+-- ACC+45 ATT+45 MACC+45 MATT+42 EVA+13 MEVA+69 MDEF+4 STORETP+9 Haste+2%
+-- No HP, no MP, no DEX
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25883,1,101);   -- DEF: 101
+INSERT INTO `item_mods` VALUES (25883,8,47);    -- STR: 47
+INSERT INTO `item_mods` VALUES (25883,10,3);    -- VIT: 3
+INSERT INTO `item_mods` VALUES (25883,11,14);   -- AGI: 14
+INSERT INTO `item_mods` VALUES (25883,12,52);   -- INT: 52
+INSERT INTO `item_mods` VALUES (25883,13,26);   -- MND: 26
+INSERT INTO `item_mods` VALUES (25883,14,20);   -- CHR: 20
+INSERT INTO `item_mods` VALUES (25883,23,45);   -- ATT: 45
+INSERT INTO `item_mods` VALUES (25883,25,45);   -- ACC: 45
+INSERT INTO `item_mods` VALUES (25883,28,42);   -- MATT: 42
+INSERT INTO `item_mods` VALUES (25883,29,4);    -- MDEF: 4
+INSERT INTO `item_mods` VALUES (25883,30,45);   -- MACC: 45
+INSERT INTO `item_mods` VALUES (25883,31,69);   -- MEVA: 69
+INSERT INTO `item_mods` VALUES (25883,68,13);   -- EVA: 13
+INSERT INTO `item_mods` VALUES (25883,73,9);    -- STORETP: 9
+INSERT INTO `item_mods` VALUES (25883,384,200); -- HASTE_GEAR: 2%
+
+-- ============================================================
+-- 25884 = Ayanmo Cosciales +2 (legs)
+-- DEF:135 HP+45 MP+41 STR+33 DEX+11 VIT+16 AGI+34 INT+29 MND+26 CHR+10
+-- ACC+45 MACC+45 MDEF+5 MEVA+69 EVA+24 FASTCAST+6 DMG-5% Haste+9%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25884,1,135);    -- DEF: 135
+INSERT INTO `item_mods` VALUES (25884,2,45);     -- HP: 45
+INSERT INTO `item_mods` VALUES (25884,5,41);     -- MP: 41
+INSERT INTO `item_mods` VALUES (25884,8,33);     -- STR: 33
+INSERT INTO `item_mods` VALUES (25884,9,11);     -- DEX: 11
+INSERT INTO `item_mods` VALUES (25884,10,16);    -- VIT: 16
+INSERT INTO `item_mods` VALUES (25884,11,34);    -- AGI: 34
+INSERT INTO `item_mods` VALUES (25884,12,29);    -- INT: 29
+INSERT INTO `item_mods` VALUES (25884,13,26);    -- MND: 26
+INSERT INTO `item_mods` VALUES (25884,14,10);    -- CHR: 10
+INSERT INTO `item_mods` VALUES (25884,25,45);    -- ACC: 45
+INSERT INTO `item_mods` VALUES (25884,29,5);     -- MDEF: 5
+INSERT INTO `item_mods` VALUES (25884,30,45);    -- MACC: 45
+INSERT INTO `item_mods` VALUES (25884,31,69);    -- MEVA: 69
+INSERT INTO `item_mods` VALUES (25884,68,24);    -- EVA: 24
+INSERT INTO `item_mods` VALUES (25884,160,-500); -- DMG: -5%
+INSERT INTO `item_mods` VALUES (25884,170,6);    -- FASTCAST: 6
+INSERT INTO `item_mods` VALUES (25884,384,900);  -- HASTE_GEAR: 9%
+
+-- ============================================================
+-- 25885 = Tali'ah Seraweels +2 (legs)
+-- DEF:110 HP+57 MP+53 STR+33 DEX+11 VIT+30 AGI+34 INT+29 MND+15 CHR+10
+-- ACC+45 MACC+45 MDEF+5 MEVA+69 EVA+24 DMG-5% Haste+6%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25885,1,110);    -- DEF: 110
+INSERT INTO `item_mods` VALUES (25885,2,57);     -- HP: 57
+INSERT INTO `item_mods` VALUES (25885,5,53);     -- MP: 53
+INSERT INTO `item_mods` VALUES (25885,8,33);     -- STR: 33
+INSERT INTO `item_mods` VALUES (25885,9,11);     -- DEX: 11
+INSERT INTO `item_mods` VALUES (25885,10,30);    -- VIT: 30
+INSERT INTO `item_mods` VALUES (25885,11,34);    -- AGI: 34
+INSERT INTO `item_mods` VALUES (25885,12,29);    -- INT: 29
+INSERT INTO `item_mods` VALUES (25885,13,15);    -- MND: 15
+INSERT INTO `item_mods` VALUES (25885,14,10);    -- CHR: 10
+INSERT INTO `item_mods` VALUES (25885,25,45);    -- ACC: 45
+INSERT INTO `item_mods` VALUES (25885,29,5);     -- MDEF: 5
+INSERT INTO `item_mods` VALUES (25885,30,45);    -- MACC: 45
+INSERT INTO `item_mods` VALUES (25885,31,69);    -- MEVA: 69
+INSERT INTO `item_mods` VALUES (25885,68,24);    -- EVA: 24
+INSERT INTO `item_mods` VALUES (25885,160,-500); -- DMG: -5%
+INSERT INTO `item_mods` VALUES (25885,384,600);  -- HASTE_GEAR: 6%
+
+-- ============================================================
+-- 25886 = Flamma Dirs +2 (legs)
+-- DEF:135 HP+100 MP+25 STR+53 DEX+11 VIT+29 AGI+16 INT+24 MND+14 CHR+11
+-- ACC+45 MACC+45 MDEF+5 MEVA+86 EVA+41 STORETP+8 CURE_POTENCY_RCVD+9% Haste+4%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25886,1,135);   -- DEF: 135
+INSERT INTO `item_mods` VALUES (25886,2,100);   -- HP: 100
+INSERT INTO `item_mods` VALUES (25886,5,25);    -- MP: 25
+INSERT INTO `item_mods` VALUES (25886,8,53);    -- STR: 53
+INSERT INTO `item_mods` VALUES (25886,9,11);    -- DEX: 11
+INSERT INTO `item_mods` VALUES (25886,10,29);   -- VIT: 29
+INSERT INTO `item_mods` VALUES (25886,11,16);   -- AGI: 16
+INSERT INTO `item_mods` VALUES (25886,12,24);   -- INT: 24
+INSERT INTO `item_mods` VALUES (25886,13,14);   -- MND: 14
+INSERT INTO `item_mods` VALUES (25886,14,11);   -- CHR: 11
+INSERT INTO `item_mods` VALUES (25886,25,45);   -- ACC: 45
+INSERT INTO `item_mods` VALUES (25886,29,5);    -- MDEF: 5
+INSERT INTO `item_mods` VALUES (25886,30,45);   -- MACC: 45
+INSERT INTO `item_mods` VALUES (25886,31,86);   -- MEVA: 86
+INSERT INTO `item_mods` VALUES (25886,68,41);   -- EVA: 41
+INSERT INTO `item_mods` VALUES (25886,73,8);    -- STORETP: 8
+INSERT INTO `item_mods` VALUES (25886,375,9);   -- CURE_POTENCY_RCVD: 9%
+INSERT INTO `item_mods` VALUES (25886,384,400); -- HASTE_GEAR: 4%
+
+-- ============================================================
+-- 25887 = Mummu Kecks +2 (legs)
+-- DEF:123 HP+52 MP+25 STR+33 DEX+11 VIT+16 AGI+45 INT+29 MND+15 CHR+12
+-- ACC+45 RACC+45 MACC+45 MDEF+5 MEVA+107 EVA+55 DMG-5% CRITHITRATE+7% Haste+6%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25887,1,123);    -- DEF: 123
+INSERT INTO `item_mods` VALUES (25887,2,52);     -- HP: 52
+INSERT INTO `item_mods` VALUES (25887,5,25);     -- MP: 25
+INSERT INTO `item_mods` VALUES (25887,8,33);     -- STR: 33
+INSERT INTO `item_mods` VALUES (25887,9,11);     -- DEX: 11
+INSERT INTO `item_mods` VALUES (25887,10,16);    -- VIT: 16
+INSERT INTO `item_mods` VALUES (25887,11,45);    -- AGI: 45
+INSERT INTO `item_mods` VALUES (25887,12,29);    -- INT: 29
+INSERT INTO `item_mods` VALUES (25887,13,15);    -- MND: 15
+INSERT INTO `item_mods` VALUES (25887,14,12);    -- CHR: 12
+INSERT INTO `item_mods` VALUES (25887,25,45);    -- ACC: 45
+INSERT INTO `item_mods` VALUES (25887,26,45);    -- RACC: 45
+INSERT INTO `item_mods` VALUES (25887,29,5);     -- MDEF: 5
+INSERT INTO `item_mods` VALUES (25887,30,45);    -- MACC: 45
+INSERT INTO `item_mods` VALUES (25887,31,107);   -- MEVA: 107
+INSERT INTO `item_mods` VALUES (25887,68,55);    -- EVA: 55
+INSERT INTO `item_mods` VALUES (25887,160,-500); -- DMG: -5%
+INSERT INTO `item_mods` VALUES (25887,165,7);    -- CRITHITRATE: 7%
+INSERT INTO `item_mods` VALUES (25887,384,600);  -- HASTE_GEAR: 6%
+
+-- ============================================================
+-- 25888 = Mallquis Trews +2 (legs)
+-- DEF:110 HP+45 MP+38 STR+19 VIT+19 AGI+14 INT+57 MND+28 CHR+21
+-- MACC+45 MAGIC_DAMAGE+55 MATT+15 MDEF+6 MEVA+86 EVA+24
+-- ELEMENTAL_CELERITY-7% MAGIC_BURST_BONUS_CAPPED+6 Haste+4%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25888,1,110);    -- DEF: 110
+INSERT INTO `item_mods` VALUES (25888,2,45);     -- HP: 45
+INSERT INTO `item_mods` VALUES (25888,5,38);     -- MP: 38
+INSERT INTO `item_mods` VALUES (25888,8,19);     -- STR: 19
+INSERT INTO `item_mods` VALUES (25888,10,19);    -- VIT: 19
+INSERT INTO `item_mods` VALUES (25888,11,14);    -- AGI: 14
+INSERT INTO `item_mods` VALUES (25888,12,57);    -- INT: 57
+INSERT INTO `item_mods` VALUES (25888,13,28);    -- MND: 28
+INSERT INTO `item_mods` VALUES (25888,14,21);    -- CHR: 21
+INSERT INTO `item_mods` VALUES (25888,28,15);    -- MATT: 15
+INSERT INTO `item_mods` VALUES (25888,29,6);     -- MDEF: 6
+INSERT INTO `item_mods` VALUES (25888,30,45);    -- MACC: 45
+INSERT INTO `item_mods` VALUES (25888,31,86);    -- MEVA: 86
+INSERT INTO `item_mods` VALUES (25888,68,24);    -- EVA: 24
+INSERT INTO `item_mods` VALUES (25888,311,55);   -- MAGIC_DAMAGE: 55
+INSERT INTO `item_mods` VALUES (25888,384,400);  -- HASTE_GEAR: 4%
+INSERT INTO `item_mods` VALUES (25888,487,6);    -- MAGIC_BURST_BONUS_CAPPED: 6
+INSERT INTO `item_mods` VALUES (25888,901,-7);   -- ELEMENTAL_CELERITY: -7%
+
+-- ============================================================
+-- 25929 = Hizamaru Sune-Ate (base feet)
+-- DEF:75 HP+30 STR+20 DEX+23 VIT+15 AGI+26 MND+3 CHR+20
+-- ACC+24 ATT+24 EVA+96 MEVA+75 MDEF+5 Haste+3% Dual Wield+5
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25929,1,75);    -- DEF: 75
+INSERT INTO `item_mods` VALUES (25929,2,30);    -- HP: 30
+INSERT INTO `item_mods` VALUES (25929,8,20);    -- STR: 20
+INSERT INTO `item_mods` VALUES (25929,9,23);    -- DEX: 23
+INSERT INTO `item_mods` VALUES (25929,10,15);   -- VIT: 15
+INSERT INTO `item_mods` VALUES (25929,11,26);   -- AGI: 26
+INSERT INTO `item_mods` VALUES (25929,13,3);    -- MND: 3
+INSERT INTO `item_mods` VALUES (25929,14,20);   -- CHR: 20
+INSERT INTO `item_mods` VALUES (25929,23,24);   -- ATT: 24
+INSERT INTO `item_mods` VALUES (25929,25,24);   -- ACC: 24
+INSERT INTO `item_mods` VALUES (25929,29,5);    -- MDEF: 5
+INSERT INTO `item_mods` VALUES (25929,31,75);   -- MEVA: 75
+INSERT INTO `item_mods` VALUES (25929,68,96);   -- EVA: 96
+INSERT INTO `item_mods` VALUES (25929,259,5);   -- DUAL_WIELD: 5
+INSERT INTO `item_mods` VALUES (25929,384,300); -- HASTE_GEAR: 3%
+
+-- ============================================================
+-- 25930 = Hizamaru Sune-Ate +1 (feet)
+-- DEF:80 HP+30 STR+25 DEX+28 VIT+20 AGI+31 MND+3 CHR+25
+-- ACC+36 ATT+24 EVA+108 MEVA+75 MDEF+5 Haste+3% Dual Wield+7
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25930,1,80);    -- DEF: 80
+INSERT INTO `item_mods` VALUES (25930,2,30);    -- HP: 30
+INSERT INTO `item_mods` VALUES (25930,8,25);    -- STR: 25
+INSERT INTO `item_mods` VALUES (25930,9,28);    -- DEX: 28
+INSERT INTO `item_mods` VALUES (25930,10,20);   -- VIT: 20
+INSERT INTO `item_mods` VALUES (25930,11,31);   -- AGI: 31
+INSERT INTO `item_mods` VALUES (25930,13,3);    -- MND: 3
+INSERT INTO `item_mods` VALUES (25930,14,25);   -- CHR: 25
+INSERT INTO `item_mods` VALUES (25930,23,24);   -- ATT: 24
+INSERT INTO `item_mods` VALUES (25930,25,36);   -- ACC: 36
+INSERT INTO `item_mods` VALUES (25930,29,5);    -- MDEF: 5
+INSERT INTO `item_mods` VALUES (25930,31,75);   -- MEVA: 75
+INSERT INTO `item_mods` VALUES (25930,68,108);  -- EVA: 108
+INSERT INTO `item_mods` VALUES (25930,259,7);   -- DUAL_WIELD: 7
+INSERT INTO `item_mods` VALUES (25930,384,300); -- HASTE_GEAR: 3%
+
+-- ============================================================
+-- 25947 = Meghanada Jambeaux +2 (feet)
+-- DEF:78 HP+20 STR+23 DEX+34 VIT+8 AGI+54 MND+19 CHR+34
+-- ACC+46 ATT+42 RACC+46 RATT+42 MDEF+5 MEVA+69 EVA+74
+-- Physical_dmg_taken-3% Snapshot+10% Haste+2%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25947,1,78);     -- DEF: 78
+INSERT INTO `item_mods` VALUES (25947,2,20);     -- HP: 20
+INSERT INTO `item_mods` VALUES (25947,8,23);     -- STR: 23
+INSERT INTO `item_mods` VALUES (25947,9,34);     -- DEX: 34
+INSERT INTO `item_mods` VALUES (25947,10,8);     -- VIT: 8
+INSERT INTO `item_mods` VALUES (25947,11,54);    -- AGI: 54
+INSERT INTO `item_mods` VALUES (25947,13,19);    -- MND: 19
+INSERT INTO `item_mods` VALUES (25947,14,34);    -- CHR: 34
+INSERT INTO `item_mods` VALUES (25947,23,42);    -- ATT: 42
+INSERT INTO `item_mods` VALUES (25947,24,42);    -- RATT: 42
+INSERT INTO `item_mods` VALUES (25947,25,46);    -- ACC: 46
+INSERT INTO `item_mods` VALUES (25947,26,46);    -- RACC: 46
+INSERT INTO `item_mods` VALUES (25947,29,5);     -- MDEF: 5
+INSERT INTO `item_mods` VALUES (25947,31,69);    -- MEVA: 69
+INSERT INTO `item_mods` VALUES (25947,68,74);    -- EVA: 74
+INSERT INTO `item_mods` VALUES (25947,161,-300); -- DMGPHYS: -3%
+INSERT INTO `item_mods` VALUES (25947,164,-300); -- DMGRANGE: -3%
+INSERT INTO `item_mods` VALUES (25947,365,10);   -- SNAPSHOT: 10%
+INSERT INTO `item_mods` VALUES (25947,384,200);  -- HASTE_GEAR: 2%
+
+-- ============================================================
+-- 25949 = Inyanga Crackows +2 (feet)
+-- DEF:70 HP+25 MP+30 STR+6 DEX+6 VIT+14 AGI+33 INT+32 MND+33 CHR+46
+-- MACC+42 EVA+60 MEVA+147 MDEF+8 DMGMAGIC-3% Haste+2%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25949,1,70);     -- DEF: 70
+INSERT INTO `item_mods` VALUES (25949,2,25);     -- HP: 25
+INSERT INTO `item_mods` VALUES (25949,5,30);     -- MP: 30
+INSERT INTO `item_mods` VALUES (25949,8,6);      -- STR: 6
+INSERT INTO `item_mods` VALUES (25949,9,6);      -- DEX: 6
+INSERT INTO `item_mods` VALUES (25949,10,14);    -- VIT: 14
+INSERT INTO `item_mods` VALUES (25949,11,33);    -- AGI: 33
+INSERT INTO `item_mods` VALUES (25949,12,32);    -- INT: 32
+INSERT INTO `item_mods` VALUES (25949,13,33);    -- MND: 33
+INSERT INTO `item_mods` VALUES (25949,14,46);    -- CHR: 46
+INSERT INTO `item_mods` VALUES (25949,29,8);     -- MDEF: 8
+INSERT INTO `item_mods` VALUES (25949,30,42);    -- MACC: 42
+INSERT INTO `item_mods` VALUES (25949,31,147);   -- MEVA: 147
+INSERT INTO `item_mods` VALUES (25949,68,60);    -- EVA: 60
+INSERT INTO `item_mods` VALUES (25949,163,-300); -- DMGMAGIC: -3%
+INSERT INTO `item_mods` VALUES (25949,384,200);  -- HASTE_GEAR: 2%
+
+-- ============================================================
+-- 25950 = Jhakri Pigaches +2 (feet)
+-- DEF:62 STR+25 DEX+28 VIT+3 AGI+26 INT+33 MND+21 CHR+34
+-- ACC+42 ATT+42 MACC+42 MATT+39 EVA+41 MEVA+69 MDEF+4 Magic_Burst_damage+7
+-- No HP, no MP, no Haste
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25950,1,62);    -- DEF: 62
+INSERT INTO `item_mods` VALUES (25950,8,25);    -- STR: 25
+INSERT INTO `item_mods` VALUES (25950,9,28);    -- DEX: 28
+INSERT INTO `item_mods` VALUES (25950,10,3);    -- VIT: 3
+INSERT INTO `item_mods` VALUES (25950,11,26);   -- AGI: 26
+INSERT INTO `item_mods` VALUES (25950,12,33);   -- INT: 33
+INSERT INTO `item_mods` VALUES (25950,13,21);   -- MND: 21
+INSERT INTO `item_mods` VALUES (25950,14,34);   -- CHR: 34
+INSERT INTO `item_mods` VALUES (25950,23,42);   -- ATT: 42
+INSERT INTO `item_mods` VALUES (25950,25,42);   -- ACC: 42
+INSERT INTO `item_mods` VALUES (25950,28,39);   -- MATT: 39
+INSERT INTO `item_mods` VALUES (25950,29,4);    -- MDEF: 4
+INSERT INTO `item_mods` VALUES (25950,30,42);   -- MACC: 42
+INSERT INTO `item_mods` VALUES (25950,31,69);   -- MEVA: 69
+INSERT INTO `item_mods` VALUES (25950,68,41);   -- EVA: 41
+INSERT INTO `item_mods` VALUES (25950,487,7);   -- MAGIC_BURST_BONUS_CAPPED: 7
+
+-- ============================================================
+-- 25952 = Tali'ah Crackows +2 (feet)
+-- DEF:70 HP+15 MP+20 STR+16 DEX+35 VIT+23 AGI+46 MND+11 CHR+26
+-- ACC+42 MACC+42 MDEF+5 MEVA+69 EVA+60 Haste+4%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25952,1,70);    -- DEF: 70
+INSERT INTO `item_mods` VALUES (25952,2,15);    -- HP: 15
+INSERT INTO `item_mods` VALUES (25952,5,20);    -- MP: 20
+INSERT INTO `item_mods` VALUES (25952,8,16);    -- STR: 16
+INSERT INTO `item_mods` VALUES (25952,9,35);    -- DEX: 35
+INSERT INTO `item_mods` VALUES (25952,10,23);   -- VIT: 23
+INSERT INTO `item_mods` VALUES (25952,11,46);   -- AGI: 46
+INSERT INTO `item_mods` VALUES (25952,13,11);   -- MND: 11
+INSERT INTO `item_mods` VALUES (25952,14,26);   -- CHR: 26
+INSERT INTO `item_mods` VALUES (25952,25,42);   -- ACC: 42
+INSERT INTO `item_mods` VALUES (25952,29,5);    -- MDEF: 5
+INSERT INTO `item_mods` VALUES (25952,30,42);   -- MACC: 42
+INSERT INTO `item_mods` VALUES (25952,31,69);   -- MEVA: 69
+INSERT INTO `item_mods` VALUES (25952,68,60);   -- EVA: 60
+INSERT INTO `item_mods` VALUES (25952,384,400); -- HASTE_GEAR: 4%
+
+-- ============================================================
+-- 25953 = Flamma Gambieras +2 (feet)
+-- DEF:93 HP+40 MP+10 STR+31 DEX+34 VIT+20 AGI+26 MND+6 CHR+20
+-- ACC+42 MACC+42 MDEF+5 MEVA+86 EVA+74 DOUBLE_ATTACK+6% STORETP+6 Haste+2%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25953,1,93);    -- DEF: 93
+INSERT INTO `item_mods` VALUES (25953,2,40);    -- HP: 40
+INSERT INTO `item_mods` VALUES (25953,5,10);    -- MP: 10
+INSERT INTO `item_mods` VALUES (25953,8,31);    -- STR: 31
+INSERT INTO `item_mods` VALUES (25953,9,34);    -- DEX: 34
+INSERT INTO `item_mods` VALUES (25953,10,20);   -- VIT: 20
+INSERT INTO `item_mods` VALUES (25953,11,26);   -- AGI: 26
+INSERT INTO `item_mods` VALUES (25953,13,6);    -- MND: 6
+INSERT INTO `item_mods` VALUES (25953,14,20);   -- CHR: 20
+INSERT INTO `item_mods` VALUES (25953,25,42);   -- ACC: 42
+INSERT INTO `item_mods` VALUES (25953,29,5);    -- MDEF: 5
+INSERT INTO `item_mods` VALUES (25953,30,42);   -- MACC: 42
+INSERT INTO `item_mods` VALUES (25953,31,86);   -- MEVA: 86
+INSERT INTO `item_mods` VALUES (25953,68,74);   -- EVA: 74
+INSERT INTO `item_mods` VALUES (25953,73,6);    -- STORETP: 6
+INSERT INTO `item_mods` VALUES (25953,288,6);   -- DOUBLE_ATTACK: 6%
+INSERT INTO `item_mods` VALUES (25953,384,200); -- HASTE_GEAR: 2%
+
+-- ============================================================
+-- 25954 = Mummu Gamashes +2 (feet)
+-- DEF:85 HP+30 MP+10 STR+16 DEX+37 VIT+10 AGI+57 MND+11 CHR+29
+-- ACC+42 RACC+42 MACC+42 MDEF+5 MEVA+107 EVA+88 SUBTLE_BLOW+9 CRITHITRATE+5% Haste+4%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25954,1,85);    -- DEF: 85
+INSERT INTO `item_mods` VALUES (25954,2,30);    -- HP: 30
+INSERT INTO `item_mods` VALUES (25954,5,10);    -- MP: 10
+INSERT INTO `item_mods` VALUES (25954,8,16);    -- STR: 16
+INSERT INTO `item_mods` VALUES (25954,9,37);    -- DEX: 37
+INSERT INTO `item_mods` VALUES (25954,10,10);   -- VIT: 10
+INSERT INTO `item_mods` VALUES (25954,11,57);   -- AGI: 57
+INSERT INTO `item_mods` VALUES (25954,13,11);   -- MND: 11
+INSERT INTO `item_mods` VALUES (25954,14,29);   -- CHR: 29
+INSERT INTO `item_mods` VALUES (25954,25,42);   -- ACC: 42
+INSERT INTO `item_mods` VALUES (25954,26,42);   -- RACC: 42
+INSERT INTO `item_mods` VALUES (25954,29,5);    -- MDEF: 5
+INSERT INTO `item_mods` VALUES (25954,30,42);   -- MACC: 42
+INSERT INTO `item_mods` VALUES (25954,31,107);  -- MEVA: 107
+INSERT INTO `item_mods` VALUES (25954,68,88);   -- EVA: 88
+INSERT INTO `item_mods` VALUES (25954,165,5);   -- CRITHITRATE: 5%
+INSERT INTO `item_mods` VALUES (25954,289,9);   -- SUBTLE_BLOW: 9
+INSERT INTO `item_mods` VALUES (25954,384,400); -- HASTE_GEAR: 4%
+
+-- ============================================================
+-- 25955 = Mallquis Clogs +2 (feet)
+-- DEF:70 HP+20 MP+20 STR+6 DEX+6 VIT+19 AGI+26 INT+37 MND+23 CHR+35
+-- MACC+42 MAGIC_DAMAGE+46 MATT+15 MDEF+6 MEVA+86 EVA+60
+-- ELEMENTAL_CELERITY-6% ABSORB_DMG_TO_MP+11 Haste+2%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (25955,1,70);     -- DEF: 70
+INSERT INTO `item_mods` VALUES (25955,2,20);     -- HP: 20
+INSERT INTO `item_mods` VALUES (25955,5,20);     -- MP: 20
+INSERT INTO `item_mods` VALUES (25955,8,6);      -- STR: 6
+INSERT INTO `item_mods` VALUES (25955,9,6);      -- DEX: 6
+INSERT INTO `item_mods` VALUES (25955,10,19);    -- VIT: 19
+INSERT INTO `item_mods` VALUES (25955,11,26);    -- AGI: 26
+INSERT INTO `item_mods` VALUES (25955,12,37);    -- INT: 37
+INSERT INTO `item_mods` VALUES (25955,13,23);    -- MND: 23
+INSERT INTO `item_mods` VALUES (25955,14,35);    -- CHR: 35
+INSERT INTO `item_mods` VALUES (25955,28,15);    -- MATT: 15
+INSERT INTO `item_mods` VALUES (25955,29,6);     -- MDEF: 6
+INSERT INTO `item_mods` VALUES (25955,30,42);    -- MACC: 42
+INSERT INTO `item_mods` VALUES (25955,31,86);    -- MEVA: 86
+INSERT INTO `item_mods` VALUES (25955,68,60);    -- EVA: 60
+INSERT INTO `item_mods` VALUES (25955,311,46);   -- MAGIC_DAMAGE: 46
+INSERT INTO `item_mods` VALUES (25955,384,200);  -- HASTE_GEAR: 2%
+INSERT INTO `item_mods` VALUES (25955,516,11);   -- ABSORB_DMG_TO_MP: 11%
+INSERT INTO `item_mods` VALUES (25955,901,-6);   -- ELEMENTAL_CELERITY: -6%
+
+-- ============================================================
+-- 26205 = Meghanada Ring
+-- DEF:7 ACC+6 ATT+6 RACC+6 RATT+6 Physical_dmg_taken-2%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (26205,1,7);      -- DEF: 7
+INSERT INTO `item_mods` VALUES (26205,23,6);     -- ATT: 6
+INSERT INTO `item_mods` VALUES (26205,24,6);     -- RATT: 6
+INSERT INTO `item_mods` VALUES (26205,25,6);     -- ACC: 6
+INSERT INTO `item_mods` VALUES (26205,26,6);     -- RACC: 6
+INSERT INTO `item_mods` VALUES (26205,161,-200); -- DMGPHYS: -2%
+INSERT INTO `item_mods` VALUES (26205,164,-200); -- DMGRANGE: -2%
+
+-- ============================================================
+-- 26206 = Hizamaru Ring
+-- DEF:8 ACC+6 EVA+12 STORETP+5
+-- ============================================================
+INSERT INTO `item_mods` VALUES (26206,1,8);     -- DEF: 8
+INSERT INTO `item_mods` VALUES (26206,25,6);    -- ACC: 6
+INSERT INTO `item_mods` VALUES (26206,68,12);   -- EVA: 12
+INSERT INTO `item_mods` VALUES (26206,73,5);    -- STORETP: 5
+
+-- ============================================================
+-- 26207 = Inyanga Ring
+-- DEF:6 MACC+6 MEVA+12 DMGMAGIC-2%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (26207,1,6);      -- DEF: 6
+INSERT INTO `item_mods` VALUES (26207,30,6);     -- MACC: 6
+INSERT INTO `item_mods` VALUES (26207,31,12);    -- MEVA: 12
+INSERT INTO `item_mods` VALUES (26207,163,-200); -- DMGMAGIC: -2%
+
+-- ============================================================
+-- 26208 = Jhakri Ring
+-- DEF:6 ACC+6 ATT+6 MACC+6 MATT+3 Magic_Burst_damage+2
+-- ============================================================
+INSERT INTO `item_mods` VALUES (26208,1,6);     -- DEF: 6
+INSERT INTO `item_mods` VALUES (26208,23,6);    -- ATT: 6
+INSERT INTO `item_mods` VALUES (26208,25,6);    -- ACC: 6
+INSERT INTO `item_mods` VALUES (26208,28,3);    -- MATT: 3
+INSERT INTO `item_mods` VALUES (26208,30,6);    -- MACC: 6
+INSERT INTO `item_mods` VALUES (26208,487,2);   -- MAGIC_BURST_BONUS_CAPPED: 2
+
+-- ============================================================
+-- 26209 = Ayanmo Ring
+-- DEF:7 ACC+6 MACC+6 DMG-3%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (26209,1,7);      -- DEF: 7
+INSERT INTO `item_mods` VALUES (26209,25,6);     -- ACC: 6
+INSERT INTO `item_mods` VALUES (26209,30,6);     -- MACC: 6
+INSERT INTO `item_mods` VALUES (26209,160,-300); -- DMG: -3%
+
+-- ============================================================
+-- 26210 = Tali'ah Ring
+-- DEF:7 ACC+6 MACC+6
+-- ============================================================
+INSERT INTO `item_mods` VALUES (26210,1,7);     -- DEF: 7
+INSERT INTO `item_mods` VALUES (26210,25,6);    -- ACC: 6
+INSERT INTO `item_mods` VALUES (26210,30,6);    -- MACC: 6
+
+-- ============================================================
+-- 26211 = Flamma Ring
+-- DEF:8 ACC+6 MACC+6 STORETP+5
+-- ============================================================
+INSERT INTO `item_mods` VALUES (26211,1,8);     -- DEF: 8
+INSERT INTO `item_mods` VALUES (26211,25,6);    -- ACC: 6
+INSERT INTO `item_mods` VALUES (26211,30,6);    -- MACC: 6
+INSERT INTO `item_mods` VALUES (26211,73,5);    -- STORETP: 5
+
+-- ============================================================
+-- 26212 = Mummu Ring
+-- DEF:7 ACC+6 RACC+6 MACC+6 CRITHITRATE+3%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (26212,1,7);     -- DEF: 7
+INSERT INTO `item_mods` VALUES (26212,25,6);    -- ACC: 6
+INSERT INTO `item_mods` VALUES (26212,26,6);    -- RACC: 6
+INSERT INTO `item_mods` VALUES (26212,30,6);    -- MACC: 6
+INSERT INTO `item_mods` VALUES (26212,165,3);   -- CRITHITRATE: 3%
+
+-- ============================================================
+-- 26213 = Mallquis Ring
+-- DEF:6 MACC+6 MAGIC_DAMAGE+12 ELEMENTAL_CELERITY-3%
+-- ============================================================
+INSERT INTO `item_mods` VALUES (26213,1,6);      -- DEF: 6
+INSERT INTO `item_mods` VALUES (26213,30,6);     -- MACC: 6
+INSERT INTO `item_mods` VALUES (26213,311,12);   -- MAGIC_DAMAGE: 12
+INSERT INTO `item_mods` VALUES (26213,901,-3);   -- ELEMENTAL_CELERITY: -3%
 
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
