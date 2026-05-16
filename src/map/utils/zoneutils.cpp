@@ -783,7 +783,7 @@ auto CreateZone(Scheduler& scheduler, MapConfig config, uint16 ZoneID) -> CZone*
  *                                                                       *
  ************************************************************************/
 
-auto LoadZones(Scheduler& scheduler, MapConfig config, const std::vector<uint16>& zoneIds) -> Task<void>
+auto LoadZones(Scheduler& scheduler, const MapConfig& config, const std::vector<uint16>& zoneIds) -> Task<void>
 {
     std::vector<uint16> zonesIdsToLoad;
 
@@ -858,7 +858,7 @@ auto LoadZones(Scheduler& scheduler, MapConfig config, const std::vector<uint16>
     }
 }
 
-auto LoadZoneList(Scheduler& scheduler, MapConfig config) -> Task<void>
+auto LoadZoneList(Scheduler& scheduler, const MapConfig& config) -> Task<void>
 {
     TracyZoneScoped;
 
@@ -874,7 +874,7 @@ auto LoadZoneList(Scheduler& scheduler, MapConfig config) -> Task<void>
 }
 
 // Initialize zone loading: immediate (load all now) or lazy (load on-demand)
-auto Initialize(Scheduler& scheduler, MapConfig config) -> Task<void>
+auto Initialize(Scheduler& scheduler, const MapConfig& config) -> Task<void>
 {
     if (!config.lazyZones)
     {
@@ -891,7 +891,7 @@ auto Initialize(Scheduler& scheduler, MapConfig config) -> Task<void>
     luautils::InitInteractionGlobal();
 }
 
-auto ProcessLoadQueue(Scheduler& scheduler, MapConfig config) -> Task<void>
+auto ProcessLoadQueue(Scheduler& scheduler, const MapConfig& config) -> Task<void>
 {
     TracyZoneScoped;
 
@@ -1014,7 +1014,7 @@ auto GetManagedZones() -> std::vector<std::pair<uint16, std::string>>
 // TODO:
 // This shouldn't have side effects, it should be const and the caller should be responsible
 // for requesting the zone is loaded if it isn't ready.
-auto IsZoneReady(Scheduler& scheduler, MapConfig config, uint16 zoneId) -> Task<bool>
+auto IsZoneReady(Scheduler& scheduler, const MapConfig& config, uint16 zoneId) -> Task<bool>
 {
     // Zone already loaded, or lazy loading disabled (all zones loaded at startup)
     if (GetZone(zoneId) || !lazyLoad.enabled)

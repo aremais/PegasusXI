@@ -1,5 +1,6 @@
 mariadb
 gitpython
+pymysql
 pylint
 pyyaml
 colorama
