@@ -21,6 +21,8 @@ entity.onTrade = function(player, npc, trade)
 end
 
 entity.onTrigger = function(player, npc)
+    player:printToPlayer('DEBUG: Oseem onTrigger fired.', xi.msg.channel.NS_SAY)
+
     local menu =
     {
         title = 'Oseem',

@@ -28,6 +28,8 @@ local function buyEschalixir(player, itemId, cost)
 end
 
 entity.onTrigger = function(player, npc)
+    player:printToPlayer('DEBUG: Nolan onTrigger fired.', xi.msg.channel.NS_SAY)
+
     local menu =
     {
         title = 'Nolan',
