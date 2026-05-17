@@ -223,6 +223,7 @@ void InitInteractionGlobal();
 auto GetZone(uint16 zoneId) -> CZone*;
 auto GetItemByID(uint32 itemId) -> const CItem*;
 auto GetNPCByID(uint32 npcid, const sol::object& instanceObj) -> CBaseEntity*;
+auto FindNPCsByName(const std::string& pattern) -> sol::table;
 auto GetMobByID(uint32 mobid, const sol::object& instanceObj) -> CBaseEntity*;
 auto GetEntityByID(uint32 mobid, const sol::object& instanceObj, const sol::object& arg3) -> CBaseEntity*;
 

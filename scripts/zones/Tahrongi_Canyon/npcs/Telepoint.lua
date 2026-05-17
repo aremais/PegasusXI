@@ -23,15 +23,9 @@ end
 
 entity.onTrigger = function(player, npc)
     if not player:hasKeyItem(xi.ki.MEA_GATE_CRYSTAL) then
-        player:startEvent(32)
+        npcUtil.giveKeyItem(player, xi.ki.MEA_GATE_CRYSTAL)
     else
         player:messageSpecial(ID.text.ALREADY_OBTAINED_TELE)
-    end
-end
-
-entity.onEventFinish = function(player, csid, option, npc)
-    if csid == 32 then
-        npcUtil.giveKeyItem(player, xi.ki.MEA_GATE_CRYSTAL)
     end
 end
 

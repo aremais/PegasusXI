@@ -309,6 +309,7 @@ void init(IPP mapIPP, bool isRunningInCI)
         return sol::lua_nil;
     });
     lua.set_function("GetNPCByID", &luautils::GetNPCByID);
+    lua.set_function("FindNPCsByName", &luautils::FindNPCsByName);
     lua.set_function("GetMobByID", &luautils::GetMobByID);
     lua.set_function("GetEntityByID", &luautils::GetEntityByID);
     lua.set_function("WeekUpdateConquest", &luautils::WeekUpdateConquest);
@@ -1373,6 +1374,59 @@ CBaseEntity* GetNPCByID(uint32 npcid, const sol::object& instanceObj)
     }
 
     return PNpc;
+}
+
+auto FindNPCsByName(const std::string& pattern) -> sol::table
+{
+    TracyZoneScoped;
+
+    sol::table results = lua.create_table();
+
+    if (pattern.empty())
+    {
+        return results;
+    }
+
+    std::string likePattern = pattern;
+    if (likePattern.find('%') == std::string::npos)
+    {
+        likePattern = "%" + likePattern + "%";
+    }
+
+    const auto query =
+        "SELECT npc_list.npcid, npc_list.name, npc_list.polutils_name, "
+        "npc_list.pos_x, npc_list.pos_y, npc_list.pos_z, npc_list.pos_rot, "
+        "zone_settings.name AS zone_name, ((npc_list.npcid >> 12) & 0xFFF) AS zoneid "
+        "FROM npc_list "
+        "INNER JOIN zone_settings ON ((npc_list.npcid >> 12) & 0xFFF) = zone_settings.zoneid "
+        "WHERE (UPPER(npc_list.name) LIKE UPPER(?) OR UPPER(npc_list.polutils_name) LIKE UPPER(?)) "
+        "AND npc_list.name != 'blank' "
+        "AND NOT (npc_list.pos_x = 0 AND npc_list.pos_y = 0 AND npc_list.pos_z = 0) "
+        "ORDER BY zoneid, npc_list.npcid "
+        "LIMIT 30";
+
+    const auto rset = db::preparedStmt(query, likePattern, likePattern);
+    if (!rset || rset->rowsCount() == 0)
+    {
+        return results;
+    }
+
+    int index = 1;
+    while (rset->next())
+    {
+        sol::table entry   = lua.create_table();
+        entry["npcid"]     = rset->get<uint32>("npcid");
+        entry["name"]      = rset->get<std::string>("name");
+        entry["zoneName"]  = rset->get<std::string>("zone_name");
+        entry["zoneId"]    = rset->get<uint16>("zoneid");
+        entry["x"]         = rset->get<float>("pos_x");
+        entry["y"]         = rset->get<float>("pos_y");
+        entry["z"]         = rset->get<float>("pos_z");
+        entry["rot"]       = rset->get<uint8>("pos_rot");
+        results[index++]   = entry;
+    }
+
+    return results;
 }
 
 void InitInteractionGlobal()
