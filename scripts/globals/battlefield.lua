@@ -357,15 +357,15 @@ xi.battlefield.id =
     PURPLE_THE_NEW_BLACK                       = 2721, -- Converted
 
     -- SKCNM: Macrocosmic Orb battles
-    JUNGLE_BOOGYMEN_II                         = 3000,
-    AMPHIBIAN_ASSAULT_II                       = 3001,
-    KINDRED_SPIRITS_II                         = 3002,
-    DEMOLITION_SQUAD_II                        = 3003,
-    BROTHERS_D_AURPHE_II                       = 3004,
-    LEGION_XI_COMITATENSIS_II                  = 3005,
-    DISMEMBERMENT_BRIGADE_II                   = 3006,
-    DIVINE_PUNISHERS_II                        = 3007,
-    GRIMSHELL_SHOCKTROOPERS_II                 = 3008,
+    JUNGLE_BOOGYMEN_II                         = 4000,
+    AMPHIBIAN_ASSAULT_II                       = 4001,
+    KINDRED_SPIRITS_II                         = 4002,
+    DEMOLITION_SQUAD_II                        = 4003,
+    BROTHERS_D_AURPHE_II                       = 4004,
+    LEGION_XI_COMITATENSIS_II                  = 4005,
+    DISMEMBERMENT_BRIGADE_II                   = 4006,
+    DIVINE_PUNISHERS_II                        = 4007,
+    GRIMSHELL_SHOCKTROOPERS_II                 = 4008,
 }
 
 xi.battlefield.itemUses =
