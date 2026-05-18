@@ -3673,7 +3673,7 @@ end
 
 ---@nodiscard
 ---@return integer
-function CBaseEntity:getSuperFamily()
+function CBaseEntity:getFamily()
 end
 
 ---@nodiscard

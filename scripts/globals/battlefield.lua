@@ -935,7 +935,7 @@ end
 
 function Battlefield.onExitTrigger(player, npc)
     if player:getBattlefield() then
-        return Battlefield:progressCutscene(32003)
+        return Battlefield:progressOptionalCutscene(32003, { cs_option = 3 })
     end
 end
 
