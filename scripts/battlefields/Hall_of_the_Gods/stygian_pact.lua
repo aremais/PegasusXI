@@ -38,7 +38,7 @@ local lootTable =
         { itemId = xi.item.REMS_TALE_CH_6,        weight = 2000 },
         { itemId = xi.item.REMS_TALE_CH_7,        weight = 2000 },
         { itemId = xi.item.REMS_TALE_CH_8,        weight = 2000 },
-        { itemId = xi.item.REMS_TALE_CH_9,        weight = 2000 },
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_9,        weight = 2000 },
         { itemId = xi.item.REMS_TALE_CH_10,       weight = 2000 },
     },
 
@@ -65,7 +65,7 @@ local function giveAllChapters(battlefield)
         npcUtil.giveItem(player, xi.item.REMS_TALE_CH_6)
         npcUtil.giveItem(player, xi.item.REMS_TALE_CH_7)
         npcUtil.giveItem(player, xi.item.REMS_TALE_CH_8)
-        npcUtil.giveItem(player, xi.item.REMS_TALE_CH_9)
+        npcUtil.giveItem(player, xi.item.COPY_OF_REMS_TALE_CHAPTER_9)
         npcUtil.giveItem(player, xi.item.REMS_TALE_CH_10)
     end
 end

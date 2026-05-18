@@ -22747,10 +22747,6 @@ INSERT INTO `item_basic` VALUES (29351,0,'rems_tale_ch_7','Rem\'s Tale Ch.7',@GE
 INSERT INTO `item_basic` VALUES (29352,0,'rems_tale_ch_8','Rem\'s Tale Ch.8',@GENERAL_TYPE,1,28736,@NONE,0);
 INSERT INTO `item_basic` VALUES (29353,0,'rems_tale_ch_9','Rem\'s Tale Ch.9',@GENERAL_TYPE,1,28736,@NONE,0);
 INSERT INTO `item_basic` VALUES (29354,0,'rems_tale_ch_10','Rem\'s Tale Ch.10',@GENERAL_TYPE,1,28736,@NONE,0);
-INSERT INTO `item_basic` VALUES (29355,0,'macrocosmic_orb','Macrocosmic Orb',@GENERAL_TYPE,1,28736,@NONE,0);
-INSERT INTO `item_basic` VALUES (29356,0,'pluton','Pluton',@GENERAL_TYPE,1,28736,@NONE,0);
-INSERT INTO `item_basic` VALUES (29357,0,'beitetsu','Beitetsu',@GENERAL_TYPE,1,28736,@NONE,0);
-INSERT INTO `item_basic` VALUES (29358,0,'riftborn_boulder','Riftborn Boulder',@GENERAL_TYPE,1,28736,@NONE,0);
 -- HTBF unique equipment — shared materials
 INSERT INTO `item_basic` VALUES (29359,0,'maliyakaleya_coral','Maliyakaleya Coral',@GENERAL_TYPE,1,28736,@NONE,0);
 INSERT INTO `item_basic` VALUES (29360,0,'hepatizon_ore','Hepatizon Ore',@GENERAL_TYPE,1,28736,@NONE,0);

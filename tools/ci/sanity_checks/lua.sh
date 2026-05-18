@@ -76,6 +76,8 @@ global_objects=(
     Battlefield
     BattlefieldMission
     BattlefieldQuest
+    HTBFBattlefield
+    SKCNMBattlefield
     Limbus
     SeasonalEvent
 
