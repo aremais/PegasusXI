@@ -3,10 +3,11 @@
 -- Sacrificial Chamber SKCNM, Macrocosmic Orb
 -- !additem 4063
 -----------------------------------
+require('scripts/globals/skcnm')
 local sacrificialChamberID = zones[xi.zone.SACRIFICIAL_CHAMBER]
 -----------------------------------
 
-local content = Battlefield:new({
+local content = SKCNMBattlefield:new({
     zoneId        = xi.zone.SACRIFICIAL_CHAMBER,
     battlefieldId = xi.battlefield.id.JUNGLE_BOOGYMEN_II,
     maxPlayers    = 6,
@@ -15,12 +16,6 @@ local content = Battlefield:new({
     entryNpc      = '_4j0',
     exitNpcs      = { '_4j2', '_4j3', '_4j4' },
     requiredItems = { xi.item.MACROCOSMIC_ORB, wearMessage = sacrificialChamberID.text.A_CRACK_HAS_FORMED, wornMessage = sacrificialChamberID.text.ORB_IS_CRACKED },
-    armouryCrates =
-    {
-        sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 4,
-        sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 11,
-        sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 18,
-    },
 })
 
 content.groups =
@@ -51,7 +46,13 @@ content.groups =
         },
 
         superlink = true,
-        allDeath  = utils.bind(content.handleAllMonstersDefeated, content),
+        allDeath  = function(battlefield, mob)
+            xi.skcnm.onWin(battlefield, {
+                chapterItemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_1,
+                mob           = mob,
+                lootTable     = content.loot,
+            })
+        end,
     },
 
     {
@@ -79,19 +80,6 @@ content.loot =
 {
     {
         { itemId = xi.item.GIL,                              weight = 10000, amount = 30000 },
-    },
-
-    {
-        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_1,     weight = 10000, quantity = 2 },
-    },
-
-    {
-        { itemId = xi.item.PLUTON,                           weight = 1500 },
-        { itemId = xi.item.PLUTON_CASE,                      weight =  500 },
-        { itemId = xi.item.RIFTBORN_BOULDER,                 weight = 1500 },
-        { itemId = xi.item.BOULDER_CASE,                     weight =  500 },
-        { itemId = xi.item.BEITETSU,                         weight = 1500 },
-        { itemId = xi.item.BEITETSU_PARCEL,                  weight =  500 },
     },
 
     {

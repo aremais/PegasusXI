@@ -3,10 +3,11 @@
 -- Qu'Bia Arena SKCNM, Macrocosmic Orb
 -- !additem 4063
 -----------------------------------
+require('scripts/globals/skcnm')
 local quBiaArenaID = zones[xi.zone.QUBIA_ARENA]
 -----------------------------------
 
-local content = Battlefield:new({
+local content = SKCNMBattlefield:new({
     zoneId        = xi.zone.QUBIA_ARENA,
     battlefieldId = xi.battlefield.id.BROTHERS_D_AURPHE_II,
     maxPlayers    = 6,
@@ -45,7 +46,13 @@ content.groups =
         },
 
         superlink = true,
-        allDeath  = utils.bind(content.handleAllMonstersDefeated, content),
+        allDeath  = function(battlefield, mob)
+            xi.skcnm.onWin(battlefield, {
+                chapterItemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_3,
+                mob           = mob,
+                lootTable     = content.loot,
+            })
+        end,
     },
 }
 
@@ -53,19 +60,6 @@ content.loot =
 {
     {
         { itemId = xi.item.GIL,                              weight = 10000, amount = 30000 },
-    },
-
-    {
-        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_3,     weight = 10000, quantity = 2 },
-    },
-
-    {
-        { itemId = xi.item.PLUTON,                           weight = 1500 },
-        { itemId = xi.item.PLUTON_CASE,                      weight =  500 },
-        { itemId = xi.item.RIFTBORN_BOULDER,                 weight = 1500 },
-        { itemId = xi.item.BOULDER_CASE,                     weight =  500 },
-        { itemId = xi.item.BEITETSU,                         weight = 1500 },
-        { itemId = xi.item.BEITETSU_PARCEL,                  weight =  500 },
     },
 
     {
