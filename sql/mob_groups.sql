@@ -11988,8 +11988,8 @@ INSERT INTO `mob_groups` VALUES (27,0,170,'Clone_of_Lights',0,128,0,0,0,0,NULL);
 -- 28 free
 INSERT INTO `mob_groups` VALUES (29,0,170,'Clone_of_Shadows',0,128,0,0,0,0,NULL);
 -- 30 free
-INSERT INTO `mob_groups` VALUES (31,0,170,'Fenrir_Prime_HTBF',0,128,0,0,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (32,0,170,'Carbuncle_Prime_HTBF',0,128,0,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (31,1322,170,'Fenrir_Prime_HTBF',0,128,0,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (32,636,170,'Carbuncle_Prime_HTBF',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (33,75,170,'Ajido-Marujido',0,128,0,600,10000,1,NULL); -- ally TODO: Verify HP
 INSERT INTO `mob_groups` VALUES (34,7262,170,'Ace_of_Cups',0,128,12,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (35,7263,170,'Ace_of_Batons',0,128,10,0,0,0,NULL);

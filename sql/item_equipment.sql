@@ -14915,6 +14915,67 @@ INSERT INTO `item_equipment` VALUES (28669,'butznar_shield_+1',99,101,193,25,3,0
 INSERT INTO `item_equipment` VALUES (28670,'leafkin_shield',1,0,4194303,641,1,0,2,0,0,0);
 INSERT INTO `item_equipment` VALUES (28671,'butznar_shield',99,100,193,25,3,0,2,0,0,0);
 
+-- ============================================================
+-- HTBF Reward Items (29364, 29381-29425)
+-- ============================================================
+-- Trial by Earth (Titan Prime)
+INSERT INTO `item_equipment` VALUES (29364,'togakushi_shuriken',99,119,4096,0,0,0,8,0,0,0);
+-- Trial by Fire (Ifrit Prime)
+INSERT INTO `item_equipment` VALUES (29381,'perfervid_sword',99,119,2200529,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29382,'atakigiri',99,119,2103297,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29383,'coalrake_sabots',99,119,4194303,0,0,0,256,0,0,0);
+INSERT INTO `item_equipment` VALUES (29384,'annealed_mantle',99,119,4194303,0,0,0,32768,0,0,0);
+INSERT INTO `item_equipment` VALUES (29385,'immolation_grip',99,119,4194303,0,0,0,2,0,0,0);
+-- Trial by Ice (Shiva Prime)
+INSERT INTO `item_equipment` VALUES (29386,'calved_claws',99,119,131074,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29387,'frazil_staff',99,119,1622556,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29388,'rimeice_earring',99,119,4194303,0,0,0,6144,0,0,0);
+INSERT INTO `item_equipment` VALUES (29389,'nilas_gloves',99,119,4194303,0,0,0,64,0,0,0);
+INSERT INTO `item_equipment` VALUES (29390,'floestone',99,119,4194303,0,0,0,8,0,0,0);
+-- Trial by Wind (Garuda Prime)
+INSERT INTO `item_equipment` VALUES (29391,'levante_dagger',99,119,2473923,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29392,'tramontane_axe',99,119,2592163,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29393,'lebeche_ring',99,119,4194303,0,0,0,24576,0,0,0);
+INSERT INTO `item_equipment` VALUES (29394,'ponente_sash',99,119,4194303,0,0,0,1024,0,0,0);
+INSERT INTO `item_equipment` VALUES (29395,'ostro_greaves',99,119,4194303,0,0,0,256,0,0,0);
+-- Trial by Earth (Titan Prime)
+INSERT INTO `item_equipment` VALUES (29396,'mafic_cudgel',99,119,3720031,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29397,'foreshock_sword',99,119,2105793,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29398,'supershear_ring',99,119,4194303,0,0,0,24576,0,0,0);
+INSERT INTO `item_equipment` VALUES (29399,'plumose_sachet',99,119,4194303,0,0,0,8,0,0,0);
+-- Trial by Lightning (Ramuh Prime)
+INSERT INTO `item_equipment` VALUES (29400,'staccato_staff',99,119,1622556,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29401,'donar_gun',99,119,70881,0,0,0,4,0,0,0);
+INSERT INTO `item_equipment` VALUES (29402,'voltsurge_torque',99,119,4194303,0,0,0,512,0,0,0);
+INSERT INTO `item_equipment` VALUES (29403,'ukko_sash',99,119,4194303,0,0,0,1024,0,0,0);
+INSERT INTO `item_equipment` VALUES (29404,'brontes_cuisses',99,119,4194303,0,0,0,128,0,0,0);
+-- Trial by Water (Leviathan Prime)
+INSERT INTO `item_equipment` VALUES (29405,'pelagos_lance',99,119,2106327,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29406,'vadose_rod',99,119,3720031,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29407,'phreatic_axe',99,119,2097537,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29408,'benthos_grip',99,119,4194303,0,0,0,2,0,0,0);
+INSERT INTO `item_equipment` VALUES (29409,'neritic_earring',99,119,4194303,0,0,0,6144,0,0,0);
+-- The Moonlit Path (Fenrir Prime)
+INSERT INTO `item_equipment` VALUES (29410,'medeina_kilij',99,119,2200529,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29411,'capitoline_strap',99,119,128,0,0,0,1024,0,0,0);
+INSERT INTO `item_equipment` VALUES (29412,'vrikodara_jupon',99,119,4194303,0,0,0,32,0,0,0);
+INSERT INTO `item_equipment` VALUES (29413,'maiitsoh_haube',99,119,4194303,0,0,0,16,0,0,0);
+INSERT INTO `item_equipment` VALUES (29414,'lupine_cape',99,119,4194303,0,0,0,32768,0,0,0);
+-- Waking the Beast (Carbuncle Prime)
+INSERT INTO `item_equipment` VALUES (29415,'marquetry_staff',99,119,1622556,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29416,'engraved_belt',99,119,4194303,0,0,0,1024,0,0,0);
+INSERT INTO `item_equipment` VALUES (29417,'lapidary_tunic',99,119,4194303,0,0,0,32,0,0,0);
+INSERT INTO `item_equipment` VALUES (29418,'satlada_necklace',99,119,4194303,0,0,0,512,0,0,0);
+INSERT INTO `item_equipment` VALUES (29419,'diamantaire_sollerets',99,119,4194303,0,0,0,256,0,0,0);
+-- Waking Dreams (Diabolos Prime)
+INSERT INTO `item_equipment` VALUES (29420,'shuhansadamune',99,119,2364449,0,0,0,1,0,0,0);
+INSERT INTO `item_equipment` VALUES (29421,'darkside_earring',99,119,4194303,0,0,0,6144,0,0,0);
+INSERT INTO `item_equipment` VALUES (29422,'pernicious_ring',99,119,4194303,0,0,0,24576,0,0,0);
+INSERT INTO `item_equipment` VALUES (29423,'chozoron_coselete',99,119,4194303,0,0,0,32,0,0,0);
+INSERT INTO `item_equipment` VALUES (29424,'loagaeth_cuffs',99,119,4194303,0,0,0,64,0,0,0);
+-- Alexander (disabled fight -- item still equippable)
+INSERT INTO `item_equipment` VALUES (29425,'sacro_breastplate',99,119,4194303,0,0,0,32,0,0,0);
+
 /*!40000 ALTER TABLE `item_equipment` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

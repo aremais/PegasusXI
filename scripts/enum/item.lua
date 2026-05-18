@@ -12284,6 +12284,103 @@ xi.item =
     MOOGLE_STORAGE_SLIP_31              = 29342,
     MOOGLE_STORAGE_SLIP_32              = 29343,
     MOOGLE_STORAGE_SLIP_33              = 29344,
+
+    -- ── High-Tier Mission Battlefield rewards ─────────────────────────────────
+    REMS_TALE_CH_1                      = 29345,
+    REMS_TALE_CH_2                      = 29346,
+    REMS_TALE_CH_3                      = 29347,
+    REMS_TALE_CH_4                      = 29348,
+    REMS_TALE_CH_5                      = 29349,
+    REMS_TALE_CH_6                      = 29350,
+    REMS_TALE_CH_7                      = 29351,
+    REMS_TALE_CH_8                      = 29352,
+    REMS_TALE_CH_9                      = 29353,
+    REMS_TALE_CH_10                     = 29354,
+    MACROCOSMIC_ORB                     = 29355,
+    PLUTON                              = 29356,
+    BEITETSU                            = 29357,
+    RIFTBORN_BOULDER                    = 29358,
+
+    -- ── HTBF unique equipment ─────────────────────────────────────────────────
+    MALIYAKALEYA_CORAL                  = 29359, -- shared unique material drop
+    HEPATIZON_ORE                       = 29360, -- shared unique material drop
+    BERYLLIUM_ORE                       = 29361, -- shared unique material drop
+    EXALTED_LOG                         = 29362, -- shared unique material drop
+    SIFS_LOCK                           = 29363, -- shared unique material drop
+    TOGAKUSHI_SHURIKEN                  = 29364, -- Trial by Earth
+    ZANTETSUKEN                         = 29365, -- A Stygian Pact
+    ZANTETSUKEN_X                       = 29366, -- A Stygian Pact
+    GEIRROTHR                           = 29367, -- A Stygian Pact
+    SACRO_BULWARK                       = 29368, -- Divine Interference (weapon)
+    SACRO_GORGET                        = 29369, -- Divine Interference
+    SACRO_CORD                          = 29370, -- Divine Interference
+    SACRO_MANTLE                        = 29371, -- Divine Interference
+    HJARRANDI_HELM                      = 29372, -- A Stygian Pact
+    HJARRANDI_BREASTPLATE               = 29373, -- A Stygian Pact
+    FREKE_RING                          = 29374, -- A Stygian Pact
+    GERE_RING                           = 29375, -- A Stygian Pact
+    CATH_PALUG_HAMMER                   = 29376, -- Champion of the Dawn
+    CATH_PALUG_STONE                    = 29377, -- Champion of the Dawn
+    CATH_PALUG_CROWN                    = 29378, -- Champion of the Dawn
+    CATH_PALUG_RING                     = 29379, -- Champion of the Dawn
+    CATH_PALUG_EARRING                  = 29380, -- Champion of the Dawn
+    SACRO_BREASTPLATE                   = 29425, -- Divine Interference (missed in initial pass)
+
+    -- ── HTBF unique equipment — active fights ─────────────────────────────────
+    -- Trial by Fire (Ifrit Prime)
+    PERFERVID_SWORD                     = 29381,
+    ATAKIGIRI                           = 29382,
+    COALRAKE_SABOTS                     = 29383,
+    ANNEALED_MANTLE                     = 29384,
+    IMMOLATION_GRIP                     = 29385,
+    -- Trial by Ice (Shiva Prime)
+    CALVED_CLAWS                        = 29386,
+    FRAZIL_STAFF                        = 29387,
+    RIMEICE_EARRING                     = 29388,
+    NILAS_GLOVES                        = 29389,
+    FLOESTONE                           = 29390,
+    -- Trial by Wind (Garuda Prime)
+    LEVANTE_DAGGER                      = 29391,
+    TRAMONTANE_AXE                      = 29392,
+    LEBECHE_RING                        = 29393,
+    PONENTE_SASH                        = 29394,
+    OSTRO_GREAVES                       = 29395,
+    -- Trial by Earth (Titan Prime)
+    MAFIC_CUDGEL                        = 29396,
+    FORESHOCK_SWORD                     = 29397,
+    SUPERSHEAR_RING                     = 29398,
+    PLUMOSE_SACHET                      = 29399,
+    -- Trial by Lightning (Ramuh Prime)
+    STACCATO_STAFF                      = 29400,
+    DONAR_GUN                           = 29401,
+    VOLTSURGE_TORQUE                    = 29402,
+    UKKO_SASH                           = 29403,
+    BRONTES_CUISSES                     = 29404,
+    -- Trial by Water (Leviathan Prime)
+    PELAGOS_LANCE                       = 29405,
+    VADOSE_ROD                          = 29406,
+    PHREATIC_AXE                        = 29407,
+    BENTHOS_GRIP                        = 29408,
+    NERITIC_EARRING                     = 29409,
+    -- The Moonlit Path (Fenrir Prime)
+    MEDEINA_KILIJ                       = 29410,
+    CAPITOLINE_STRAP                    = 29411,
+    VRIKODARA_JUPON                     = 29412,
+    MAIITSOH_HAUBE                      = 29413,
+    LUPINE_CAPE                         = 29414,
+    -- Waking the Beast (Carbuncle Prime)
+    MARQUETRY_STAFF                     = 29415,
+    ENGRAVED_BELT                       = 29416,
+    LAPIDARY_TUNIC                      = 29417,
+    SATLADA_NECKLACE                    = 29418,
+    DIAMANTAIRE_SOLLERETS               = 29419,
+    -- Waking Dreams (Diabolos Prime)
+    SHUHANSADAMUNE                      = 29420,
+    DARKSIDE_EARRING                    = 29421,
+    PERNICIOUS_RING                     = 29422,
+    CHOZORON_COSELETE                   = 29423,
+    LOAGAETH_CUFFS                      = 29424,
+
     GIL                                 = 65535,
 }
 

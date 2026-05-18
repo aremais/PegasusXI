@@ -282,6 +282,20 @@ INSERT INTO `bcnm_records` VALUES (1306,37,'central_temenos_4th_floor','nobody',
 INSERT INTO `bcnm_records` VALUES (1307,37,'central_temenos_4th_floor_ii','nobody',0,3600);
 INSERT INTO `bcnm_records` VALUES (2721,85,'purple_the_new_black','nobody',0,1800);
 
+-- ── High-Tier Mission Battlefields (HTBF) — Avatar Prime Fights ──────────────
+INSERT INTO `bcnm_records` VALUES (3000,207,'trial_by_fire_htbf','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (3001,203,'trial_by_ice_htbf','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (3002,201,'trial_by_wind_htbf','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (3003,209,'trial_by_earth_htbf','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (3004,202,'trial_by_lightning_htbf','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (3005,211,'trial_by_water_htbf','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (3006,170,'moonlit_path_htbf','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (3007,170,'waking_the_beast_htbf','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (3008,10,'waking_dreams_htbf','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (3009,251,'divine_interference','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (3010,251,'stygian_pact','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (3011,251,'champion_of_the_dawn','nobody',0,1800);
+
 /*!40000 ALTER TABLE `bcnm_records` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
