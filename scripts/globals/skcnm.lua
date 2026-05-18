@@ -139,9 +139,17 @@ local function applyDiffScaling(battlefield, diffIndex)
             end
 
             -- Stat mods: only apply if non-zero to avoid dirty Normal state
-            if scaling.att ~= 0 then mob:addMod(xi.mod.ATT, scaling.att) end
-            if scaling.def ~= 0 then mob:addMod(xi.mod.DEF, scaling.def) end
-            if scaling.eva ~= 0 then mob:addMod(xi.mod.EVA, scaling.eva) end
+            if scaling.att ~= 0 then
+                mob:addMod(xi.mod.ATT, scaling.att)
+            end
+
+            if scaling.def ~= 0 then
+                mob:addMod(xi.mod.DEF, scaling.def)
+            end
+
+            if scaling.eva ~= 0 then
+                mob:addMod(xi.mod.EVA, scaling.eva)
+            end
         end
     end
 end
