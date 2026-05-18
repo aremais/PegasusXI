@@ -21,30 +21,8 @@ entity.onTrade = function(player, npc, trade)
 end
 
 entity.onTrigger = function(player, npc)
-    local menu =
-    {
-        title = 'Oseem',
-
-        options =
-        {
-            {
-                'Glyptics',
-                function(playerArg)
-                    playerArg:printToPlayer('Oseem can inscribe equipment with arcane glyptics using Pellucid, Fern, and Taupe Stones.', xi.msg.channel.NS_SAY)
-                    playerArg:printToPlayer('Arcane glyptics augmentation is not implemented yet.', xi.msg.channel.NS_SAY)
-                end,
-            },
-
-            {
-                'Stones',
-                function(playerArg)
-                    playerArg:printToPlayer('Pellucid Stones, Fern Stones, and Taupe Stones can be obtained from Reisenjima enemies.', xi.msg.channel.NS_SAY)
-                end,
-            },
-        },
-    }
-
-    player:customMenu(menu)
+    player:printToPlayer('Arcane glyptics are not implemented yet.', xi.msg.channel.NS_SAY)
+    player:printToPlayer('Trade Pellucid, Fern, or Taupe Stones for a placeholder response.', xi.msg.channel.NS_SAY)
 end
 
 return entity

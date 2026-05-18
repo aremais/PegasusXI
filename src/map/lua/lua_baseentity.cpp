@@ -17431,26 +17431,6 @@ uint8 CLuaBaseEntity::getEcosystem()
 }
 
 /************************************************************************
- *  Function: getSuperFamily()
- *  Purpose : Returns the integer value of the associated Mob SuperFamily
- *  Example : if mob:getSuperFamily() == 123 then
- *  Notes   : To Do: Enumerate Mob Families in global script
- ************************************************************************/
-
-uint16 CLuaBaseEntity::getSuperFamily()
-{
-    auto* entity = dynamic_cast<CMobEntity*>(m_PBaseEntity);
-
-    if (!entity)
-    {
-        ShowWarning("CLuaBaseEntity::getSuperFamily() -  m_pBaseEntity is not a Mob.");
-        return 0;
-    }
-
-    return entity->m_SuperFamily;
-}
-
-/************************************************************************
  *  Function: getFamily()
  *  Purpose : Returns the integer value of the associated Mob Family
  *  Example : if mob:getFamily() == 123 then
@@ -17468,6 +17448,26 @@ uint16 CLuaBaseEntity::getFamily()
     }
 
     return entity->m_Family;
+}
+
+/************************************************************************
+ *  Function: getSpecies()
+ *  Purpose : Returns the integer value of the associated Mob Species
+ *  Example : if mob:getSpecies() == 123 then
+ *  Notes   : To Do: Enumerate Mob Species in global script
+ ************************************************************************/
+
+uint16 CLuaBaseEntity::getSpecies()
+{
+    auto* entity = dynamic_cast<CMobEntity*>(m_PBaseEntity);
+
+    if (!entity)
+    {
+        ShowWarning("CLuaBaseEntity::getSpecies() -  m_pBaseEntity is not a Mob.");
+        return 0;
+    }
+
+    return entity->m_Species;
 }
 
 /************************************************************************
@@ -18966,17 +18966,17 @@ bool CLuaBaseEntity::hasTPMoves()
         return false;
     }
 
-    uint16 familyID = 0;
+    uint16 speciesID = 0;
 
     if (m_PBaseEntity->objtype & TYPE_PET)
     {
-        familyID = static_cast<CPetEntity*>(m_PBaseEntity)->m_Family;
+        speciesID = static_cast<CPetEntity*>(m_PBaseEntity)->m_Species;
     }
     else if (m_PBaseEntity->objtype & TYPE_MOB)
     {
-        familyID = static_cast<CMobEntity*>(m_PBaseEntity)->m_Family;
+        speciesID = static_cast<CMobEntity*>(m_PBaseEntity)->m_Species;
     }
-    const std::vector<uint16>& MobSkills = battleutils::GetMobSkillList(familyID);
+    const std::vector<uint16>& MobSkills = battleutils::GetMobSkillList(speciesID);
 
     return !MobSkills.empty();
 }
@@ -20800,8 +20800,8 @@ void CLuaBaseEntity::Register()
     // Mob Entity-Specific
     SOL_REGISTER("setMobLevel", CLuaBaseEntity::setMobLevel);
     SOL_REGISTER("getEcosystem", CLuaBaseEntity::getEcosystem);
-    SOL_REGISTER("getSuperFamily", CLuaBaseEntity::getSuperFamily);
     SOL_REGISTER("getFamily", CLuaBaseEntity::getFamily);
+    SOL_REGISTER("getSpecies", CLuaBaseEntity::getSpecies);
     SOL_REGISTER("isMobType", CLuaBaseEntity::isMobType);
     SOL_REGISTER("isUndead", CLuaBaseEntity::isUndead);
     SOL_REGISTER("isNM", CLuaBaseEntity::isNM);
