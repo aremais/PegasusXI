@@ -39,7 +39,8 @@ zones[xi.zone.THRONE_ROOM] =
     },
     mob =
     {
-        GRAND_MARQUIS_CHOMIEL     = GetFirstID('Grand_Marquis_Chomiel'),
+        GRAND_MARQUIS_CHOMIEL    = GetFirstID('Grand_Marquis_Chomiel'), -- Tier I  BCNM60
+        GRAND_MARQUIS_CHOMIEL_II = 17453132,                            -- Tier II SKCNM (level 110)
         RIKO_KUPENREICH           = GetFirstID('Riko_Kupenreich'),
         SHADOW_LORD_RANK_5_OFFSET = GetFirstID('Shadow_Lord_Phase_1'),
         ZEID_BCNM_OFFSET          = GetFirstID('Zeid'),

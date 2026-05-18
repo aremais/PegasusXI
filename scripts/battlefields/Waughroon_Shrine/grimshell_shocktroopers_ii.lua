@@ -24,30 +24,30 @@ content.groups =
         mobIds =
         {
             {
-                waughroonID.mob.YOBHU_HIDEOUSMASK,      -- Yo'Bhu Hideousmask
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 1,
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 2,
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 3,
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 4,
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 5,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II,      -- Yo'Bhu Hideousmask
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 1,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 2,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 3,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 4,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 5,
             },
 
             {
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 7,
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 8,
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 9,
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 10,
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 11,
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 12,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 7,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 8,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 9,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 10,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 11,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 12,
             },
 
             {
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 14,
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 15,
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 16,
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 17,
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 18,
-                waughroonID.mob.YOBHU_HIDEOUSMASK + 19,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 14,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 15,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 16,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 17,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 18,
+                waughroonID.mob.YOBHU_HIDEOUSMASK_II + 19,
             },
         },
 

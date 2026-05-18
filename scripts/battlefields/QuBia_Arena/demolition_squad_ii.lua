@@ -24,24 +24,24 @@ content.groups =
         mobIds =
         {
             {
-                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER,     -- Nephiyl Rampartbreacher (WAR)
-                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER + 1, -- Nephiyl Keepcollapser (MNK)
-                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER + 2, -- Nephiyl Pinnacletosser (RNG)
-                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER + 3, -- Nephiyl Moatfiller (BST)
+                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER_II,     -- Nephiyl Rampartbreacher (WAR)
+                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER_II + 1, -- Nephiyl Keepcollapser (MNK)
+                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER_II + 2, -- Nephiyl Pinnacletosser (RNG)
+                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER_II + 3, -- Nephiyl Moatfiller (BST)
             },
 
             {
-                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER + 5,
-                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER + 6,
-                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER + 7,
-                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER + 8,
+                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER_II + 5,
+                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER_II + 6,
+                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER_II + 7,
+                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER_II + 8,
             },
 
             {
-                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER + 10,
-                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER + 11,
-                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER + 12,
-                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER + 13,
+                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER_II + 10,
+                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER_II + 11,
+                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER_II + 12,
+                quBiaArenaID.mob.NEPHIYL_RAMPARTBREACHER_II + 13,
             },
         },
 

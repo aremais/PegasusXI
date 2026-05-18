@@ -24,24 +24,24 @@ content.groups =
         mobIds =
         {
             {
-                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE,     -- Vaicoliaux B. D'Aurphe
-                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE + 1, -- Maldaramet B. D'Aurphe
-                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE + 2, -- Disfaurit B. D'Aurphe
-                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE + 3, -- Jeumouque B. D'Aurphe
+                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE_II,     -- Vaicoliaux B. D'Aurphe
+                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE_II + 1, -- Maldaramet B. D'Aurphe
+                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE_II + 2, -- Disfaurit B. D'Aurphe
+                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE_II + 3, -- Jeumouque B. D'Aurphe
             },
 
             {
-                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE + 5,
-                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE + 6,
-                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE + 7,
-                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE + 8,
+                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE_II + 5,
+                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE_II + 6,
+                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE_II + 7,
+                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE_II + 8,
             },
 
             {
-                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE + 10,
-                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE + 11,
-                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE + 12,
-                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE + 13,
+                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE_II + 10,
+                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE_II + 11,
+                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE_II + 12,
+                quBiaArenaID.mob.VAICOLIAUX_B_DAURPHE_II + 13,
             },
         },
 

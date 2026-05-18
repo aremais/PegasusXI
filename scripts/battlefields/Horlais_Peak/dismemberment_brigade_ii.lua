@@ -24,30 +24,30 @@ content.groups =
         mobIds =
         {
             {
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK,      -- Armsmaster Dekbuk (WAR)
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 1,  -- Invulnerable Mazzgozz (PLD)
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 2,  -- Keeneyed Aufwuf (BLM)
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 3,  -- Longarmed Gottditt (MNK)
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 4,  -- Mind's-eyed Klugwug (RNG)
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 5,  -- Undefeatable Sappdapp (DRK)
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II,      -- Armsmaster Dekbuk (WAR)
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 1,  -- Invulnerable Mazzgozz (PLD)
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 2,  -- Keeneyed Aufwuf (BLM)
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 3,  -- Longarmed Gottditt (MNK)
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 4,  -- Mind's-eyed Klugwug (RNG)
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 5,  -- Undefeatable Sappdapp (DRK)
             },
 
             {
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 7,
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 8,
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 9,
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 10,
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 11,
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 12,
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 7,
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 8,
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 9,
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 10,
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 11,
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 12,
             },
 
             {
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 14,
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 15,
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 16,
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 17,
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 18,
-                horlaisPeakID.mob.ARMSMASTER_DEKBUK + 19,
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 14,
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 15,
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 16,
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 17,
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 18,
+                horlaisPeakID.mob.ARMSMASTER_DEKBUK_II + 19,
             },
         },
 

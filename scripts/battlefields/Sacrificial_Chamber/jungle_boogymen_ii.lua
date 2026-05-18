@@ -24,24 +24,24 @@ content.groups =
         mobIds =
         {
             {
-                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY,      -- Sable-tongued Gonberry
-                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 1,  -- Virid-faced Shanberry
-                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 2,  -- Cyaneous-toed Yallberry
-                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 3,  -- Vermilion-eared Nobberry
+                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II,      -- Sable-tongued Gonberry
+                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 1,  -- Virid-faced Shanberry
+                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 2,  -- Cyaneous-toed Yallberry
+                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 3,  -- Vermilion-eared Nobberry
             },
 
             {
-                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 7,
-                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 8,
-                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 9,
-                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 10,
+                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 7,
+                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 8,
+                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 9,
+                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 10,
             },
 
             {
-                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 14,
-                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 15,
-                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 16,
-                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 17,
+                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 14,
+                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 15,
+                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 16,
+                sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 17,
             },
         },
 
@@ -58,18 +58,18 @@ content.groups =
     {
         mobIds =
         {
-            { sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 5  }, -- Tonberry's Elemental
-            { sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 12 },
-            { sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 19 },
+            { sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 5  }, -- Tonberry's Elemental
+            { sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 12 },
+            { sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 19 },
         },
     },
 
     {
         mobIds =
         {
-            { sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 6  }, -- Tonberry's Avatar
-            { sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 13 },
-            { sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY + 20 },
+            { sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 6  }, -- Tonberry's Avatar
+            { sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 13 },
+            { sacrificialChamberID.mob.SABLE_TONGUED_GONBERRY_II + 20 },
         },
 
         spawned = false,

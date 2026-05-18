@@ -24,30 +24,30 @@ content.groups =
         mobIds =
         {
             {
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST,      -- Voo Tolu the Ghostfist (MNK)
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 1,  -- Aa Nawu the Thunderblade (SAM)
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 2,  -- Cuu Doko the Blizzard (WHM)
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 3,  -- Yoo Mihi the Haze (NIN)
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 4,  -- Gii Jaha the Raucous (BRD)
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 5,  -- Zuu Xowu the Darksmoke (BLM)
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II,      -- Voo Tolu the Ghostfist (MNK)
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 1,  -- Aa Nawu the Thunderblade (SAM)
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 2,  -- Cuu Doko the Blizzard (WHM)
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 3,  -- Yoo Mihi the Haze (NIN)
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 4,  -- Gii Jaha the Raucous (BRD)
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 5,  -- Zuu Xowu the Darksmoke (BLM)
             },
 
             {
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 7,
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 8,
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 9,
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 10,
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 11,
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 12,
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 7,
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 8,
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 9,
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 10,
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 11,
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 12,
             },
 
             {
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 14,
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 15,
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 16,
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 17,
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 18,
-                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST + 19,
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 14,
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 15,
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 16,
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 17,
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 18,
+                balgasDaisID.mob.VOO_TOLU_THE_GHOSTFIST_II + 19,
             },
         },
 

@@ -101,6 +101,52 @@ function xi.skcnm.onWin(battlefield, params)
 end
 
 -----------------------------------
+-- Difficulty scaling
+-----------------------------------
+
+-- hp   : percent modifier applied to base MaxHP  (e.g. -45 → 55 % of base)
+-- att/def/eva : flat mod values added to the mob stat
+local diffScaling =
+{
+    [0] = { hp = -45, att = -100, def = -100, eva =  -50 }, -- Very Easy
+    [1] = { hp = -20, att =  -50, def =  -50, eva =  -25 }, -- Easy
+    [2] = { hp =   0, att =    0, def =    0, eva =    0 }, -- Normal (base)
+    [3] = { hp =  25, att =   50, def =   50, eva =   25 }, -- Difficult
+    [4] = { hp =  55, att =  100, def =  100, eva =   50 }, -- Very Difficult
+}
+
+local function applyDiffScaling(battlefield, diffIndex)
+    local scaling = diffScaling[diffIndex]
+
+    if not scaling then
+        return
+    end
+
+    local mobs = battlefield:getMobs(true, true)
+
+    if not mobs then
+        return
+    end
+
+    for _, mob in ipairs(mobs) do
+        if mob and mob:isAlive() then
+            -- HP scaling: adjust MaxHP by percentage from base
+            if scaling.hp ~= 0 then
+                local baseHP = mob:getMaxHP()
+                local newHP  = math.max(1, math.floor(baseHP * (100 + scaling.hp) / 100))
+                mob:setMaxHP(newHP)
+                mob:setHP(newHP)
+            end
+
+            -- Stat mods: only apply if non-zero to avoid dirty Normal state
+            if scaling.att ~= 0 then mob:addMod(xi.mod.ATT, scaling.att) end
+            if scaling.def ~= 0 then mob:addMod(xi.mod.DEF, scaling.def) end
+            if scaling.eva ~= 0 then mob:addMod(xi.mod.EVA, scaling.eva) end
+        end
+    end
+end
+
+-----------------------------------
 -- Difficulty selection menu
 -----------------------------------
 
@@ -139,6 +185,7 @@ local function showDifficultyMenu(player, battlefield)
             label,
             function(_)
                 battlefield:setLocalVar('SKCNM_Difficulty', value)
+                applyDiffScaling(battlefield, value)
 
                 local chosen  = difficultyShortNames[value]
                 local players = battlefield:getPlayers()

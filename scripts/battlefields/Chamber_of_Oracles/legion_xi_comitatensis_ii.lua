@@ -24,24 +24,24 @@ content.groups =
         mobIds =
         {
             {
-                chamberOfOraclesID.mob.SECUTOR_XI_XXXII,      -- Secutor XI-XXXII (WAR)
-                chamberOfOraclesID.mob.SECUTOR_XI_XXXII + 1,  -- Retiarius XI-XIX (BLM)
-                chamberOfOraclesID.mob.SECUTOR_XI_XXXII + 2,  -- Hoplomachus XI-XXVI (PLD)
-                chamberOfOraclesID.mob.SECUTOR_XI_XXXII + 3,  -- Centurio XI-I (RNG)
+                chamberOfOraclesID.mob.SECUTOR_XI_XXXII_II,      -- Secutor XI-XXXII (WAR)
+                chamberOfOraclesID.mob.SECUTOR_XI_XXXII_II + 1,  -- Retiarius XI-XIX (BLM)
+                chamberOfOraclesID.mob.SECUTOR_XI_XXXII_II + 2,  -- Hoplomachus XI-XXVI (PLD)
+                chamberOfOraclesID.mob.SECUTOR_XI_XXXII_II + 3,  -- Centurio XI-I (RNG)
             },
 
             {
-                chamberOfOraclesID.mob.SECUTOR_XI_XXXII + 5,
-                chamberOfOraclesID.mob.SECUTOR_XI_XXXII + 6,
-                chamberOfOraclesID.mob.SECUTOR_XI_XXXII + 7,
-                chamberOfOraclesID.mob.SECUTOR_XI_XXXII + 8,
+                chamberOfOraclesID.mob.SECUTOR_XI_XXXII_II + 5,
+                chamberOfOraclesID.mob.SECUTOR_XI_XXXII_II + 6,
+                chamberOfOraclesID.mob.SECUTOR_XI_XXXII_II + 7,
+                chamberOfOraclesID.mob.SECUTOR_XI_XXXII_II + 8,
             },
 
             {
-                chamberOfOraclesID.mob.SECUTOR_XI_XXXII + 10,
-                chamberOfOraclesID.mob.SECUTOR_XI_XXXII + 11,
-                chamberOfOraclesID.mob.SECUTOR_XI_XXXII + 12,
-                chamberOfOraclesID.mob.SECUTOR_XI_XXXII + 13,
+                chamberOfOraclesID.mob.SECUTOR_XI_XXXII_II + 10,
+                chamberOfOraclesID.mob.SECUTOR_XI_XXXII_II + 11,
+                chamberOfOraclesID.mob.SECUTOR_XI_XXXII_II + 12,
+                chamberOfOraclesID.mob.SECUTOR_XI_XXXII_II + 13,
             },
         },
 

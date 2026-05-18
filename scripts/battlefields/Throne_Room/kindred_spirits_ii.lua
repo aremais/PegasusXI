@@ -24,24 +24,24 @@ content.groups =
         mobIds =
         {
             {
-                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL,      -- Grand Marquis Chomiel
-                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 1,  -- Count Andromalius
-                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 2,  -- Duke Amduscias
-                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 3,  -- Duke Dantalian
+                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II,      -- Grand Marquis Chomiel
+                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 1,  -- Count Andromalius
+                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 2,  -- Duke Amduscias
+                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 3,  -- Duke Dantalian
             },
 
             {
-                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 7,
-                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 8,
-                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 9,
-                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 10,
+                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 7,
+                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 8,
+                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 9,
+                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 10,
             },
 
             {
-                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 14,
-                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 15,
-                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 16,
-                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 17,
+                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 14,
+                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 15,
+                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 16,
+                throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 17,
             },
         },
 
@@ -58,18 +58,18 @@ content.groups =
     {
         mobIds =
         {
-            { throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 5  }, -- Demon's Elemental
-            { throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 12 },
-            { throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 19 },
+            { throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 5  }, -- Demon's Elemental
+            { throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 12 },
+            { throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 19 },
         },
     },
 
     {
         mobIds =
         {
-            { throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 6  }, -- Demon's Avatar
-            { throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 13 },
-            { throneRoomID.mob.GRAND_MARQUIS_CHOMIEL + 20 },
+            { throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 6  }, -- Demon's Avatar
+            { throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 13 },
+            { throneRoomID.mob.GRAND_MARQUIS_CHOMIEL_II + 20 },
         },
 
         spawned = false,

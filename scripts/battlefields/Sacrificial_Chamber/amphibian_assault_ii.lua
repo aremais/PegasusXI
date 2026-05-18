@@ -20,7 +20,7 @@ local content = SKCNMBattlefield:new({
 
 -- Win only when all Sahagin AND the wyvern (if alive) are dead.
 local function handleDeath(battlefield, mob)
-    local baseMobId = sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + (battlefield:getArea() - 1) * 6
+    local baseMobId = sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + (battlefield:getArea() - 1) * 6
 
     for _, mobOffset in ipairs({ 0, 1, 2, 3, 5 }) do
         local battlefieldMob = GetMobByID(baseMobId + mobOffset)
@@ -42,24 +42,24 @@ content.groups =
         mobIds =
         {
             {
-                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER,      -- Qull the Fallstopper
-                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + 1,  -- Rauu the Whaleswooner
-                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + 2,  -- Hyohh the Conchblower
-                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + 3,  -- Pevv the Riverleaper
+                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II,      -- Qull the Fallstopper
+                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + 1,  -- Rauu the Whaleswooner
+                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + 2,  -- Hyohh the Conchblower
+                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + 3,  -- Pevv the Riverleaper
             },
 
             {
-                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + 6,
-                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + 7,
-                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + 8,
-                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + 9,
+                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + 6,
+                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + 7,
+                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + 8,
+                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + 9,
             },
 
             {
-                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + 12,
-                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + 13,
-                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + 14,
-                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + 15,
+                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + 12,
+                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + 13,
+                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + 14,
+                sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + 15,
             },
         },
 
@@ -70,9 +70,9 @@ content.groups =
     {
         mobIds =
         {
-            { sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + 5  }, -- Sahagin's Wyvern
-            { sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + 11 },
-            { sacrificialChamberID.mob.QULL_THE_FALLSTOPPER + 17 },
+            { sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + 5  }, -- Sahagin's Wyvern
+            { sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + 11 },
+            { sacrificialChamberID.mob.QULL_THE_FALLSTOPPER_II + 17 },
         },
 
         superlink = true,
