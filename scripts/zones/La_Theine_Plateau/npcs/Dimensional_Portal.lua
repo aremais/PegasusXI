@@ -8,6 +8,11 @@ local ID = zones[xi.zone.LA_THEINE_PLATEAU]
 local entity = {}
 
 entity.onTrigger = function(player, npc)
+    if player:hasKeyItem(xi.ki.SONG_OF_HOPE) then
+        player:setPos(605.200, -372.000, -957.800, 225, xi.zone.REISENJIMA)
+        return
+    end
+
     if player:getCurrentMission(xi.mission.log_id.COP) > xi.mission.id.cop.THE_WARRIORS_PATH then
         player:startEvent(204)
     else

@@ -16,7 +16,10 @@ local mission = Mission:new(xi.mission.log_id.ROV, xi.mission.id.rov.THE_BEGINNI
 
 mission.reward =
 {
-    keyItem     = xi.ki.REISENJIMA_SANCTORIUM_ORB,
+    keyItem     = {
+        xi.ki.REISENJIMA_SANCTORIUM_ORB,
+        xi.ki.SONG_OF_HOPE,
+    },
     nextMission = { xi.mission.log_id.ROV, xi.mission.id.rov.FLAMES_OF_PRAYER },
 }
 
