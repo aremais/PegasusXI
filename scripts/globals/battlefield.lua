@@ -355,6 +355,41 @@ xi.battlefield.id =
     CENTRAL_TEMENOS_4TH_FLOOR                  = 1306, -- Converted
     CENTRAL_TEMENOS_4TH_FLOOR_II               = 1307, -- Converted
     PURPLE_THE_NEW_BLACK                       = 2721, -- Converted
+
+    -- ── High-Tier Mission Battlefields (HTBF) — Avatar Prime Fights ──────────
+    TRIAL_BY_FIRE_HTBF                         = 3000,
+    TRIAL_BY_ICE_HTBF                          = 3001,
+    TRIAL_BY_WIND_HTBF                         = 3002,
+    TRIAL_BY_EARTH_HTBF                        = 3003,
+    TRIAL_BY_LIGHTNING_HTBF                    = 3004,
+    TRIAL_BY_WATER_HTBF                        = 3005,
+    MOONLIT_PATH_HTBF                          = 3006,
+    WAKING_THE_BEAST_HTBF                      = 3007,
+    WAKING_DREAMS_HTBF                         = 3008,
+    DIVINE_INTERFERENCE_HTBF                   = 3009,
+    STYGIAN_PACT_HTBF                          = 3010,
+    CHAMPION_OF_THE_DAWN_HTBF                  = 3011,
+
+    -- ── Macrocosmic Orb II SKCNMs (Rem's Tale Ch.1–5) ────────────────────────
+    AMPHIBIAN_ASSAULT_II                       = 3100,
+    JUNGLE_BOOGYMEN_II                         = 3101,
+    KINDRED_SPIRITS_II                         = 3102,
+    DEMOLITION_SQUAD_II                        = 3103,
+    BROTHERS_DAUPHE_II                         = 3104,
+    LEGION_XI_COMITATENSIS_II                  = 3105,
+    DISMEMBERMENT_BRIGADE_II                   = 3106,
+    DIVINE_PUNISHERS_II                        = 3107,
+    GRIMSHELL_SHOCKTROOPERS_II                 = 3108,
+    -- SKCNM: Macrocosmic Orb battles
+    JUNGLE_BOOGYMEN_II                         = 4000,
+    AMPHIBIAN_ASSAULT_II                       = 4001,
+    KINDRED_SPIRITS_II                         = 4002,
+    DEMOLITION_SQUAD_II                        = 4003,
+    BROTHERS_D_AURPHE_II                       = 4004,
+    LEGION_XI_COMITATENSIS_II                  = 4005,
+    DISMEMBERMENT_BRIGADE_II                   = 4006,
+    DIVINE_PUNISHERS_II                        = 4007,
+    GRIMSHELL_SHOCKTROOPERS_II                 = 4008,
 }
 
 xi.battlefield.itemUses =

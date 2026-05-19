@@ -68,9 +68,11 @@ zones[xi.zone.QUBIA_ARENA] =
         GHUL_I_BEABAN            = GetFirstID('Ghul-I-Beaban_DRK'),
         GLADIATORIAL_WEAPON      = GetFirstID('Gladiatorial_Weapon'),
         MAAT                     = GetFirstID('Maat'),
-        NEPHIYL_RAMPARTBREACHER  = GetFirstID('Nephiyl_Rampartbreacher'),
+        NEPHIYL_RAMPARTBREACHER    = GetFirstID('Nephiyl_Rampartbreacher'), -- Tier I  BCNM60
+        NEPHIYL_RAMPARTBREACHER_II = 17621410,                              -- Tier II SKCNM (level 110)
         SEED_ORC                 = GetFirstID('Seed_Orc'),
-        VAICOLIAUX_B_DAURPHE     = GetFirstID('Vaicoliaux_B_DAurphe'),
+        VAICOLIAUX_B_DAURPHE    = GetFirstID('Vaicoliaux_B_DAurphe'), -- Tier I  BCNM60
+        VAICOLIAUX_B_DAURPHE_II = 17621485,                           -- Tier II SKCNM (level 110)
         WARLORD_ROJGNOJ          = GetFirstID('Warlord_Rojgnoj'),
     },
 

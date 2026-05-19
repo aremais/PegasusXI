@@ -92428,6 +92428,443 @@ INSERT INTO `item_mods` VALUES (23220,1081,7); -- Bhikku Gloves +2: DAMAGE_LIMIT
 INSERT INTO `item_mods` VALUES (23497,1081,10); -- Amini Caban +3: DAMAGE_LIMITP: 10
 INSERT INTO `item_mods` VALUES (23494,998,55); -- Heathen's Cuirass +3: DREAD_SPIKES_EFFECT: 55
 INSERT INTO `item_mods` VALUES (23500,1081,10); -- Peltast's Plackart +3: DAMAGE_LIMITP: 10
+-- ============================================================
+-- HTBF Reward Items (29364, 29381-29425)
+-- ============================================================
+-- Trial by Earth (Titan Prime) — Togakushi Shuriken
+INSERT INTO `item_mods` VALUES (29364,10,3);   -- VIT+3
+INSERT INTO `item_mods` VALUES (29364,11,3);   -- AGI+3
+INSERT INTO `item_mods` VALUES (29364,25,5);   -- ACC+5
+INSERT INTO `item_mods` VALUES (29364,23,5);   -- ATT+5
+INSERT INTO `item_mods` VALUES (29364,26,10);  -- RACC+10
+
+-- Trial by Fire (Ifrit Prime) — Perfervid Sword
+INSERT INTO `item_mods` VALUES (29381,8,15);   -- STR+15
+INSERT INTO `item_mods` VALUES (29381,15,25);  -- FIRE_MEVA+25
+INSERT INTO `item_mods` VALUES (29381,25,20);  -- ACC+20
+INSERT INTO `item_mods` VALUES (29381,32,15);  -- FIRE_MAB+15
+
+-- Trial by Fire — Atakigiri (Great Katana)
+INSERT INTO `item_mods` VALUES (29382,8,15);   -- STR+15
+INSERT INTO `item_mods` VALUES (29382,23,25);  -- ATT+25
+-- Firesday: Double Attack+5% is conditional (script)
+
+-- Trial by Fire — Coalrake Sabots
+INSERT INTO `item_mods` VALUES (29383,1,64);   -- DEF+64
+INSERT INTO `item_mods` VALUES (29383,2,13);   -- HP+13
+INSERT INTO `item_mods` VALUES (29383,5,14);   -- MP+14
+INSERT INTO `item_mods` VALUES (29383,8,10);   -- STR+10
+INSERT INTO `item_mods` VALUES (29383,9,11);   -- DEX+11
+INSERT INTO `item_mods` VALUES (29383,10,10);  -- VIT+10
+INSERT INTO `item_mods` VALUES (29383,11,33);  -- AGI+33
+INSERT INTO `item_mods` VALUES (29383,12,17);  -- INT+17
+INSERT INTO `item_mods` VALUES (29383,13,19);  -- MND+19
+INSERT INTO `item_mods` VALUES (29383,14,38);  -- CHR+38
+INSERT INTO `item_mods` VALUES (29383,68,55);  -- EVA+55
+INSERT INTO `item_mods` VALUES (29383,31,107); -- MEVA+107
+INSERT INTO `item_mods` VALUES (29383,29,5);   -- MDEF+5
+INSERT INTO `item_mods` VALUES (29383,384,300);-- HASTE_GEAR+3%
+INSERT INTO `item_mods` VALUES (29383,119,8);  -- SINGING+8
+INSERT INTO `item_mods` VALUES (29383,455,8);  -- SONG_SPELLCASTING_TIME-8%
+INSERT INTO `item_mods` VALUES (29383,370,1);  -- REGEN+1
+
+-- Trial by Fire — Annealed Mantle
+INSERT INTO `item_mods` VALUES (29384,1,13);   -- DEF+13
+INSERT INTO `item_mods` VALUES (29384,8,5);    -- STR+5
+INSERT INTO `item_mods` VALUES (29384,288,4);  -- DOUBLE_ATTACK+4%
+-- Fire weather: ATT+20 (conditional, script)
+
+-- Trial by Fire — Immolation Grip
+INSERT INTO `item_mods` VALUES (29385,8,6);    -- STR+6
+INSERT INTO `item_mods` VALUES (29385,10,3);   -- VIT+3
+INSERT INTO `item_mods` VALUES (29385,73,3);   -- STORETP+3
+
+-- Trial by Ice (Shiva Prime) — Calved Claws (H2H)
+INSERT INTO `item_mods` VALUES (29386,9,12);   -- DEX+12
+INSERT INTO `item_mods` VALUES (29386,12,12);  -- INT+12
+INSERT INTO `item_mods` VALUES (29386,25,25);  -- ACC+25
+INSERT INTO `item_mods` VALUES (29386,175,500);-- SKILLCHAINDMG+5%
+-- Additional effect: Paralysis (script)
+
+-- Trial by Ice — Frazil Staff
+INSERT INTO `item_mods` VALUES (29387,5,100);  -- MP+100
+INSERT INTO `item_mods` VALUES (29387,28,120); -- MATT+120
+INSERT INTO `item_mods` VALUES (29387,27,10);  -- ENMITY+10
+-- Avatar: Magic Accuracy+20 (pet mod, script)
+
+-- Trial by Ice — Rimeice Earring
+INSERT INTO `item_mods` VALUES (29388,14,4);   -- CHR+4
+INSERT INTO `item_mods` VALUES (29388,27,5);   -- ENMITY+5
+INSERT INTO `item_mods` VALUES (29388,161,-100);-- DMGPHYS-1%
+-- Pet: Haste+3% (pet mod, script)
+
+-- Trial by Ice — Nilas Gloves
+INSERT INTO `item_mods` VALUES (29389,1,89);   -- DEF+89
+INSERT INTO `item_mods` VALUES (29389,2,45);   -- HP+45
+INSERT INTO `item_mods` VALUES (29389,5,20);   -- MP+20
+INSERT INTO `item_mods` VALUES (29389,8,11);   -- STR+11
+INSERT INTO `item_mods` VALUES (29389,9,35);   -- DEX+35
+INSERT INTO `item_mods` VALUES (29389,10,32);  -- VIT+32
+INSERT INTO `item_mods` VALUES (29389,11,5);   -- AGI+5
+INSERT INTO `item_mods` VALUES (29389,12,12);  -- INT+12
+INSERT INTO `item_mods` VALUES (29389,13,30);  -- MND+30
+INSERT INTO `item_mods` VALUES (29389,14,17);  -- CHR+17
+INSERT INTO `item_mods` VALUES (29389,23,15);  -- ATT+15
+INSERT INTO `item_mods` VALUES (29389,28,15);  -- MATT+15
+INSERT INTO `item_mods` VALUES (29389,68,24);  -- EVA+24
+INSERT INTO `item_mods` VALUES (29389,31,37);  -- MEVA+37
+INSERT INTO `item_mods` VALUES (29389,29,2);   -- MDEF+2
+INSERT INTO `item_mods` VALUES (29389,384,500);-- HASTE_GEAR+5%
+INSERT INTO `item_mods` VALUES (29389,27,5);   -- ENMITY+5
+INSERT INTO `item_mods` VALUES (29389,288,2);  -- DOUBLE_ATTACK+2%
+
+-- Trial by Ice — Floestone
+INSERT INTO `item_mods` VALUES (29390,8,3);    -- STR+3
+INSERT INTO `item_mods` VALUES (29390,12,5);   -- INT+5
+INSERT INTO `item_mods` VALUES (29390,23,10);  -- ATT+10
+
+-- Trial by Wind (Garuda Prime) — Levante Dagger
+INSERT INTO `item_mods` VALUES (29391,11,15);  -- AGI+15
+INSERT INTO `item_mods` VALUES (29391,25,27);  -- ACC+27
+INSERT INTO `item_mods` VALUES (29391,23,15);  -- ATT+15
+INSERT INTO `item_mods` VALUES (29391,68,27);  -- EVA+27
+INSERT INTO `item_mods` VALUES (29391,34,15);  -- WIND_MAB+15
+INSERT INTO `item_mods` VALUES (29391,289,8);  -- SUBTLE_BLOW+8
+-- Additional effect: Silence (script)
+
+-- Trial by Wind — Tramontane Axe
+INSERT INTO `item_mods` VALUES (29392,11,15);  -- AGI+15
+INSERT INTO `item_mods` VALUES (29392,25,15);  -- ACC+15
+INSERT INTO `item_mods` VALUES (29392,288,2);  -- DOUBLE_ATTACK+2%
+INSERT INTO `item_mods` VALUES (29392,165,1);  -- CRITHITRATE+1%
+
+-- Trial by Wind — Lebeche Ring
+INSERT INTO `item_mods` VALUES (29393,5,40);   -- MP+40
+INSERT INTO `item_mods` VALUES (29393,27,-5);  -- ENMITY-5
+INSERT INTO `item_mods` VALUES (29393,374,3);  -- CURE_POTENCY+3%
+-- Quick Magic+2% (TODO: mod ID unknown)
+
+-- Trial by Wind — Ponente Sash
+INSERT INTO `item_mods` VALUES (29394,8,4);    -- STR+4
+INSERT INTO `item_mods` VALUES (29394,11,9);   -- AGI+9
+INSERT INTO `item_mods` VALUES (29394,24,15);  -- RATT+15
+INSERT INTO `item_mods` VALUES (29394,359,3);  -- RAPID_SHOT+3
+
+-- Trial by Wind — Ostro Greaves
+INSERT INTO `item_mods` VALUES (29395,1,83);   -- DEF+83
+INSERT INTO `item_mods` VALUES (29395,2,15);   -- HP+15
+INSERT INTO `item_mods` VALUES (29395,8,14);   -- STR+14
+INSERT INTO `item_mods` VALUES (29395,9,16);   -- DEX+16
+INSERT INTO `item_mods` VALUES (29395,10,15);  -- VIT+15
+INSERT INTO `item_mods` VALUES (29395,11,38);  -- AGI+38
+INSERT INTO `item_mods` VALUES (29395,13,11);  -- MND+11
+INSERT INTO `item_mods` VALUES (29395,14,28);  -- CHR+28
+INSERT INTO `item_mods` VALUES (29395,25,20);  -- ACC+20
+INSERT INTO `item_mods` VALUES (29395,68,52);  -- EVA+52
+INSERT INTO `item_mods` VALUES (29395,31,80);  -- MEVA+80
+INSERT INTO `item_mods` VALUES (29395,29,3);   -- MDEF+3
+INSERT INTO `item_mods` VALUES (29395,384,400);-- HASTE_GEAR+4%
+INSERT INTO `item_mods` VALUES (29395,288,2);  -- DOUBLE_ATTACK+2%
+-- Jump TP Bonus+40 (DRG JA, TODO: mod ID unknown)
+
+-- Trial by Earth (Titan Prime) — Mafic Cudgel
+INSERT INTO `item_mods` VALUES (29396,10,15);  -- VIT+15
+INSERT INTO `item_mods` VALUES (29396,12,6);   -- INT+6
+INSERT INTO `item_mods` VALUES (29396,13,6);   -- MND+6
+INSERT INTO `item_mods` VALUES (29396,25,27);  -- ACC+27
+INSERT INTO `item_mods` VALUES (29396,27,6);   -- ENMITY+6
+INSERT INTO `item_mods` VALUES (29396,161,-1000);-- DMGPHYS-10%
+-- Additional effect: Earth (script)
+
+-- Trial by Earth — Foreshock Sword (Great Sword)
+INSERT INTO `item_mods` VALUES (29397,10,8);   -- VIT+8
+INSERT INTO `item_mods` VALUES (29397,12,13);  -- INT+13
+INSERT INTO `item_mods` VALUES (29397,25,15);  -- ACC+15
+INSERT INTO `item_mods` VALUES (29397,23,26);  -- ATT+26
+-- Spinning Slash damage+35% (JA-specific, script)
+
+-- Trial by Earth — Supershear Ring
+INSERT INTO `item_mods` VALUES (29398,2,30);   -- HP+30
+INSERT INTO `item_mods` VALUES (29398,5,30);   -- MP+30
+INSERT INTO `item_mods` VALUES (29398,10,5);   -- VIT+5
+INSERT INTO `item_mods` VALUES (29398,25,7);   -- ACC+7
+INSERT INTO `item_mods` VALUES (29398,27,5);   -- ENMITY+5
+
+-- Trial by Earth — Plumose Sachet
+INSERT INTO `item_mods` VALUES (29399,2,15);   -- HP+15
+INSERT INTO `item_mods` VALUES (29399,30,5);   -- MACC+5
+INSERT INTO `item_mods` VALUES (29399,27,-2);  -- ENMITY-2
+
+-- Trial by Lightning (Ramuh Prime) — Staccato Staff
+INSERT INTO `item_mods` VALUES (29400,9,20);   -- DEX+20
+INSERT INTO `item_mods` VALUES (29400,12,22);  -- INT+22
+INSERT INTO `item_mods` VALUES (29400,13,12);  -- MND+12
+INSERT INTO `item_mods` VALUES (29400,28,28);  -- MATT+28
+INSERT INTO `item_mods` VALUES (29400,311,200);-- MAGIC_DAMAGE+200
+INSERT INTO `item_mods` VALUES (29400,296,3);  -- CONSERVE_MP+3
+-- Additional effect: Lightning (script)
+
+-- Trial by Lightning — Donar Gun (Marksmanship)
+INSERT INTO `item_mods` VALUES (29401,9,5);    -- DEX+5
+INSERT INTO `item_mods` VALUES (29401,11,5);   -- AGI+5
+INSERT INTO `item_mods` VALUES (29401,26,27);  -- RACC+27
+INSERT INTO `item_mods` VALUES (29401,27,-3);  -- ENMITY-3
+INSERT INTO `item_mods` VALUES (29401,305,10); -- RECYCLE+10
+INSERT INTO `item_mods` VALUES (29401,36,15);  -- THUNDER_MAB+15
+
+-- Trial by Lightning — Voltsurge Torque
+INSERT INTO `item_mods` VALUES (29402,5,20);   -- MP+20
+INSERT INTO `item_mods` VALUES (29402,25,5);   -- ACC+5
+INSERT INTO `item_mods` VALUES (29402,30,7);   -- MACC+7
+INSERT INTO `item_mods` VALUES (29402,170,4);  -- FASTCAST+4%
+
+-- Trial by Lightning — Ukko Sash
+-- Pet: ACC+15, RACC+15, MACC+15, Haste+5%, Fast Cast+5% (TODO: pet mod IDs)
+
+-- Trial by Lightning — Brontes Cuisses
+INSERT INTO `item_mods` VALUES (29404,1,125);  -- DEF+125
+INSERT INTO `item_mods` VALUES (29404,2,112);  -- HP+112
+INSERT INTO `item_mods` VALUES (29404,8,35);   -- STR+35
+INSERT INTO `item_mods` VALUES (29404,10,21);  -- VIT+21
+INSERT INTO `item_mods` VALUES (29404,11,16);  -- AGI+16
+INSERT INTO `item_mods` VALUES (29404,12,25);  -- INT+25
+INSERT INTO `item_mods` VALUES (29404,13,12);  -- MND+12
+INSERT INTO `item_mods` VALUES (29404,14,10);  -- CHR+10
+INSERT INTO `item_mods` VALUES (29404,25,17);  -- ACC+17
+INSERT INTO `item_mods` VALUES (29404,68,22);  -- EVA+22
+INSERT INTO `item_mods` VALUES (29404,31,64);  -- MEVA+64
+INSERT INTO `item_mods` VALUES (29404,29,3);   -- MDEF+3
+INSERT INTO `item_mods` VALUES (29404,384,500);-- HASTE_GEAR+5%
+INSERT INTO `item_mods` VALUES (29404,27,7);   -- ENMITY+7
+INSERT INTO `item_mods` VALUES (29404,291,3);  -- COUNTER+3
+
+-- Trial by Water (Leviathan Prime) — Pelagos Lance
+INSERT INTO `item_mods` VALUES (29405,25,15);  -- ACC+15
+INSERT INTO `item_mods` VALUES (29405,161,-300);-- DMGPHYS-3%
+-- Spirit Link+30, Wyvern Regen+2 (DRG JA mods, TODO)
+
+-- Trial by Water — Vadose Rod (Club)
+INSERT INTO `item_mods` VALUES (29406,12,6);   -- INT+6
+INSERT INTO `item_mods` VALUES (29406,13,21);  -- MND+21
+INSERT INTO `item_mods` VALUES (29406,28,16);  -- MATT+16
+INSERT INTO `item_mods` VALUES (29406,311,124);-- MAGIC_DAMAGE+124
+INSERT INTO `item_mods` VALUES (29406,374,16); -- CURE_POTENCY+16%
+-- Aquaveil+1, Healing cast time -5% (TODO: mod IDs)
+
+-- Trial by Water — Phreatic Axe (Great Axe)
+INSERT INTO `item_mods` VALUES (29407,8,10);   -- STR+10
+INSERT INTO `item_mods` VALUES (29407,13,15);  -- MND+15
+INSERT INTO `item_mods` VALUES (29407,23,15);  -- ATT+15
+INSERT INTO `item_mods` VALUES (29407,306,5);  -- ZANSHIN+5
+
+-- Trial by Water — Benthos Grip
+INSERT INTO `item_mods` VALUES (29408,5,10);   -- MP+10
+INSERT INTO `item_mods` VALUES (29408,12,3);   -- INT+3
+INSERT INTO `item_mods` VALUES (29408,13,3);   -- MND+3
+INSERT INTO `item_mods` VALUES (29408,14,3);   -- CHR+3
+INSERT INTO `item_mods` VALUES (29408,30,5);   -- MACC+5
+
+-- Trial by Water — Neritic Earring
+INSERT INTO `item_mods` VALUES (29409,11,2);   -- AGI+2
+INSERT INTO `item_mods` VALUES (29409,24,4);   -- RATT+4
+INSERT INTO `item_mods` VALUES (29409,73,4);   -- STORETP+4
+
+-- The Moonlit Path (Fenrir Prime) — Medeina Kilij (Sword)
+INSERT INTO `item_mods` VALUES (29410,28,24);  -- MATT+24
+INSERT INTO `item_mods` VALUES (29410,311,123);-- MAGIC_DAMAGE+123
+INSERT INTO `item_mods` VALUES (29410,369,1);  -- REFRESH+1
+INSERT INTO `item_mods` VALUES (29410,122,10); -- BLUE_MAGIC_SKILL+10
+
+-- Moonlit Path — Capitoline Strap (DRK waist)
+INSERT INTO `item_mods` VALUES (29411,8,2);    -- STR+2
+INSERT INTO `item_mods` VALUES (29411,12,2);   -- INT+2
+INSERT INTO `item_mods` VALUES (29411,23,15);  -- ATT+15
+INSERT INTO `item_mods` VALUES (29411,288,1);  -- DOUBLE_ATTACK+1%
+INSERT INTO `item_mods` VALUES (29411,73,2);   -- STORETP+2
+
+-- Moonlit Path — Vrikodara Jupon (Body)
+INSERT INTO `item_mods` VALUES (29412,1,129);  -- DEF+129
+INSERT INTO `item_mods` VALUES (29412,2,54);   -- HP+54
+INSERT INTO `item_mods` VALUES (29412,5,59);   -- MP+59
+INSERT INTO `item_mods` VALUES (29412,8,21);   -- STR+21
+INSERT INTO `item_mods` VALUES (29412,9,21);   -- DEX+21
+INSERT INTO `item_mods` VALUES (29412,10,21);  -- VIT+21
+INSERT INTO `item_mods` VALUES (29412,11,21);  -- AGI+21
+INSERT INTO `item_mods` VALUES (29412,12,29);  -- INT+29
+INSERT INTO `item_mods` VALUES (29412,13,29);  -- MND+29
+INSERT INTO `item_mods` VALUES (29412,14,29);  -- CHR+29
+INSERT INTO `item_mods` VALUES (29412,68,41);  -- EVA+41
+INSERT INTO `item_mods` VALUES (29412,31,80);  -- MEVA+80
+INSERT INTO `item_mods` VALUES (29412,29,6);   -- MDEF+6
+INSERT INTO `item_mods` VALUES (29412,384,300);-- HASTE_GEAR+3%
+INSERT INTO `item_mods` VALUES (29412,170,5);  -- FASTCAST+5%
+INSERT INTO `item_mods` VALUES (29412,374,13); -- CURE_POTENCY+13%
+INSERT INTO `item_mods` VALUES (29412,369,2);  -- REFRESH+2
+INSERT INTO `item_mods` VALUES (29412,161,-300);-- DMGPHYS-3%
+
+-- Moonlit Path — Ma'iitsoh Haube (Head)
+INSERT INTO `item_mods` VALUES (29413,1,113);  -- DEF+113
+INSERT INTO `item_mods` VALUES (29413,2,68);   -- HP+68
+INSERT INTO `item_mods` VALUES (29413,5,53);   -- MP+53
+INSERT INTO `item_mods` VALUES (29413,8,28);   -- STR+28
+INSERT INTO `item_mods` VALUES (29413,9,24);   -- DEX+24
+INSERT INTO `item_mods` VALUES (29413,10,20);  -- VIT+20
+INSERT INTO `item_mods` VALUES (29413,11,18);  -- AGI+18
+INSERT INTO `item_mods` VALUES (29413,12,17);  -- INT+17
+INSERT INTO `item_mods` VALUES (29413,13,17);  -- MND+17
+INSERT INTO `item_mods` VALUES (29413,14,17);  -- CHR+17
+INSERT INTO `item_mods` VALUES (29413,23,33);  -- ATT+33
+INSERT INTO `item_mods` VALUES (29413,68,33);  -- EVA+33
+INSERT INTO `item_mods` VALUES (29413,31,43);  -- MEVA+43
+INSERT INTO `item_mods` VALUES (29413,29,2);   -- MDEF+2
+INSERT INTO `item_mods` VALUES (29413,384,700);-- HASTE_GEAR+7%
+INSERT INTO `item_mods` VALUES (29413,306,5);  -- ZANSHIN+5
+
+-- Moonlit Path — Lupine Cape
+INSERT INTO `item_mods` VALUES (29414,8,5);    -- STR+5
+INSERT INTO `item_mods` VALUES (29414,11,5);   -- AGI+5
+INSERT INTO `item_mods` VALUES (29414,25,15);  -- ACC+15
+INSERT INTO `item_mods` VALUES (29414,68,15);  -- EVA+15
+INSERT INTO `item_mods` VALUES (29414,27,-5);  -- ENMITY-5
+INSERT INTO `item_mods` VALUES (29414,73,4);   -- STORETP+4
+
+-- Waking the Beast (Carbuncle Prime) — Marquetry Staff
+INSERT INTO `item_mods` VALUES (29415,5,88);   -- MP+88
+INSERT INTO `item_mods` VALUES (29415,28,110); -- MATT+110
+INSERT INTO `item_mods` VALUES (29415,126,3);  -- BP_DAMAGE+3%
+INSERT INTO `item_mods` VALUES (29415,30,35);  -- MACC+35 (Avatar Magic Accuracy)
+-- Blood Boon+5 (SMN JA, TODO)
+
+-- Waking the Beast — Engraved Belt
+INSERT INTO `item_mods` VALUES (29416,1,12);   -- DEF+12
+INSERT INTO `item_mods` VALUES (29416,8,7);    -- STR+7
+INSERT INTO `item_mods` VALUES (29416,12,7);   -- INT+7
+INSERT INTO `item_mods` VALUES (29416,13,7);   -- MND+7
+INSERT INTO `item_mods` VALUES (29416,25,10);  -- ACC+10
+INSERT INTO `item_mods` VALUES (29416,23,10);  -- ATT+10
+
+-- Waking the Beast — Lapidary Tunic (Body)
+INSERT INTO `item_mods` VALUES (29417,1,135);  -- DEF+135
+INSERT INTO `item_mods` VALUES (29417,2,63);   -- HP+63
+INSERT INTO `item_mods` VALUES (29417,5,61);   -- MP+61
+INSERT INTO `item_mods` VALUES (29417,8,26);   -- STR+26
+INSERT INTO `item_mods` VALUES (29417,9,32);   -- DEX+32
+INSERT INTO `item_mods` VALUES (29417,10,23);  -- VIT+23
+INSERT INTO `item_mods` VALUES (29417,11,32);  -- AGI+32
+INSERT INTO `item_mods` VALUES (29417,12,23);  -- INT+23
+INSERT INTO `item_mods` VALUES (29417,13,19);  -- MND+19
+INSERT INTO `item_mods` VALUES (29417,14,19);  -- CHR+19
+INSERT INTO `item_mods` VALUES (29417,23,25);  -- ATT+25
+INSERT INTO `item_mods` VALUES (29417,24,25);  -- RATT+25
+INSERT INTO `item_mods` VALUES (29417,68,52);  -- EVA+52
+INSERT INTO `item_mods` VALUES (29417,31,80);  -- MEVA+80
+
+-- Waking the Beast — Satlada Necklace
+INSERT INTO `item_mods` VALUES (29418,12,6);   -- INT+6
+INSERT INTO `item_mods` VALUES (29418,311,10); -- MAGIC_DAMAGE+10
+
+-- Waking the Beast — Diamantaire Sollerets (Feet)
+INSERT INTO `item_mods` VALUES (29419,1,85);   -- DEF+85
+INSERT INTO `item_mods` VALUES (29419,2,18);   -- HP+18
+INSERT INTO `item_mods` VALUES (29419,8,16);   -- STR+16
+INSERT INTO `item_mods` VALUES (29419,9,12);   -- DEX+12
+INSERT INTO `item_mods` VALUES (29419,10,17);  -- VIT+17
+INSERT INTO `item_mods` VALUES (29419,11,29);  -- AGI+29
+INSERT INTO `item_mods` VALUES (29419,13,10);  -- MND+10
+INSERT INTO `item_mods` VALUES (29419,14,26);  -- CHR+26
+INSERT INTO `item_mods` VALUES (29419,25,20);  -- ACC+20
+INSERT INTO `item_mods` VALUES (29419,23,20);  -- ATT+20
+INSERT INTO `item_mods` VALUES (29419,68,49);  -- EVA+49
+INSERT INTO `item_mods` VALUES (29419,31,64);  -- MEVA+64
+INSERT INTO `item_mods` VALUES (29419,29,2);   -- MDEF+2
+INSERT INTO `item_mods` VALUES (29419,384,300);-- HASTE_GEAR+3%
+INSERT INTO `item_mods` VALUES (29419,161,-400);-- DMGPHYS-4%
+-- Shield skill+13, Sleep resistance+15 (TODO: mod IDs)
+
+-- Waking Dreams (Diabolos Prime) — Shuhansadamune (Katana)
+INSERT INTO `item_mods` VALUES (29420,68,22);  -- EVA+22
+INSERT INTO `item_mods` VALUES (29420,27,10);  -- ENMITY+10
+INSERT INTO `item_mods` VALUES (29420,291,5);  -- COUNTER+5
+INSERT INTO `item_mods` VALUES (29420,170,5);  -- FASTCAST+5%
+INSERT INTO `item_mods` VALUES (29420,161,-300);-- DMGPHYS-3%
+
+-- Waking Dreams — Darkside Earring
+INSERT INTO `item_mods` VALUES (29421,14,3);   -- CHR+3
+INSERT INTO `item_mods` VALUES (29421,119,5);  -- SINGING+5
+INSERT INTO `item_mods` VALUES (29421,121,5);  -- WIND_INSTRUMENT+5
+INSERT INTO `item_mods` VALUES (29421,122,5);  -- BLUE_MAGIC_SKILL+5
+INSERT INTO `item_mods` VALUES (29421,161,-300);-- DMGPHYS-3%
+
+-- Waking Dreams — Pernicious Ring
+INSERT INTO `item_mods` VALUES (29422,2,30);   -- HP+30
+INSERT INTO `item_mods` VALUES (29422,27,5);   -- ENMITY+5
+INSERT INTO `item_mods` VALUES (29422,288,1);  -- DOUBLE_ATTACK+1%
+INSERT INTO `item_mods` VALUES (29422,73,4);   -- STORETP+4
+
+-- Waking Dreams — Chozoron Coselete (Body)
+INSERT INTO `item_mods` VALUES (29423,1,150);  -- DEF+150
+INSERT INTO `item_mods` VALUES (29423,2,63);   -- HP+63
+INSERT INTO `item_mods` VALUES (29423,5,61);   -- MP+61
+INSERT INTO `item_mods` VALUES (29423,8,28);   -- STR+28
+INSERT INTO `item_mods` VALUES (29423,9,30);   -- DEX+30
+INSERT INTO `item_mods` VALUES (29423,10,23);  -- VIT+23
+INSERT INTO `item_mods` VALUES (29423,11,29);  -- AGI+29
+INSERT INTO `item_mods` VALUES (29423,12,25);  -- INT+25
+INSERT INTO `item_mods` VALUES (29423,13,24);  -- MND+24
+INSERT INTO `item_mods` VALUES (29423,14,24);  -- CHR+24
+INSERT INTO `item_mods` VALUES (29423,25,10);  -- ACC+10
+INSERT INTO `item_mods` VALUES (29423,30,10);  -- MACC+10
+INSERT INTO `item_mods` VALUES (29423,68,52);  -- EVA+52
+INSERT INTO `item_mods` VALUES (29423,31,80);  -- MEVA+80
+INSERT INTO `item_mods` VALUES (29423,29,6);   -- MDEF+6
+INSERT INTO `item_mods` VALUES (29423,384,400);-- HASTE_GEAR+4%
+INSERT INTO `item_mods` VALUES (29423,369,2);  -- REFRESH+2
+INSERT INTO `item_mods` VALUES (29423,160,-800);-- DMG (all) -8%
+
+-- Waking Dreams — Loagaeth Cuffs (Hands)
+INSERT INTO `item_mods` VALUES (29424,1,83);   -- DEF+83
+INSERT INTO `item_mods` VALUES (29424,2,22);   -- HP+22
+INSERT INTO `item_mods` VALUES (29424,5,14);   -- MP+14
+INSERT INTO `item_mods` VALUES (29424,8,6);    -- STR+6
+INSERT INTO `item_mods` VALUES (29424,9,28);   -- DEX+28
+INSERT INTO `item_mods` VALUES (29424,10,25);  -- VIT+25
+INSERT INTO `item_mods` VALUES (29424,11,5);   -- AGI+5
+INSERT INTO `item_mods` VALUES (29424,12,23);  -- INT+23
+INSERT INTO `item_mods` VALUES (29424,13,37);  -- MND+37
+INSERT INTO `item_mods` VALUES (29424,14,23);  -- CHR+23
+INSERT INTO `item_mods` VALUES (29424,68,22);  -- EVA+22
+INSERT INTO `item_mods` VALUES (29424,31,37);  -- MEVA+37
+INSERT INTO `item_mods` VALUES (29424,28,25);  -- MATT+25
+INSERT INTO `item_mods` VALUES (29424,29,3);   -- MDEF+3
+INSERT INTO `item_mods` VALUES (29424,384,300);-- HASTE_GEAR+3%
+INSERT INTO `item_mods` VALUES (29424,115,13); -- ELEM (elemental magic skill)+13
+-- Elemental recast -7% (TODO: mod ID unknown)
+
+-- Alexander (disabled fight) — Sacro Breastplate
+INSERT INTO `item_mods` VALUES (29425,1,170);  -- DEF+170
+INSERT INTO `item_mods` VALUES (29425,2,182);  -- HP+182
+INSERT INTO `item_mods` VALUES (29425,5,73);   -- MP+73
+INSERT INTO `item_mods` VALUES (29425,8,70);   -- STR+70
+INSERT INTO `item_mods` VALUES (29425,9,21);   -- DEX+21
+INSERT INTO `item_mods` VALUES (29425,10,25);  -- VIT+25
+INSERT INTO `item_mods` VALUES (29425,11,33);  -- AGI+33
+INSERT INTO `item_mods` VALUES (29425,12,37);  -- INT+37
+INSERT INTO `item_mods` VALUES (29425,13,25);  -- MND+25
+INSERT INTO `item_mods` VALUES (29425,14,38);  -- CHR+38
+INSERT INTO `item_mods` VALUES (29425,25,25);  -- ACC+25
+INSERT INTO `item_mods` VALUES (29425,23,60);  -- ATT+60
+INSERT INTO `item_mods` VALUES (29425,30,25);  -- MACC+25
+INSERT INTO `item_mods` VALUES (29425,28,40);  -- MATT+40
+INSERT INTO `item_mods` VALUES (29425,29,12);  -- MDEF+12
+INSERT INTO `item_mods` VALUES (29425,311,60); -- MAGIC_DAMAGE+60
+INSERT INTO `item_mods` VALUES (29425,68,96);  -- EVA+96
+INSERT INTO `item_mods` VALUES (29425,31,129); -- MEVA+129
+INSERT INTO `item_mods` VALUES (29425,384,500);-- HASTE_GEAR+5%
+INSERT INTO `item_mods` VALUES (29425,291,15); -- COUNTER+15
+INSERT INTO `item_mods` VALUES (29425,170,10); -- FASTCAST+10%
+INSERT INTO `item_mods` VALUES (29425,289,15); -- SUBTLE_BLOW+15
+INSERT INTO `item_mods` VALUES (29425,370,13); -- REGEN+13
+
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

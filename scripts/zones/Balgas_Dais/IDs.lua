@@ -59,7 +59,8 @@ zones[xi.zone.BALGAS_DAIS] =
         KING_OF_CUPS            = GetFirstID('King_of_Cups'),
         KING_OF_SWORDS          = GetFirstID('King_of_Swords'),
         MAAT                    = GetFirstID('Maat'),
-        VOO_TOLU_THE_GHOSTFIST  = GetFirstID('Voo_Tolu_the_Ghostfist'),
+        VOO_TOLU_THE_GHOSTFIST    = GetFirstID('Voo_Tolu_the_Ghostfist'), -- Tier I  BCNM60
+        VOO_TOLU_THE_GHOSTFIST_II = 17375629,                             -- Tier II SKCNM (level 110)
     },
     npc =
     {
