@@ -60096,38 +60096,38 @@ INSERT INTO `mob_spawn_points` VALUES (17473637,0,'Clone_of_Shadows','Clone of S
 INSERT INTO `mob_spawn_points` VALUES (17473638,0,'Pet_Prime','Pet Prime',16,0,0,0.000,0.000,0.000,0);
 
 -- *The Moonlit Path (HTMBF)
-INSERT INTO `mob_spawn_points` VALUES (17473639,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473640,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473641,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473642,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473643,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473644,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473645,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473646,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473647,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473648,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473649,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473650,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473651,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473652,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473653,0,'Fenrir_Prime','Fenrir Prime',31,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17473639,0,'Fenrir_Prime','Fenrir Prime',31,99,99,340.000,47.000,-337.000,65);
+INSERT INTO `mob_spawn_points` VALUES (17473640,0,'Fenrir_Prime','Fenrir Prime',31,99,99,340.000,47.000,-337.000,65);
+INSERT INTO `mob_spawn_points` VALUES (17473641,0,'Fenrir_Prime','Fenrir Prime',31,99,99,340.000,47.000,-337.000,65);
+INSERT INTO `mob_spawn_points` VALUES (17473642,0,'Fenrir_Prime','Fenrir Prime',31,99,99,340.000,47.000,-337.000,65);
+INSERT INTO `mob_spawn_points` VALUES (17473643,0,'Fenrir_Prime','Fenrir Prime',31,99,99,340.000,47.000,-337.000,65);
+INSERT INTO `mob_spawn_points` VALUES (17473644,0,'Fenrir_Prime','Fenrir Prime',31,99,99,-60.097,9.000,62.967,65);
+INSERT INTO `mob_spawn_points` VALUES (17473645,0,'Fenrir_Prime','Fenrir Prime',31,99,99,-60.097,9.000,62.967,65);
+INSERT INTO `mob_spawn_points` VALUES (17473646,0,'Fenrir_Prime','Fenrir Prime',31,99,99,-60.097,9.000,62.967,65);
+INSERT INTO `mob_spawn_points` VALUES (17473647,0,'Fenrir_Prime','Fenrir Prime',31,99,99,-60.097,9.000,62.967,65);
+INSERT INTO `mob_spawn_points` VALUES (17473648,0,'Fenrir_Prime','Fenrir Prime',31,99,99,-60.097,9.000,62.967,65);
+INSERT INTO `mob_spawn_points` VALUES (17473649,0,'Fenrir_Prime','Fenrir Prime',31,99,99,-379.943,-53.000,422.974,65);
+INSERT INTO `mob_spawn_points` VALUES (17473650,0,'Fenrir_Prime','Fenrir Prime',31,99,99,-379.943,-53.000,422.974,65);
+INSERT INTO `mob_spawn_points` VALUES (17473651,0,'Fenrir_Prime','Fenrir Prime',31,99,99,-379.943,-53.000,422.974,65);
+INSERT INTO `mob_spawn_points` VALUES (17473652,0,'Fenrir_Prime','Fenrir Prime',31,99,99,-379.943,-53.000,422.974,65);
+INSERT INTO `mob_spawn_points` VALUES (17473653,0,'Fenrir_Prime','Fenrir Prime',31,99,99,-379.943,-53.000,422.974,65);
 
 -- *Waking the Beast (HTMBF)
-INSERT INTO `mob_spawn_points` VALUES (17473654,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473655,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473656,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473657,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473658,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473659,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473660,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473661,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473662,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473663,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473664,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473665,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473666,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473667,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17473668,0,'Carbuncle_Prime','Carbuncle Prime',32,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17473654,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,340.000,46.907,-340.000,64);
+INSERT INTO `mob_spawn_points` VALUES (17473655,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,340.000,46.907,-340.000,64);
+INSERT INTO `mob_spawn_points` VALUES (17473656,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,340.000,46.907,-340.000,64);
+INSERT INTO `mob_spawn_points` VALUES (17473657,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,340.000,46.907,-340.000,64);
+INSERT INTO `mob_spawn_points` VALUES (17473658,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,340.000,46.907,-340.000,64);
+INSERT INTO `mob_spawn_points` VALUES (17473659,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,-60.000,9.000,63.000,65);
+INSERT INTO `mob_spawn_points` VALUES (17473660,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,-60.000,9.000,63.000,65);
+INSERT INTO `mob_spawn_points` VALUES (17473661,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,-60.000,9.000,63.000,65);
+INSERT INTO `mob_spawn_points` VALUES (17473662,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,-60.000,9.000,63.000,65);
+INSERT INTO `mob_spawn_points` VALUES (17473663,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,-60.000,9.000,63.000,65);
+INSERT INTO `mob_spawn_points` VALUES (17473664,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,-380.000,-53.000,423.000,65);
+INSERT INTO `mob_spawn_points` VALUES (17473665,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,-380.000,-53.000,423.000,65);
+INSERT INTO `mob_spawn_points` VALUES (17473666,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,-380.000,-53.000,423.000,65);
+INSERT INTO `mob_spawn_points` VALUES (17473667,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,-380.000,-53.000,423.000,65);
+INSERT INTO `mob_spawn_points` VALUES (17473668,0,'Carbuncle_Prime','Carbuncle Prime',32,99,99,-380.000,-53.000,423.000,65);
 
 -- -----------------------------------------------------------
 -- Crawler's Nest [S] (Zone 171)
@@ -69488,21 +69488,21 @@ INSERT INTO `mob_spawn_points` VALUES (17600538,0,'Garuda_Prime_ASA','Garuda Pri
 INSERT INTO `mob_spawn_points` VALUES (17600539,0,'Garuda_Prime_ASA','Garuda Prime',6,40,40,-376.940,-78.992,512.872,105);
 
 -- *Trial by Wind (HTMBF)
-INSERT INTO `mob_spawn_points` VALUES (17600540,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17600541,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17600542,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17600543,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17600544,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17600545,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17600546,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17600547,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17600548,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17600549,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17600550,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17600551,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17600552,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17600553,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17600554,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17600540,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17600541,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17600542,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17600543,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17600544,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17600545,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,23.115,-19.001,32.999,105);
+INSERT INTO `mob_spawn_points` VALUES (17600546,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,23.115,-19.001,32.999,105);
+INSERT INTO `mob_spawn_points` VALUES (17600547,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,23.115,-19.001,32.999,105);
+INSERT INTO `mob_spawn_points` VALUES (17600548,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,23.115,-19.001,32.999,105);
+INSERT INTO `mob_spawn_points` VALUES (17600549,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,23.115,-19.001,32.999,105);
+INSERT INTO `mob_spawn_points` VALUES (17600550,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,-376.940,-78.992,512.872,105);
+INSERT INTO `mob_spawn_points` VALUES (17600551,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,-376.940,-78.992,512.872,105);
+INSERT INTO `mob_spawn_points` VALUES (17600552,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,-376.940,-78.992,512.872,105);
+INSERT INTO `mob_spawn_points` VALUES (17600553,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,-376.940,-78.992,512.872,105);
+INSERT INTO `mob_spawn_points` VALUES (17600554,0,'Garuda_Prime_HTBF','Garuda Prime',7,99,99,-376.940,-78.992,512.872,105);
 
 -- ------------------------------------------------------------
 -- Cloister of Storms (Zone 202)
@@ -69549,21 +69549,21 @@ INSERT INTO `mob_spawn_points` VALUES (17604637,0,'Ramuh_Prime_ASA','Ramuh Prime
 INSERT INTO `mob_spawn_points` VALUES (17604638,0,'Ramuh_Prime_ASA','Ramuh Prime',7,40,40,-377.066,-79.002,513.045,105);
 
 -- *Trial by Lightning (HTMBF)
-INSERT INTO `mob_spawn_points` VALUES (17604639,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17604640,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17604641,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17604642,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17604643,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17604644,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17604645,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17604646,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17604647,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17604648,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17604649,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17604650,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17604651,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17604652,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17604653,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17604639,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17604640,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17604641,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17604642,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17604643,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17604644,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,23.048,-19.001,33.005,105);
+INSERT INTO `mob_spawn_points` VALUES (17604645,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,23.048,-19.001,33.005,105);
+INSERT INTO `mob_spawn_points` VALUES (17604646,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,23.048,-19.001,33.005,105);
+INSERT INTO `mob_spawn_points` VALUES (17604647,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,23.048,-19.001,33.005,105);
+INSERT INTO `mob_spawn_points` VALUES (17604648,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,23.048,-19.001,33.005,105);
+INSERT INTO `mob_spawn_points` VALUES (17604649,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,-377.066,-79.002,513.045,105);
+INSERT INTO `mob_spawn_points` VALUES (17604650,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,-377.066,-79.002,513.045,105);
+INSERT INTO `mob_spawn_points` VALUES (17604651,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,-377.066,-79.002,513.045,105);
+INSERT INTO `mob_spawn_points` VALUES (17604652,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,-377.066,-79.002,513.045,105);
+INSERT INTO `mob_spawn_points` VALUES (17604653,0,'Ramuh_Prime_HTBF','Ramuh Prime',8,99,99,-377.066,-79.002,513.045,105);
 
 -- ------------------------------------------------------------
 -- Cloister of Frost (Zone 203)
@@ -69622,21 +69622,21 @@ INSERT INTO `mob_spawn_points` VALUES (17608745,0,'Shiva_Prime_ASA','Shiva Prime
 INSERT INTO `mob_spawn_points` VALUES (17608746,0,'Shiva_Prime_ASA','Shiva Prime',6,40,40,-377.091,-78.999,512.996,105);
 
 -- *Trial by Ice (HTMBF)
-INSERT INTO `mob_spawn_points` VALUES (17608747,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17608748,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17608749,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17608750,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17608751,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17608752,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17608753,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17608754,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17608755,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17608756,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17608757,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17608758,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17608759,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17608760,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17608761,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17608747,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17608748,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17608749,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17608750,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17608751,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17608752,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,23.070,-18.991,32.860,105);
+INSERT INTO `mob_spawn_points` VALUES (17608753,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,23.070,-18.991,32.860,105);
+INSERT INTO `mob_spawn_points` VALUES (17608754,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,23.070,-18.991,32.860,105);
+INSERT INTO `mob_spawn_points` VALUES (17608755,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,23.070,-18.991,32.860,105);
+INSERT INTO `mob_spawn_points` VALUES (17608756,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,23.070,-18.991,32.860,105);
+INSERT INTO `mob_spawn_points` VALUES (17608757,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,-377.091,-78.999,512.996,105);
+INSERT INTO `mob_spawn_points` VALUES (17608758,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,-377.091,-78.999,512.996,105);
+INSERT INTO `mob_spawn_points` VALUES (17608759,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,-377.091,-78.999,512.996,105);
+INSERT INTO `mob_spawn_points` VALUES (17608760,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,-377.091,-78.999,512.996,105);
+INSERT INTO `mob_spawn_points` VALUES (17608761,0,'Shiva_Prime_HTBF','Shiva Prime',7,99,99,-377.091,-78.999,512.996,105);
 
 -- ------------------------------------------------------------
 -- Fei'Yin (Zone 204)
@@ -70856,21 +70856,21 @@ INSERT INTO `mob_spawn_points` VALUES (17625111,0,'Ifrit_Prime_ASA','Ifrit Prime
 INSERT INTO `mob_spawn_points` VALUES (17625112,0,'Ifrit_Prime_ASA','Ifrit Prime',5,40,40,-376.950,-79.007,513.097,105);
 
 -- *Trial by Fire (HTMBF)
-INSERT INTO `mob_spawn_points` VALUES (17625113,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17625114,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17625115,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17625116,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17625117,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17625118,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17625119,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17625120,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17625121,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17625122,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17625123,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17625124,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17625125,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17625126,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17625127,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17625113,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17625114,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17625115,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17625116,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17625117,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17625118,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,22.924,-18.996,32.955,105);
+INSERT INTO `mob_spawn_points` VALUES (17625119,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,22.924,-18.996,32.955,105);
+INSERT INTO `mob_spawn_points` VALUES (17625120,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,22.924,-18.996,32.955,105);
+INSERT INTO `mob_spawn_points` VALUES (17625121,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,22.924,-18.996,32.955,105);
+INSERT INTO `mob_spawn_points` VALUES (17625122,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,22.924,-18.996,32.955,105);
+INSERT INTO `mob_spawn_points` VALUES (17625123,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,-376.950,-79.007,513.097,105);
+INSERT INTO `mob_spawn_points` VALUES (17625124,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,-376.950,-79.007,513.097,105);
+INSERT INTO `mob_spawn_points` VALUES (17625125,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,-376.950,-79.007,513.097,105);
+INSERT INTO `mob_spawn_points` VALUES (17625126,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,-376.950,-79.007,513.097,105);
+INSERT INTO `mob_spawn_points` VALUES (17625127,0,'Ifrit_Prime_HTBF','Ifrit Prime',6,99,99,-376.950,-79.007,513.097,105);
 
 -- ------------------------------------------------------------
 -- Quicksand Caves (Zone 208)
@@ -71445,21 +71445,21 @@ INSERT INTO `mob_spawn_points` VALUES (17641495,0,'Leviathan_Prime_ASA','Leviath
 INSERT INTO `mob_spawn_points` VALUES (17641496,0,'Leviathan_Prime_ASA','Leviathan Prime',5,40,40,-377.046,-78.994,512.925,105);
 
 -- *Trial by Water (HTMBF)
-INSERT INTO `mob_spawn_points` VALUES (17641497,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17641498,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17641499,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17641500,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17641501,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17641502,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17641503,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17641504,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17641505,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17641506,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17641507,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17641508,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17641509,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17641510,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17641511,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17641497,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17641498,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17641499,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17641500,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17641501,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,503.000,41.000,-367.000,105);
+INSERT INTO `mob_spawn_points` VALUES (17641502,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,22.940,-18.991,32.879,105);
+INSERT INTO `mob_spawn_points` VALUES (17641503,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,22.940,-18.991,32.879,105);
+INSERT INTO `mob_spawn_points` VALUES (17641504,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,22.940,-18.991,32.879,105);
+INSERT INTO `mob_spawn_points` VALUES (17641505,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,22.940,-18.991,32.879,105);
+INSERT INTO `mob_spawn_points` VALUES (17641506,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,22.940,-18.991,32.879,105);
+INSERT INTO `mob_spawn_points` VALUES (17641507,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,-377.046,-78.994,512.925,105);
+INSERT INTO `mob_spawn_points` VALUES (17641508,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,-377.046,-78.994,512.925,105);
+INSERT INTO `mob_spawn_points` VALUES (17641509,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,-377.046,-78.994,512.925,105);
+INSERT INTO `mob_spawn_points` VALUES (17641510,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,-377.046,-78.994,512.925,105);
+INSERT INTO `mob_spawn_points` VALUES (17641511,0,'Leviathan_Prime_HTBF','Leviathan Prime',6,99,99,-377.046,-78.994,512.925,105);
 
 -- ------------------------------------------------------------
 -- Gustav Tunnel (Zone 212)

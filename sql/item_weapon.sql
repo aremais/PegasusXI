@@ -5165,6 +5165,52 @@ INSERT INTO `item_weapon` VALUES (22308,'bayeux_bullet',26,0,0,0,0,1,1,240,315,0
 INSERT INTO `item_weapon` VALUES (22309,'bayeux_arrow',25,0,0,0,0,1,1,90,116,0);      -- TODO: Not implemented
 INSERT INTO `item_weapon` VALUES (22310,'hoxne_ampulla',0,0,0,0,0,0,1,999,0,0);     -- TODO: Not implemented
 
+-- ============================================================
+-- HTBF (High-Tier Mission Battlefield) Reward Weapons
+-- Custom IDs: 29364, 29381-29382, 29386-29387, 29391-29392,
+--             29396-29397, 29400-29401, 29405-29407, 29410, 29415, 29420
+-- Format: (itemId, name, skill, subskill, ilvl_skill, ilvl_parry, ilvl_macc, dmgType, hit, delay, dmg, unlock_points)
+-- skill: HTH=1,DAG=2,SWD=3,GSWD=4,AXE=5,GAXE=6,SCY=7,PLM=8,KTN=9,GKTN=10,CLB=11,STF=12,MARK=26,THROW=27
+-- dmgType: PIERCING=1, SLASHING=2, BLUNT=3, HTH=4
+-- ============================================================
+
+-- Trial by Earth (Titan Prime) — Togakushi Shuriken (Range/Throwing, NIN)
+INSERT INTO `item_weapon` VALUES (29364,'togakushi_shuriken',27,0,242,0,0,1,1,192,104,0);
+
+-- Trial by Fire (Ifrit Prime)
+INSERT INTO `item_weapon` VALUES (29381,'perfervid_sword',3,0,242,242,188,2,1,236,110,0);      -- Sword, WAR/THF/DRK/BST/RNG/SAM/BLU
+INSERT INTO `item_weapon` VALUES (29382,'atakigiri',10,0,242,242,188,2,1,480,258,0);           -- Great Katana, SAM
+
+-- Trial by Ice (Shiva Prime)
+INSERT INTO `item_weapon` VALUES (29386,'calved_claws',1,0,242,242,188,4,1,90,114,0);         -- H2H, WAR/MNK/RDM/THF/DRK/BST/NIN/PUP/DNC
+INSERT INTO `item_weapon` VALUES (29387,'frazil_staff',12,0,242,242,188,3,1,366,190,0);       -- Staff, SMN
+
+-- Trial by Wind (Garuda Prime)
+INSERT INTO `item_weapon` VALUES (29391,'levante_dagger',2,0,228,228,188,1,1,183,95,0);       -- Dagger, WAR/BLM/RDM/THF/PLD/DRK/BST/BRD/RNG/SAM/NIN/DRG/SMN/SCH/GEO
+INSERT INTO `item_weapon` VALUES (29392,'tramontane_axe',5,0,242,242,188,2,1,288,156,0);      -- Axe, WAR/DRK/BST/RUN
+
+-- Trial by Earth (Titan Prime) — additional weapons
+INSERT INTO `item_weapon` VALUES (29396,'mafic_cudgel',11,0,228,228,188,3,1,278,142,0);       -- Club, WAR/MNK/WHM/RDM/PLD/DRK/BST/BRD/SMN/BLU/SCH/GEO/RUN
+INSERT INTO `item_weapon` VALUES (29397,'foreshock_sword',4,0,228,228,188,2,1,504,273,0);     -- Great Sword, PLD/DRK/RUN
+
+-- Trial by Lightning (Ramuh Prime)
+INSERT INTO `item_weapon` VALUES (29400,'staccato_staff',12,0,242,242,228,3,1,366,198,0);     -- Staff, WAR/MNK/WHM/BLM/RDM/BST/BRD/SMN/GEO
+INSERT INTO `item_weapon` VALUES (29401,'donar_gun',26,0,228,0,0,1,1,548,103,0);              -- Marksmanship, THF/RNG/NIN/COR
+
+-- Trial by Water (Leviathan Prime)
+INSERT INTO `item_weapon` VALUES (29405,'pelagos_lance',8,0,242,242,188,1,1,507,275,0);       -- Polearm, DRG
+INSERT INTO `item_weapon` VALUES (29406,'vadose_rod',11,0,242,242,215,3,1,288,156,0);         -- Club, WHM/BLM/SMN/SCH/GEO
+INSERT INTO `item_weapon` VALUES (29407,'phreatic_axe',6,0,242,242,188,2,1,504,274,0);        -- Great Axe, WAR
+
+-- The Moonlit Path (Fenrir Prime)
+INSERT INTO `item_weapon` VALUES (29410,'medeina_kilij',3,0,242,242,201,2,1,236,130,0);       -- Sword, BLU
+
+-- Waking the Beast (Carbuncle Prime)
+INSERT INTO `item_weapon` VALUES (29415,'marquetry_staff',12,0,242,242,188,3,1,402,217,0);    -- Staff, SMN
+
+-- Waking Dreams (Diabolos Prime)
+INSERT INTO `item_weapon` VALUES (29420,'shuhansadamune',9,0,242,242,188,2,1,222,125,0);      -- Katana, NIN
+
 /*!40000 ALTER TABLE `item_weapon` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
