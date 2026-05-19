@@ -355,6 +355,17 @@ xi.battlefield.id =
     CENTRAL_TEMENOS_4TH_FLOOR                  = 1306, -- Converted
     CENTRAL_TEMENOS_4TH_FLOOR_II               = 1307, -- Converted
     PURPLE_THE_NEW_BLACK                       = 2721, -- Converted
+
+    -- SKCNM: Macrocosmic Orb battles
+    JUNGLE_BOOGYMEN_II                         = 4000,
+    AMPHIBIAN_ASSAULT_II                       = 4001,
+    KINDRED_SPIRITS_II                         = 4002,
+    DEMOLITION_SQUAD_II                        = 4003,
+    BROTHERS_D_AURPHE_II                       = 4004,
+    LEGION_XI_COMITATENSIS_II                  = 4005,
+    DISMEMBERMENT_BRIGADE_II                   = 4006,
+    DIVINE_PUNISHERS_II                        = 4007,
+    GRIMSHELL_SHOCKTROOPERS_II                 = 4008,
 }
 
 xi.battlefield.itemUses =

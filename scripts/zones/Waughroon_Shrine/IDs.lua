@@ -65,7 +65,8 @@ zones[xi.zone.WAUGHROON_SHRINE] =
         PLATOON_SCORPION  = GetFirstID('Platoon_Scorpion'),
         QUEEN_JELLY       = GetFirstID('Queen_Jelly'),
         TIME_BOMB         = GetFirstID('Time_Bomb'),
-        YOBHU_HIDEOUSMASK = GetFirstID('YoBhu_Hideousmask'),
+        YOBHU_HIDEOUSMASK    = GetFirstID('YoBhu_Hideousmask'), -- Tier I  BCNM60
+        YOBHU_HIDEOUSMASK_II = 17367590,                        -- Tier II SKCNM (level 110)
     },
 
     npc =
