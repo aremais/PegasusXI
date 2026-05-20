@@ -3545,7 +3545,9 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,56);   -- Ground S
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rughadjeen',1075,3237); -- Victory Beacon
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Kukki-Chebukki',1076,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Margret',1077,0);
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Chacharoon',1078,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Chacharoon',1078,3440);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Chacharoon',1078,3441);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Chacharoon',1078,3442);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Lhe_Lhangavo',1079,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Arciela',1080,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Mayakov',1081,0);
