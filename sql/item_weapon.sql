@@ -5177,6 +5177,14 @@ INSERT INTO `item_weapon` VALUES (22310,'hoxne_ampulla',0,0,0,0,0,0,1,999,0,0); 
 -- Trial by Earth (Titan Prime) — Togakushi Shuriken (Range/Throwing, NIN)
 INSERT INTO `item_weapon` VALUES (29364,'togakushi_shuriken',27,0,242,0,0,1,1,192,104,0);
 
+-- HTBF Prime duplicates (item_basic 29365-29380; stats from retail item IDs)
+INSERT INTO `item_weapon` VALUES (29365,'zantetsuken',3,0,242,242,228,2,1,236,167,0);
+INSERT INTO `item_weapon` VALUES (29366,'zantetsuken_x',4,0,0,0,0,2,1,456,323,0);
+INSERT INTO `item_weapon` VALUES (29367,'geirrothr',8,0,0,0,0,1,1,492,348,0);
+INSERT INTO `item_weapon` VALUES (29368,'sacro_bulwark',8,0,0,0,0,1,1,492,348,0);
+INSERT INTO `item_weapon` VALUES (29376,'cath_palug_hammer',11,0,242,242,242,3,1,300,212,0);
+INSERT INTO `item_weapon` VALUES (29377,'cath_palug_stone',0,0,0,0,0,0,0,0,0,0);
+
 -- Trial by Fire (Ifrit Prime)
 INSERT INTO `item_weapon` VALUES (29381,'perfervid_sword',3,0,242,242,188,2,1,236,110,0);      -- Sword, WAR/THF/DRK/BST/RNG/SAM/BLU
 INSERT INTO `item_weapon` VALUES (29382,'atakigiri',10,0,242,242,188,2,1,480,258,0);           -- Great Katana, SAM

@@ -14916,10 +14916,21 @@ INSERT INTO `item_equipment` VALUES (28670,'leafkin_shield',1,0,4194303,641,1,0,
 INSERT INTO `item_equipment` VALUES (28671,'butznar_shield',99,100,193,25,3,0,2,0,0,0);
 
 -- ============================================================
--- HTBF Reward Items (29364, 29381-29425)
+-- HTBF Reward Items (29364, 29365-29380, 29381-29425)
 -- ============================================================
 -- Trial by Earth (Titan Prime)
 INSERT INTO `item_equipment` VALUES (29364,'togakushi_shuriken',99,119,4096,0,0,0,8,0,0,0);
+-- HTBF Prime duplicates (item_basic 29365-29380; stats from retail item IDs)
+INSERT INTO `item_equipment` VALUES (29369,'sacro_gorget',99,0,2097216,0,0,0,512,0,0,0);
+INSERT INTO `item_equipment` VALUES (29370,'sacro_cord',99,0,1605660,0,0,0,1024,0,0,0);
+INSERT INTO `item_equipment` VALUES (29371,'sacro_mantle',99,0,397602,0,0,0,32768,0,0,0);
+INSERT INTO `item_equipment` VALUES (29372,'hjarrandi_helm',99,0,0,0,0,0,32,0,0,0);
+INSERT INTO `item_equipment` VALUES (29373,'hjarrandi_breastplate',99,119,8385,199,0,0,32,0,0,0);
+INSERT INTO `item_equipment` VALUES (29374,'freke_ring',99,0,1589276,0,0,0,24576,0,0,0);
+INSERT INTO `item_equipment` VALUES (29375,'gere_ring',99,0,2494754,0,0,0,24576,0,0,0);
+INSERT INTO `item_equipment` VALUES (29378,'cath_palug_crown',99,0,1589276,53,0,0,16,0,0,0);
+INSERT INTO `item_equipment` VALUES (29379,'cath_palug_ring',99,0,155904,0,0,0,24576,0,0,0);
+INSERT INTO `item_equipment` VALUES (29380,'cath_palug_earring',99,0,16384,0,0,0,6144,0,0,0);
 -- Trial by Fire (Ifrit Prime)
 INSERT INTO `item_equipment` VALUES (29381,'perfervid_sword',99,119,2200529,0,0,0,1,0,0,0);
 INSERT INTO `item_equipment` VALUES (29382,'atakigiri',99,119,2103297,0,0,0,1,0,0,0);

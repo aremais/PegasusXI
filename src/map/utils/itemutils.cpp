@@ -319,17 +319,18 @@ void LoadItemList()
                 static_cast<CItemUsable*>(PItem)->setAoE(rset->get<uint16>("aoe"));
             }
 
-            if (PItem->isType(ITEM_PUPPET))
+            if (PItem->isType(ITEM_PUPPET) && !rset->isNull("pup_slot"))
             {
                 static_cast<CItemPuppet*>(PItem)->setEquipSlot(rset->get<uint32>("pup_slot"));
-                static_cast<CItemPuppet*>(PItem)->setElementSlots(rset->get<uint32>("pup_element"));
+                static_cast<CItemPuppet*>(PItem)->setElementSlots(rset->getOrDefault<uint32>("pup_element", 0));
 
                 // If this is a PUP attachment, load the appropriate script as well
                 auto attachmentFile = fmt::format("./scripts/actions/abilities/pets/attachments/{}.lua", PItem->getName());
                 luautils::CacheLuaObjectFromFile(attachmentFile);
             }
 
-            if (PItem->isType(ITEM_EQUIPMENT))
+            // item_basic may flag ITEM_EQUIPMENT without a matching item_equipment row (LEFT JOIN)
+            if (PItem->isType(ITEM_EQUIPMENT) && !rset->isNull("slot"))
             {
                 static_cast<CItemEquipment*>(PItem)->setReqLvl(rset->get<uint8>("level"));
                 static_cast<CItemEquipment*>(PItem)->setILvl(rset->get<uint8>("ilevel"));
@@ -338,9 +339,9 @@ void LoadItemList()
                 static_cast<CItemEquipment*>(PItem)->setShieldSize(rset->get<uint8>("shieldSize"));
                 static_cast<CItemEquipment*>(PItem)->setScriptType(rset->get<uint16>("scriptType"));
                 static_cast<CItemEquipment*>(PItem)->setEquipSlotId(rset->get<uint16>("slot"));
-                static_cast<CItemEquipment*>(PItem)->setRemoveSlotId(rset->get<uint16>("rslot"));
-                static_cast<CItemEquipment*>(PItem)->setRemoveSlotLookId(rset->get<uint16>("rslotlook"));
-                static_cast<CItemEquipment*>(PItem)->setSuperiorLevel(rset->get<uint8>("su_level"));
+                static_cast<CItemEquipment*>(PItem)->setRemoveSlotId(rset->getOrDefault<uint16>("rslot", 0));
+                static_cast<CItemEquipment*>(PItem)->setRemoveSlotLookId(rset->getOrDefault<uint16>("rslotlook", 0));
+                static_cast<CItemEquipment*>(PItem)->setSuperiorLevel(rset->getOrDefault<uint8>("su_level", 0));
 
                 if (static_cast<CItemEquipment*>(PItem)->getValidTarget() != 0)
                 {
@@ -348,7 +349,7 @@ void LoadItemList()
                 }
             }
 
-            if (PItem->isType(ITEM_WEAPON))
+            if (PItem->isType(ITEM_WEAPON) && !rset->isNull("delay"))
             {
                 static_cast<CItemWeapon*>(PItem)->setSkillType(rset->get<uint8>("skill"));
                 static_cast<CItemWeapon*>(PItem)->setSubSkillType(rset->get<uint8>("subskill"));
@@ -388,7 +389,7 @@ void LoadItemList()
                 }
             }
 
-            if (PItem->isType(ITEM_FURNISHING))
+            if (PItem->isType(ITEM_FURNISHING) && !rset->isNull("storage"))
             {
                 auto* PFurnishing = static_cast<CItemFurnishing*>(PItem);
                 PFurnishing->setStorage(rset->get<uint8>("storage"));
