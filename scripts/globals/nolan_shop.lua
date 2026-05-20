@@ -103,5 +103,3 @@ xi.nolanShop.onTrigger = function(player, npc)
 
     player:customMenu(menu)
 end
-
-
