@@ -10,7 +10,7 @@ local entity = {}
 
 entity.onTrigger = function(player, npc)
     if player:hasKeyItem(xi.ki.SONG_OF_HOPE) then
-        player:setPos(605.200, -372.000, -957.800, 225, xi.zone.REISENJIMA)
+        player:setPos(-500.016, -19.751, -494.675, 221, xi.zone.REISENJIMA)
         return
     end
 
