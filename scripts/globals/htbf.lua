@@ -20,8 +20,8 @@ require('scripts/globals/npc_util')
 xi      = xi or {}
 xi.htbf = xi.htbf or {}
 
--- Number of gems shown per menu page.
-local itemsPerPage = 5
+-- Number of gems shown per menu page (client renders 3 items + 1 nav button).
+local itemsPerPage = 3
 
 -- Minimum main-job level required to purchase any Phantom Gem.
 local minLevel = 95
