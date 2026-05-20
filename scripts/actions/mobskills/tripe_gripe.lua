@@ -2,8 +2,7 @@
 -- Tripe Gripe
 -- Inflicts Amnesia on targets in a fan-shaped area and grants Attack Boost to Chacharoon.
 -----------------------------------
-require("scripts/globals/mobskills")
-require("scripts/globals/status")
+require('scripts/globals/mobskills')
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}

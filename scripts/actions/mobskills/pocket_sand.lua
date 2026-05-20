@@ -2,8 +2,7 @@
 -- Pocket Sand
 -- Deals dark damage in a fan-shaped area. Additional effect: Blindness.
 -----------------------------------
-require("scripts/globals/mobskills")
-require("scripts/globals/status")
+require('scripts/globals/mobskills')
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
