@@ -4,23 +4,19 @@
 -----------------------------------
 ---@type TCommand
 local commandObj = {}
-
 commandObj.cmdprops =
 {
     permission = 1,
     parameters = 's'
 }
-
 local function error(player, msg)
     player:printToPlayer(msg)
     player:printToPlayer('!immortal (player)')
 end
-
 commandObj.onTrigger = function(player, target)
     -- validate target
     local targ
     local cursorTarget = player:getCursorTarget()
-
     if target then
         targ = GetPlayerByName(target)
         if not targ then
@@ -32,14 +28,18 @@ commandObj.onTrigger = function(player, target)
     else
         targ = player
     end
-
     if not targ:isNPC() then
         if targ:isAlive() then
-
             local immortal = false
             if targ:isPC() then
                 if targ:getCharVar('Immortal') == 1 then
-                    targ:delStatusEffectSilent(0)
+                    -- Remove the Transcendency icon. Use the non-silent
+                    -- delStatusEffect so the removal packet is sent to
+                    -- the client and the icon actually disappears.
+                    -- Try both possible effect IDs in case of LSB version
+                    -- differences in how the effect was stored.
+                    targ:delStatusEffect(xi.effect.NONE)
+                    targ:delStatusEffect(xi.effect.TRANSCENDENCY)
                     targ:setCharVar('Immortal', 0)
                 else
                     targ:addStatusEffect(xi.effect.NONE, { origin = player, icon = xi.effect.TRANSCENDENCY })
@@ -54,9 +54,7 @@ commandObj.onTrigger = function(player, target)
                     immortal = true
                 end
             end
-
             targ:setUnkillable(immortal)
-
             if immortal then
                 player:printToPlayer(string.format('%s is now immortal!', targ:getName()))
             else
@@ -69,5 +67,4 @@ commandObj.onTrigger = function(player, target)
         player:printToPlayer(string.format('%s is an NPC. You should not be attacking them.', targ:getName()))
     end
 end
-
 return commandObj

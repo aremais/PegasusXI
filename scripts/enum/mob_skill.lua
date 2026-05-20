@@ -392,6 +392,10 @@ xi.mobSkill =
     FLAME_ARMOR                   =  632,
     HOWL_BEHEMOTH                 =  633,
     FINAL_METEOR                  =  634, -- Final Meteor Chlevnik
+    BURST                         =  635,
+    FLAME_ARROW                   =  636,
+    FIREBOMB                      =  637,
+    BLASTBOMB                     =  638,
 
     RECOIL_DIVE_1                 =  641,
 
@@ -1064,6 +1068,16 @@ xi.mobSkill =
     DARK_SHOT                     = 2016,
 
     -- HUNDRED_FISTS                 = 2020,
+
+    TENEBROUS_MIST                = 2022,
+    THUNDERSTRIKE                 = 2023,
+    TOURBILLION                   = 2024,
+    DREADSTORM                    = 2025,
+    FOSSILIZING_BREATH            = 2026,
+    PLAGUE_SWIPE                  = 2027,
+    FULMINATION                   = 2028,
+
+    ROAR_KHIMAIRA                 = 2030,
 
     DAZE                          = 2066,
     KNOCKOUT                      = 2067,

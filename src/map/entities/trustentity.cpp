@@ -20,6 +20,9 @@
 */
 
 #include "trustentity.h"
+
+#include "items/item_equipment.h"
+
 #include "action/action.h"
 #include "action/interrupts.h"
 #include "ai/ai_container.h"
@@ -68,6 +71,24 @@ CTrustEntity::CTrustEntity(CCharEntity* PChar)
 CTrustEntity::~CTrustEntity()
 {
     TracyZoneScoped;
+}
+
+auto CTrustEntity::getShieldSize() -> int8
+{
+    if (auto* PItem = m_Weapons[SLOT_SUB])
+    {
+        if (PItem->IsShield())
+        {
+            return static_cast<int8>(PItem->getShieldSize());
+        }
+    }
+
+    if (GetMJob() == JOB_PLD)
+    {
+        return m_defaultShieldSize;
+    }
+
+    return 0;
 }
 
 void CTrustEntity::PostTick()
