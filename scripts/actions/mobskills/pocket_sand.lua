@@ -11,33 +11,24 @@ mobskillObject.onMobSkillCheck = function(target, mob, skill)
     return 0
 end
 
-mobskillObject.onMobWeaponSkill = function(target, mob, skill)
-    local params =
-    {
-        numHits = 1,
-        ftpMod = { 2.0, 2.0, 2.0 },
-        str_wsc = 0.0,
-        dex_wsc = 0.0,
-        vit_wsc = 0.0,
-        agi_wsc = 0.0,
-        int_wsc = 0.0,
-        mnd_wsc = 0.0,
-        chr_wsc = 0.0,
-        skill = xi.skill.CLUB,
-        element = xi.element.DARK,
-        damageType = xi.damageType.DARK,
-    }
+mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
+    local params = {}
 
-    local action = xi.mobskills.useMobSkill(mob, target, skill, params)
+    params.baseDamage     = mob:getMainLvl() + 2
+    params.fTP            = { 2.0, 2.0, 2.0 }
+    params.element        = xi.element.DARK
+    params.attackType     = xi.attackType.MAGICAL
+    params.damageType     = xi.damageType.DARK
+    params.shadowBehavior = xi.mobskills.shadowBehavior.IGNORE_SHADOWS
+
     local info = xi.mobskills.mobMagicalMove(mob, target, skill, action, params)
-    local damage = xi.mobskills.mobFinalAdjustments(info.dmg, mob, skill, target, xi.attackType.MAGICAL, xi.damageType.DARK, xi.mobskills.shadowBehavior.IGNORE_SHADOWS)
 
-    xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.BLINDNESS, 20, 0, 60)
+    if xi.mobskills.processDamage(mob, target, skill, action, info) then
+        target:takeDamage(info.damage, mob, info.attackType, info.damageType)
+        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.BLINDNESS, 20, 0, 60)
+    end
 
-    target:takeDamage(damage, mob, xi.attackType.MAGICAL, xi.damageType.DARK)
-    skill:setMsg(xi.msg.basic.DAMAGE)
-
-    return damage
+    return info.damage
 end
 
 return mobskillObject
