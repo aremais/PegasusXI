@@ -1502,37 +1502,19 @@ entity.onTrade = function(player, npc, trade)
 end
 
 -----------------------------------
-entity.onTrigger = function(player, npc)
-    local stored = {}
-    for chapter = 1, 10 do
-        stored[chapter] = getStoredTales(player, chapter)
-    end
-
-    -- Pass stored chapter counts as event parameters (ch1-8 fit in 8 slots).
-    -- Chapter 9/10 counts are packed into one parameter if needed.
-    player:startEvent(384, stored[1], stored[2], stored[3], stored[4], stored[5], stored[6], stored[7], stored[8])
-end
-
+-- Avoid event 384: it contains a hard-coded Sagheera prerequisite check in its
+-- event data that cannot be bypassed from Lua.  Instead, return all stored
+-- Rem's Tales directly when the player talks to Monisette.
 -----------------------------------
-entity.onEventFinish = function(player, csid, option, npc)
-    if csid ~= 384 or option == 0 then
-        return
-    end
+entity.onTrigger = function(player, npc)
+    for chapter = 1, 10 do
+        local stored = getStoredTales(player, chapter)
 
-    -- option encodes: chapter (bits 0-3) and quantity to retrieve (bits 4+)
-    local chapter  = bit.band(option, 0xF)
-    local quantity = bit.rshift(option, 4)
-
-    if chapter < 1 or chapter > 10 then
-        return
-    end
-
-    local stored  = getStoredTales(player, chapter)
-    local give    = math.min(quantity > 0 and quantity or stored, stored)
-    local itemId  = remsTaleItems[chapter]
-
-    if give > 0 and npcUtil.giveItem(player, { { itemId, give } }) then
-        setStoredTales(player, chapter, stored - give)
+        if stored > 0 then
+            if npcUtil.giveItem(player, { { remsTaleItems[chapter], stored } }) then
+                setStoredTales(player, chapter, 0)
+            end
+        end
     end
 end
 
