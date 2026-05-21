@@ -12,7 +12,7 @@ local content = SKCNMBattlefield:new({
     battlefieldId = xi.battlefield.id.DEMOLITION_SQUAD_II,
     maxPlayers    = 6,
     timeLimit     = utils.minutes(30),
-    index         = 12,
+    index         = 23,
     entryNpc      = 'BC_Entrance',
     exitNpc       = 'Burning_Circle',
     requiredItems = { xi.item.MACROCOSMIC_ORB, wearMessage = quBiaArenaID.text.A_CRACK_HAS_FORMED, wornMessage = quBiaArenaID.text.ORB_IS_CRACKED },

@@ -12,7 +12,7 @@ local content = SKCNMBattlefield:new({
     battlefieldId = xi.battlefield.id.DIVINE_PUNISHERS_II,
     maxPlayers    = 6,
     timeLimit     = utils.minutes(30),
-    index         = 3,
+    index         = 22,
     entryNpc      = 'BC_Entrance',
     exitNpc       = 'Burning_Circle',
     requiredItems = { xi.item.MACROCOSMIC_ORB, wearMessage = balgasDaisID.text.A_CRACK_HAS_FORMED, wornMessage = balgasDaisID.text.ORB_IS_CRACKED },

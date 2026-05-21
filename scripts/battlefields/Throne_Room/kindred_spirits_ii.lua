@@ -12,7 +12,7 @@ local content = SKCNMBattlefield:new({
     battlefieldId = xi.battlefield.id.KINDRED_SPIRITS_II,
     maxPlayers    = 6,
     timeLimit     = utils.minutes(30),
-    index         = 3,
+    index         = 5,
     entryNpc      = '_4l1',
     exitNpcs      = { '_4l2', '_4l3', '_4l4' },
     requiredItems = { xi.item.MACROCOSMIC_ORB, wearMessage = throneRoomID.text.A_CRACK_HAS_FORMED, wornMessage = throneRoomID.text.ORB_IS_CRACKED },

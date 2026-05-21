@@ -12,7 +12,7 @@ local content = SKCNMBattlefield:new({
     battlefieldId = xi.battlefield.id.DISMEMBERMENT_BRIGADE_II,
     maxPlayers    = 6,
     timeLimit     = utils.minutes(30),
-    index         = 3,
+    index         = 22,
     entryNpc      = 'BC_Entrance',
     exitNpc       = 'Burning_Circle',
     requiredItems = { xi.item.MACROCOSMIC_ORB, wearMessage = horlaisPeakID.text.A_CRACK_HAS_FORMED, wornMessage = horlaisPeakID.text.ORB_IS_CRACKED },

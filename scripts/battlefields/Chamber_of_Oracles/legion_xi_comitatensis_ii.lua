@@ -12,7 +12,7 @@ local content = SKCNMBattlefield:new({
     battlefieldId = xi.battlefield.id.LEGION_XI_COMITATENSIS_II,
     maxPlayers    = 6,
     timeLimit     = utils.minutes(30),
-    index         = 2,
+    index         = 10,
     entryNpc      = 'SC_Entrance',
     exitNpc       = 'Shimmering_Circle',
     requiredItems = { xi.item.MACROCOSMIC_ORB, wearMessage = chamberOfOraclesID.text.A_CRACK_HAS_FORMED, wornMessage = chamberOfOraclesID.text.ORB_IS_CRACKED },

@@ -12,7 +12,7 @@ local content = SKCNMBattlefield:new({
     battlefieldId = xi.battlefield.id.GRIMSHELL_SHOCKTROOPERS_II,
     maxPlayers    = 6,
     timeLimit     = utils.minutes(30),
-    index         = 3,
+    index         = 23,
     entryNpc      = 'BC_Entrance',
     exitNpc       = 'Burning_Circle',
     requiredItems = { xi.item.MACROCOSMIC_ORB, wearMessage = waughroonID.text.A_CRACK_HAS_FORMED, wornMessage = waughroonID.text.ORB_IS_CRACKED },
