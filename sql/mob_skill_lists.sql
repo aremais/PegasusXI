@@ -3503,7 +3503,10 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Karaha-Baruha',1051,183); -- Spirit
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Karaha-Baruha',1051,179); -- Starburst
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Karaha-Baruha',1051,180); -- Sunburst
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Karaha-Baruha',1051,3337); -- Lunar Bay,disable wrong animation
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Cid',1052,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Cid',1052,3314); -- true_strike
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Cid',1052,3315); -- hexa_strike
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Cid',1052,3322); -- critical_mass
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Cid',1052,3323); -- fiery_tailings
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Gilgamesh',1053,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Areuhat',1054,37); -- Seraph Blade
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Areuhat',1054,40); -- Vorpal Blade
