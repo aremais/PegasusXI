@@ -46130,8 +46130,8 @@ INSERT INTO `mob_spawn_points` VALUES (17297436,3,'Master_Coeurl','Master Coeurl
 INSERT INTO `mob_spawn_points` VALUES (17297437,3,'Bhuta','Bhuta',8,46,48,-24.568,-3.857,4.811,13);
 INSERT INTO `mob_spawn_points` VALUES (17297438,3,'Thunder_Elemental','Thunder Elemental',3,48,50,-44.195,-4.390,-8.444,45);
 INSERT INTO `mob_spawn_points` VALUES (17297439,3,'Light_Elemental','Light Elemental',4,48,50,-44.195,-4.390,-8.444,45);
-INSERT INTO `mob_spawn_points` VALUES (17297440,0,'Behemoth','Behemoth',9,70,70,-277.763,-20.309,72.189,127);
-INSERT INTO `mob_spawn_points` VALUES (17297441,0,'King_Behemoth','King Behemoth',10,85,85,-267.469,-19.831,73.674,127);
+INSERT INTO `mob_spawn_points` VALUES (17297440,0,'Behemoth','Behemoth',9,70,70,-269.350,-19.773,74.268,0);
+INSERT INTO `mob_spawn_points` VALUES (17297441,0,'King_Behemoth','King Behemoth',10,85,85,-269.350,-19.773,74.268,0);
 INSERT INTO `mob_spawn_points` VALUES (17297442,0,'Thunder_Elemental','Thunder Elemental',3,48,50,-226.728,-20.524,21.987,79);
 INSERT INTO `mob_spawn_points` VALUES (17297443,0,'Thunder_Elemental','Thunder Elemental',3,48,50,-270.475,-20.439,75.426,67);
 INSERT INTO `mob_spawn_points` VALUES (17297444,0,'Light_Elemental','Light Elemental',4,48,50,-209.248,-19.929,61.437,57);
@@ -46185,8 +46185,8 @@ INSERT INTO `mob_spawn_points` VALUES (17301533,0,'Valley_Manticore','Valley Man
 INSERT INTO `mob_spawn_points` VALUES (17301534,0,'Valley_Manticore','Valley Manticore',5,71,74,13.965,-0.189,-0.102,127);
 INSERT INTO `mob_spawn_points` VALUES (17301535,0,'Velociraptor','Velociraptor',1,66,69,-43.000,-0.357,40.000,127);
 INSERT INTO `mob_spawn_points` VALUES (17301536,0,'Peryton','Peryton',2,69,72,8.466,-0.336,-23.544,127);
-INSERT INTO `mob_spawn_points` VALUES (17301537,0,'Adamantoise','Adamantoise',6,70,70,3.000,-0.416,8.000,21);
-INSERT INTO `mob_spawn_points` VALUES (17301538,0,'Aspidochelone','Aspidochelone',7,85,85,19.000,0.089,14.000,117);
+INSERT INTO `mob_spawn_points` VALUES (17301537,0,'Adamantoise','Adamantoise',6,70,70,0.894,0.021,-35.588,91);
+INSERT INTO `mob_spawn_points` VALUES (17301538,0,'Aspidochelone','Aspidochelone',7,85,85,0.894,0.021,-35.588,0);
 INSERT INTO `mob_spawn_points` VALUES (17301539,0,'Skahnowa','Skahnowa',8,1,1,44.000,-0.500,40.000,160);
 INSERT INTO `mob_spawn_points` VALUES (17301540,0,'Tolba','Tolba',9,0,0,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17301541,0,'Tolba','Tolba',9,0,0,-126.849,-0.718,-42.619,32);
@@ -55782,8 +55782,8 @@ INSERT INTO `mob_spawn_points` VALUES (17408014,1,'Demonic_Rose','Demonic Rose',
 INSERT INTO `mob_spawn_points` VALUES (17408015,0,'Bark_Tarantula','Bark Tarantula',2,77,80,26.972,4.508,21.089,127);
 INSERT INTO `mob_spawn_points` VALUES (17408016,0,'Bark_Tarantula','Bark Tarantula',2,77,80,26.789,4.494,20.841,127);
 INSERT INTO `mob_spawn_points` VALUES (17408017,0,'Bark_Tarantula','Bark Tarantula',2,77,80,15.734,1.820,15.490,114);
-INSERT INTO `mob_spawn_points` VALUES (17408018,0,'Fafnir','Fafnir',5,90,90,78.000,6.000,39.000,127);
-INSERT INTO `mob_spawn_points` VALUES (17408019,0,'Nidhogg','Nidhogg',6,90,90,78.000,6.000,34.000,127);
+INSERT INTO `mob_spawn_points` VALUES (17408018,0,'Fafnir','Fafnir',5,90,90,82.325,6.876,42.041,0);
+INSERT INTO `mob_spawn_points` VALUES (17408019,0,'Nidhogg','Nidhogg',6,90,90,82.325,6.876,42.041,0);
 INSERT INTO `mob_spawn_points` VALUES (17408020,0,'Darter','Darter',3,76,79,89.269,6.694,37.407,112);
 INSERT INTO `mob_spawn_points` VALUES (17408021,0,'Darter','Darter',3,76,79,69.184,7.255,28.361,35);
 INSERT INTO `mob_spawn_points` VALUES (17408022,0,'Darter','Darter',3,76,79,66.712,5.428,50.071,126);
@@ -56347,7 +56347,7 @@ INSERT INTO `mob_spawn_points` VALUES (17412639,0,'Kaiser_Behemoth','Kaiser Behe
 INSERT INTO `mob_spawn_points` VALUES (17412640,0,'Ferreous_Coffin','Ferreous Coffin',159,0,0,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17412641,0,'Lewenhart','Lewenhart',160,0,0,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17412642,0,'Auroral_Alicorn','Auroral Alicorn',161,0,0,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17412643,0,'Gargouille_Warden','Gargouille Warden',162,0,0,-384.256,-52.500,-95.782,31);
+INSERT INTO `mob_spawn_points` VALUES (17412643,0,'Gargouille_Warden','Gargouille Warden',162,80,80,-384.256,-52.500,-95.782,31);
 
 -- ------------------------------------------------------------
 -- Throne Room [S] (Zone 156)
