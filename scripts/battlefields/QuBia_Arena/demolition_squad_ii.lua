@@ -12,7 +12,7 @@ local content = SKCNMBattlefield:new({
     battlefieldId = xi.battlefield.id.DEMOLITION_SQUAD_II,
     maxPlayers    = 6,
     timeLimit     = utils.minutes(30),
-    index         = 12,
+    index         = 23,
     entryNpc      = 'BC_Entrance',
     exitNpc       = 'Burning_Circle',
     requiredItems = { xi.item.MACROCOSMIC_ORB, wearMessage = quBiaArenaID.text.A_CRACK_HAS_FORMED, wornMessage = quBiaArenaID.text.ORB_IS_CRACKED },
@@ -96,6 +96,26 @@ content.loot =
         { itemId = xi.item.ZIRCON,                           weight =  400 },
         { itemId = xi.item.HI_RERAISER,                      weight =  400 },
         { itemId = xi.item.VILE_ELIXIR_P1,                   weight =  400 },
+    },
+
+    -- Rem's Tale Chapter 3: 1x guaranteed + up to 3 more at 50% each (1–4x total)
+    {
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_3,      weight = 10000 },
+    },
+
+    {
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_3,      weight =  5000 },
+        { itemId = xi.item.NONE,                              weight =  5000 },
+    },
+
+    {
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_3,      weight =  5000 },
+        { itemId = xi.item.NONE,                              weight =  5000 },
+    },
+
+    {
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_3,      weight =  5000 },
+        { itemId = xi.item.NONE,                              weight =  5000 },
     },
 }
 

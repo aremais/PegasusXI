@@ -12,7 +12,7 @@ local content = SKCNMBattlefield:new({
     battlefieldId = xi.battlefield.id.KINDRED_SPIRITS_II,
     maxPlayers    = 6,
     timeLimit     = utils.minutes(30),
-    index         = 3,
+    index         = 5,
     entryNpc      = '_4l1',
     exitNpcs      = { '_4l2', '_4l3', '_4l4' },
     requiredItems = { xi.item.MACROCOSMIC_ORB, wearMessage = throneRoomID.text.A_CRACK_HAS_FORMED, wornMessage = throneRoomID.text.ORB_IS_CRACKED },
@@ -118,6 +118,26 @@ content.loot =
         { itemId = xi.item.ZIRCON,                           weight =  400 },
         { itemId = xi.item.HI_RERAISER,                      weight =  400 },
         { itemId = xi.item.VILE_ELIXIR_P1,                   weight =  400 },
+    },
+
+    -- Rem's Tale Chapter 2: 1x guaranteed + up to 3 more at 50% each (1–4x total)
+    {
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_2,      weight = 10000 },
+    },
+
+    {
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_2,      weight =  5000 },
+        { itemId = xi.item.NONE,                              weight =  5000 },
+    },
+
+    {
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_2,      weight =  5000 },
+        { itemId = xi.item.NONE,                              weight =  5000 },
+    },
+
+    {
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_2,      weight =  5000 },
+        { itemId = xi.item.NONE,                              weight =  5000 },
     },
 }
 
