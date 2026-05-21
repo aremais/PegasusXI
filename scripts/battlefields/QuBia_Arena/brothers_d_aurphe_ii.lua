@@ -97,6 +97,26 @@ content.loot =
         { itemId = xi.item.HI_RERAISER,                      weight =  400 },
         { itemId = xi.item.VILE_ELIXIR_P1,                   weight =  400 },
     },
+
+    -- Rem's Tale Chapter 3: 1x guaranteed + up to 3 more at 50% each (1–4x total)
+    {
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_3,      weight = 10000 },
+    },
+
+    {
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_3,      weight =  5000 },
+        { itemId = xi.item.NONE,                              weight =  5000 },
+    },
+
+    {
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_3,      weight =  5000 },
+        { itemId = xi.item.NONE,                              weight =  5000 },
+    },
+
+    {
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_3,      weight =  5000 },
+        { itemId = xi.item.NONE,                              weight =  5000 },
+    },
 }
 
 return content:register()

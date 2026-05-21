@@ -227,12 +227,11 @@ function SKCNMBattlefield:new(data)
     return obj
 end
 
--- Only the initiator sees the menu; all members receive the announcement
--- once the initiator selects a difficulty.
+-- The first player to enter sees the difficulty menu; subsequent members do not.
+-- A localVar flag prevents the menu from showing more than once per instance.
 function SKCNMBattlefield:battlefieldEntry(player, battlefield)
-    local initiatorId = select(1, battlefield:getInitiator())
-
-    if player:getID() == initiatorId then
+    if battlefield:getLocalVar('SKCNM_Difficulty_Set') == 0 then
+        battlefield:setLocalVar('SKCNM_Difficulty_Set', 1)
         showDifficultyMenu(player, battlefield)
     end
 end
