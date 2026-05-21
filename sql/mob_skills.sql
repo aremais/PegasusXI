@@ -3292,7 +3292,7 @@ INSERT INTO `mob_skills` VALUES (3260,354,'rinpyotosha',1,0.0,7.0,2000,1500,1,0,
 INSERT INTO `mob_skills` VALUES (3261,335,'bomb_toss',2,0.0,13.5,2000,1500,4,0,0,0,3,6,0);
 INSERT INTO `mob_skills` VALUES (3262,334,'goblin_rush',0,0.0,6.0,2000,1500,4,0,0,1,11,8,0);
 INSERT INTO `mob_skills` VALUES (3263,1625,'bear_killer',4,0.0,7.0,2000,1500,4,0,0,0,0,0,0); -- TODO: Skillchain properties
-INSERT INTO `mob_skills` VALUES (3264,259,'salvation_scythe',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
+INSERT INTO `mob_skills` VALUES (3264,259,'salvation_scythe',1,0.0,15.0,2000,1500,4,0,0,0,0,0,0);
 -- INSERT INTO `mob_skills` VALUES (3265,3009,'elemental_sforzo',0,0.0,7.0,2000,0,1,2,0,0,0,0,0);
 -- INSERT INTO `mob_skills` VALUES (3266,3010,'liement',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
 -- INSERT INTO `mob_skills` VALUES (3267,3011,'.',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
