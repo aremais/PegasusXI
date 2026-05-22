@@ -93026,6 +93026,20 @@ INSERT INTO `item_mods` VALUES (23621,903,150);   -- Boii Cuisses +3: FENCER_TP_
 INSERT INTO `item_mods` VALUES (23621,904,4);     -- Boii Cuisses +3: FENCER_CRITHITRATE: 4
 INSERT INTO `item_mods` VALUES (23688,29,6);      -- Boii Calligae +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23688,414,31);    -- Boii Calligae +3: RETALIATION: 31
+
+-- Bhikku Attire Set +3 missing mods
+INSERT INTO `item_mods` VALUES (23421,29,8);      -- Bhikku Crown +3: MDEF: 8
+INSERT INTO `item_mods` VALUES (23421,289,14);    -- Bhikku Crown +3: SUBTLE_BLOW: 14
+INSERT INTO `item_mods` VALUES (23488,29,8);      -- Bhikku Cyclas +3: MDEF: 8
+INSERT INTO `item_mods` VALUES (23488,173,8);     -- Bhikku Cyclas +3: MARTIAL_ARTS: 8
+INSERT INTO `item_mods` VALUES (23555,29,5);      -- Bhikku Gloves +3: MDEF: 5
+INSERT INTO `item_mods` VALUES (23555,899,45);    -- Bhikku Gloves +3: TACTICAL_GUARD: 45
+INSERT INTO `item_mods` VALUES (23622,29,8);      -- Bhikku Hose +3: MDEF: 8
+INSERT INTO `item_mods` VALUES (23622,73,10);     -- Bhikku Hose +3: STORETP: 10
+INSERT INTO `item_mods` VALUES (23622,292,30);    -- Bhikku Hose +3: KICK_ATTACK_RATE: 30
+INSERT INTO `item_mods` VALUES (23689,29,7);      -- Bhikku Gaiters +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23689,386,65);    -- Bhikku Gaiters +3: KICK_DMG: 65
+INSERT INTO `item_mods` VALUES (23689,429,16);    -- Bhikku Gaiters +3: FOOTWORK_ATT_BONUS: 16
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
