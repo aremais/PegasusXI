@@ -34,6 +34,12 @@ function GetNPCByID(npcid, instanceObj)
 end
 
 ---@nodiscard
+---@param pattern string
+---@return table
+function FindNPCsByName(pattern)
+end
+
+---@nodiscard
 ---@param npcid integer
 ---@param instanceObj CInstance?
 ---@return CBaseEntity?
