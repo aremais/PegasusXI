@@ -93119,6 +93119,26 @@ INSERT INTO `item_mods` VALUES (23626,896,13);     -- Skulker's Culottes +3: DES
 
 INSERT INTO `item_mods` VALUES (23693,29,9);       -- Skulker's Poulaines +3: MDEF: 9
 INSERT INTO `item_mods` VALUES (23693,303,5);      -- Skulker's Poulaines +3: TREASURE_HUNTER: 5
+
+-- Chevalier's Armor Set missing mods
+INSERT INTO `item_mods` VALUES (27065,29,1);      -- Chevalier's Gauntlets +1: MDEF: 1
+
+INSERT INTO `item_mods` VALUES (23426,29,6);      -- Chevalier's Armet +3: MDEF: 6
+INSERT INTO `item_mods` VALUES (23426,170,9);     -- Chevalier's Armet +3: FASTCAST: 9
+INSERT INTO `item_mods` VALUES (23426,426,8);     -- Chevalier's Armet +3: ABSORB_PHYSDMG_TO_MP: 8
+
+INSERT INTO `item_mods` VALUES (23493,29,8);      -- Chevalier's Cuirass +3: MDEF: 8
+INSERT INTO `item_mods` VALUES (23493,168,20);    -- Chevalier's Cuirass +3: SPELLINTERRUPT: 20
+
+INSERT INTO `item_mods` VALUES (23560,29,5);      -- Chevalier's Gauntlets +3: MDEF: 5
+INSERT INTO `item_mods` VALUES (23560,905,5);     -- Chevalier's Gauntlets +3: SHIELD_DEF_BONUS: 5
+
+INSERT INTO `item_mods` VALUES (23627,29,7);      -- Chevalier's Cuisses +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23627,427,14);    -- Chevalier's Cuisses +3: ENMITY_LOSS_REDUCTION: 14
+
+INSERT INTO `item_mods` VALUES (23694,29,6);      -- Chevalier's Sabatons +3: MDEF: 6
+INSERT INTO `item_mods` VALUES (23694,170,13);    -- Chevalier's Sabatons +3: FASTCAST: 13
+INSERT INTO `item_mods` VALUES (23694,1062,21);   -- Chevalier's Sabatons +3: ENHANCES_DIVINE_EMBLEM: 21
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
