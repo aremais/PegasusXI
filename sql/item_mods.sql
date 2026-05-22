@@ -73148,7 +73148,7 @@ INSERT INTO `item_mods` VALUES (27255,29,3);    -- MDEF: 3
 INSERT INTO `item_mods` VALUES (27255,30,17);   -- MACC: 17
 INSERT INTO `item_mods` VALUES (27255,31,73);   -- MEVA: 73
 INSERT INTO `item_mods` VALUES (27255,68,17);   -- EVA: 17
-INSERT INTO `item_mods` VALUES (27255,119,10);  -- SINGING: 10
+INSERT INTO `item_mods` VALUES (27255,119,15);  -- SINGING: 15
 INSERT INTO `item_mods` VALUES (27255,384,400); -- HASTE_GEAR: 400
 INSERT INTO `item_mods` VALUES (27255,442,1);   -- BALLAD_EFFECT: 1
 
@@ -93181,6 +93181,32 @@ INSERT INTO `item_mods` VALUES (23629,29,7);      -- Nukumi Quijotes +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23696,29,6);      -- Nukumi Ocreae +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23696,288,6);     -- Nukumi Ocreae +3: DOUBLE_ATTACK: 6
 INSERT INTO `item_mods` VALUES (23696,1157,21);   -- Nukumi Ocreae +3: ENHANCES_SPUR: 21
+
+-- Fili Attire Set missing mods
+INSERT INTO `item_mods` VALUES (27255,833,7);     -- Fili Rhingrave: SONG_RECAST_DELAY: 7
+INSERT INTO `item_mods` VALUES (27256,833,8);     -- Fili Rhingrave +1: SONG_RECAST_DELAY: 8
+
+INSERT INTO `item_mods` VALUES (23429,29,10);     -- Fili Calot +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23429,438,1);     -- Fili Calot +3: MADRIGAL_EFFECT: 1
+INSERT INTO `item_mods` VALUES (23429,455,16);    -- Fili Calot +3: SONG_SPELLCASTING_TIME: 16
+
+INSERT INTO `item_mods` VALUES (23496,29,11);     -- Fili Hongreline +3: MDEF: 11
+INSERT INTO `item_mods` VALUES (23496,370,5);     -- Fili Hongreline +3: REGEN: 5
+INSERT INTO `item_mods` VALUES (23496,434,1);     -- Fili Hongreline +3: MINUET_EFFECT: 1
+INSERT INTO `item_mods` VALUES (23496,454,14);    -- Fili Hongreline +3: SONG_DURATION_BONUS: 14
+
+INSERT INTO `item_mods` VALUES (23563,29,7);      -- Fili Manchettes +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23563,443,1);     -- Fili Manchettes +3: MARCH_EFFECT: 1
+
+INSERT INTO `item_mods` VALUES (23630,29,10);     -- Fili Rhingrave +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23630,442,1);     -- Fili Rhingrave +3: BALLAD_EFFECT: 1
+INSERT INTO `item_mods` VALUES (23630,833,10);    -- Fili Rhingrave +3: SONG_RECAST_DELAY: 10
+
+INSERT INTO `item_mods` VALUES (23697,29,10);     -- Fili Cothurnes +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23697,76,18);     -- Fili Cothurnes +3: MOVE_SPEED_GEAR_BONUS: 18
+INSERT INTO `item_mods` VALUES (23697,170,13);    -- Fili Cothurnes +3: FASTCAST: 13
+INSERT INTO `item_mods` VALUES (23697,370,4);     -- Fili Cothurnes +3: REGEN: 4
+INSERT INTO `item_mods` VALUES (23697,451,1);     -- Fili Cothurnes +3: SCHERZO_EFFECT: 1
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
