@@ -93155,6 +93155,32 @@ INSERT INTO `item_mods` VALUES (23628,1083,45);   -- Heathen's Flanchards +3: EN
 
 INSERT INTO `item_mods` VALUES (23695,29,6);      -- Heathen's Sollerets +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23695,902,36);    -- Heathen's Sollerets +3: OCCULT_ACUMEN: 36
+
+-- Nukumi Armor Set missing mods
+INSERT INTO `item_mods` VALUES (27069,29,1);      -- Nukumi Manoplas +1: MDEF: 1
+
+INSERT INTO `item_mods` VALUES (27253,29,1);      -- Nukumi Quijotes: MDEF: 1
+INSERT INTO `item_mods` VALUES (27254,29,3);      -- Nukumi Quijotes +1: MDEF: 3
+
+INSERT INTO `item_mods` VALUES (27427,29,1);      -- Nukumi Ocreae: MDEF: 1
+INSERT INTO `item_mods` VALUES (27428,29,2);      -- Nukumi Ocreae +1: MDEF: 2
+
+INSERT INTO `item_mods` VALUES (26756,1155,22);   -- Nukumi Cabasset: ENHANCES_MONSTER_CORRELATION: 22
+INSERT INTO `item_mods` VALUES (26757,1155,24);   -- Nukumi Cabasset +1: ENHANCES_MONSTER_CORRELATION: 24
+INSERT INTO `item_mods` VALUES (23093,1155,26);   -- Nukumi Cabasset +2: ENHANCES_MONSTER_CORRELATION: 26
+INSERT INTO `item_mods` VALUES (23428,1155,28);   -- Nukumi Cabasset +3: ENHANCES_MONSTER_CORRELATION: 28
+
+INSERT INTO `item_mods` VALUES (23428,29,6);      -- Nukumi Cabasset +3: MDEF: 6
+
+INSERT INTO `item_mods` VALUES (23495,29,8);      -- Nukumi Gausape +3: MDEF: 8
+
+INSERT INTO `item_mods` VALUES (23562,29,5);      -- Nukumi Manoplas +3: MDEF: 5
+
+INSERT INTO `item_mods` VALUES (23629,29,7);      -- Nukumi Quijotes +3: MDEF: 7
+
+INSERT INTO `item_mods` VALUES (23696,29,6);      -- Nukumi Ocreae +3: MDEF: 6
+INSERT INTO `item_mods` VALUES (23696,288,6);     -- Nukumi Ocreae +3: DOUBLE_ATTACK: 6
+INSERT INTO `item_mods` VALUES (23696,1157,21);   -- Nukumi Ocreae +3: ENHANCES_SPUR: 21
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
