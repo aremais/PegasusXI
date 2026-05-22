@@ -93296,6 +93296,44 @@ INSERT INTO `item_mods` VALUES (23634,286,19);    -- Peltast's Cuissots +3: JUMP
 
 INSERT INTO `item_mods` VALUES (23701,29,6);      -- Peltast's Schynbalds +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23701,285,90);    -- Peltast's Schynbalds +3: JUMP_SPIRIT_TP_BONUS: 90
+
+-- Beckoner's Attire Set missing mods
+INSERT INTO `item_mods` VALUES (26926,126,10);    -- Beckoner's Doublet: BP_DAMAGE: 10
+
+INSERT INTO `item_mods` VALUES (26927,126,11);    -- Beckoner's Doublet +1: BP_DAMAGE: 11
+
+INSERT INTO `item_mods` VALUES (23166,126,12);    -- Beckoner's Doublet +2: BP_DAMAGE: 12
+
+INSERT INTO `item_mods` VALUES (23233,126,8);     -- Beckoner's Bracers +2: BP_DAMAGE: 8
+
+INSERT INTO `item_mods` VALUES (23367,126,8);     -- Beckoner's Pigaches +2: BP_DAMAGE: 8
+
+INSERT INTO `item_mods` VALUES (27265,995,550);   -- Beckoner's Spats: PET_TP_BONUS: 550
+
+INSERT INTO `item_mods` VALUES (27266,995,600);   -- Beckoner's Spats +1: PET_TP_BONUS: 600
+
+INSERT INTO `item_mods` VALUES (23434,29,10);     -- Beckoner's Horn +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23434,369,4);     -- Beckoner's Horn +3: REFRESH: 4
+INSERT INTO `item_mods` VALUES (23434,1154,5);    -- Beckoner's Horn +3: AVATARS_FAVOR_ENHANCE: 5
+
+INSERT INTO `item_mods` VALUES (23501,29,10);     -- Beckoner's Doublet +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23501,126,13);    -- Beckoner's Doublet +3: BP_DAMAGE: 13
+INSERT INTO `item_mods` VALUES (23501,346,8);     -- Beckoner's Doublet +3: PERPETUATION_REDUCTION: 8
+
+INSERT INTO `item_mods` VALUES (23568,29,7);      -- Beckoner's Bracers +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23568,74,140);    -- Beckoner's Bracers +3: ENHANCES_MANA_CEDE: 140
+INSERT INTO `item_mods` VALUES (23568,126,12);    -- Beckoner's Bracers +3: BP_DAMAGE: 12
+INSERT INTO `item_mods` VALUES (23568,1170,1);    -- Beckoner's Bracers +3: HALF_PERPETUATION_DAY: 1
+INSERT INTO `item_mods` VALUES (23568,1171,1);    -- Beckoner's Bracers +3: HALF_PERPETUATION_WEATHER: 1
+
+INSERT INTO `item_mods` VALUES (23635,29,10);     -- Beckoner's Spats +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23635,913,14);    -- Beckoner's Spats +3: BLOOD_BOON: 14
+INSERT INTO `item_mods` VALUES (23635,995,700);   -- Beckoner's Spats +3: PET_TP_BONUS: 700
+
+INSERT INTO `item_mods` VALUES (23702,29,10);     -- Beckoner's Pigaches +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23702,126,12);    -- Beckoner's Pigaches +3: BP_DAMAGE: 12
+INSERT INTO `item_mods` VALUES (23702,346,9);     -- Beckoner's Pigaches +3: PERPETUATION_REDUCTION: 9
+INSERT INTO `item_mods` VALUES (23702,540,80);    -- Beckoner's Pigaches +3: ENHANCES_ELEMENTAL_SIPHON: 80
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
