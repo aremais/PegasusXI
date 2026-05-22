@@ -68672,7 +68672,6 @@ INSERT INTO `item_mods` VALUES (26922,29,3);    -- MDEF: 3
 INSERT INTO `item_mods` VALUES (26922,31,47);   -- MEVA: 47
 INSERT INTO `item_mods` VALUES (26922,68,25);   -- EVA: 25
 INSERT INTO `item_mods` VALUES (26922,165,5);   -- CRITHITRATE: 5
-INSERT INTO `item_mods` VALUES (26922,259,6);   -- DUAL_WIELD: 6
 INSERT INTO `item_mods` VALUES (26922,384,400); -- HASTE_GEAR: 400
 
 -- Hattori Ningi +1
@@ -68691,7 +68690,6 @@ INSERT INTO `item_mods` VALUES (26923,29,6);    -- MDEF: 6
 INSERT INTO `item_mods` VALUES (26923,31,69);   -- MEVA: 69
 INSERT INTO `item_mods` VALUES (26923,68,55);   -- EVA: 55
 INSERT INTO `item_mods` VALUES (26923,165,6);   -- CRITHITRATE: 6
-INSERT INTO `item_mods` VALUES (26923,259,10);  -- DUAL_WIELD: 10
 INSERT INTO `item_mods` VALUES (26923,384,400); -- HASTE_GEAR: 400
 
 -- Peltasts Plackart
@@ -93247,6 +93245,29 @@ INSERT INTO `item_mods` VALUES (23699,29,6);      -- Kasuga Sune-Ate +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23699,944,14);    -- Kasuga Sune-Ate +3: CONSERVE_TP: 14
 INSERT INTO `item_mods` VALUES (23699,1090,13);   -- Kasuga Sune-Ate +3: SENGIKORI_BONUS: 13
 INSERT INTO `item_mods` VALUES (23699,1081,10);   -- Kasuga Sune-Ate +3: DAMAGE_LIMITP: 10
+
+-- Hattori Garb Set missing mods
+INSERT INTO `item_mods` VALUES (23097,288,11);    -- Hattori Zukin +2: DOUBLE_ATTACK: 11
+
+INSERT INTO `item_mods` VALUES (23298,291,16);    -- Hattori Hakama +2: COUNTER: 16
+
+INSERT INTO `item_mods` VALUES (23432,29,7);      -- Hattori Zukin +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23432,259,7);     -- Hattori Zukin +3: DUAL_WIELD: 7
+INSERT INTO `item_mods` VALUES (23432,288,13);    -- Hattori Zukin +3: DOUBLE_ATTACK: 13
+
+INSERT INTO `item_mods` VALUES (23499,29,10);     -- Hattori Ningi +3: MDEF: 10
+
+INSERT INTO `item_mods` VALUES (23566,29,6);      -- Hattori Tekko +3: MDEF: 6
+INSERT INTO `item_mods` VALUES (23566,487,15);    -- Hattori Tekko +3: MAG_BURST_BONUS: 15
+INSERT INTO `item_mods` VALUES (23566,522,18);    -- Hattori Tekko +3: NIN_NUKE_BONUS_GEAR: 18
+INSERT INTO `item_mods` VALUES (23566,1148,28);   -- Hattori Tekko +3: ENHANCES_FUTAE: 28
+
+INSERT INTO `item_mods` VALUES (23633,29,9);      -- Hattori Hakama +3: MDEF: 9
+INSERT INTO `item_mods` VALUES (23633,291,18);    -- Hattori Hakama +3: COUNTER: 18
+
+INSERT INTO `item_mods` VALUES (23700,29,9);      -- Hattori Kyahan +3: MDEF: 9
+INSERT INTO `item_mods` VALUES (23700,486,26);    -- Hattori Kyahan +3: TACTICAL_PARRY: 26
+INSERT INTO `item_mods` VALUES (23700,900,1);     -- Hattori Kyahan +3: UTSUSEMI_BONUS: 1
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
