@@ -73186,7 +73186,7 @@ INSERT INTO `item_mods` VALUES (27257,68,19);   -- EVA: 19
 INSERT INTO `item_mods` VALUES (27257,73,9);    -- STORETP: 9
 INSERT INTO `item_mods` VALUES (27257,165,3);   -- CRITHITRATE: 3
 INSERT INTO `item_mods` VALUES (27257,359,5);   -- RAPID_SHOT: 5
-INSERT INTO `item_mods` VALUES (27257,384,400); -- HASTE_GEAR: 400
+INSERT INTO `item_mods` VALUES (27257,384,600); -- HASTE_GEAR: 600
 
 -- Amini Brague +1
 INSERT INTO `item_mods` VALUES (27258,1,111);   -- DEF: 111
@@ -93207,6 +93207,25 @@ INSERT INTO `item_mods` VALUES (23697,76,18);     -- Fili Cothurnes +3: MOVE_SPE
 INSERT INTO `item_mods` VALUES (23697,170,13);    -- Fili Cothurnes +3: FASTCAST: 13
 INSERT INTO `item_mods` VALUES (23697,370,4);     -- Fili Cothurnes +3: REGEN: 4
 INSERT INTO `item_mods` VALUES (23697,451,1);     -- Fili Cothurnes +3: SCHERZO_EFFECT: 1
+
+-- Amini Attire Set missing mods
+INSERT INTO `item_mods` VALUES (23430,29,7);      -- Amini Gapette +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23430,289,14);    -- Amini Gapette +3: SUBTLE_BLOW: 14
+INSERT INTO `item_mods` VALUES (23430,365,9);     -- Amini Gapette +3: SNAPSHOT: 9
+
+INSERT INTO `item_mods` VALUES (23497,29,10);     -- Amini Caban +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23497,423,11);    -- Amini Caban +3: VELOCITY_SNAPSHOT_BONUS: 11
+INSERT INTO `item_mods` VALUES (23497,424,11);    -- Amini Caban +3: VELOCITY_RATT_BONUS: 11
+
+INSERT INTO `item_mods` VALUES (23564,29,6);      -- Amini Glovelettes +3: MDEF: 6
+INSERT INTO `item_mods` VALUES (23564,73,11);     -- Amini Glovelettes +3: STORETP: 11
+INSERT INTO `item_mods` VALUES (23564,826,4);     -- Amini Glovelettes +3: BOUNTY_SHOT_TH_BONUS: 4
+
+INSERT INTO `item_mods` VALUES (23631,29,9);      -- Amini Bragues +3: MDEF: 9
+INSERT INTO `item_mods` VALUES (23631,73,12);     -- Amini Bragues +3: STORETP: 12
+INSERT INTO `item_mods` VALUES (23631,1053,8);    -- Amini Bragues +3: TRUE_SHOT_EFFECT: 8
+
+INSERT INTO `item_mods` VALUES (23698,29,9);      -- Amini Bottillons +3: MDEF: 9
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
