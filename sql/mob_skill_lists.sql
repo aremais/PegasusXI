@@ -3496,14 +3496,20 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Maat',1048,3414); -- One Inch Punch
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Maat',1048,3415); -- Howling Fist (Maat)
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Maat',1048,3416); -- Dragon Kick (Maat)
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Maat',1048,3417); -- Asuran Fists (Maat)
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_D_Shantotto',1049,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_D_Shantotto',1049,98);   -- shadow_of_death
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_D_Shantotto',1049,102);  -- guillotine
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_D_Shantotto',1049,103);  -- cross_reaper
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_D_Shantotto',1049,3264); -- salvation_scythe
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Star_Sibyl',1050,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Karaha-Baruha',1051,3336); -- Howling Moon
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Karaha-Baruha',1051,183); -- Spirit Taker
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Karaha-Baruha',1051,179); -- Starburst
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Karaha-Baruha',1051,180); -- Sunburst
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Karaha-Baruha',1051,3337); -- Lunar Bay,disable wrong animation
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Cid',1052,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Cid',1052,3314); -- true_strike
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Cid',1052,3315); -- hexa_strike
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Cid',1052,3322); -- critical_mass
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Cid',1052,3323); -- fiery_tailings
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Gilgamesh',1053,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Areuhat',1054,37); -- Seraph Blade
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Areuhat',1054,40); -- Vorpal Blade
@@ -3596,7 +3602,11 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_August',1099,3658); -- No Quarter
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Makki-Chebukki',1103,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_King_of_Hearts',1104,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Morimar',1105,0);
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Darrcuiln',1106,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Darrcuiln',1106,3684); -- Aurous Charge
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Darrcuiln',1106,3685); -- Howling Gust
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Darrcuiln',1106,3686); -- Righteous Rasp
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Darrcuiln',1106,3687); -- Starward Yowl
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Darrcuiln',1106,3688); -- Stalking Prey
 -- TODO: Verify these
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_AAHM',1107,3706); -- Cross Reaver
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_AAHM',1107,3708); -- Swift Blade

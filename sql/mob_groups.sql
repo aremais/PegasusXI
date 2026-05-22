@@ -200,7 +200,7 @@ INSERT INTO `mob_groups` VALUES (53,7062,4,'Locus_Bight_Rarab',60,0,309,308300,0
 INSERT INTO `mob_groups` VALUES (54,7063,4,'Locus_Camelopard',60,0,432,308300,0,0,'ROV');  -- TODO Audit Drops
 INSERT INTO `mob_groups` VALUES (55,7064,4,'Locus_Hypnos_Eft',60,0,2379,308300,0,0,'ROV'); -- TODO Audit Drops
 INSERT INTO `mob_groups` VALUES (56,7061,4,'Locus_Ghost_Crab',60,0,2930,308300,0,0,'ROV'); -- TODO Audit Drops
--- INSERT INTO `mob_groups` VALUES (57,6810,4,'Locus_Fiddler_Crab',0,0,0,0,0,139,139,0,NULL); -- Needs capture for Venom Shower and Mega Scissors
+INSERT INTO `mob_groups` VALUES (57,7357,4,'Locus_Fiddler_Crab',3600,128,0,327500,0,0,'ROV'); -- TODO Audit Drops. Spawn disabled pending lottery captures.
 
 -- ------------------------------------------------------------
 -- Uleguerand_Range (Zone 5)
@@ -3699,6 +3699,7 @@ INSERT INTO `mob_groups` VALUES (12,6757,72,'Vidmapire',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (13,7577,72,'Apex_Archaic_Cog',960,0,0,305000,0,0,'ROV');
 INSERT INTO `mob_groups` VALUES (14,7578,72,'Apex_Archaic_Cogs',960,0,0,305000,0,0,'ROV');
 INSERT INTO `mob_groups` VALUES (15,7579,72,'Panaiveriyamman',0,128,0,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (16,7361,72,'Alexander',2700,0,0,3240000,0,0,'TVR');
 
 -- ------------------------------------------------------------
 -- Zhayolm_Remnants (Zone 73)
@@ -4598,6 +4599,7 @@ INSERT INTO `mob_groups` VALUES (69,6758,79,'Shedu',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (70,0,79,'Vidhuwa_the_Wrathborn',0,128,0,0,0,0,'WOTG');
 INSERT INTO `mob_groups` VALUES (71,7299,79,'Chigoe_pet',0,128,466,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (72,7188,79,'Chigoe',300,0,466,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (73,7356,79,'Locus_Imp',60,0,0,267000,0,0,'TVR'); -- TODO: Drops, MP
 
 -- ------------------------------------------------------------
 -- Southern_San_dOria_[S] (Zone 80)
@@ -8005,6 +8007,7 @@ INSERT INTO `mob_groups` VALUES (68,0,105,'Hachiryu_Armor',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (69,0,105,'Omodaka_Armor',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (70,1642,105,'Goblin_Bounty_Hunter',300,0,1030,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (71,6570,105,'Wight_blm',300,1,2651,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (72,7354,105,'Macro_Test',0,0,0,0,0,0,'TVR');
 
 -- ------------------------------------------------------------
 -- North_Gustaberg (Zone 106)
@@ -8381,6 +8384,7 @@ INSERT INTO `mob_groups` VALUES (62,0,110,'Ubuginu_Armor',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (63,0,110,'Hachiryu_Armor',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (64,0,110,'Omodaka_Armor',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (65,6570,110,'Wight_blm',300,1,2651,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (66,7354,110,'Macro_Test',0,0,0,0,0,0,'TVR');
 
 -- ------------------------------------------------------------
 -- Beaucedine_Glacier (Zone 111)
@@ -9104,6 +9108,7 @@ INSERT INTO `mob_groups` VALUES (65,0,120,'Omodaka_Armor',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (66,1642,120,'Goblin_Bounty_Hunter',300,0,1030,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (67,6570,120,'Wight_blm',300,1,2651,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (68,6583,120,'Bashe',0,32,3142,3300,0,0,'WOTG');
+INSERT INTO `mob_groups` VALUES (69,7354,120,'Macro_Test',0,0,0,0,0,0,'TVR');
 
 -- ------------------------------------------------------------
 -- The_Sanctuary_of_ZiTah (Zone 121)
@@ -9602,6 +9607,8 @@ INSERT INTO `mob_groups` VALUES (18,3816,130,'Suzaku',0,128,2362,25000,25000,0,N
 INSERT INTO `mob_groups` VALUES (19,1249,130,'Eraser',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (20,4720,130,'Aello',0,128,0,0,9999,0,NULL);
 INSERT INTO `mob_groups` VALUES (21,4721,130,'Aellos_Handmaiden',0,128,0,0,9999,0,NULL);
+INSERT INTO `mob_groups` VALUES (22,7359,130,'Kirin',2700,0,0,3240000,0,0,'TVR');
+INSERT INTO `mob_groups` VALUES (23,7360,130,'Kirins_Avatar',0,128,0,0,0,0,'TVR');
 
 -- ------------------------------------------------------------
 -- Abyssea-La_Theine (Zone 132)
@@ -11100,10 +11107,9 @@ INSERT INTO `mob_groups` VALUES (37,5159,153,'Modron',0,128,0,0,9999,0,NULL);
 INSERT INTO `mob_groups` VALUES (38,5160,153,'Modrons_Druid',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (39,6876,153,'Ayapec',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (40,6877,153,'Hidhaegg',0,128,0,0,0,0,NULL);
-
--- Star Onion Fortune
-INSERT INTO `mob_groups` VALUES (41,0,153,'Templar_Crawler',0,128,0,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (41,0,153,'Templar_Crawler',0,128,0,0,0,0,NULL);   -- Star Onion Fortune
 INSERT INTO `mob_groups` VALUES (42,3768,153,'Steelshell',1200,0,2330,0,0,0,NULL); -- 20 min respawn near Cloister
+INSERT INTO `mob_groups` VALUES (43,7358,153,'Fafnir',2700,0,0,3240000,0,0,'TVR');
 
 -- ------------------------------------------------------------
 -- Dragons_Aery (Zone 154)
@@ -13153,7 +13159,7 @@ INSERT INTO `mob_groups` VALUES (34,6890,191,'Celaeno',0,128,0,0,0,0,NULL);
 
 INSERT INTO `mob_groups` VALUES (1,372,192,'Battue_Bats',300,0,244,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (2,1737,192,'Goblin_Thug',300,0,1170,0,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (3,443,192,'Blade_Bat',300,0,461,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (3,7355,192,'Blade_Bat',300,0,461,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (4,1744,192,'Goblin_Weaver',300,0,1183,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (5,2475,192,'Magicked_Bones_club',300,0,2867,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (6,4915,192,'Troika_Bats',300,0,244,0,0,0,'ABYSSEA');

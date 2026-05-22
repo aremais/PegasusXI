@@ -14,12 +14,12 @@ local eschalixirExchange =
         cost  = 10,
     },
     {
-        label = 'Eschalixir +1',
+        label = '+1',
         item  = xi.item.ESCHALIXIR_P1,
         cost  = 50,
     },
     {
-        label = 'Eschalixir +2',
+        label = '+2',
         item  = xi.item.ESCHALIXIR_P2,
         cost  = 2000,
     },
@@ -45,6 +45,35 @@ local function buyEschalixir(player, exchange)
     end
 end
 
+local function openEschalixirMenu(player)
+    showPrices(player)
+
+    local menu =
+    {
+        title = 'Eschalixirs',
+        options = {},
+    }
+
+    for _, entry in ipairs(eschalixirExchange) do
+        local exchange = entry
+
+        table.insert(menu.options, {
+            exchange.label,
+            function(p)
+                buyEschalixir(p, exchange)
+            end,
+        })
+    end
+
+    table.insert(menu.options, {
+        'Cancel',
+        function(_)
+        end,
+    })
+
+    player:customMenu(menu)
+end
+
 xi.nolanShop.onTrade = function(player, npc, trade)
     if
         trade:getItemCount() == 1 and
@@ -61,45 +90,35 @@ xi.nolanShop.onTrade = function(player, npc, trade)
 end
 
 xi.nolanShop.onTrigger = function(player, npc)
-    player:printToPlayer('Nolan exchanges Escha Beads.', xi.msg.channel.NS_SAY)
+    player:printToPlayer('Another customer. Joy.', xi.msg.channel.NS_SAY)
 
     local menu =
     {
         title = 'Nolan',
-        options = {},
+        options =
+        {
+            {
+                'Mezzotinting',
+                function(p)
+                    p:printToPlayer('Trade eligible Escha equipment to begin.', xi.msg.channel.NS_SAY)
+                    p:printToPlayer('Mezzotinting is not ready yet.', xi.msg.channel.NS_SAY)
+                end,
+            },
+
+            {
+                'Buy Eschalixirs',
+                function(p)
+                    openEschalixirMenu(p)
+                end,
+            },
+
+            {
+                'Cancel',
+                function(_)
+                end,
+            },
+        },
     }
-
-    for _, entry in ipairs(eschalixirExchange) do
-        local exchange = entry
-
-        table.insert(menu.options, {
-            exchange.label,
-            function(p)
-                buyEschalixir(p, exchange)
-            end,
-        })
-    end
-
-    table.insert(menu.options, {
-        'Prices',
-        function(p)
-            showPrices(p)
-        end,
-    })
-
-    table.insert(menu.options, {
-        'Mezzotinting',
-        function(p)
-            p:printToPlayer('Trade an Eschalixir to continue.', xi.msg.channel.NS_SAY)
-            p:printToPlayer('Mezzotinting is not ready yet.', xi.msg.channel.NS_SAY)
-        end,
-    })
-
-    table.insert(menu.options, {
-        'Cancel',
-        function(_)
-        end,
-    })
 
     player:customMenu(menu)
 end
