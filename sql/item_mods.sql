@@ -75499,8 +75499,7 @@ INSERT INTO `item_mods` VALUES (27433,25,15);   -- ACC: 15
 INSERT INTO `item_mods` VALUES (27433,29,1);    -- MDEF: 1
 INSERT INTO `item_mods` VALUES (27433,31,54);   -- MEVA: 54
 INSERT INTO `item_mods` VALUES (27433,68,25);   -- EVA: 25
-INSERT INTO `item_mods` VALUES (27433,73,8);    -- STORETP: 8
-INSERT INTO `item_mods` VALUES (27433,306,10);  -- ZANSHIN: 10
+INSERT INTO `item_mods` VALUES (27433,944,8);   -- CONSERVE_TP: 8
 INSERT INTO `item_mods` VALUES (27433,384,300); -- HASTE_GEAR: 300
 INSERT INTO `item_mods` VALUES (27433,1090,10); -- SENGIKORI_BONUS : 10
 
@@ -75518,8 +75517,7 @@ INSERT INTO `item_mods` VALUES (27434,25,21);   -- ACC: 21
 INSERT INTO `item_mods` VALUES (27434,29,2);    -- MDEF: 2
 INSERT INTO `item_mods` VALUES (27434,31,80);   -- MEVA: 80
 INSERT INTO `item_mods` VALUES (27434,68,55);   -- EVA: 55
-INSERT INTO `item_mods` VALUES (27434,73,8);    -- STORETP: 8
-INSERT INTO `item_mods` VALUES (27434,306,11);  -- ZANSHIN: 11
+INSERT INTO `item_mods` VALUES (27434,944,10);  -- CONSERVE_TP: 10
 INSERT INTO `item_mods` VALUES (27434,384,300); -- HASTE_GEAR: 300
 INSERT INTO `item_mods` VALUES (27434,1090,11); -- SENGIKORI_BONUS : 11
 
@@ -93226,6 +93224,29 @@ INSERT INTO `item_mods` VALUES (23631,73,12);     -- Amini Bragues +3: STORETP: 
 INSERT INTO `item_mods` VALUES (23631,1053,8);    -- Amini Bragues +3: TRUE_SHOT_EFFECT: 8
 
 INSERT INTO `item_mods` VALUES (23698,29,9);      -- Amini Bottillons +3: MDEF: 9
+
+-- Kasuga Armor Set missing mods
+INSERT INTO `item_mods` VALUES (27075,29,1);      -- Kasuga Kote +1: MDEF: 1
+
+INSERT INTO `item_mods` VALUES (23096,291,16);    -- Kasuga Kabuto +2: COUNTER: 16
+
+INSERT INTO `item_mods` VALUES (23431,29,6);      -- Kasuga Kabuto +3: MDEF: 6
+INSERT INTO `item_mods` VALUES (23431,73,12);     -- Kasuga Kabuto +3: STORETP: 12
+INSERT INTO `item_mods` VALUES (23431,291,18);    -- Kasuga Kabuto +3: COUNTER: 18
+
+INSERT INTO `item_mods` VALUES (23498,29,8);      -- Kasuga Domaru +3: MDEF: 8
+INSERT INTO `item_mods` VALUES (23498,73,14);     -- Kasuga Domaru +3: STORETP: 14
+INSERT INTO `item_mods` VALUES (23498,306,16);    -- Kasuga Domaru +3: ZANSHIN: 16
+
+INSERT INTO `item_mods` VALUES (23565,29,5);      -- Kasuga Kote +3: MDEF: 5
+
+INSERT INTO `item_mods` VALUES (23632,29,7);      -- Kasuga Haidate +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23632,73,11);     -- Kasuga Haidate +3: STORETP: 11
+
+INSERT INTO `item_mods` VALUES (23699,29,6);      -- Kasuga Sune-Ate +3: MDEF: 6
+INSERT INTO `item_mods` VALUES (23699,944,14);    -- Kasuga Sune-Ate +3: CONSERVE_TP: 14
+INSERT INTO `item_mods` VALUES (23699,1090,13);   -- Kasuga Sune-Ate +3: SENGIKORI_BONUS: 13
+INSERT INTO `item_mods` VALUES (23699,1081,10);   -- Kasuga Sune-Ate +3: DAMAGE_LIMITP: 10
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
