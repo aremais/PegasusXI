@@ -93366,6 +93366,24 @@ INSERT INTO `item_mods` VALUES (23637,892,100);   -- Chasseur's Culottes +3: ENH
 
 INSERT INTO `item_mods` VALUES (23704,411,31);    -- Chasseur's Bottes +3: QUICK_DRAW_DMG: 31
 INSERT INTO `item_mods` VALUES (23704,891,100);   -- Chasseur's Bottes +3: ENHANCES_COURSERS_ROLL: 100
+
+-- Karagoz Attire Set missing mods
+INSERT INTO `item_mods` VALUES (23437,29,8);      -- Karagoz Cappello +3: MDEF: 8
+INSERT INTO `item_mods` VALUES (23437,288,5);     -- Karagoz Cappello +3: DOUBLE_ATTACK: 5
+
+INSERT INTO `item_mods` VALUES (23504,29,8);      -- Karagoz Farsetto +3: MDEF: 8
+INSERT INTO `item_mods` VALUES (23504,505,40);    -- Karagoz Farsetto +3: OVERLOAD_THRESH: 40
+
+INSERT INTO `item_mods` VALUES (23571,29,5);      -- Karagoz Guanti +3: MDEF: 5
+INSERT INTO `item_mods` VALUES (23571,73,11);     -- Karagoz Guanti +3: STORETP: 11
+
+INSERT INTO `item_mods` VALUES (23638,29,8);      -- Karagoz Pantaloni +3: MDEF: 8
+INSERT INTO `item_mods` VALUES (23638,101,33);    -- Karagoz Pantaloni +3: AUTO_MELEE_SKILL: 33
+INSERT INTO `item_mods` VALUES (23638,102,33);    -- Karagoz Pantaloni +3: AUTO_RANGED_SKILL: 33
+INSERT INTO `item_mods` VALUES (23638,103,33);    -- Karagoz Pantaloni +3: AUTO_MAGIC_SKILL: 33
+INSERT INTO `item_mods` VALUES (23638,173,11);    -- Karagoz Pantaloni +3: MARTIAL_ARTS: 11
+
+INSERT INTO `item_mods` VALUES (23705,29,7);      -- Karagoz Scarpe +3: MDEF: 7
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
