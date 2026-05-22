@@ -49974,7 +49974,7 @@ INSERT INTO `item_mods` VALUES (23168,31,109);    -- MEVA: 109
 INSERT INTO `item_mods` VALUES (23168,68,92);     -- EVA: 92
 INSERT INTO `item_mods` VALUES (23168,160,-1200); -- DMG: -12%
 INSERT INTO `item_mods` VALUES (23168,384,400);   -- HASTE_GEAR: 4%
-INSERT INTO `item_mods` VALUES (23168,467,13);    -- TRIPLE SHOT: 13
+INSERT INTO `item_mods` VALUES (23168,999,13);    -- TRIPLE_SHOT_RATE: 13
 INSERT INTO `item_mods` VALUES (23168,895,100);   -- ENHANCES_TACTICIANS_ROLL: 100
 
 -- Karagoz Farsetto +2
@@ -52703,7 +52703,7 @@ INSERT INTO `item_mods` VALUES (23302,31,115);    -- MEVA: 115
 INSERT INTO `item_mods` VALUES (23302,68,81);     -- EVA: 81
 INSERT INTO `item_mods` VALUES (23302,73,11);     -- STORETP: 11
 INSERT INTO `item_mods` VALUES (23302,160,-1100); -- DMG: -11%
-INSERT INTO `item_mods` VALUES (23302,365,6);     -- SNAPSHOT: 8
+INSERT INTO `item_mods` VALUES (23302,365,8);     -- SNAPSHOT: 8
 INSERT INTO `item_mods` VALUES (23302,384,600);   -- HASTE_GEAR: 6%
 INSERT INTO `item_mods` VALUES (23302,892,100);   -- ENHANCES_CASTERS_ROLL: 100
 
@@ -68817,7 +68817,7 @@ INSERT INTO `item_mods` VALUES (26930,26,14);   -- RACC: 14
 INSERT INTO `item_mods` VALUES (26930,29,3);    -- MDEF: 3
 INSERT INTO `item_mods` VALUES (26930,31,47);   -- MEVA: 47
 INSERT INTO `item_mods` VALUES (26930,68,24);   -- EVA: 24
-INSERT INTO `item_mods` VALUES (26930,422,11);  -- DOUBLE_SHOT_RATE: 11
+INSERT INTO `item_mods` VALUES (26930,999,11);  -- TRIPLE_SHOT_RATE: 11
 INSERT INTO `item_mods` VALUES (26930,895,100); -- ENHANCES_TACTICIANS_ROLL: 100
 
 -- Chasseurs Frac +1
@@ -68837,7 +68837,7 @@ INSERT INTO `item_mods` VALUES (26931,29,6);    -- MDEF: 6
 INSERT INTO `item_mods` VALUES (26931,31,69);   -- MEVA: 69
 INSERT INTO `item_mods` VALUES (26931,68,52);   -- EVA: 52
 INSERT INTO `item_mods` VALUES (26931,386,41);  -- KICK_DMG: 41
-INSERT INTO `item_mods` VALUES (26931,422,12);  -- DOUBLE_SHOT_RATE: 12
+INSERT INTO `item_mods` VALUES (26931,999,12);  -- TRIPLE_SHOT_RATE: 12
 INSERT INTO `item_mods` VALUES (26931,895,100); -- ENHANCES_TACTICIANS_ROLL: 100
 
 -- Karagoz Farsetto
@@ -93349,6 +93349,23 @@ INSERT INTO `item_mods` VALUES (23636,29,10);     -- Hashishin Tayt +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23703,29,10);     -- Hashishin Basmak +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23703,487,15);    -- Hashishin Basmak +3: MAG_BURST_BONUS: 15
 INSERT INTO `item_mods` VALUES (23703,1139,21);   -- Hashishin Basmak +3: ENHANCES_BURST_AFFINITY: 21
+
+-- Chasseur's Attire Set missing mods
+INSERT INTO `item_mods` VALUES (23436,359,18);    -- Chasseur's Tricorne +3: RAPID_SHOT: 18
+INSERT INTO `item_mods` VALUES (23436,893,100);   -- Chasseur's Tricorne +3: ENHANCES_BLITZERS_ROLL: 100
+
+INSERT INTO `item_mods` VALUES (23503,999,14);    -- Chasseur's Frac +3: TRIPLE_SHOT_RATE: 14
+INSERT INTO `item_mods` VALUES (23503,895,100);   -- Chasseur's Frac +3: ENHANCES_TACTICIANS_ROLL: 100
+
+INSERT INTO `item_mods` VALUES (23570,882,60);    -- Chasseur's Gants +3: PHANTOM_DURATION: 60
+INSERT INTO `item_mods` VALUES (23570,894,100);   -- Chasseur's Gants +3: ENHANCES_ALLIES_ROLL: 100
+
+INSERT INTO `item_mods` VALUES (23637,73,12);     -- Chasseur's Culottes +3: STORETP: 12
+INSERT INTO `item_mods` VALUES (23637,365,9);     -- Chasseur's Culottes +3: SNAPSHOT: 9
+INSERT INTO `item_mods` VALUES (23637,892,100);   -- Chasseur's Culottes +3: ENHANCES_CASTERS_ROLL: 100
+
+INSERT INTO `item_mods` VALUES (23704,411,31);    -- Chasseur's Bottes +3: QUICK_DRAW_DMG: 31
+INSERT INTO `item_mods` VALUES (23704,891,100);   -- Chasseur's Bottes +3: ENHANCES_COURSERS_ROLL: 100
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
