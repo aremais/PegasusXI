@@ -93402,6 +93402,26 @@ INSERT INTO `item_mods` VALUES (23639,486,26);    -- Maculele Tights +3: TACTICA
 
 INSERT INTO `item_mods` VALUES (23706,29,9);      -- Maculele Toe Shoes +3: MDEF: 9
 INSERT INTO `item_mods` VALUES (23706,73,12);     -- Maculele Toe Shoes +3: STORETP: 12
+
+-- Arbatel Attire Set missing mods
+INSERT INTO `item_mods` VALUES (23439,29,10);     -- Arbatel Bonnet +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23439,568,21);    -- Arbatel Bonnet +3: RAPTURE_AMOUNT: 21
+INSERT INTO `item_mods` VALUES (23439,569,21);    -- Arbatel Bonnet +3: EBULLIENCE_AMOUNT: 21
+INSERT INTO `item_mods` VALUES (23439,838,25);    -- Arbatel Bonnet +3: REGEN_MULTIPLIER: 25
+
+INSERT INTO `item_mods` VALUES (23506,28,59);     -- Arbatel Gown +3: MATT: 59
+INSERT INTO `item_mods` VALUES (23506,29,11);     -- Arbatel Gown +3: MDEF: 11
+INSERT INTO `item_mods` VALUES (23506,369,4);     -- Arbatel Gown +3: REFRESH: 4
+
+INSERT INTO `item_mods` VALUES (23573,28,52);     -- Arbatel Bracers +3: MATT: 52
+INSERT INTO `item_mods` VALUES (23573,29,7);      -- Arbatel Bracers +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23573,487,15);    -- Arbatel Bracers +3: MAG_BURST_BONUS: 15
+
+INSERT INTO `item_mods` VALUES (23640,28,54);     -- Arbatel Pants +3: MATT: 54
+INSERT INTO `item_mods` VALUES (23640,29,10);     -- Arbatel Pants +3: MDEF: 10
+
+INSERT INTO `item_mods` VALUES (23707,28,50);     -- Arbatel Loafers +3: MATT: 50
+INSERT INTO `item_mods` VALUES (23707,29,10);     -- Arbatel Loafers +3: MDEF: 10
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
