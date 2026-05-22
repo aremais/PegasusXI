@@ -3496,7 +3496,10 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Maat',1048,3414); -- One Inch Punch
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Maat',1048,3415); -- Howling Fist (Maat)
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Maat',1048,3416); -- Dragon Kick (Maat)
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Maat',1048,3417); -- Asuran Fists (Maat)
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_D_Shantotto',1049,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_D_Shantotto',1049,98);   -- shadow_of_death
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_D_Shantotto',1049,102);  -- guillotine
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_D_Shantotto',1049,103);  -- cross_reaper
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_D_Shantotto',1049,3264); -- salvation_scythe
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Star_Sibyl',1050,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Karaha-Baruha',1051,3336); -- Howling Moon
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Karaha-Baruha',1051,183); -- Spirit Taker

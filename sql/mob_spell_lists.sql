@@ -3452,6 +3452,8 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Fablinix',344,105,27,255); -- enwat
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Fablinix',344,252,45,255); -- stun (45~255)
 
 -- TRUST_D_Shantotto (346)
+-- Retail behavior: Domina Shantotto casts single-target elemental nukes I-V.
+-- No -ga, Ancient Magic, Dark Magic, Enfeebling Magic, Enhancing Magic, or AoE spells.
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_D_Shantotto',346,144,9,255);  -- fire (9~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_D_Shantotto',346,145,34,255); -- fire_ii (34~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_D_Shantotto',346,146,59,255); -- fire_iii (59~255)
