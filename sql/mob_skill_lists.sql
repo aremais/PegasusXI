@@ -3596,7 +3596,11 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_August',1099,3658); -- No Quarter
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Makki-Chebukki',1103,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_King_of_Hearts',1104,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Morimar',1105,0);
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Darrcuiln',1106,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Darrcuiln',1106,3684); -- Aurous Charge
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Darrcuiln',1106,3685); -- Howling Gust
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Darrcuiln',1106,3686); -- Righteous Rasp
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Darrcuiln',1106,3687); -- Starward Yowl
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Darrcuiln',1106,3688); -- Stalking Prey
 -- TODO: Verify these
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_AAHM',1107,3706); -- Cross Reaver
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_AAHM',1107,3708); -- Swift Blade

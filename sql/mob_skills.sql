@@ -3718,7 +3718,7 @@ INSERT INTO `mob_skills` VALUES (3684,2323,'aurous_charge',0,0.0,7.0,2000,1500,4
 INSERT INTO `mob_skills` VALUES (3685,2324,'howling_gust',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);   -- Capture shows 276. Adding 2048 for it to work properly.
 INSERT INTO `mob_skills` VALUES (3686,2325,'righteous_rasp',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0); -- Capture shows 277. Adding 2048 for it to work properly.
 INSERT INTO `mob_skills` VALUES (3687,2326,'starward_yowl',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);  -- Capture shows 278. Adding 2048 for it to work properly.
-INSERT INTO `mob_skills` VALUES (3688,2327,'stalking_prey',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);  -- Capture shows 279. Adding 2048 for it to work properly.
+INSERT INTO `mob_skills` VALUES (3688,2327,'stalking_prey',1,0.0,7.0,2000,1500,4,0,0,0,0,0,0);  -- Capture shows 279. Adding 2048 for it to work properly.
 INSERT INTO `mob_skills` VALUES (3689,344,'shuffle',4,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
 INSERT INTO `mob_skills` VALUES (3690,345,'double_down',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
 INSERT INTO `mob_skills` VALUES (3691,427,'bludgeon',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
