@@ -93384,6 +93384,24 @@ INSERT INTO `item_mods` VALUES (23638,103,33);    -- Karagoz Pantaloni +3: AUTO_
 INSERT INTO `item_mods` VALUES (23638,173,11);    -- Karagoz Pantaloni +3: MARTIAL_ARTS: 11
 
 INSERT INTO `item_mods` VALUES (23705,29,7);      -- Karagoz Scarpe +3: MDEF: 7
+
+-- Maculele Attire Set missing mods
+INSERT INTO `item_mods` VALUES (23438,29,7);      -- Maculele Tiara +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23438,73,10);     -- Maculele Tiara +3: STORETP: 10
+
+INSERT INTO `item_mods` VALUES (23505,29,10);     -- Maculele Casaque +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23505,259,11);    -- Maculele Casaque +3: DUAL_WIELD: 11
+INSERT INTO `item_mods` VALUES (23505,289,14);    -- Maculele Casaque +3: SUBTLE_BLOW: 14
+
+INSERT INTO `item_mods` VALUES (23572,29,6);      -- Maculele Bangles +3: MDEF: 6
+INSERT INTO `item_mods` VALUES (23572,175,1300);  -- Maculele Bangles +3: SKILLCHAINDMG: 1300
+INSERT INTO `item_mods` VALUES (23572,836,14);    -- Maculele Bangles +3: REVERSE_FLOURISH_EFFECT: 14
+
+INSERT INTO `item_mods` VALUES (23639,29,9);      -- Maculele Tights +3: MDEF: 9
+INSERT INTO `item_mods` VALUES (23639,486,26);    -- Maculele Tights +3: TACTICAL_PARRY: 26
+
+INSERT INTO `item_mods` VALUES (23706,29,9);      -- Maculele Toe Shoes +3: MDEF: 9
+INSERT INTO `item_mods` VALUES (23706,73,12);     -- Maculele Toe Shoes +3: STORETP: 12
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
