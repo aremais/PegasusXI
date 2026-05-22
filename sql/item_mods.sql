@@ -93020,7 +93020,6 @@ INSERT INTO `item_mods` VALUES (23621,903,150);   -- Boii Cuisses +3: FENCER_TP_
 INSERT INTO `item_mods` VALUES (23621,904,4);     -- Boii Cuisses +3: FENCER_CRITHITRATE: 4
 INSERT INTO `item_mods` VALUES (23688,29,6);      -- Boii Calligae +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23688,414,31);    -- Boii Calligae +3: RETALIATION: 31
-
 -- Bhikku Attire Set +3 missing mods
 INSERT INTO `item_mods` VALUES (23421,29,8);      -- Bhikku Crown +3: MDEF: 8
 INSERT INTO `item_mods` VALUES (23421,289,14);    -- Bhikku Crown +3: SUBTLE_BLOW: 14
@@ -93034,7 +93033,6 @@ INSERT INTO `item_mods` VALUES (23622,292,30);    -- Bhikku Hose +3: KICK_ATTACK
 INSERT INTO `item_mods` VALUES (23689,29,7);      -- Bhikku Gaiters +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23689,386,65);    -- Bhikku Gaiters +3: KICK_DMG: 65
 INSERT INTO `item_mods` VALUES (23689,429,16);    -- Bhikku Gaiters +3: FOOTWORK_ATT_BONUS: 16
-
 -- Ebers Attire Set missing mods
 INSERT INTO `item_mods` VALUES (26744,524,20);    -- Ebers Cap: AOE_NA: 20
 INSERT INTO `item_mods` VALUES (26745,524,22);    -- Ebers Cap +1: AOE_NA: 22
@@ -93056,409 +93054,289 @@ INSERT INTO `item_mods` VALUES (27415,484,13);    -- Ebers Duckbills: AUSPICE_EF
 INSERT INTO `item_mods` VALUES (27416,484,15);    -- Ebers Duckbills +1: AUSPICE_EFFECT: 15
 INSERT INTO `item_mods` VALUES (23690,29,9);      -- Ebers Duckbills +3: MDEF: 9
 INSERT INTO `item_mods` VALUES (23690,484,19);    -- Ebers Duckbills +3: AUSPICE_EFFECT: 19
-
 -- Wicce Attire Set missing mods
 INSERT INTO `item_mods` VALUES (26746,901,12);     -- Wicce Petasos: ELEMENTAL_CELERITY: 12
 INSERT INTO `item_mods` VALUES (26747,901,14);     -- Wicce Petasos +1: ELEMENTAL_CELERITY: 14
 INSERT INTO `item_mods` VALUES (23423,29,10);      -- Wicce Petasos +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23423,901,18);     -- Wicce Petasos +3: ELEMENTAL_CELERITY: 18
-
 INSERT INTO `item_mods` VALUES (23490,28,59);      -- Wicce Coat +3: MATT: 59
 INSERT INTO `item_mods` VALUES (23490,29,11);      -- Wicce Coat +3: MDEF: 11
 INSERT INTO `item_mods` VALUES (23490,369,4);      -- Wicce Coat +3: REFRESH: 4
 INSERT INTO `item_mods` VALUES (23490,1146,-16);   -- Wicce Coat +3: ELEMENTAL_MAGIC_RECAST: -16
-
 INSERT INTO `item_mods` VALUES (23557,28,57);      -- Wicce Gloves +3: MATT: 57
 INSERT INTO `item_mods` VALUES (23557,29,7);       -- Wicce Gloves +3: MDEF: 7
-
 INSERT INTO `item_mods` VALUES (23624,28,58);      -- Wicce Chausses +3: MATT: 58
 INSERT INTO `item_mods` VALUES (23624,29,10);      -- Wicce Chausses +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23624,487,15);     -- Wicce Chausses +3: MAG_BURST_BONUS: 15
-
 INSERT INTO `item_mods` VALUES (23691,29,10);      -- Wicce Sabots +3: MDEF: 10
-
 -- Lethargy Armor Set missing mods
 INSERT INTO `item_mods` VALUES (27060,297,11);    -- Lethargy Gantherots: ENHANCES_SABOTEUR: 11
 INSERT INTO `item_mods` VALUES (27061,297,12);    -- Lethargy Gantherots +1: ENHANCES_SABOTEUR: 12
-
 INSERT INTO `item_mods` VALUES (23424,28,56);     -- Lethargy Chappel +3: MATT: 56
 INSERT INTO `item_mods` VALUES (23424,29,10);     -- Lethargy Chappel +3: MDEF: 10
-
 INSERT INTO `item_mods` VALUES (23491,29,11);     -- Lethargy Sayon +3: MDEF: 11
 INSERT INTO `item_mods` VALUES (23491,290,18);    -- Lethargy Sayon +3: ENF_MAG_POTENCY: 18
 INSERT INTO `item_mods` VALUES (23491,369,4);     -- Lethargy Sayon +3: REFRESH: 4
-
 INSERT INTO `item_mods` VALUES (23558,29,7);      -- Lethargy Gantherots +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23558,297,14);    -- Lethargy Gantherots +3: ENHANCES_SABOTEUR: 14
-
 INSERT INTO `item_mods` VALUES (23625,28,58);     -- Lethargy Fuseau +3: MATT: 58
 INSERT INTO `item_mods` VALUES (23625,29,10);     -- Lethargy Fuseau +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23625,487,15);    -- Lethargy Fuseau +3: MAG_BURST_BONUS: 15
 INSERT INTO `item_mods` VALUES (23625,529,4);     -- Lethargy Fuseau +3: ENHANCES_REFRESH: 4
-
 INSERT INTO `item_mods` VALUES (23692,29,10);     -- Lethargy Houseaux +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23692,890,40);    -- Lethargy Houseaux +3: ENH_MAGIC_DURATION: 40
-
 -- Skulker's Attire Set missing mods
 INSERT INTO `item_mods` VALUES (23425,29,7);       -- Skulker's Bonnet +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23425,884,21);     -- Skulker's Bonnet +3: ACC_COLLAB_EFFECT: 21
-
 INSERT INTO `item_mods` VALUES (23492,29,10);      -- Skulker's Vest +3: MDEF: 10
-
 INSERT INTO `item_mods` VALUES (23559,29,6);       -- Skulker's Armlets +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23559,830,30);     -- Skulker's Armlets +3: SNEAK_ATK_DEX: 30
-
 INSERT INTO `item_mods` VALUES (23626,29,9);       -- Skulker's Culottes +3: MDEF: 9
 INSERT INTO `item_mods` VALUES (23626,896,13);     -- Skulker's Culottes +3: DESPOIL: 13
-
 INSERT INTO `item_mods` VALUES (23693,29,9);       -- Skulker's Poulaines +3: MDEF: 9
 INSERT INTO `item_mods` VALUES (23693,303,5);      -- Skulker's Poulaines +3: TREASURE_HUNTER: 5
-
 -- Chevalier's Armor Set missing mods
 INSERT INTO `item_mods` VALUES (27065,29,1);      -- Chevalier's Gauntlets +1: MDEF: 1
-
 INSERT INTO `item_mods` VALUES (23426,29,6);      -- Chevalier's Armet +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23426,170,9);     -- Chevalier's Armet +3: FASTCAST: 9
 INSERT INTO `item_mods` VALUES (23426,426,8);     -- Chevalier's Armet +3: ABSORB_PHYSDMG_TO_MP: 8
-
 INSERT INTO `item_mods` VALUES (23493,29,8);      -- Chevalier's Cuirass +3: MDEF: 8
 INSERT INTO `item_mods` VALUES (23493,168,20);    -- Chevalier's Cuirass +3: SPELLINTERRUPT: 20
-
 INSERT INTO `item_mods` VALUES (23560,29,5);      -- Chevalier's Gauntlets +3: MDEF: 5
 INSERT INTO `item_mods` VALUES (23560,905,5);     -- Chevalier's Gauntlets +3: SHIELD_DEF_BONUS: 5
-
 INSERT INTO `item_mods` VALUES (23627,29,7);      -- Chevalier's Cuisses +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23627,427,14);    -- Chevalier's Cuisses +3: ENMITY_LOSS_REDUCTION: 14
-
 INSERT INTO `item_mods` VALUES (23694,29,6);      -- Chevalier's Sabatons +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23694,170,13);    -- Chevalier's Sabatons +3: FASTCAST: 13
 INSERT INTO `item_mods` VALUES (23694,1062,21);   -- Chevalier's Sabatons +3: ENHANCES_DIVINE_EMBLEM: 21
-
 -- Heathen's Armor Set missing mods
 INSERT INTO `item_mods` VALUES (27252,1083,35);   -- Heathen's Flanchard +1: ENHANCES_NETHER_VOID: 35
 INSERT INTO `item_mods` VALUES (23293,1083,40);   -- Heathen's Flanchard +2: ENHANCES_NETHER_VOID: 40
-
 INSERT INTO `item_mods` VALUES (23427,29,6);      -- Heathen's Burgeonet +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23427,288,6);     -- Heathen's Burgeonet +3: DOUBLE_ATTACK: 6
-
 INSERT INTO `item_mods` VALUES (23494,29,8);      -- Heathen's Cuirass +3: MDEF: 8
-
 INSERT INTO `item_mods` VALUES (23561,29,5);      -- Heathen's Gauntlets +3: MDEF: 5
-
 INSERT INTO `item_mods` VALUES (23628,29,8);      -- Heathen's Flanchards +3: MDEF: 8
 INSERT INTO `item_mods` VALUES (23628,1083,45);   -- Heathen's Flanchards +3: ENHANCES_NETHER_VOID: 45
-
 INSERT INTO `item_mods` VALUES (23695,29,6);      -- Heathen's Sollerets +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23695,902,36);    -- Heathen's Sollerets +3: OCCULT_ACUMEN: 36
-
 -- Nukumi Armor Set missing mods
 INSERT INTO `item_mods` VALUES (27069,29,1);      -- Nukumi Manoplas +1: MDEF: 1
-
 INSERT INTO `item_mods` VALUES (27253,29,1);      -- Nukumi Quijotes: MDEF: 1
 INSERT INTO `item_mods` VALUES (27254,29,3);      -- Nukumi Quijotes +1: MDEF: 3
-
 INSERT INTO `item_mods` VALUES (27427,29,1);      -- Nukumi Ocreae: MDEF: 1
 INSERT INTO `item_mods` VALUES (27428,29,2);      -- Nukumi Ocreae +1: MDEF: 2
-
 INSERT INTO `item_mods` VALUES (26756,1155,22);   -- Nukumi Cabasset: ENHANCES_MONSTER_CORRELATION: 22
 INSERT INTO `item_mods` VALUES (26757,1155,24);   -- Nukumi Cabasset +1: ENHANCES_MONSTER_CORRELATION: 24
 INSERT INTO `item_mods` VALUES (23093,1155,26);   -- Nukumi Cabasset +2: ENHANCES_MONSTER_CORRELATION: 26
 INSERT INTO `item_mods` VALUES (23428,1155,28);   -- Nukumi Cabasset +3: ENHANCES_MONSTER_CORRELATION: 28
-
 INSERT INTO `item_mods` VALUES (23428,29,6);      -- Nukumi Cabasset +3: MDEF: 6
-
 INSERT INTO `item_mods` VALUES (23495,29,8);      -- Nukumi Gausape +3: MDEF: 8
-
 INSERT INTO `item_mods` VALUES (23562,29,5);      -- Nukumi Manoplas +3: MDEF: 5
-
 INSERT INTO `item_mods` VALUES (23629,29,7);      -- Nukumi Quijotes +3: MDEF: 7
-
 INSERT INTO `item_mods` VALUES (23696,29,6);      -- Nukumi Ocreae +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23696,288,6);     -- Nukumi Ocreae +3: DOUBLE_ATTACK: 6
 INSERT INTO `item_mods` VALUES (23696,1157,21);   -- Nukumi Ocreae +3: ENHANCES_SPUR: 21
-
 -- Fili Attire Set missing mods
 INSERT INTO `item_mods` VALUES (27255,833,7);     -- Fili Rhingrave: SONG_RECAST_DELAY: 7
 INSERT INTO `item_mods` VALUES (27256,833,8);     -- Fili Rhingrave +1: SONG_RECAST_DELAY: 8
-
 INSERT INTO `item_mods` VALUES (23429,29,10);     -- Fili Calot +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23429,438,1);     -- Fili Calot +3: MADRIGAL_EFFECT: 1
 INSERT INTO `item_mods` VALUES (23429,455,16);    -- Fili Calot +3: SONG_SPELLCASTING_TIME: 16
-
 INSERT INTO `item_mods` VALUES (23496,29,11);     -- Fili Hongreline +3: MDEF: 11
 INSERT INTO `item_mods` VALUES (23496,370,5);     -- Fili Hongreline +3: REGEN: 5
 INSERT INTO `item_mods` VALUES (23496,434,1);     -- Fili Hongreline +3: MINUET_EFFECT: 1
 INSERT INTO `item_mods` VALUES (23496,454,14);    -- Fili Hongreline +3: SONG_DURATION_BONUS: 14
-
 INSERT INTO `item_mods` VALUES (23563,29,7);      -- Fili Manchettes +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23563,443,1);     -- Fili Manchettes +3: MARCH_EFFECT: 1
-
 INSERT INTO `item_mods` VALUES (23630,29,10);     -- Fili Rhingrave +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23630,442,1);     -- Fili Rhingrave +3: BALLAD_EFFECT: 1
 INSERT INTO `item_mods` VALUES (23630,833,10);    -- Fili Rhingrave +3: SONG_RECAST_DELAY: 10
-
 INSERT INTO `item_mods` VALUES (23697,29,10);     -- Fili Cothurnes +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23697,76,18);     -- Fili Cothurnes +3: MOVE_SPEED_GEAR_BONUS: 18
 INSERT INTO `item_mods` VALUES (23697,170,13);    -- Fili Cothurnes +3: FASTCAST: 13
 INSERT INTO `item_mods` VALUES (23697,370,4);     -- Fili Cothurnes +3: REGEN: 4
 INSERT INTO `item_mods` VALUES (23697,451,1);     -- Fili Cothurnes +3: SCHERZO_EFFECT: 1
-
 -- Amini Attire Set missing mods
 INSERT INTO `item_mods` VALUES (23430,29,7);      -- Amini Gapette +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23430,289,14);    -- Amini Gapette +3: SUBTLE_BLOW: 14
 INSERT INTO `item_mods` VALUES (23430,365,9);     -- Amini Gapette +3: SNAPSHOT: 9
-
 INSERT INTO `item_mods` VALUES (23497,29,10);     -- Amini Caban +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23497,423,11);    -- Amini Caban +3: VELOCITY_SNAPSHOT_BONUS: 11
 INSERT INTO `item_mods` VALUES (23497,424,11);    -- Amini Caban +3: VELOCITY_RATT_BONUS: 11
-
 INSERT INTO `item_mods` VALUES (23564,29,6);      -- Amini Glovelettes +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23564,73,11);     -- Amini Glovelettes +3: STORETP: 11
 INSERT INTO `item_mods` VALUES (23564,826,4);     -- Amini Glovelettes +3: BOUNTY_SHOT_TH_BONUS: 4
-
 INSERT INTO `item_mods` VALUES (23631,29,9);      -- Amini Bragues +3: MDEF: 9
 INSERT INTO `item_mods` VALUES (23631,73,12);     -- Amini Bragues +3: STORETP: 12
 INSERT INTO `item_mods` VALUES (23631,1053,8);    -- Amini Bragues +3: TRUE_SHOT_EFFECT: 8
-
 INSERT INTO `item_mods` VALUES (23698,29,9);      -- Amini Bottillons +3: MDEF: 9
-
 -- Kasuga Armor Set missing mods
 INSERT INTO `item_mods` VALUES (27075,29,1);      -- Kasuga Kote +1: MDEF: 1
-
 INSERT INTO `item_mods` VALUES (23096,291,16);    -- Kasuga Kabuto +2: COUNTER: 16
-
 INSERT INTO `item_mods` VALUES (23431,29,6);      -- Kasuga Kabuto +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23431,73,12);     -- Kasuga Kabuto +3: STORETP: 12
 INSERT INTO `item_mods` VALUES (23431,291,18);    -- Kasuga Kabuto +3: COUNTER: 18
-
 INSERT INTO `item_mods` VALUES (23498,29,8);      -- Kasuga Domaru +3: MDEF: 8
 INSERT INTO `item_mods` VALUES (23498,73,14);     -- Kasuga Domaru +3: STORETP: 14
 INSERT INTO `item_mods` VALUES (23498,306,16);    -- Kasuga Domaru +3: ZANSHIN: 16
-
 INSERT INTO `item_mods` VALUES (23565,29,5);      -- Kasuga Kote +3: MDEF: 5
-
 INSERT INTO `item_mods` VALUES (23632,29,7);      -- Kasuga Haidate +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23632,73,11);     -- Kasuga Haidate +3: STORETP: 11
-
 INSERT INTO `item_mods` VALUES (23699,29,6);      -- Kasuga Sune-Ate +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23699,944,14);    -- Kasuga Sune-Ate +3: CONSERVE_TP: 14
 INSERT INTO `item_mods` VALUES (23699,1090,13);   -- Kasuga Sune-Ate +3: SENGIKORI_BONUS: 13
 INSERT INTO `item_mods` VALUES (23699,1081,10);   -- Kasuga Sune-Ate +3: DAMAGE_LIMITP: 10
-
 -- Hattori Garb Set missing mods
 INSERT INTO `item_mods` VALUES (23097,288,11);    -- Hattori Zukin +2: DOUBLE_ATTACK: 11
-
 INSERT INTO `item_mods` VALUES (23298,291,16);    -- Hattori Hakama +2: COUNTER: 16
-
 INSERT INTO `item_mods` VALUES (23432,29,7);      -- Hattori Zukin +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23432,259,7);     -- Hattori Zukin +3: DUAL_WIELD: 7
 INSERT INTO `item_mods` VALUES (23432,288,13);    -- Hattori Zukin +3: DOUBLE_ATTACK: 13
-
 INSERT INTO `item_mods` VALUES (23499,29,10);     -- Hattori Ningi +3: MDEF: 10
-
 INSERT INTO `item_mods` VALUES (23566,29,6);      -- Hattori Tekko +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23566,487,15);    -- Hattori Tekko +3: MAG_BURST_BONUS: 15
 INSERT INTO `item_mods` VALUES (23566,522,18);    -- Hattori Tekko +3: NIN_NUKE_BONUS_GEAR: 18
 INSERT INTO `item_mods` VALUES (23566,1148,28);   -- Hattori Tekko +3: ENHANCES_FUTAE: 28
-
 INSERT INTO `item_mods` VALUES (23633,29,9);      -- Hattori Hakama +3: MDEF: 9
 INSERT INTO `item_mods` VALUES (23633,291,18);    -- Hattori Hakama +3: COUNTER: 18
-
 INSERT INTO `item_mods` VALUES (23700,29,9);      -- Hattori Kyahan +3: MDEF: 9
 INSERT INTO `item_mods` VALUES (23700,486,26);    -- Hattori Kyahan +3: TACTICAL_PARRY: 26
 INSERT INTO `item_mods` VALUES (23700,900,1);     -- Hattori Kyahan +3: UTSUSEMI_BONUS: 1
-
 -- Peltast's Armor Set missing mods
 INSERT INTO `item_mods` VALUES (27078,281,1);     -- Peltast's Vambraces: ENHANCES_SPIRIT_LINK: 1
-
 INSERT INTO `item_mods` VALUES (27079,281,1);     -- Peltast's Vambraces +1: ENHANCES_SPIRIT_LINK: 1
-
 INSERT INTO `item_mods` VALUES (27263,286,13);    -- Peltast's Cuissots: JUMP_SOUL_SPIRIT_ATT_BONUS: 13
-
 INSERT INTO `item_mods` VALUES (27264,286,15);    -- Peltast's Cuissots +1: JUMP_SOUL_SPIRIT_ATT_BONUS: 15
-
 INSERT INTO `item_mods` VALUES (27437,285,60);    -- Peltast's Schynbalds: JUMP_SPIRIT_TP_BONUS: 60
-
 INSERT INTO `item_mods` VALUES (27438,285,70);    -- Peltast's Schynbalds +1: JUMP_SPIRIT_TP_BONUS: 70
-
 INSERT INTO `item_mods` VALUES (23433,29,6);      -- Peltast's Mezail +3: MDEF: 6
-
 INSERT INTO `item_mods` VALUES (23500,29,8);      -- Peltast's Plackart +3: MDEF: 8
 INSERT INTO `item_mods` VALUES (23500,73,14);     -- Peltast's Plackart +3: STORETP: 14
-
 INSERT INTO `item_mods` VALUES (23567,29,5);      -- Peltast's Vambraces +3: MDEF: 5
 INSERT INTO `item_mods` VALUES (23567,281,1);     -- Peltast's Vambraces +3: ENHANCES_SPIRIT_LINK: 1
 INSERT INTO `item_mods` VALUES (23567,288,7);     -- Peltast's Vambraces +3: DOUBLE_ATTACK: 7
-
 INSERT INTO `item_mods` VALUES (23634,29,7);      -- Peltast's Cuissots +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23634,286,19);    -- Peltast's Cuissots +3: JUMP_SOUL_SPIRIT_ATT_BONUS: 19
-
 INSERT INTO `item_mods` VALUES (23701,29,6);      -- Peltast's Schynbalds +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23701,285,90);    -- Peltast's Schynbalds +3: JUMP_SPIRIT_TP_BONUS: 90
-
 -- Beckoner's Attire Set missing mods
 INSERT INTO `item_mods` VALUES (26926,126,10);    -- Beckoner's Doublet: BP_DAMAGE: 10
-
 INSERT INTO `item_mods` VALUES (26927,126,11);    -- Beckoner's Doublet +1: BP_DAMAGE: 11
-
 INSERT INTO `item_mods` VALUES (23166,126,12);    -- Beckoner's Doublet +2: BP_DAMAGE: 12
-
 INSERT INTO `item_mods` VALUES (23233,126,8);     -- Beckoner's Bracers +2: BP_DAMAGE: 8
-
 INSERT INTO `item_mods` VALUES (23367,126,8);     -- Beckoner's Pigaches +2: BP_DAMAGE: 8
-
 INSERT INTO `item_mods` VALUES (27265,995,550);   -- Beckoner's Spats: PET_TP_BONUS: 550
-
 INSERT INTO `item_mods` VALUES (27266,995,600);   -- Beckoner's Spats +1: PET_TP_BONUS: 600
-
 INSERT INTO `item_mods` VALUES (23434,29,10);     -- Beckoner's Horn +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23434,369,4);     -- Beckoner's Horn +3: REFRESH: 4
 INSERT INTO `item_mods` VALUES (23434,1154,5);    -- Beckoner's Horn +3: AVATARS_FAVOR_ENHANCE: 5
-
 INSERT INTO `item_mods` VALUES (23501,29,10);     -- Beckoner's Doublet +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23501,126,13);    -- Beckoner's Doublet +3: BP_DAMAGE: 13
 INSERT INTO `item_mods` VALUES (23501,346,8);     -- Beckoner's Doublet +3: PERPETUATION_REDUCTION: 8
-
 INSERT INTO `item_mods` VALUES (23568,29,7);      -- Beckoner's Bracers +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23568,74,140);    -- Beckoner's Bracers +3: ENHANCES_MANA_CEDE: 140
 INSERT INTO `item_mods` VALUES (23568,126,12);    -- Beckoner's Bracers +3: BP_DAMAGE: 12
 INSERT INTO `item_mods` VALUES (23568,1170,1);    -- Beckoner's Bracers +3: HALF_PERPETUATION_DAY: 1
 INSERT INTO `item_mods` VALUES (23568,1171,1);    -- Beckoner's Bracers +3: HALF_PERPETUATION_WEATHER: 1
-
 INSERT INTO `item_mods` VALUES (23635,29,10);     -- Beckoner's Spats +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23635,913,14);    -- Beckoner's Spats +3: BLOOD_BOON: 14
 INSERT INTO `item_mods` VALUES (23635,995,700);   -- Beckoner's Spats +3: PET_TP_BONUS: 700
-
 INSERT INTO `item_mods` VALUES (23702,29,10);     -- Beckoner's Pigaches +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23702,126,12);    -- Beckoner's Pigaches +3: BP_DAMAGE: 12
 INSERT INTO `item_mods` VALUES (23702,346,9);     -- Beckoner's Pigaches +3: PERPETUATION_REDUCTION: 9
 INSERT INTO `item_mods` VALUES (23702,540,80);    -- Beckoner's Pigaches +3: ENHANCES_ELEMENTAL_SIPHON: 80
-
 -- Hashishin Attire Set missing mods
 INSERT INTO `item_mods` VALUES (23435,29,10);     -- Hashishin Kavuk +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23435,1140,28);   -- Hashishin Kavuk +3: ENHANCES_CHAIN_AFFINITY: 28
-
 INSERT INTO `item_mods` VALUES (23502,29,11);     -- Hashishin Mintan +3: MDEF: 11
 INSERT INTO `item_mods` VALUES (23502,369,4);     -- Hashishin Mintan +3: REFRESH: 4
-
 INSERT INTO `item_mods` VALUES (23569,29,7);      -- Hashishin Bazubands +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23569,1147,-16);  -- Hashishin Bazubands +3: BLUE_MAGIC_RECAST: -16
-
 INSERT INTO `item_mods` VALUES (23636,29,10);     -- Hashishin Tayt +3: MDEF: 10
-
 INSERT INTO `item_mods` VALUES (23703,29,10);     -- Hashishin Basmak +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23703,487,15);    -- Hashishin Basmak +3: MAG_BURST_BONUS: 15
 INSERT INTO `item_mods` VALUES (23703,1139,21);   -- Hashishin Basmak +3: ENHANCES_BURST_AFFINITY: 21
-
 -- Chasseur's Attire Set missing mods
 INSERT INTO `item_mods` VALUES (23436,359,18);    -- Chasseur's Tricorne +3: RAPID_SHOT: 18
 INSERT INTO `item_mods` VALUES (23436,893,100);   -- Chasseur's Tricorne +3: ENHANCES_BLITZERS_ROLL: 100
-
 INSERT INTO `item_mods` VALUES (23503,999,14);    -- Chasseur's Frac +3: TRIPLE_SHOT_RATE: 14
 INSERT INTO `item_mods` VALUES (23503,895,100);   -- Chasseur's Frac +3: ENHANCES_TACTICIANS_ROLL: 100
-
 INSERT INTO `item_mods` VALUES (23570,882,60);    -- Chasseur's Gants +3: PHANTOM_DURATION: 60
 INSERT INTO `item_mods` VALUES (23570,894,100);   -- Chasseur's Gants +3: ENHANCES_ALLIES_ROLL: 100
-
 INSERT INTO `item_mods` VALUES (23637,73,12);     -- Chasseur's Culottes +3: STORETP: 12
 INSERT INTO `item_mods` VALUES (23637,365,9);     -- Chasseur's Culottes +3: SNAPSHOT: 9
 INSERT INTO `item_mods` VALUES (23637,892,100);   -- Chasseur's Culottes +3: ENHANCES_CASTERS_ROLL: 100
-
 INSERT INTO `item_mods` VALUES (23704,411,31);    -- Chasseur's Bottes +3: QUICK_DRAW_DMG: 31
 INSERT INTO `item_mods` VALUES (23704,891,100);   -- Chasseur's Bottes +3: ENHANCES_COURSERS_ROLL: 100
-
 -- Karagoz Attire Set missing mods
 INSERT INTO `item_mods` VALUES (23437,29,8);      -- Karagoz Cappello +3: MDEF: 8
 INSERT INTO `item_mods` VALUES (23437,288,5);     -- Karagoz Cappello +3: DOUBLE_ATTACK: 5
-
 INSERT INTO `item_mods` VALUES (23504,29,8);      -- Karagoz Farsetto +3: MDEF: 8
 INSERT INTO `item_mods` VALUES (23504,505,40);    -- Karagoz Farsetto +3: OVERLOAD_THRESH: 40
-
 INSERT INTO `item_mods` VALUES (23571,29,5);      -- Karagoz Guanti +3: MDEF: 5
 INSERT INTO `item_mods` VALUES (23571,73,11);     -- Karagoz Guanti +3: STORETP: 11
-
 INSERT INTO `item_mods` VALUES (23638,29,8);      -- Karagoz Pantaloni +3: MDEF: 8
 INSERT INTO `item_mods` VALUES (23638,101,33);    -- Karagoz Pantaloni +3: AUTO_MELEE_SKILL: 33
 INSERT INTO `item_mods` VALUES (23638,102,33);    -- Karagoz Pantaloni +3: AUTO_RANGED_SKILL: 33
 INSERT INTO `item_mods` VALUES (23638,103,33);    -- Karagoz Pantaloni +3: AUTO_MAGIC_SKILL: 33
 INSERT INTO `item_mods` VALUES (23638,173,11);    -- Karagoz Pantaloni +3: MARTIAL_ARTS: 11
-
 INSERT INTO `item_mods` VALUES (23705,29,7);      -- Karagoz Scarpe +3: MDEF: 7
-
 -- Maculele Attire Set missing mods
 INSERT INTO `item_mods` VALUES (23438,29,7);      -- Maculele Tiara +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23438,73,10);     -- Maculele Tiara +3: STORETP: 10
-
 INSERT INTO `item_mods` VALUES (23505,29,10);     -- Maculele Casaque +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23505,259,11);    -- Maculele Casaque +3: DUAL_WIELD: 11
 INSERT INTO `item_mods` VALUES (23505,289,14);    -- Maculele Casaque +3: SUBTLE_BLOW: 14
-
 INSERT INTO `item_mods` VALUES (23572,29,6);      -- Maculele Bangles +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23572,175,1300);  -- Maculele Bangles +3: SKILLCHAINDMG: 1300
 INSERT INTO `item_mods` VALUES (23572,836,14);    -- Maculele Bangles +3: REVERSE_FLOURISH_EFFECT: 14
-
 INSERT INTO `item_mods` VALUES (23639,29,9);      -- Maculele Tights +3: MDEF: 9
 INSERT INTO `item_mods` VALUES (23639,486,26);    -- Maculele Tights +3: TACTICAL_PARRY: 26
-
 INSERT INTO `item_mods` VALUES (23706,29,9);      -- Maculele Toe Shoes +3: MDEF: 9
 INSERT INTO `item_mods` VALUES (23706,73,12);     -- Maculele Toe Shoes +3: STORETP: 12
-
 -- Arbatel Attire Set missing mods
 INSERT INTO `item_mods` VALUES (23439,29,10);     -- Arbatel Bonnet +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23439,568,21);    -- Arbatel Bonnet +3: RAPTURE_AMOUNT: 21
 INSERT INTO `item_mods` VALUES (23439,569,21);    -- Arbatel Bonnet +3: EBULLIENCE_AMOUNT: 21
 INSERT INTO `item_mods` VALUES (23439,838,25);    -- Arbatel Bonnet +3: REGEN_MULTIPLIER: 25
-
 INSERT INTO `item_mods` VALUES (23506,28,59);     -- Arbatel Gown +3: MATT: 59
 INSERT INTO `item_mods` VALUES (23506,29,11);     -- Arbatel Gown +3: MDEF: 11
 INSERT INTO `item_mods` VALUES (23506,369,4);     -- Arbatel Gown +3: REFRESH: 4
-
 INSERT INTO `item_mods` VALUES (23573,28,52);     -- Arbatel Bracers +3: MATT: 52
 INSERT INTO `item_mods` VALUES (23573,29,7);      -- Arbatel Bracers +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23573,487,15);    -- Arbatel Bracers +3: MAG_BURST_BONUS: 15
-
 INSERT INTO `item_mods` VALUES (23640,28,54);     -- Arbatel Pants +3: MATT: 54
 INSERT INTO `item_mods` VALUES (23640,29,10);     -- Arbatel Pants +3: MDEF: 10
-
 INSERT INTO `item_mods` VALUES (23707,28,50);     -- Arbatel Loafers +3: MATT: 50
 INSERT INTO `item_mods` VALUES (23707,29,10);     -- Arbatel Loafers +3: MDEF: 10
-
 -- Azimuth Attire Set missing mods
 INSERT INTO `item_mods` VALUES (23440,28,51);     -- Azimuth Hood +3: MATT: 51
 INSERT INTO `item_mods` VALUES (23440,29,10);     -- Azimuth Hood +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23440,1025,4);    -- Azimuth Hood +3: FULL_CIRCLE: 4
-
 INSERT INTO `item_mods` VALUES (23507,28,59);     -- Azimuth Coat +3: MATT: 59
 INSERT INTO `item_mods` VALUES (23507,29,11);     -- Azimuth Coat +3: MDEF: 11
 INSERT INTO `item_mods` VALUES (23507,369,4);     -- Azimuth Coat +3: REFRESH: 4
-
 INSERT INTO `item_mods` VALUES (23574,28,52);     -- Azimuth Gloves +3: MATT: 52
 INSERT INTO `item_mods` VALUES (23574,29,7);      -- Azimuth Gloves +3: MDEF: 7
-
 INSERT INTO `item_mods` VALUES (23641,28,58);     -- Azimuth Tights +3: MATT: 58
 INSERT INTO `item_mods` VALUES (23641,29,10);     -- Azimuth Tights +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23641,487,15);    -- Azimuth Tights +3: MAG_BURST_BONUS: 15
-
 INSERT INTO `item_mods` VALUES (23708,28,50);     -- Azimuth Gaiters +3: MATT: 50
 INSERT INTO `item_mods` VALUES (23708,29,10);     -- Azimuth Gaiters +3: MDEF: 10
-
 -- Erilaz Armor Set missing mods
 INSERT INTO `item_mods` VALUES (23441,29,9);      -- Erilaz Galea +3: MDEF: 9
 INSERT INTO `item_mods` VALUES (23441,168,20);    -- Erilaz Galea +3: SPELLINTERRUPT: 20
 INSERT INTO `item_mods` VALUES (23441,529,4);     -- Erilaz Galea +3: ENHANCES_REFRESH: 4
 INSERT INTO `item_mods` VALUES (23441,890,25);    -- Erilaz Galea +3: ENH_MAGIC_DURATION: 25
 INSERT INTO `item_mods` VALUES (23441,1013,10);   -- Erilaz Galea +3: AUGMENTS_VIVACIOUS_PULSE: 10
-
 INSERT INTO `item_mods` VALUES (23508,29,10);     -- Erilaz Surcoat +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23508,426,8);     -- Erilaz Surcoat +3: ABSORB_PHYSDMG_TO_MP: 8
 INSERT INTO `item_mods` VALUES (23508,427,14);    -- Erilaz Surcoat +3: ENMITY_LOSS_REDUCTION: 14
-
 INSERT INTO `item_mods` VALUES (23575,29,7);      -- Erilaz Gauntlets +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23575,958,8);     -- Erilaz Gauntlets +3: STATUSRES: 8
-
 INSERT INTO `item_mods` VALUES (23642,29,10);     -- Erilaz Leg Guards +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23642,963,4);     -- Erilaz Leg Guards +3: INQUARTATA: 4
-
 INSERT INTO `item_mods` VALUES (23709,15,35);     -- Erilaz Greaves +3: FIRE_MEVA: 35
 INSERT INTO `item_mods` VALUES (23709,16,35);     -- Erilaz Greaves +3: ICE_MEVA: 35
 INSERT INTO `item_mods` VALUES (23709,17,35);     -- Erilaz Greaves +3: WIND_MEVA: 35
@@ -93478,4 +93356,3 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
