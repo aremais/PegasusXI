@@ -51045,7 +51045,7 @@ INSERT INTO `item_mods` VALUES (23221,13,45);     -- MND: 45
 INSERT INTO `item_mods` VALUES (23221,14,21);     -- CHR: 21
 INSERT INTO `item_mods` VALUES (23221,25,52);     -- ACC: 52
 INSERT INTO `item_mods` VALUES (23221,27,-11);    -- ENMITY: -11
-INSERT INTO `item_mods` VALUES (23221,29,5);      -- MDEF: 6
+INSERT INTO `item_mods` VALUES (23221,29,6);      -- MDEF: 6
 INSERT INTO `item_mods` VALUES (23221,30,52);     -- MACC: 52
 INSERT INTO `item_mods` VALUES (23221,31,77);     -- MEVA: 77
 INSERT INTO `item_mods` VALUES (23221,68,62);     -- EVA: 62
@@ -52396,7 +52396,7 @@ INSERT INTO `item_mods` VALUES (23287,384,700);   -- HASTE_GEAR: 7%
 INSERT INTO `item_mods` VALUES (23288,1,126);     -- DEF: 126
 INSERT INTO `item_mods` VALUES (23288,2,61);      -- HP: 61
 INSERT INTO `item_mods` VALUES (23288,5,55);      -- MP: 55
-INSERT INTO `item_mods` VALUES (23288,8,26);      -- STR: 29
+INSERT INTO `item_mods` VALUES (23288,8,29);      -- STR: 29
 INSERT INTO `item_mods` VALUES (23288,10,21);     -- VIT: 21
 INSERT INTO `item_mods` VALUES (23288,11,22);     -- AGI: 22
 INSERT INTO `item_mods` VALUES (23288,12,42);     -- INT: 42
@@ -68288,7 +68288,7 @@ INSERT INTO `item_mods` VALUES (26902,14,18);   -- CHR: 18
 INSERT INTO `item_mods` VALUES (26902,29,3);    -- MDEF: 3
 INSERT INTO `item_mods` VALUES (26902,31,54);   -- MEVA: 54
 INSERT INTO `item_mods` VALUES (26902,68,19);   -- EVA: 19
-INSERT INTO `item_mods` VALUES (26902,112,13);  -- HEALING: 13
+INSERT INTO `item_mods` VALUES (26902,112,22);  -- HEALING: 22
 INSERT INTO `item_mods` VALUES (26902,369,2);   -- REFRESH: 2
 INSERT INTO `item_mods` VALUES (26902,384,200); -- HASTE_GEAR: 200
 
@@ -70503,7 +70503,7 @@ INSERT INTO `item_mods` VALUES (27057,27,-10);  -- ENMITY: -10
 INSERT INTO `item_mods` VALUES (27057,29,3);    -- MDEF: 3
 INSERT INTO `item_mods` VALUES (27057,31,37);   -- MEVA: 37
 INSERT INTO `item_mods` VALUES (27057,68,22);   -- EVA: 22
-INSERT INTO `item_mods` VALUES (27057,339,18);  -- REGEN_DURATION: 18
+INSERT INTO `item_mods` VALUES (27057,339,22);  -- REGEN_DURATION: 22
 INSERT INTO `item_mods` VALUES (27057,384,300); -- HASTE_GEAR: 300
 
 -- Wicce Gloves
@@ -75183,7 +75183,7 @@ INSERT INTO `item_mods` VALUES (27415,1,46);    -- DEF: 46
 INSERT INTO `item_mods` VALUES (27415,2,45);    -- HP: 45
 INSERT INTO `item_mods` VALUES (27415,5,57);    -- MP: 57
 INSERT INTO `item_mods` VALUES (27415,8,6);     -- STR: 6
-INSERT INTO `item_mods` VALUES (27415,10,7);    -- VIT: 7
+INSERT INTO `item_mods` VALUES (27415,10,6);    -- VIT: 6
 INSERT INTO `item_mods` VALUES (27415,11,21);   -- AGI: 21
 INSERT INTO `item_mods` VALUES (27415,12,11);   -- INT: 11
 INSERT INTO `item_mods` VALUES (27415,13,16);   -- MND: 16
@@ -93040,6 +93040,28 @@ INSERT INTO `item_mods` VALUES (23622,292,30);    -- Bhikku Hose +3: KICK_ATTACK
 INSERT INTO `item_mods` VALUES (23689,29,7);      -- Bhikku Gaiters +3: MDEF: 7
 INSERT INTO `item_mods` VALUES (23689,386,65);    -- Bhikku Gaiters +3: KICK_DMG: 65
 INSERT INTO `item_mods` VALUES (23689,429,16);    -- Bhikku Gaiters +3: FOOTWORK_ATT_BONUS: 16
+
+-- Ebers Attire Set missing mods
+INSERT INTO `item_mods` VALUES (26744,524,20);    -- Ebers Cap: AOE_NA: 20
+INSERT INTO `item_mods` VALUES (26745,524,22);    -- Ebers Cap +1: AOE_NA: 22
+INSERT INTO `item_mods` VALUES (23422,29,10);     -- Ebers Cap +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23422,374,22);    -- Ebers Cap +3: CURE_POTENCY: 22
+INSERT INTO `item_mods` VALUES (23422,524,26);    -- Ebers Cap +3: AOE_NA: 26
+INSERT INTO `item_mods` VALUES (26902,293,12);    -- Ebers Bliaud: AFFLATUS_SOLACE: 12
+INSERT INTO `item_mods` VALUES (26903,293,14);    -- Ebers Bliaud +1: AFFLATUS_SOLACE: 14
+INSERT INTO `item_mods` VALUES (23489,29,11);     -- Ebers Bliaut +3: MDEF: 11
+INSERT INTO `item_mods` VALUES (23489,293,18);    -- Ebers Bliaut +3: AFFLATUS_SOLACE: 18
+INSERT INTO `item_mods` VALUES (23489,369,4);     -- Ebers Bliaut +3: REFRESH: 4
+INSERT INTO `item_mods` VALUES (27056,339,20);    -- Ebers Mitts: REGEN_DURATION: 20
+INSERT INTO `item_mods` VALUES (23556,29,7);      -- Ebers Mitts +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23556,339,26);    -- Ebers Mitts +3: REGEN_DURATION: 26
+INSERT INTO `item_mods` VALUES (23623,29,10);     -- Ebers Pantaloons +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23623,860,8);     -- Ebers Pantaloons +3: CURE2MP_PERCENT: 8
+INSERT INTO `item_mods` VALUES (23623,910,4);     -- Ebers Pantaloons +3: DIVINE_BENISON: 4
+INSERT INTO `item_mods` VALUES (27415,484,13);    -- Ebers Duckbills: AUSPICE_EFFECT: 13
+INSERT INTO `item_mods` VALUES (27416,484,15);    -- Ebers Duckbills +1: AUSPICE_EFFECT: 15
+INSERT INTO `item_mods` VALUES (23690,29,9);      -- Ebers Duckbills +3: MDEF: 9
+INSERT INTO `item_mods` VALUES (23690,484,19);    -- Ebers Duckbills +3: AUSPICE_EFFECT: 19
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
