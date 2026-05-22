@@ -70658,7 +70658,6 @@ INSERT INTO `item_mods` VALUES (27066,13,17);   -- MND: 17
 INSERT INTO `item_mods` VALUES (27066,14,12);   -- CHR: 12
 INSERT INTO `item_mods` VALUES (27066,23,10);   -- ATT: 10
 INSERT INTO `item_mods` VALUES (27066,25,10);   -- ACC: 10
-INSERT INTO `item_mods` VALUES (27066,29,2);    -- MDEF: 2
 INSERT INTO `item_mods` VALUES (27066,31,47);   -- MEVA: 47
 INSERT INTO `item_mods` VALUES (27066,68,11);   -- EVA: 11
 INSERT INTO `item_mods` VALUES (27066,83,15);   -- GSWORD: 15
@@ -93139,6 +93138,23 @@ INSERT INTO `item_mods` VALUES (23627,427,14);    -- Chevalier's Cuisses +3: ENM
 INSERT INTO `item_mods` VALUES (23694,29,6);      -- Chevalier's Sabatons +3: MDEF: 6
 INSERT INTO `item_mods` VALUES (23694,170,13);    -- Chevalier's Sabatons +3: FASTCAST: 13
 INSERT INTO `item_mods` VALUES (23694,1062,21);   -- Chevalier's Sabatons +3: ENHANCES_DIVINE_EMBLEM: 21
+
+-- Heathen's Armor Set missing mods
+INSERT INTO `item_mods` VALUES (27252,1083,35);   -- Heathen's Flanchard +1: ENHANCES_NETHER_VOID: 35
+INSERT INTO `item_mods` VALUES (23293,1083,40);   -- Heathen's Flanchard +2: ENHANCES_NETHER_VOID: 40
+
+INSERT INTO `item_mods` VALUES (23427,29,6);      -- Heathen's Burgeonet +3: MDEF: 6
+INSERT INTO `item_mods` VALUES (23427,288,6);     -- Heathen's Burgeonet +3: DOUBLE_ATTACK: 6
+
+INSERT INTO `item_mods` VALUES (23494,29,8);      -- Heathen's Cuirass +3: MDEF: 8
+
+INSERT INTO `item_mods` VALUES (23561,29,5);      -- Heathen's Gauntlets +3: MDEF: 5
+
+INSERT INTO `item_mods` VALUES (23628,29,8);      -- Heathen's Flanchards +3: MDEF: 8
+INSERT INTO `item_mods` VALUES (23628,1083,45);   -- Heathen's Flanchards +3: ENHANCES_NETHER_VOID: 45
+
+INSERT INTO `item_mods` VALUES (23695,29,6);      -- Heathen's Sollerets +3: MDEF: 6
+INSERT INTO `item_mods` VALUES (23695,902,36);    -- Heathen's Sollerets +3: OCCULT_ACUMEN: 36
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
