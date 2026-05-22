@@ -38,6 +38,7 @@ return {
     ['Linkshell_Concierge'] = function(player, npc)
         xi.linkshellConcierge.onTrigger(player, npc)
     end,
+
     ['Machella']          = { event = 672 },
     ['Malfine']           = { text = ID.text.MALFINE_DIALOG },
     ['Matildie']          = { event = 587 },

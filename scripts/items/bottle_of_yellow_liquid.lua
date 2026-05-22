@@ -6,7 +6,7 @@
 ---@type TItem
 local itemObject = {}
 
--- Mammet family id in mob_family_system.sql ('Mammet')
+-- Mammet id for `getFamily()` check (CoP Ancient Vows mammets)
 local mammetFamily = 503
 
 itemObject.onItemCheck = function(target, item, param, caster)

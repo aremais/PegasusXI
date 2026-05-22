@@ -27,7 +27,6 @@ zones[xi.zone.SHIP_BOUND_FOR_MHAURA_PIRATES] =
         CROSSBONES = GetTableOfIDs('Crossbones'),
         WIGHT      = GetFirstID('Ship_Wight'),
         SILVERHOOK = GetFirstID('Silverhook'),
-        CROSSBONES = GetTableOfIDs('Crossbones'),
     },
     npc =
     {

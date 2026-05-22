@@ -1099,8 +1099,8 @@ INSERT INTO `item_basic` VALUES (1126,0,'beastmens_seal','beastmens_seal',@GENER
 INSERT INTO `item_basic` VALUES (1127,0,'kindreds_seal','kindreds_seal',@GENERAL_TYPE,99,28740,@NONE,0);
 INSERT INTO `item_basic` VALUES (1128,0,'copy_of_the_wyvern_codex','wyvern_codex',@GENERAL_TYPE,1,62528,@NONE,0);
 INSERT INTO `item_basic` VALUES (1129,0,'copy_of_the_griffon_codex','griffon_codex',@GENERAL_TYPE,1,62528,@NONE,0);
-INSERT INTO `item_basic` VALUES (1130,0,'moon_orb','moon_orb',@GENERAL_TYPE,1,62528,@NONE,0);
-INSERT INTO `item_basic` VALUES (1131,0,'star_orb','star_orb',@GENERAL_TYPE,1,62528,@NONE,0);
+INSERT INTO `item_basic` VALUES (1130,0,'moon_orb','moon_orb',@GENERAL_TYPE,1,128064,@NONE,0);
+INSERT INTO `item_basic` VALUES (1131,0,'star_orb','star_orb',@GENERAL_TYPE,1,128064,@NONE,0);
 INSERT INTO `item_basic` VALUES (1132,0,'square_of_raxa','raxa',@GENERAL_TYPE,12,4,@CLOTHCRAFT,8700);
 INSERT INTO `item_basic` VALUES (1133,0,'vial_of_dragon_blood','dragon_blood',@GENERAL_TYPE,12,4,@ALCHEMY,1900);
 INSERT INTO `item_basic` VALUES (1134,0,'sheet_of_bast_parchment','bast_parchment',@GENERAL_TYPE,12,4,@WOODWORKING,30);
@@ -1144,12 +1144,12 @@ INSERT INTO `item_basic` VALUES (1171,0,'ice_pendulum','ice_pendulum',@GENERAL_T
 INSERT INTO `item_basic` VALUES (1172,0,'lightning_pendulum','ltng._pendulum',@GENERAL_TYPE,1,61504,@NONE,0);
 INSERT INTO `item_basic` VALUES (1173,0,'hiraishin','hiraishin',@GENERAL_TYPE,99,4,@NINJA_TOOLS,10);
 INSERT INTO `item_basic` VALUES (1174,0,'wind_pendulum','wind_pendulum',@GENERAL_TYPE,1,61504,@NONE,0);
-INSERT INTO `item_basic` VALUES (1175,0,'clotho_orb','clotho_orb',@GENERAL_TYPE,1,62528,@NONE,0);
+INSERT INTO `item_basic` VALUES (1175,0,'clotho_orb','clotho_orb',@GENERAL_TYPE,1,128064,@NONE,0);
 INSERT INTO `item_basic` VALUES (1176,0,'mizu-deppo','mizu-deppo',@GENERAL_TYPE,99,4,@NINJA_TOOLS,10);
-INSERT INTO `item_basic` VALUES (1177,0,'comet_orb','comet_orb',@GENERAL_TYPE,1,62528,@NONE,0);
-INSERT INTO `item_basic` VALUES (1178,0,'lachesis_orb','lachesis_orb',@GENERAL_TYPE,1,62528,@NONE,0);
+INSERT INTO `item_basic` VALUES (1177,0,'comet_orb','comet_orb',@GENERAL_TYPE,1,128064,@NONE,0);
+INSERT INTO `item_basic` VALUES (1178,0,'lachesis_orb','lachesis_orb',@GENERAL_TYPE,1,128064,@NONE,0);
 INSERT INTO `item_basic` VALUES (1179,0,'shihei','shihei',@GENERAL_TYPE,99,4,@NINJA_TOOLS,25);
-INSERT INTO `item_basic` VALUES (1180,0,'atropos_orb','atropos_orb',@GENERAL_TYPE,1,62528,@NONE,0);
+INSERT INTO `item_basic` VALUES (1180,0,'atropos_orb','atropos_orb',@GENERAL_TYPE,1,128064,@NONE,0);
 INSERT INTO `item_basic` VALUES (1181,0,'clump_of_goobbue_humus','goobbue_humus',@GENERAL_TYPE,1,61508,@NONE,0);
 INSERT INTO `item_basic` VALUES (1182,0,'jusatsu','jusatsu',@GENERAL_TYPE,99,4,@NINJA_TOOLS,25);
 INSERT INTO `item_basic` VALUES (1183,0,'offering_to_uggalepih','uggalepih_offering',@GENERAL_TYPE,1,61524,@NONE,0);
@@ -1520,9 +1520,9 @@ INSERT INTO `item_basic` VALUES (1547,0,'mini_tuning_fork_of_earth','mini_fork_o
 INSERT INTO `item_basic` VALUES (1548,0,'mini_tuning_fork_of_lightning','mini_fork_of_ltn.',@GENERAL_TYPE,1,61504,@NONE,0);
 INSERT INTO `item_basic` VALUES (1549,0,'mini_tuning_fork_of_water','mini_fork_of_wtr.',@GENERAL_TYPE,1,61504,@NONE,0);
 INSERT INTO `item_basic` VALUES (1550,0,'ark_pentasphere','ark_pentasphere',@GENERAL_TYPE,1,61504,@NONE,0);
-INSERT INTO `item_basic` VALUES (1551,0,'cloudy_orb','cloudy_orb',@GENERAL_TYPE,1,61504,@NONE,0);
-INSERT INTO `item_basic` VALUES (1552,0,'sky_orb','sky_orb',@GENERAL_TYPE,1,61504,@NONE,0);
-INSERT INTO `item_basic` VALUES (1553,0,'themis_orb','themis_orb',@GENERAL_TYPE,1,61504,@NONE,0);
+INSERT INTO `item_basic` VALUES (1551,0,'cloudy_orb','cloudy_orb',@GENERAL_TYPE,1,127040,@NONE,0);
+INSERT INTO `item_basic` VALUES (1552,0,'sky_orb','sky_orb',@GENERAL_TYPE,1,127040,@NONE,0);
+INSERT INTO `item_basic` VALUES (1553,0,'themis_orb','themis_orb',@GENERAL_TYPE,1,127040,@NONE,0);
 INSERT INTO `item_basic` VALUES (1554,0,'onz_of_turmeric','turmeric',@GENERAL_TYPE,12,4,@INGREDIENTS,140);
 INSERT INTO `item_basic` VALUES (1555,0,'onz_of_coriander','coriander',@GENERAL_TYPE,12,4,@INGREDIENTS,317);
 INSERT INTO `item_basic` VALUES (1556,0,'attestation_of_might','atst._of_might',@GENERAL_TYPE,1,61524,@NONE,0);
@@ -3315,8 +3315,8 @@ INSERT INTO `item_basic` VALUES (3344,0,'clump_of_red_pondweed','red_pondweed',@
 INSERT INTO `item_basic` VALUES (3345,0,'treatise_on_monochromacy','tr._on_monochro.',@GENERAL_TYPE,1,61504,@NONE,0);
 INSERT INTO `item_basic` VALUES (3346,0,'gloomy_charm','gloomy_charm',@GENERAL_TYPE,1,61504,@NONE,0);
 INSERT INTO `item_basic` VALUES (3347,0,'beckoning_bell','beckoning_bell',@GENERAL_TYPE,1,61504,@NONE,0);
-INSERT INTO `item_basic` VALUES (3351,0,'phobos_orb','phobos_orb',@GENERAL_TYPE,1,61504,@NONE,0);
-INSERT INTO `item_basic` VALUES (3352,0,'deimos_orb','deimos_orb',@GENERAL_TYPE,1,61504,@NONE,0);
+INSERT INTO `item_basic` VALUES (3351,0,'phobos_orb','phobos_orb',@GENERAL_TYPE,1,127040,@NONE,0);
+INSERT INTO `item_basic` VALUES (3352,0,'deimos_orb','deimos_orb',@GENERAL_TYPE,1,127040,@NONE,0);
 INSERT INTO `item_basic` VALUES (3353,0,'barbaric_bijou','barbaric_bijou',@GENERAL_TYPE,1,61524,@NONE,0);
 INSERT INTO `item_basic` VALUES (3354,0,'steelwall_bijou','steelwall_bijou',@GENERAL_TYPE,1,61524,@NONE,0);
 INSERT INTO `item_basic` VALUES (3355,0,'divine_bijou','divine_bijou',@GENERAL_TYPE,1,61524,@NONE,0);
@@ -3418,8 +3418,8 @@ INSERT INTO `item_basic` VALUES (3450,0,'pouch_of_voiddust','voiddust',@GENERAL_
 INSERT INTO `item_basic` VALUES (3451,0,'comet_fragment','comet_fragment',@GENERAL_TYPE,1,28752,@NONE,0);
 INSERT INTO `item_basic` VALUES (3452,0,'puny_planet_kit','puny_planet_kit',@GENERAL_TYPE,1,28752,@NONE,0);
 INSERT INTO `item_basic` VALUES (3453,0,'copy_of_cosmic_designs','cosmic_designs',@GENERAL_TYPE,1,28752,@NONE,0);
-INSERT INTO `item_basic` VALUES (3454,0,'zelos_orb','zelos_orb',@GENERAL_TYPE,1,61504,@NONE,0);
-INSERT INTO `item_basic` VALUES (3455,0,'bia_orb','bia_orb',@GENERAL_TYPE,1,61504,@NONE,0);
+INSERT INTO `item_basic` VALUES (3454,0,'zelos_orb','zelos_orb',@GENERAL_TYPE,1,127040,@NONE,0);
+INSERT INTO `item_basic` VALUES (3455,0,'bia_orb','bia_orb',@GENERAL_TYPE,1,127040,@NONE,0);
 INSERT INTO `item_basic` VALUES (3456,0,'creepers_juju','creepers_juju',@GENERAL_TYPE,1,61524,@NONE,0);
 INSERT INTO `item_basic` VALUES (3457,0,'revelatory_juju','revelatory_juju',@GENERAL_TYPE,1,61524,@NONE,0);
 INSERT INTO `item_basic` VALUES (3458,0,'undying_juju','undying_juju',@GENERAL_TYPE,1,61524,@NONE,0);
@@ -3911,8 +3911,8 @@ INSERT INTO `item_basic` VALUES (4058,0,'chunk_of_bismuth_ore','bismuth_ore',@GE
 INSERT INTO `item_basic` VALUES (4059,0,'pluton','pluton',@GENERAL_TYPE,99,4100,@MISC_3,0);
 INSERT INTO `item_basic` VALUES (4060,0,'chunk_of_beitetsu','beitetsu',@GENERAL_TYPE,99,4100,@MISC_3,0);
 INSERT INTO `item_basic` VALUES (4061,0,'riftborn_boulder','riftborn_boulder',@GENERAL_TYPE,99,4100,@MISC_3,0);
-INSERT INTO `item_basic` VALUES (4062,0,'microcosmic_orb','microcosmic_orb',@GENERAL_TYPE,1,61504,@NONE,0);
-INSERT INTO `item_basic` VALUES (4063,0,'macrocosmic_orb','macrocosmic_orb',@GENERAL_TYPE,1,61504,@NONE,0);
+INSERT INTO `item_basic` VALUES (4062,0,'microcosmic_orb','microcosmic_orb',@GENERAL_TYPE,1,127040,@NONE,0);
+INSERT INTO `item_basic` VALUES (4063,0,'macrocosmic_orb','macrocosmic_orb',@GENERAL_TYPE,1,127040,@NONE,0);
 INSERT INTO `item_basic` VALUES (4064,0,'copy_of_rems_tale,_chapter_1','rems_tale_ch.1',@GENERAL_TYPE,99,28756,0,0);
 INSERT INTO `item_basic` VALUES (4065,0,'copy_of_rems_tale,_chapter_2','rems_tale_ch.2',@GENERAL_TYPE,99,28756,0,0);
 INSERT INTO `item_basic` VALUES (4066,0,'copy_of_rems_tale,_chapter_3','rems_tale_ch.3',@GENERAL_TYPE,99,28756,0,0);
@@ -22736,6 +22736,100 @@ INSERT INTO `item_basic` VALUES (29336,0,'moogle_storage_slip_25','storage_slip_
 INSERT INTO `item_basic` VALUES (29337,0,'moogle_storage_slip_26','storage_slip_26',@GENERAL_TYPE,1,61504,@NONE,0);
 INSERT INTO `item_basic` VALUES (29338,0,'moogle_storage_slip_27','storage_slip_27',@GENERAL_TYPE,1,61504,@NONE,0);
 INSERT INTO `item_basic` VALUES (29339,0,'moogle_storage_slip_28','storage_slip_28',@GENERAL_TYPE,1,61504,@NONE,0);
+-- HTBF reward items (PegasusXI custom)
+INSERT INTO `item_basic` VALUES (29345,0,'rems_tale_ch_1','Rem\'s Tale Ch.1',@GENERAL_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29346,0,'rems_tale_ch_2','Rem\'s Tale Ch.2',@GENERAL_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29347,0,'rems_tale_ch_3','Rem\'s Tale Ch.3',@GENERAL_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29348,0,'rems_tale_ch_4','Rem\'s Tale Ch.4',@GENERAL_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29349,0,'rems_tale_ch_5','Rem\'s Tale Ch.5',@GENERAL_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29350,0,'rems_tale_ch_6','Rem\'s Tale Ch.6',@GENERAL_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29351,0,'rems_tale_ch_7','Rem\'s Tale Ch.7',@GENERAL_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29352,0,'rems_tale_ch_8','Rem\'s Tale Ch.8',@GENERAL_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29353,0,'rems_tale_ch_9','Rem\'s Tale Ch.9',@GENERAL_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29354,0,'rems_tale_ch_10','Rem\'s Tale Ch.10',@GENERAL_TYPE,1,28736,@NONE,0);
+-- HTBF unique equipment — shared materials
+INSERT INTO `item_basic` VALUES (29359,0,'maliyakaleya_coral','Maliyakaleya Coral',@GENERAL_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29360,0,'hepatizon_ore','Hepatizon Ore',@GENERAL_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29361,0,'beryllium_ore','Beryllium Ore',@GENERAL_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29362,0,'exalted_log','Exalted Log',@GENERAL_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29363,0,'sifs_lock','Sif\'s Lock',@GENERAL_TYPE,1,28736,@NONE,0);
+-- Trial by Earth (Titan Prime)
+INSERT INTO `item_basic` VALUES (29364,0,'togakushi_shuriken','Togakushi Shuriken',@WEAPON_TYPE,1,28736,@NONE,0);
+-- A Stygian Pact (Odin Prime) — disabled until zone is set up
+INSERT INTO `item_basic` VALUES (29365,0,'zantetsuken','Zantetsuken',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29366,0,'zantetsuken_x','Zantetsuken X',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29367,0,'geirrothr','Geirrothr',@WEAPON_TYPE,1,28736,@NONE,0);
+-- Divine Interference (Alexander Prime) — disabled until zone is set up
+INSERT INTO `item_basic` VALUES (29368,0,'sacro_bulwark','Sacro Bulwark',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29369,0,'sacro_gorget','Sacro Gorget',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29370,0,'sacro_cord','Sacro Cord',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29371,0,'sacro_mantle','Sacro Mantle',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+-- A Stygian Pact armor (Odin Prime) — disabled until zone is set up
+INSERT INTO `item_basic` VALUES (29372,0,'hjarrandi_helm','Hjarrandi Helm',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29373,0,'hjarrandi_breastplate','Hjarrandi Breastplate',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29374,0,'freke_ring','Freke Ring',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29375,0,'gere_ring','Gere Ring',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+-- Champion of the Dawn (Cait Sith Prime) — disabled until zone is set up
+INSERT INTO `item_basic` VALUES (29376,0,'cath_palug_hammer','Cath Palug Hammer',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29377,0,'cath_palug_stone','Cath Palug Stone',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29378,0,'cath_palug_crown','Cath Palug Crown',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29379,0,'cath_palug_ring','Cath Palug Ring',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29380,0,'cath_palug_earring','Cath Palug Earring',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+-- Trial by Fire (Ifrit Prime)
+INSERT INTO `item_basic` VALUES (29381,0,'perfervid_sword','Perfervid Sword',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29382,0,'atakigiri','Atakigiri',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29383,0,'coalrake_sabots','Coalrake Sabots',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29384,0,'annealed_mantle','Annealed Mantle',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29385,0,'immolation_grip','Immolation Grip',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+-- Trial by Ice (Shiva Prime)
+INSERT INTO `item_basic` VALUES (29386,0,'calved_claws','Calved Claws',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29387,0,'frazil_staff','Frazil Staff',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29388,0,'rimeice_earring','Rimeice Earring',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29389,0,'nilas_gloves','Nilas Gloves',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29390,0,'floestone','Floestone',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+-- Trial by Wind (Garuda Prime)
+INSERT INTO `item_basic` VALUES (29391,0,'levante_dagger','Levante Dagger',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29392,0,'tramontane_axe','Tramontane Axe',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29393,0,'lebeche_ring','Lebeche Ring',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29394,0,'ponente_sash','Ponente Sash',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29395,0,'ostro_greaves','Ostro Greaves',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+-- Trial by Earth (Titan Prime)
+INSERT INTO `item_basic` VALUES (29396,0,'mafic_cudgel','Mafic Cudgel',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29397,0,'foreshock_sword','Foreshock Sword',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29398,0,'supershear_ring','Supershear Ring',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29399,0,'plumose_sachet','Plumose Sachet',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+-- Trial by Lightning (Ramuh Prime)
+INSERT INTO `item_basic` VALUES (29400,0,'staccato_staff','Staccato Staff',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29401,0,'donar_gun','Donar Gun',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29402,0,'voltsurge_torque','Voltsurge Torque',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29403,0,'ukko_sash','Ukko Sash',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29404,0,'brontes_cuisses','Brontes Cuisses',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+-- Trial by Water (Leviathan Prime)
+INSERT INTO `item_basic` VALUES (29405,0,'pelagos_lance','Pelagos Lance',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29406,0,'vadose_rod','Vadose Rod',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29407,0,'phreatic_axe','Phreatic Axe',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29408,0,'benthos_grip','Benthos Grip',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29409,0,'neritic_earring','Neritic Earring',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+-- The Moonlit Path (Fenrir Prime)
+INSERT INTO `item_basic` VALUES (29410,0,'medeina_kilij','Medeina Kilij',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29411,0,'capitoline_strap','Capitoline Strap',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29412,0,'vrikodara_jupon','Vrikodara Jupon',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29413,0,'maiitsoh_haube','Maiitsoh Haube',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29414,0,'lupine_cape','Lupine Cape',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+-- Waking the Beast (Carbuncle Prime)
+INSERT INTO `item_basic` VALUES (29415,0,'marquetry_staff','Marquetry Staff',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29416,0,'engraved_belt','Engraved Belt',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29417,0,'lapidary_tunic','Lapidary Tunic',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29418,0,'satlada_necklace','Satlada Necklace',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29419,0,'diamantaire_sollerets','Diamantaire Sollerets',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+-- Waking Dreams (Diabolos Prime)
+INSERT INTO `item_basic` VALUES (29420,0,'shuhansadamune','Shuhansadamune',@WEAPON_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29421,0,'darkside_earring','Darkside Earring',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29422,0,'pernicious_ring','Pernicious Ring',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29423,0,'chozoron_coselete','Chozoron Coselete',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+INSERT INTO `item_basic` VALUES (29424,0,'loagaeth_cuffs','Loagaeth Cuffs',@EQUIPMENT_TYPE,1,28736,@NONE,0);
+-- Divine Interference armor (Alexander Prime) — disabled until zone is set up
+INSERT INTO `item_basic` VALUES (29425,0,'sacro_breastplate','Sacro Breastplate',@EQUIPMENT_TYPE,1,28736,@NONE,0);
 INSERT INTO `item_basic` VALUES (29695,0,'mangled_mess','mangled_mess',@GENERAL_TYPE,1,12352,@NONE,0);
 INSERT INTO `item_basic` VALUES (65535,0,'gil','gil',@CURRENCY_TYPE,0,0,@NONE,0);
 /*!40000 ALTER TABLE `item_basic` ENABLE KEYS */;

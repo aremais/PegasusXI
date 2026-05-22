@@ -18,13 +18,13 @@ return {
     ['Goraow']               = { event = 105 },
     ['Gorvik']               = { event = 185 },
     ['Gray_Wolf']            = { event = 19 },
-    ['Gregory']              = { event = 256 },
     ['Gumbah']               = { event = 52 },
     ['Hound_Nose']           = { event = 132 },
     ['Leonie']               = { event = 568 },
     ['Linkshell_Concierge'] = function(player, npc)
         xi.linkshellConcierge.onTrigger(player, npc)
     end,
+
     ['Medicine_Eagle']       = { event = 25 },
     ['Mydon']                = { event = 20 },
     ['Nangst']               = { event = 24 },

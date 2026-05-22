@@ -282,6 +282,17 @@ INSERT INTO `bcnm_records` VALUES (1306,37,'central_temenos_4th_floor','nobody',
 INSERT INTO `bcnm_records` VALUES (1307,37,'central_temenos_4th_floor_ii','nobody',0,3600);
 INSERT INTO `bcnm_records` VALUES (2721,85,'purple_the_new_black','nobody',0,1800);
 
+-- SKCNM: Macrocosmic Orb battles
+INSERT INTO `bcnm_records` VALUES (4000,163,'jungle_boogymen_ii','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (4001,163,'amphibian_assault_ii','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (4002,165,'kindred_spirits_ii','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (4003,206,'demolition_squad_ii','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (4004,206,'brothers_d_aurphe_ii','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (4005,168,'legion_xi_comitatensis_ii','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (4006,139,'dismemberment_brigade_ii','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (4007,146,'divine_punishers_ii','nobody',0,1800);
+INSERT INTO `bcnm_records` VALUES (4008,144,'grimshell_shocktroopers_ii','nobody',0,1800);
+
 /*!40000 ALTER TABLE `bcnm_records` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;

@@ -43,7 +43,9 @@ def alloc_targid(used: set[int]) -> int:
 def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--host", default=os.environ.get("XI_SQL_HOST", "127.0.0.1"))
-    p.add_argument("--port", type=int, default=int(os.environ.get("XI_SQL_PORT", "3306")))
+    p.add_argument(
+        "--port", type=int, default=int(os.environ.get("XI_SQL_PORT", "3306"))
+    )
     p.add_argument("--user", default=os.environ.get("XI_SQL_LOGIN", "root"))
     p.add_argument("--password", default=os.environ.get("XI_SQL_PASSWORD", ""))
     p.add_argument("--database", default=os.environ.get("XI_SQL_DATABASE", "xidb"))
@@ -69,8 +71,7 @@ def main() -> int:
 
             # 1) Remove broken duplicate rows from old +1000 / +2000 inserts.
             #    (Do not match on floats — tiny drift breaks the join.)
-            cur.execute(
-                f"""
+            cur.execute(f"""
                 DELETE FROM mob_spawn_points
                 WHERE mobid IN (
                     SELECT mobid FROM (
@@ -89,30 +90,25 @@ def main() -> int:
                         WHERE ((m.mobid >> 12) & 4095) IN ({zone_list})
                     ) doomed
                 )
-                """
-            )
+                """)
             print(f"Deleted old clone rows: {cur.rowcount}")
 
             # 2) Load remaining spawns in those zones.
-            cur.execute(
-                f"""
+            cur.execute(f"""
                 SELECT mobid, spawnslotid, mobname, polutils_name, groupid,
                        minLevel, maxLevel, pos_x, pos_y, pos_z, pos_rot
                 FROM mob_spawn_points
                 WHERE ((mobid >> 12) & 4095) IN ({zone_list})
                 ORDER BY mobid
-                """
-            )
+                """)
             rows = cur.fetchall()
 
             used_by_zone: dict[int, set[int]] = defaultdict(set)
-            cur.execute(
-                f"""
+            cur.execute(f"""
                 SELECT ((mobid >> 12) & 4095) AS zoneid, (mobid & 4095) AS tid
                 FROM mob_spawn_points
                 WHERE ((mobid >> 12) & 4095) IN ({zone_list})
-                """
-            )
+                """)
             for r in cur.fetchall():
                 used_by_zone[int(r["zoneid"])].add(int(r["tid"]))
 

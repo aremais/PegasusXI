@@ -164,6 +164,7 @@ local function applyRoll(caster, target, inAbility, action, total, isDoubleup, c
     else
         phantomMult = caster:getMod(xi.mod.PHANTOM_ROLL)
     end
+
     effectpower       = effectpower + (phantomBase * phantomMult)
 
     -- Effect Power varies depending on COR level (Main vs Sub)
