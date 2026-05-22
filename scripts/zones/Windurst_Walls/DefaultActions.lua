@@ -33,6 +33,7 @@ return {
     ['Linkshell_Concierge'] = function(player, npc)
         xi.linkshellConcierge.onTrigger(player, npc)
     end,
+
     ['Luuh_Koplehn']         = { event = 322 },
     ['Maan-Pokuun']          = { event = 293 },
     ['Malmi-Monmi']          = { event = 295 },

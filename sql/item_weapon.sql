@@ -3715,6 +3715,7 @@ INSERT INTO `item_weapon` VALUES (20652,'tizona',3,0,242,242,228,2,1,236,117,0);
 INSERT INTO `item_weapon` VALUES (20653,'almace',3,0,242,242,215,2,1,224,114,0);
 INSERT INTO `item_weapon` VALUES (20654,'almace',3,0,242,242,215,2,1,224,114,0);
 INSERT INTO `item_weapon` VALUES (20655,'archdukes_sword',3,0,0,0,0,2,1,240,144,0);       -- TODO: Not implemented
+INSERT INTO `item_weapon` VALUES (20656,'ja_ja_sword',3,0,0,0,0,2,1,233,1,0);             -- TODO: ilvl_skill/parry/macc, dmgType
 INSERT INTO `item_weapon` VALUES (20663,'ice_brand',3,0,0,0,0,2,1,264,201,0);             -- TODO: Not implemented
 INSERT INTO `item_weapon` VALUES (20664,'flametongue',3,0,0,0,0,2,1,264,201,0);           -- TODO: Not implemented
 INSERT INTO `item_weapon` VALUES (20665,'kam_lanaut_s_sword',3,0,0,0,0,2,1,240,1,0);      -- Kam'lanaut's sword: DMG:1 Delay:240
@@ -4557,6 +4558,7 @@ INSERT INTO `item_weapon` VALUES (21538,'lizard_fangs_+1',1,0,0,0,0,4,3,601,2,0)
 INSERT INTO `item_weapon` VALUES (21539,'dathaba_claws',1,0,0,0,0,4,3,546,129,0);       -- TODO: Not implemented
 INSERT INTO `item_weapon` VALUES (21540,'dragon_fangs',1,0,0,0,0,4,3,606,217,0);    -- TODO: Not implemented
 INSERT INTO `item_weapon` VALUES (21541,'premium_hearts',1,0,0,0,0,4,3,576,195,0);    -- TODO: Not implemented
+INSERT INTO `item_weapon` VALUES (21542,'ja_ja_mace',11,0,0,0,0,3,1,340,1,0);         -- TODO: ilvl_skill/parry/macc, dmgType
 INSERT INTO `item_weapon` VALUES (21554,'arasy_knife',2,0,242,242,188,1,1,183,94,0);
 INSERT INTO `item_weapon` VALUES (21555,'arasy_knife_+1',2,0,242,242,188,1,1,178,95,0);
 INSERT INTO `item_weapon` VALUES (21556,'beryllium_kris',2,0,228,228,188,1,1,192,125,0);  -- DMG:125 Delay:192
@@ -4826,6 +4828,7 @@ INSERT INTO `item_weapon` VALUES (21870,'exalted_spear_+1',8,0,228,228,188,1,1,3
 INSERT INTO `item_weapon` VALUES (21871,'raetic_halberd',8,0,242,242,215,1,1,396,264,0);    -- DMG:264 Delay:396
 INSERT INTO `item_weapon` VALUES (21872,'raetic_halberd_+1',8,0,242,242,215,1,1,385,265,0); -- DMG:265 Delay:385
 INSERT INTO `item_weapon` VALUES (21873,'ethereal_spear',8,0,0,0,0,1,1,480,1,0);         -- TODO: Not implemented
+INSERT INTO `item_weapon` VALUES (21874,'abyssbringer',8,0,0,0,0,1,1,396,1,0);           -- TODO: ilvl_skill/parry/macc, dmgType
 INSERT INTO `item_weapon` VALUES (21876,'wyrm_lance',8,0,242,242,228,1,1,507,338,0);        -- DMG:338 Delay:507
 INSERT INTO `item_weapon` VALUES (21877,'pteroslaver_lance',8,0,255,255,242,1,1,492,339,0); -- DMG:339 Delay:492
 INSERT INTO `item_weapon` VALUES (21878,'aram',8,0,269,269,255,1,1,492,340,0);              -- DMG:340 Delay:492
@@ -4875,7 +4878,9 @@ INSERT INTO `item_weapon` VALUES (21933,'yagyu_shortblade',9,0,0,0,0,2,1,227,1,0
 INSERT INTO `item_weapon` VALUES (21934,'yagyu_shortblade_+1',9,0,0,0,0,2,1,222,2,0);   -- TODO: Not implemented
 INSERT INTO `item_weapon` VALUES (21935,'dathaba_blade',9,0,0,0,0,2,1,190,126,0);       -- TODO: Not implemented
 INSERT INTO `item_weapon` VALUES (21936,'yagyu_darkblade',9,0,0,0,0,2,1,227,173,0);     -- TODO: Not implemented
+INSERT INTO `item_weapon` VALUES (21949,'shaded_moogle_rod',11,0,0,0,0,3,1,288,1,0);    -- TODO: ilvl_skill/parry/macc, dmgType
 INSERT INTO `item_weapon` VALUES (21950,'bud_rod',11,0,0,0,0,3,1,216,1,0);              -- TODO: Not implemented
+INSERT INTO `item_weapon` VALUES (21951,'shaded_moogle_rod_+1',11,0,0,0,0,3,1,280,2,0);  -- TODO: ilvl_skill/parry/macc, dmgType
 INSERT INTO `item_weapon` VALUES (21952,'zanmato_+2',10,0,0,0,0,2,1,464,354,0);         -- TODO: Not implemented
 INSERT INTO `item_weapon` VALUES (21953,'mutsu-no-kami_yoshiyuki',10,0,0,0,0,2,1,450,343,0);  -- TODO: Not implemented
 INSERT INTO `item_weapon` VALUES (21954,'amanomurakumo',10,0,269,269,228,2,1,437,308,0);
@@ -5164,6 +5169,60 @@ INSERT INTO `item_weapon` VALUES (22307,'loughnashade',42,0,0,0,0,0,1,240,1,0); 
 INSERT INTO `item_weapon` VALUES (22308,'bayeux_bullet',26,0,0,0,0,1,1,240,315,0);     -- TODO: Not implemented
 INSERT INTO `item_weapon` VALUES (22309,'bayeux_arrow',25,0,0,0,0,1,1,90,116,0);      -- TODO: Not implemented
 INSERT INTO `item_weapon` VALUES (22310,'hoxne_ampulla',0,0,0,0,0,0,1,999,0,0);     -- TODO: Not implemented
+
+-- ============================================================
+-- HTBF (High-Tier Mission Battlefield) Reward Weapons
+-- Custom IDs: 29364, 29381-29382, 29386-29387, 29391-29392,
+--             29396-29397, 29400-29401, 29405-29407, 29410, 29415, 29420
+-- Format: (itemId, name, skill, subskill, ilvl_skill, ilvl_parry, ilvl_macc, dmgType, hit, delay, dmg, unlock_points)
+-- skill: HTH=1,DAG=2,SWD=3,GSWD=4,AXE=5,GAXE=6,SCY=7,PLM=8,KTN=9,GKTN=10,CLB=11,STF=12,MARK=26,THROW=27
+-- dmgType: PIERCING=1, SLASHING=2, BLUNT=3, HTH=4
+-- ============================================================
+
+-- Trial by Earth (Titan Prime) — Togakushi Shuriken (Range/Throwing, NIN)
+INSERT INTO `item_weapon` VALUES (29364,'togakushi_shuriken',27,0,242,0,0,1,1,192,104,0);
+
+-- HTBF Prime duplicates (item_basic 29365-29380; stats from retail item IDs)
+INSERT INTO `item_weapon` VALUES (29365,'zantetsuken',3,0,242,242,228,2,1,236,167,0);
+INSERT INTO `item_weapon` VALUES (29366,'zantetsuken_x',4,0,0,0,0,2,1,456,323,0);
+INSERT INTO `item_weapon` VALUES (29367,'geirrothr',8,0,0,0,0,1,1,492,348,0);
+INSERT INTO `item_weapon` VALUES (29368,'sacro_bulwark',8,0,0,0,0,1,1,492,348,0);
+INSERT INTO `item_weapon` VALUES (29376,'cath_palug_hammer',11,0,242,242,242,3,1,300,212,0);
+INSERT INTO `item_weapon` VALUES (29377,'cath_palug_stone',0,0,0,0,0,0,0,0,0,0);
+
+-- Trial by Fire (Ifrit Prime)
+INSERT INTO `item_weapon` VALUES (29381,'perfervid_sword',3,0,242,242,188,2,1,236,110,0);      -- Sword, WAR/THF/DRK/BST/RNG/SAM/BLU
+INSERT INTO `item_weapon` VALUES (29382,'atakigiri',10,0,242,242,188,2,1,480,258,0);           -- Great Katana, SAM
+
+-- Trial by Ice (Shiva Prime)
+INSERT INTO `item_weapon` VALUES (29386,'calved_claws',1,0,242,242,188,4,1,90,114,0);         -- H2H, WAR/MNK/RDM/THF/DRK/BST/NIN/PUP/DNC
+INSERT INTO `item_weapon` VALUES (29387,'frazil_staff',12,0,242,242,188,3,1,366,190,0);       -- Staff, SMN
+
+-- Trial by Wind (Garuda Prime)
+INSERT INTO `item_weapon` VALUES (29391,'levante_dagger',2,0,228,228,188,1,1,183,95,0);       -- Dagger, WAR/BLM/RDM/THF/PLD/DRK/BST/BRD/RNG/SAM/NIN/DRG/SMN/SCH/GEO
+INSERT INTO `item_weapon` VALUES (29392,'tramontane_axe',5,0,242,242,188,2,1,288,156,0);      -- Axe, WAR/DRK/BST/RUN
+
+-- Trial by Earth (Titan Prime) — additional weapons
+INSERT INTO `item_weapon` VALUES (29396,'mafic_cudgel',11,0,228,228,188,3,1,278,142,0);       -- Club, WAR/MNK/WHM/RDM/PLD/DRK/BST/BRD/SMN/BLU/SCH/GEO/RUN
+INSERT INTO `item_weapon` VALUES (29397,'foreshock_sword',4,0,228,228,188,2,1,504,273,0);     -- Great Sword, PLD/DRK/RUN
+
+-- Trial by Lightning (Ramuh Prime)
+INSERT INTO `item_weapon` VALUES (29400,'staccato_staff',12,0,242,242,228,3,1,366,198,0);     -- Staff, WAR/MNK/WHM/BLM/RDM/BST/BRD/SMN/GEO
+INSERT INTO `item_weapon` VALUES (29401,'donar_gun',26,0,228,0,0,1,1,548,103,0);              -- Marksmanship, THF/RNG/NIN/COR
+
+-- Trial by Water (Leviathan Prime)
+INSERT INTO `item_weapon` VALUES (29405,'pelagos_lance',8,0,242,242,188,1,1,507,275,0);       -- Polearm, DRG
+INSERT INTO `item_weapon` VALUES (29406,'vadose_rod',11,0,242,242,215,3,1,288,156,0);         -- Club, WHM/BLM/SMN/SCH/GEO
+INSERT INTO `item_weapon` VALUES (29407,'phreatic_axe',6,0,242,242,188,2,1,504,274,0);        -- Great Axe, WAR
+
+-- The Moonlit Path (Fenrir Prime)
+INSERT INTO `item_weapon` VALUES (29410,'medeina_kilij',3,0,242,242,201,2,1,236,130,0);       -- Sword, BLU
+
+-- Waking the Beast (Carbuncle Prime)
+INSERT INTO `item_weapon` VALUES (29415,'marquetry_staff',12,0,242,242,188,3,1,402,217,0);    -- Staff, SMN
+
+-- Waking Dreams (Diabolos Prime)
+INSERT INTO `item_weapon` VALUES (29420,'shuhansadamune',9,0,242,242,188,2,1,222,125,0);      -- Katana, NIN
 
 /*!40000 ALTER TABLE `item_weapon` ENABLE KEYS */;
 UNLOCK TABLES;

@@ -9,18 +9,19 @@ local commandObj = {}
 commandObj.cmdprops =
 {
     permission = 1,
-    parameters = "s" -- optional: player name
+    parameters = 's' -- optional: player name
 }
 
 commandObj.onTrigger = function(player, targetName)
     local targ = player
 
-    if targetName ~= nil and targetName ~= "" then
+    if targetName ~= nil and targetName ~= '' then
         local found = GetPlayerByName(targetName)
         if found == nil then
-            player:printToPlayer(string.format("addallopwarps: Player '%s' not found.", targetName))
+            player:printToPlayer(string.format('addallopwarps: Player \'%s\' not found.', targetName))
             return
         end
+
         targ = found
     end
 
@@ -33,7 +34,7 @@ commandObj.onTrigger = function(player, targetName)
         end
     end
 
-    player:printToPlayer(string.format("addallopwarps: Granted all outpost warp unlocks to %s.", targ:getName()))
+    player:printToPlayer(string.format('addallopwarps: Granted all outpost warp unlocks to %s.', targ:getName()))
 end
 
 return commandObj

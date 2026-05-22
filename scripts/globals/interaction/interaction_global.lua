@@ -40,9 +40,12 @@ function InteractionGlobal.loadContainers(shouldReloadRequires)
     local containers = {}
     for i = 1, #containerFiles do
         local mod = utils.prequire(containerFiles[i])
-        if mod then
+        -- require() returns true when a file loads but has no "return" statement
+        if type(mod) == 'table' then
             mod.filename = containerFiles[i]
             containers[#containers + 1] = mod
+        elseif mod == true then
+            printf('interaction_global: %s loaded but did not return a quest/mission/battlefield table (add e.g. return quest)', containerFiles[i])
         end
     end
 
