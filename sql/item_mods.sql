@@ -70870,7 +70870,7 @@ INSERT INTO `item_mods` VALUES (27078,14,10);   -- CHR: 10
 INSERT INTO `item_mods` VALUES (27078,25,13);   -- ACC: 13
 INSERT INTO `item_mods` VALUES (27078,31,21);   -- MEVA: 21
 INSERT INTO `item_mods` VALUES (27078,68,11);   -- EVA: 11
-INSERT INTO `item_mods` VALUES (27078,288,40);  -- DOUBLE_ATTACK: 40
+INSERT INTO `item_mods` VALUES (27078,288,4);   -- DOUBLE_ATTACK: 4
 INSERT INTO `item_mods` VALUES (27078,384,300); -- HASTE_GEAR: 300
 
 -- Peltasts Vambraces +1
@@ -73284,7 +73284,7 @@ INSERT INTO `item_mods` VALUES (27263,29,1);    -- MDEF: 1
 INSERT INTO `item_mods` VALUES (27263,31,54);   -- MEVA: 54
 INSERT INTO `item_mods` VALUES (27263,68,11);   -- EVA: 11
 INSERT INTO `item_mods` VALUES (27263,384,500); -- HASTE_GEAR: 500
-INSERT INTO `item_mods` VALUES (27263,421,100); -- CRIT_DMG_INCREASE: 100
+INSERT INTO `item_mods` VALUES (27263,421,10);  -- CRIT_DMG_INCREASE: 10
 
 -- Peltasts Cuissots +1
 INSERT INTO `item_mods` VALUES (27264,1,121);   -- DEF: 121
@@ -93268,6 +93268,34 @@ INSERT INTO `item_mods` VALUES (23633,291,18);    -- Hattori Hakama +3: COUNTER:
 INSERT INTO `item_mods` VALUES (23700,29,9);      -- Hattori Kyahan +3: MDEF: 9
 INSERT INTO `item_mods` VALUES (23700,486,26);    -- Hattori Kyahan +3: TACTICAL_PARRY: 26
 INSERT INTO `item_mods` VALUES (23700,900,1);     -- Hattori Kyahan +3: UTSUSEMI_BONUS: 1
+
+-- Peltast's Armor Set missing mods
+INSERT INTO `item_mods` VALUES (27078,281,1);     -- Peltast's Vambraces: ENHANCES_SPIRIT_LINK: 1
+
+INSERT INTO `item_mods` VALUES (27079,281,1);     -- Peltast's Vambraces +1: ENHANCES_SPIRIT_LINK: 1
+
+INSERT INTO `item_mods` VALUES (27263,286,13);    -- Peltast's Cuissots: JUMP_SOUL_SPIRIT_ATT_BONUS: 13
+
+INSERT INTO `item_mods` VALUES (27264,286,15);    -- Peltast's Cuissots +1: JUMP_SOUL_SPIRIT_ATT_BONUS: 15
+
+INSERT INTO `item_mods` VALUES (27437,285,60);    -- Peltast's Schynbalds: JUMP_SPIRIT_TP_BONUS: 60
+
+INSERT INTO `item_mods` VALUES (27438,285,70);    -- Peltast's Schynbalds +1: JUMP_SPIRIT_TP_BONUS: 70
+
+INSERT INTO `item_mods` VALUES (23433,29,6);      -- Peltast's Mezail +3: MDEF: 6
+
+INSERT INTO `item_mods` VALUES (23500,29,8);      -- Peltast's Plackart +3: MDEF: 8
+INSERT INTO `item_mods` VALUES (23500,73,14);     -- Peltast's Plackart +3: STORETP: 14
+
+INSERT INTO `item_mods` VALUES (23567,29,5);      -- Peltast's Vambraces +3: MDEF: 5
+INSERT INTO `item_mods` VALUES (23567,281,1);     -- Peltast's Vambraces +3: ENHANCES_SPIRIT_LINK: 1
+INSERT INTO `item_mods` VALUES (23567,288,7);     -- Peltast's Vambraces +3: DOUBLE_ATTACK: 7
+
+INSERT INTO `item_mods` VALUES (23634,29,7);      -- Peltast's Cuissots +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23634,286,19);    -- Peltast's Cuissots +3: JUMP_SOUL_SPIRIT_ATT_BONUS: 19
+
+INSERT INTO `item_mods` VALUES (23701,29,6);      -- Peltast's Schynbalds +3: MDEF: 6
+INSERT INTO `item_mods` VALUES (23701,285,90);    -- Peltast's Schynbalds +3: JUMP_SPIRIT_TP_BONUS: 90
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
