@@ -93062,6 +93062,26 @@ INSERT INTO `item_mods` VALUES (27415,484,13);    -- Ebers Duckbills: AUSPICE_EF
 INSERT INTO `item_mods` VALUES (27416,484,15);    -- Ebers Duckbills +1: AUSPICE_EFFECT: 15
 INSERT INTO `item_mods` VALUES (23690,29,9);      -- Ebers Duckbills +3: MDEF: 9
 INSERT INTO `item_mods` VALUES (23690,484,19);    -- Ebers Duckbills +3: AUSPICE_EFFECT: 19
+
+-- Wicce Attire Set missing mods
+INSERT INTO `item_mods` VALUES (26746,901,12);     -- Wicce Petasos: ELEMENTAL_CELERITY: 12
+INSERT INTO `item_mods` VALUES (26747,901,14);     -- Wicce Petasos +1: ELEMENTAL_CELERITY: 14
+INSERT INTO `item_mods` VALUES (23423,29,10);      -- Wicce Petasos +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23423,901,18);     -- Wicce Petasos +3: ELEMENTAL_CELERITY: 18
+
+INSERT INTO `item_mods` VALUES (23490,28,59);      -- Wicce Coat +3: MATT: 59
+INSERT INTO `item_mods` VALUES (23490,29,11);      -- Wicce Coat +3: MDEF: 11
+INSERT INTO `item_mods` VALUES (23490,369,4);      -- Wicce Coat +3: REFRESH: 4
+INSERT INTO `item_mods` VALUES (23490,1146,-16);   -- Wicce Coat +3: ELEMENTAL_MAGIC_RECAST: -16
+
+INSERT INTO `item_mods` VALUES (23557,28,57);      -- Wicce Gloves +3: MATT: 57
+INSERT INTO `item_mods` VALUES (23557,29,7);       -- Wicce Gloves +3: MDEF: 7
+
+INSERT INTO `item_mods` VALUES (23624,28,58);      -- Wicce Chausses +3: MATT: 58
+INSERT INTO `item_mods` VALUES (23624,29,10);      -- Wicce Chausses +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23624,487,15);     -- Wicce Chausses +3: MAG_BURST_BONUS: 15
+
+INSERT INTO `item_mods` VALUES (23691,29,10);      -- Wicce Sabots +3: MDEF: 10
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
