@@ -52,7 +52,7 @@ zones[xi.zone.ALZADAAL_UNDERSEA_RUINS] =
     {
         NEPIONIC_QM              = GetFirstID('blank_transformations'),
         RUNIC_PORTAL_OFFSET      = GetFirstID('Runic_Portal'), -- North portal
-        STRANGE_HAPPENINGS_CHEST = GetFirstID('Treasure_Chest'),
+        STRANGE_HAPPENINGS_CHEST = 17072284, -- Treasure_Chest (npc_list)
     },
 }
 

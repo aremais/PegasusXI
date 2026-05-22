@@ -51,7 +51,7 @@ zones[xi.zone.RUAUN_GARDENS] =
         OVERSEER_BASE            = GetFirstID('Conquest_Banner'),
         PINCERSTONE_OFFSET       = GetFirstID('Pincerstone'),
         PORTAL_OFFSET            = GetFirstID('_3mc'),
-        STRANGE_HAPPENINGS_CHEST = GetFirstID('Treasure_Chest'),
+        STRANGE_HAPPENINGS_CHEST = 17310004, -- Treasure_Chest (npc_list)
         TREASURE_COFFER          = GetFirstID('Treasure_Coffer'),
     },
 }
