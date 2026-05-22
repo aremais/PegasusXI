@@ -68403,7 +68403,7 @@ INSERT INTO `item_mods` VALUES (26908,14,13);   -- CHR: 13
 INSERT INTO `item_mods` VALUES (26908,29,3);    -- MDEF: 3
 INSERT INTO `item_mods` VALUES (26908,31,47);   -- MEVA: 47
 INSERT INTO `item_mods` VALUES (26908,68,25);   -- EVA: 25
-INSERT INTO `item_mods` VALUES (26908,81,20);   -- DAGGER: 20
+INSERT INTO `item_mods` VALUES (26908,81,18);   -- DAGGER: 18
 INSERT INTO `item_mods` VALUES (26908,384,500); -- HASTE_GEAR: 500
 INSERT INTO `item_mods` VALUES (26908,912,1);   -- AUGMENTS_CONSPIRATOR: 1
 -- TODO: Grants an attack bonus equal to the accuracy bonus.
@@ -93104,6 +93104,21 @@ INSERT INTO `item_mods` VALUES (23625,529,4);     -- Lethargy Fuseau +3: ENHANCE
 
 INSERT INTO `item_mods` VALUES (23692,29,10);     -- Lethargy Houseaux +3: MDEF: 10
 INSERT INTO `item_mods` VALUES (23692,890,40);    -- Lethargy Houseaux +3: ENH_MAGIC_DURATION: 40
+
+-- Skulker's Attire Set missing mods
+INSERT INTO `item_mods` VALUES (23425,29,7);       -- Skulker's Bonnet +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23425,884,21);     -- Skulker's Bonnet +3: ACC_COLLAB_EFFECT: 21
+
+INSERT INTO `item_mods` VALUES (23492,29,10);      -- Skulker's Vest +3: MDEF: 10
+
+INSERT INTO `item_mods` VALUES (23559,29,6);       -- Skulker's Armlets +3: MDEF: 6
+INSERT INTO `item_mods` VALUES (23559,830,30);     -- Skulker's Armlets +3: SNEAK_ATK_DEX: 30
+
+INSERT INTO `item_mods` VALUES (23626,29,9);       -- Skulker's Culottes +3: MDEF: 9
+INSERT INTO `item_mods` VALUES (23626,896,13);     -- Skulker's Culottes +3: DESPOIL: 13
+
+INSERT INTO `item_mods` VALUES (23693,29,9);       -- Skulker's Poulaines +3: MDEF: 9
+INSERT INTO `item_mods` VALUES (23693,303,5);      -- Skulker's Poulaines +3: TREASURE_HUNTER: 5
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
