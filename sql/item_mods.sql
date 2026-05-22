@@ -93441,6 +93441,33 @@ INSERT INTO `item_mods` VALUES (23641,487,15);    -- Azimuth Tights +3: MAG_BURS
 
 INSERT INTO `item_mods` VALUES (23708,28,50);     -- Azimuth Gaiters +3: MATT: 50
 INSERT INTO `item_mods` VALUES (23708,29,10);     -- Azimuth Gaiters +3: MDEF: 10
+
+-- Erilaz Armor Set missing mods
+INSERT INTO `item_mods` VALUES (23441,29,9);      -- Erilaz Galea +3: MDEF: 9
+INSERT INTO `item_mods` VALUES (23441,168,20);    -- Erilaz Galea +3: SPELLINTERRUPT: 20
+INSERT INTO `item_mods` VALUES (23441,529,4);     -- Erilaz Galea +3: ENHANCES_REFRESH: 4
+INSERT INTO `item_mods` VALUES (23441,890,25);    -- Erilaz Galea +3: ENH_MAGIC_DURATION: 25
+INSERT INTO `item_mods` VALUES (23441,1013,10);   -- Erilaz Galea +3: AUGMENTS_VIVACIOUS_PULSE: 10
+
+INSERT INTO `item_mods` VALUES (23508,29,10);     -- Erilaz Surcoat +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23508,426,8);     -- Erilaz Surcoat +3: ABSORB_PHYSDMG_TO_MP: 8
+INSERT INTO `item_mods` VALUES (23508,427,14);    -- Erilaz Surcoat +3: ENMITY_LOSS_REDUCTION: 14
+
+INSERT INTO `item_mods` VALUES (23575,29,7);      -- Erilaz Gauntlets +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23575,958,8);     -- Erilaz Gauntlets +3: STATUSRES: 8
+
+INSERT INTO `item_mods` VALUES (23642,29,10);     -- Erilaz Leg Guards +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23642,963,4);     -- Erilaz Leg Guards +3: INQUARTATA: 4
+
+INSERT INTO `item_mods` VALUES (23709,15,35);     -- Erilaz Greaves +3: FIRE_MEVA: 35
+INSERT INTO `item_mods` VALUES (23709,16,35);     -- Erilaz Greaves +3: ICE_MEVA: 35
+INSERT INTO `item_mods` VALUES (23709,17,35);     -- Erilaz Greaves +3: WIND_MEVA: 35
+INSERT INTO `item_mods` VALUES (23709,18,35);     -- Erilaz Greaves +3: EARTH_MEVA: 35
+INSERT INTO `item_mods` VALUES (23709,19,35);     -- Erilaz Greaves +3: THUNDER_MEVA: 35
+INSERT INTO `item_mods` VALUES (23709,20,35);     -- Erilaz Greaves +3: WATER_MEVA: 35
+INSERT INTO `item_mods` VALUES (23709,21,35);     -- Erilaz Greaves +3: LIGHT_MEVA: 35
+INSERT INTO `item_mods` VALUES (23709,22,35);     -- Erilaz Greaves +3: DARK_MEVA: 35
+INSERT INTO `item_mods` VALUES (23709,29,9);      -- Erilaz Greaves +3: MDEF: 9
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
