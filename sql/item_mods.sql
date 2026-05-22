@@ -70553,7 +70553,7 @@ INSERT INTO `item_mods` VALUES (27060,11,3);    -- AGI: 3
 INSERT INTO `item_mods` VALUES (27060,12,12);   -- INT: 12
 INSERT INTO `item_mods` VALUES (27060,13,26);   -- MND: 26
 INSERT INTO `item_mods` VALUES (27060,14,12);   -- CHR: 12
-INSERT INTO `item_mods` VALUES (27060,29,3);    -- MDEF: 3
+INSERT INTO `item_mods` VALUES (27060,29,1);    -- MDEF: 1
 INSERT INTO `item_mods` VALUES (27060,30,14);   -- MACC: 14
 INSERT INTO `item_mods` VALUES (27060,31,25);   -- MEVA: 25
 INSERT INTO `item_mods` VALUES (27060,68,11);   -- EVA: 11
@@ -72976,7 +72976,7 @@ INSERT INTO `item_mods` VALUES (27245,12,25);   -- INT: 25
 INSERT INTO `item_mods` VALUES (27245,13,17);   -- MND: 17
 INSERT INTO `item_mods` VALUES (27245,14,12);   -- CHR: 12
 INSERT INTO `item_mods` VALUES (27245,28,12);   -- MATT: 12
-INSERT INTO `item_mods` VALUES (27245,29,1);    -- MDEF: 1
+INSERT INTO `item_mods` VALUES (27245,29,3);    -- MDEF: 3
 INSERT INTO `item_mods` VALUES (27245,30,12);   -- MACC: 12
 INSERT INTO `item_mods` VALUES (27245,31,76);   -- MEVA: 76
 INSERT INTO `item_mods` VALUES (27245,68,12);   -- EVA: 12
@@ -75263,7 +75263,7 @@ INSERT INTO `item_mods` VALUES (27419,29,3);    -- MDEF: 3
 INSERT INTO `item_mods` VALUES (27419,31,73);   -- MEVA: 73
 INSERT INTO `item_mods` VALUES (27419,68,28);   -- EVA: 28
 INSERT INTO `item_mods` VALUES (27419,113,20);  -- ENHANCE: 20
-INSERT INTO `item_mods` VALUES (27419,384,400); -- HASTE_GEAR: 400
+INSERT INTO `item_mods` VALUES (27419,384,300); -- HASTE_GEAR: 300
 INSERT INTO `item_mods` VALUES (27419,890,25);  -- ENH_MAGIC_DURATION: 25
 
 -- Lethargy Houseaux +1
@@ -93082,6 +93082,28 @@ INSERT INTO `item_mods` VALUES (23624,29,10);      -- Wicce Chausses +3: MDEF: 1
 INSERT INTO `item_mods` VALUES (23624,487,15);     -- Wicce Chausses +3: MAG_BURST_BONUS: 15
 
 INSERT INTO `item_mods` VALUES (23691,29,10);      -- Wicce Sabots +3: MDEF: 10
+
+-- Lethargy Armor Set missing mods
+INSERT INTO `item_mods` VALUES (27060,297,11);    -- Lethargy Gantherots: ENHANCES_SABOTEUR: 11
+INSERT INTO `item_mods` VALUES (27061,297,12);    -- Lethargy Gantherots +1: ENHANCES_SABOTEUR: 12
+
+INSERT INTO `item_mods` VALUES (23424,28,56);     -- Lethargy Chappel +3: MATT: 56
+INSERT INTO `item_mods` VALUES (23424,29,10);     -- Lethargy Chappel +3: MDEF: 10
+
+INSERT INTO `item_mods` VALUES (23491,29,11);     -- Lethargy Sayon +3: MDEF: 11
+INSERT INTO `item_mods` VALUES (23491,290,18);    -- Lethargy Sayon +3: ENF_MAG_POTENCY: 18
+INSERT INTO `item_mods` VALUES (23491,369,4);     -- Lethargy Sayon +3: REFRESH: 4
+
+INSERT INTO `item_mods` VALUES (23558,29,7);      -- Lethargy Gantherots +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23558,297,14);    -- Lethargy Gantherots +3: ENHANCES_SABOTEUR: 14
+
+INSERT INTO `item_mods` VALUES (23625,28,58);     -- Lethargy Fuseau +3: MATT: 58
+INSERT INTO `item_mods` VALUES (23625,29,10);     -- Lethargy Fuseau +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23625,487,15);    -- Lethargy Fuseau +3: MAG_BURST_BONUS: 15
+INSERT INTO `item_mods` VALUES (23625,529,4);     -- Lethargy Fuseau +3: ENHANCES_REFRESH: 4
+
+INSERT INTO `item_mods` VALUES (23692,29,10);     -- Lethargy Houseaux +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23692,890,40);    -- Lethargy Houseaux +3: ENH_MAGIC_DURATION: 40
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
