@@ -157,6 +157,13 @@ end
 -----------------------------------
 -- Difficulty selection menu
 -----------------------------------
+-- The menu is shown in onEventFinishEnter, AFTER the player confirms the fight
+-- name in event 32000 but BEFORE setEnteredBattlefield fires the warp.
+-- At that point the battlefield exists, mobs are spawned, and the player is
+-- NOT in any event — so MESSAGE_GMPROMPT renders immediately.
+-- The selection callback calls player:setEnteredBattlefield(true) to complete
+-- the warp once a difficulty is chosen (or the menu is dismissed).
+-----------------------------------
 
 local difficultyLabels =
 {
@@ -176,34 +183,38 @@ local difficultyShortNames =
     [4] = 'Very Difficult',
 }
 
-local function showDifficultyMenu(player, battlefield)
-    -- Default to Normal in case the player dismisses without picking
+local function showPreEntryDiffMenu(player, battlefield)
+    -- Pre-set Normal so dismiss/cancel has a safe default
     battlefield:setLocalVar('SKCNM_Difficulty', xi.skcnm.difficulty.NORMAL)
+
+    local function onChosen(p, diffIndex)
+        battlefield:setLocalVar('SKCNM_Difficulty', diffIndex)
+        applyDiffScaling(battlefield, diffIndex)
+
+        local chosen  = difficultyShortNames[diffIndex]
+        local players = battlefield:getPlayers()
+
+        for _, member in ipairs(players) do
+            member:printToPlayer('Difficulty: ' .. chosen .. '.', xi.msg.channel.NS_SAY)
+        end
+
+        p:setEnteredBattlefield(true)
+    end
 
     local menu =
     {
         title   = 'Select Battle Difficulty',
         options = {},
+        onCancelled = function(p)
+            onChosen(p, xi.skcnm.difficulty.NORMAL)
+        end,
     }
 
     for value = 0, 4 do
-        local label = difficultyLabels[value]
-
         table.insert(menu.options, {
-            label,
-            function(_)
-                battlefield:setLocalVar('SKCNM_Difficulty', value)
-                applyDiffScaling(battlefield, value)
-
-                local chosen  = difficultyShortNames[value]
-                local players = battlefield:getPlayers()
-
-                for _, member in ipairs(players) do
-                    member:printToPlayer(
-                        'Difficulty: ' .. chosen .. '.',
-                        xi.msg.channel.NS_SAY
-                    )
-                end
+            difficultyLabels[value],
+            function(p)
+                onChosen(p, value)
             end,
         })
     end
@@ -227,11 +238,23 @@ function SKCNMBattlefield:new(data)
     return obj
 end
 
--- The first player to enter sees the difficulty menu; subsequent members do not.
--- A localVar flag prevents the menu from showing more than once per instance.
-function SKCNMBattlefield:battlefieldEntry(player, battlefield)
-    if battlefield:getLocalVar('SKCNM_Difficulty_Set') == 0 then
-        battlefield:setLocalVar('SKCNM_Difficulty_Set', 1)
-        showDifficultyMenu(player, battlefield)
+-- Override the post-fight-selection hook so we can show the difficulty menu
+-- before the player physically warps in.
+-- Only the battlefield initiator (the player who traded the orb) sees the menu;
+-- party members who enter separately warp in immediately using the already-set
+-- difficulty.
+function SKCNMBattlefield:onEventFinishEnter(player, csid, option)
+    -- Mirror base-class bookkeeping (minus setEnteredBattlefield)
+    player:setLocalVar('[battlefield]area', 0)
+    self:setLocalVar(player, 'CS', 1)
+
+    local battlefield = player:getBattlefield()
+    local initiatorId = battlefield and select(1, battlefield:getInitiator()) or 0
+
+    if battlefield and player:getID() == initiatorId then
+        showPreEntryDiffMenu(player, battlefield)
+    else
+        -- Party member, or unexpected nil battlefield: warp straight in
+        player:setEnteredBattlefield(true)
     end
 end
