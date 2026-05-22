@@ -93422,6 +93422,25 @@ INSERT INTO `item_mods` VALUES (23640,29,10);     -- Arbatel Pants +3: MDEF: 10
 
 INSERT INTO `item_mods` VALUES (23707,28,50);     -- Arbatel Loafers +3: MATT: 50
 INSERT INTO `item_mods` VALUES (23707,29,10);     -- Arbatel Loafers +3: MDEF: 10
+
+-- Azimuth Attire Set missing mods
+INSERT INTO `item_mods` VALUES (23440,28,51);     -- Azimuth Hood +3: MATT: 51
+INSERT INTO `item_mods` VALUES (23440,29,10);     -- Azimuth Hood +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23440,1025,4);    -- Azimuth Hood +3: FULL_CIRCLE: 4
+
+INSERT INTO `item_mods` VALUES (23507,28,59);     -- Azimuth Coat +3: MATT: 59
+INSERT INTO `item_mods` VALUES (23507,29,11);     -- Azimuth Coat +3: MDEF: 11
+INSERT INTO `item_mods` VALUES (23507,369,4);     -- Azimuth Coat +3: REFRESH: 4
+
+INSERT INTO `item_mods` VALUES (23574,28,52);     -- Azimuth Gloves +3: MATT: 52
+INSERT INTO `item_mods` VALUES (23574,29,7);      -- Azimuth Gloves +3: MDEF: 7
+
+INSERT INTO `item_mods` VALUES (23641,28,58);     -- Azimuth Tights +3: MATT: 58
+INSERT INTO `item_mods` VALUES (23641,29,10);     -- Azimuth Tights +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23641,487,15);    -- Azimuth Tights +3: MAG_BURST_BONUS: 15
+
+INSERT INTO `item_mods` VALUES (23708,28,50);     -- Azimuth Gaiters +3: MATT: 50
+INSERT INTO `item_mods` VALUES (23708,29,10);     -- Azimuth Gaiters +3: MDEF: 10
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
