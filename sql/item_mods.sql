@@ -52679,7 +52679,6 @@ INSERT INTO `item_mods` VALUES (23301,28,48);     -- MATT: 48
 INSERT INTO `item_mods` VALUES (23301,29,9);      -- MDEF: 9
 INSERT INTO `item_mods` VALUES (23301,30,53);     -- MACC: 53
 INSERT INTO `item_mods` VALUES (23301,31,152);    -- MEVA: 152
-INSERT INTO `item_mods` VALUES (23301,67,67);     -- EVA: 67
 INSERT INTO `item_mods` VALUES (23301,122,28);    -- BLUE: 28
 INSERT INTO `item_mods` VALUES (23301,160,-1100); -- DMG: -11%
 INSERT INTO `item_mods` VALUES (23301,384,500);   -- HASTE_GEAR: 5%
@@ -93334,6 +93333,22 @@ INSERT INTO `item_mods` VALUES (23702,29,10);     -- Beckoner's Pigaches +3: MDE
 INSERT INTO `item_mods` VALUES (23702,126,12);    -- Beckoner's Pigaches +3: BP_DAMAGE: 12
 INSERT INTO `item_mods` VALUES (23702,346,9);     -- Beckoner's Pigaches +3: PERPETUATION_REDUCTION: 9
 INSERT INTO `item_mods` VALUES (23702,540,80);    -- Beckoner's Pigaches +3: ENHANCES_ELEMENTAL_SIPHON: 80
+
+-- Hashishin Attire Set missing mods
+INSERT INTO `item_mods` VALUES (23435,29,10);     -- Hashishin Kavuk +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23435,1140,28);   -- Hashishin Kavuk +3: ENHANCES_CHAIN_AFFINITY: 28
+
+INSERT INTO `item_mods` VALUES (23502,29,11);     -- Hashishin Mintan +3: MDEF: 11
+INSERT INTO `item_mods` VALUES (23502,369,4);     -- Hashishin Mintan +3: REFRESH: 4
+
+INSERT INTO `item_mods` VALUES (23569,29,7);      -- Hashishin Bazubands +3: MDEF: 7
+INSERT INTO `item_mods` VALUES (23569,1147,-16);  -- Hashishin Bazubands +3: BLUE_MAGIC_RECAST: -16
+
+INSERT INTO `item_mods` VALUES (23636,29,10);     -- Hashishin Tayt +3: MDEF: 10
+
+INSERT INTO `item_mods` VALUES (23703,29,10);     -- Hashishin Basmak +3: MDEF: 10
+INSERT INTO `item_mods` VALUES (23703,487,15);    -- Hashishin Basmak +3: MAG_BURST_BONUS: 15
+INSERT INTO `item_mods` VALUES (23703,1139,21);   -- Hashishin Basmak +3: ENHANCES_BURST_AFFINITY: 21
 /*!40000 ALTER TABLE `item_mods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
