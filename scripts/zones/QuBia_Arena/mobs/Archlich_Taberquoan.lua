@@ -10,6 +10,9 @@ local entity = {}
 
 entity.onMobInitialize = function(mob)
     mob:setMobMod(xi.mobMod.SOUND_RANGE, 32)
+    -- Ancient Sorcerer adds use GraphSize 2; boss is one step larger (2x scale).
+    mob:setModelSize(3)
+    mob:setHitboxSize(2.6)
 end
 
 entity.onMobEngage = function(mob, player)
