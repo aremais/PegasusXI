@@ -55,7 +55,7 @@ public:
     auto run() -> Task<void>;
 
 private:
-    void read_func(uint16_t length);
+    auto read_func(uint16_t length) -> Task<void>;
 
     uint16_t getNumSessionsInUse(const std::string& ipAddressStr);
     void     addToUsedIPAddresses(const std::string& ipAddressStr);
@@ -68,8 +68,8 @@ private:
     void HandleSearchRequest();
     void HandleGroupListRequest();
     void HandleSearchComment();
-    void HandleAuctionHouseRequest();
-    void HandleAuctionHouseHistory();
+    auto HandleAuctionHouseRequest() -> Task<void>;
+    auto HandleAuctionHouseHistory() -> Task<void>;
 
     auto _HandleSearchRequest() -> search_req;
 

@@ -1,0 +1,1042 @@
+{
+  "Acrolith": {
+    "detects": 34,
+    "source": "wiki:sound, magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AAcrolith"
+  },
+  "Acuex": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AAcuex"
+  },
+  "Adamantoise": {
+    "detects": 2,
+    "source": "wiki:Sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AAdamantoise"
+  },
+  "Aern": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AAern"
+  },
+  "Ahriman": {
+    "detects": 3,
+    "source": "wiki:sight, sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AAhriman"
+  },
+  "Altana": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AAltana"
+  },
+  "Aminon": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AAminon"
+  },
+  "Amoeban": {
+    "detects": 32,
+    "source": "wiki:magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AAmoeban"
+  },
+  "Amphiptere": {
+    "detects": 263,
+    "source": "wiki:sight,sound,hp,scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AAmphiptere"
+  },
+  "Animated_Weapons": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AAnimated%20Weapons"
+  },
+  "Antica": {
+    "detects": 2,
+    "source": "wiki:sound, links",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AAntica"
+  },
+  "Antlion": {
+    "detects": 2,
+    "source": "wiki:Sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AAntlion"
+  },
+  "Apkallu": {
+    "detects": 3,
+    "source": "wiki:sight,sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AApkallu"
+  },
+  "Automaton": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AAutomaton"
+  },
+  "Avatar": {
+    "detects": 0,
+    "source": "wiki:Varies",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AAvatar"
+  },
+  "Bat": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ABat"
+  },
+  "Bee": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ABee"
+  },
+  "Beetle": {
+    "detects": 257,
+    "source": "wiki:Sight, Scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ABeetle"
+  },
+  "Behemoth": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ABehemoth"
+  },
+  "Belladonna": {
+    "detects": 0,
+    "source": "wiki:true sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ABelladonna"
+  },
+  "Bird": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ABird"
+  },
+  "Bomb": {
+    "detects": 33,
+    "source": "wiki:Sight,Magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ABomb"
+  },
+  "Botuli": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ABotuli"
+  },
+  "Buffalo": {
+    "detects": 257,
+    "source": "wiki:sight, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ABuffalo"
+  },
+  "Bugard": {
+    "detects": 2,
+    "source": "wiki:Sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ABugard"
+  },
+  "Bugbear": {
+    "detects": 257,
+    "source": "wiki:Sight, Scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ABugbear"
+  },
+  "Bztavian": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ABztavian"
+  },
+  "Cactaur": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACactaur"
+  },
+  "Cardian": {
+    "detects": 34,
+    "source": "wiki:sound, magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACardian"
+  },
+  "Caturae": {
+    "detects": 0,
+    "source": "wiki:true sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACaturae"
+  },
+  "Cehuetzi": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACehuetzi"
+  },
+  "Cerberus": {
+    "detects": 259,
+    "source": "wiki:sight, sound, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACerberus"
+  },
+  "Chapuli": {
+    "detects": 1,
+    "source": "wiki:Sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AChapuli"
+  },
+  "Chariot": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AChariot"
+  },
+  "Chigoe": {
+    "detects": 3,
+    "source": "wiki:sight, sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AChigoe"
+  },
+  "Clionidae": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AClionidae"
+  },
+  "Cloud_of_Darkness": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACloud%20of%20Darkness"
+  },
+  "Cluster": {
+    "detects": 33,
+    "source": "wiki:Sight, Magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACluster"
+  },
+  "Cockatrice": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACockatrice"
+  },
+  "Coeurl": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACoeurl"
+  },
+  "Colibri": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AColibri"
+  },
+  "Corpselight": {
+    "detects": 6,
+    "source": "wiki:sound,HP",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACorpselight"
+  },
+  "Corse": {
+    "detects": 6,
+    "source": "wiki:sound, hp",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACorse"
+  },
+  "Crab": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACrab"
+  },
+  "Craklaw": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACraklaw"
+  },
+  "Craver": {
+    "detects": 259,
+    "source": "wiki:sight, sound, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACraver"
+  },
+  "Crawler": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ACrawler"
+  },
+  "Defiant": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ADefiant"
+  },
+  "Demon": {
+    "detects": 257,
+    "source": "wiki:sight, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ADemon"
+  },
+  "Dhalmel": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ADhalmel"
+  },
+  "Diremite": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ADiremite"
+  },
+  "Doll": {
+    "detects": 32,
+    "source": "wiki:magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ADoll"
+  },
+  "Doomed": {
+    "detects": 6,
+    "source": "wiki:sound, hp",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ADoomed"
+  },
+  "Dragon": {
+    "detects": 2,
+    "source": "wiki:Sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ADragon"
+  },
+  "Dullahan": {
+    "detects": 6,
+    "source": "wiki:sound,hp",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ADullahan"
+  },
+  "Dvergr": {
+    "detects": 0,
+    "source": "wiki:true sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ADvergr"
+  },
+  "Eft": {
+    "detects": 2,
+    "source": "wiki:Sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AEft"
+  },
+  "Elemental": {
+    "detects": 32,
+    "source": "wiki:magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AElemental"
+  },
+  "Elvaan": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AElvaan"
+  },
+  "Euvhi": {
+    "detects": 0,
+    "source": "wiki:true sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AEuvhi"
+  },
+  "Evil_Weapon": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AEvil%20Weapon"
+  },
+  "Flan": {
+    "detects": 129,
+    "source": "wiki:sight, ja",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AFlan"
+  },
+  "Flock_Bat": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AFlock%20Bat"
+  },
+  "Fly": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AFly"
+  },
+  "Flytrap": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AFlytrap"
+  },
+  "Fomor": {
+    "detects": 134,
+    "source": "wiki:Sound, HP, JA",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AFomor"
+  },
+  "Frog": {
+    "detects": 3,
+    "source": "wiki:sight, sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AFrog"
+  },
+  "Funguar": {
+    "detects": 2,
+    "source": "wiki:Sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AFunguar"
+  },
+  "Gabbrath": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGabbrath"
+  },
+  "Galka": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGalka"
+  },
+  "Gallu": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGallu"
+  },
+  "Gargouille": {
+    "detects": 3,
+    "source": "wiki:sight, sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGargouille"
+  },
+  "Gear": {
+    "detects": 35,
+    "source": "wiki:sound, sight, true sound, true sight, magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGear"
+  },
+  "Ghost": {
+    "detects": 6,
+    "source": "wiki:sound, hp",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGhost"
+  },
+  "Ghrah": {
+    "detects": 0,
+    "source": "wiki:true sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGhrah"
+  },
+  "Gigas": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGigas"
+  },
+  "Gnat": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGnat"
+  },
+  "Gnole": {
+    "detects": 257,
+    "source": "wiki:sight, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGnole"
+  },
+  "Goblin": {
+    "detects": 257,
+    "source": "wiki:Sight, Scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGoblin"
+  },
+  "Golem": {
+    "detects": 33,
+    "source": "wiki:sight, magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGolem"
+  },
+  "Goobbue": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGoobbue"
+  },
+  "Gorger": {
+    "detects": 259,
+    "source": "wiki:sight, sound, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGorger"
+  },
+  "Greater_Bird": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGreater%20Bird"
+  },
+  "Grimoire": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AGrimoire"
+  },
+  "Hades": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AHades"
+  },
+  "Harpeia": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AHarpeia"
+  },
+  "Heartwing": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AHeartwing"
+  },
+  "Hecteyes": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AHecteyes"
+  },
+  "Hippogryph": {
+    "detects": 256,
+    "source": "wiki:true sight, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AHippogryph"
+  },
+  "Hound": {
+    "detects": 6,
+    "source": "wiki:sound, hp",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AHound"
+  },
+  "Hpemde": {
+    "detects": 0,
+    "source": "wiki:true sound, links",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AHpemde"
+  },
+  "Hume": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AHume"
+  },
+  "Hydra": {
+    "detects": 0,
+    "source": "wiki:true sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AHydra"
+  },
+  "Imp": {
+    "detects": 0,
+    "source": "wiki:True Sight, True Sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AImp"
+  },
+  "Iron_Giant": {
+    "detects": 3,
+    "source": "wiki:sound, sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AIron%20Giant"
+  },
+  "Khimaira": {
+    "detects": 0,
+    "source": "wiki:true sight, true sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AKhimaira"
+  },
+  "Ladybug": {
+    "detects": 257,
+    "source": "wiki:Sight, Scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ALadybug"
+  },
+  "Lamiae": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ALamiae"
+  },
+  "Leafkin": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ALeafkin"
+  },
+  "Leech": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ALeech"
+  },
+  "Limule": {
+    "detects": 6,
+    "source": "wiki:sound, hp",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ALimule"
+  },
+  "Lizard": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ALizard"
+  },
+  "Lucani": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ALucani"
+  },
+  "Macuil": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMacuil"
+  },
+  "Magic_Pot": {
+    "detects": 32,
+    "source": "wiki:Magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMagic%20Pot"
+  },
+  "Mammet": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMammet"
+  },
+  "Mamool_Ja": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMamool%20Ja"
+  },
+  "Mandragora": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMandragora"
+  },
+  "Manticore": {
+    "detects": 1,
+    "source": "wiki:Sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AManticore"
+  },
+  "Mantid": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMantid"
+  },
+  "Marid": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMarid"
+  },
+  "Marolith": {
+    "detects": 34,
+    "source": "wiki:sound, magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMarolith"
+  },
+  "Matamata": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMatamata"
+  },
+  "Meeble": {
+    "detects": 0,
+    "source": "wiki:true sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMeeble"
+  },
+  "Metus": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMetus"
+  },
+  "Mimic": {
+    "detects": 34,
+    "source": "wiki:Sound, Magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMimic"
+  },
+  "Mithra": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMithra"
+  },
+  "Monoceros": {
+    "detects": 3,
+    "source": "wiki:sight,sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMonoceros"
+  },
+  "Moogle": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMoogle"
+  },
+  "Morbol": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMorbol"
+  },
+  "Mosquito": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMosquito"
+  },
+  "Murex": {
+    "detects": 128,
+    "source": "wiki:JA",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AMurex"
+  },
+  "Naraka": {
+    "detects": 6,
+    "source": "wiki:sound, hp",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ANaraka"
+  },
+  "Omega": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AOmega"
+  },
+  "Opo-opo": {
+    "detects": 257,
+    "source": "wiki:sight, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AOpo-opo"
+  },
+  "Orc": {
+    "detects": 1,
+    "source": "wiki:Sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AOrc"
+  },
+  "Orcish_Warmachine": {
+    "detects": 1,
+    "source": "wiki:sight, links",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AOrcish%20Warmachine"
+  },
+  "Orobon": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AOrobon"
+  },
+  "Panopt": {
+    "detects": 0,
+    "source": "wiki:true sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3APanopt"
+  },
+  "Peiste": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3APeiste"
+  },
+  "Phuabo": {
+    "detects": 2,
+    "source": "wiki:sound, true sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3APhuabo"
+  },
+  "Pixie": {
+    "detects": 5,
+    "source": "wiki:HP, Sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3APixie"
+  },
+  "Plouton": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3APlouton"
+  },
+  "Plovid": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3APlovid"
+  },
+  "Poroggo": {
+    "detects": 0,
+    "source": "wiki:true sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3APoroggo"
+  },
+  "Porxie": {
+    "detects": 3,
+    "source": "wiki:sight, sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3APorxie"
+  },
+  "Promathia": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3APromathia"
+  },
+  "Provenance_Watcher": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AProvenance%20Watcher"
+  },
+  "Pteraketos": {
+    "detects": null,
+    "source": "http-429",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3APteraketos"
+  },
+  "Pugil": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3APugil"
+  },
+  "Puk": {
+    "detects": 3,
+    "source": "wiki:sight, sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3APuk"
+  },
+  "Qiqirn": {
+    "detects": 257,
+    "source": "wiki:sight, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AQiqirn"
+  },
+  "Quadav": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AQuadav"
+  },
+  "Qutrub": {
+    "detects": 7,
+    "source": "wiki:Sight, Sound, HP",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AQutrub"
+  },
+  "Raaz": {
+    "detects": 257,
+    "source": "wiki:sight, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ARaaz"
+  },
+  "Rabbit": {
+    "detects": 257,
+    "source": "wiki:sight, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ARabbit"
+  },
+  "Rafflesia": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ARafflesia"
+  },
+  "Ram": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ARam"
+  },
+  "Rampart": {
+    "detects": 34,
+    "source": "wiki:magic, sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ARampart"
+  },
+  "Raptor": {
+    "detects": null,
+    "source": "no-detects-field",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ARaptor"
+  },
+  "Receptacle": {
+    "detects": 0,
+    "source": "wiki:True Sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AReceptacle"
+  },
+  "Rockfin": {
+    "detects": null,
+    "source": "no-detects-field",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ARockfin"
+  },
+  "Ruszor": {
+    "detects": null,
+    "source": "no-detects-field",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ARuszor"
+  },
+  "Sahagin": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASahagin"
+  },
+  "Sandworm": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASandworm"
+  },
+  "Sapling": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASapling"
+  },
+  "Scorpion": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AScorpion"
+  },
+  "Sea_Monk": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASea%20Monk"
+  },
+  "Seether": {
+    "detects": 259,
+    "source": "wiki:sight, sound, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASeether"
+  },
+  "Sempurne": {
+    "detects": null,
+    "source": "missing-page",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASempurne"
+  },
+  "Shadow": {
+    "detects": null,
+    "source": "missing-page",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AShadow"
+  },
+  "Shadow_Lord": {
+    "detects": null,
+    "source": "missing-page",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AShadow%20Lord"
+  },
+  "Sheep": {
+    "detects": 1,
+    "source": "wiki:sight, links",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASheep"
+  },
+  "Shinryu": {
+    "detects": null,
+    "source": "missing-page",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AShinryu"
+  },
+  "Siege_Turret": {
+    "detects": null,
+    "source": "no-detects-field",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASiege%20Turret"
+  },
+  "Skeleton": {
+    "detects": 6,
+    "source": "wiki:hp,sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASkeleton"
+  },
+  "Slime": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASlime"
+  },
+  "Slug": {
+    "detects": 258,
+    "source": "wiki:sound,scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASlug"
+  },
+  "Snapweed": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASnapweed"
+  },
+  "Soulflayer": {
+    "detects": 160,
+    "source": "wiki:magic, ja, tsound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASoulflayer"
+  },
+  "Spheroid": {
+    "detects": 34,
+    "source": "wiki:Sound, Magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASpheroid"
+  },
+  "Spider": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ASpider"
+  },
+  "Statue": {
+    "detects": null,
+    "source": "missing-page",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AStatue"
+  },
+  "Structures": {
+    "detects": null,
+    "source": "no-detects-field",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AStructures"
+  },
+  "Tarutaru": {
+    "detects": null,
+    "source": "no-detects-field",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ATarutaru"
+  },
+  "Taurus": {
+    "detects": 256,
+    "source": "wiki:true sight, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ATaurus"
+  },
+  "Thinker": {
+    "detects": 259,
+    "source": "wiki:sight, sound, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AThinker"
+  },
+  "Tiger": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ATiger"
+  },
+  "Tonberry": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ATonberry"
+  },
+  "Treant": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ATreant"
+  },
+  "Troll": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ATroll"
+  },
+  "Tubes": {
+    "detects": null,
+    "source": "missing-page",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ATubes"
+  },
+  "Tulfaire": {
+    "detects": null,
+    "source": "missing-page",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ATulfaire"
+  },
+  "Twitherym": {
+    "detects": 2,
+    "source": "wiki:Sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3ATwitherym"
+  },
+  "Ultima": {
+    "detects": null,
+    "source": "missing-page",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AUltima"
+  },
+  "Umbril": {
+    "detects": 33,
+    "source": "wiki:Sight, Magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AUmbril"
+  },
+  "Unclassified": {
+    "detects": null,
+    "source": "no-detects-field",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AUnclassified"
+  },
+  "Uragnite": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AUragnite"
+  },
+  "Vampyr": {
+    "detects": 7,
+    "source": "wiki:sight, sound, hp",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AVampyr"
+  },
+  "Velkk": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AVelkk"
+  },
+  "Waktza": {
+    "detects": null,
+    "source": "no-detects-field",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AWaktza"
+  },
+  "Wamoura": {
+    "detects": 32,
+    "source": "wiki:true sound, magic",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AWamoura"
+  },
+  "Wamouracampa": {
+    "detects": null,
+    "source": "no-detects-field",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AWamouracampa"
+  },
+  "Wanderer": {
+    "detects": 259,
+    "source": "wiki:true sight, sight, sound, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AWanderer"
+  },
+  "Weeper": {
+    "detects": 259,
+    "source": "wiki:sight, sound, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AWeeper"
+  },
+  "Wivre": {
+    "detects": 259,
+    "source": "wiki:sight, sound, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AWivre"
+  },
+  "Worm": {
+    "detects": 2,
+    "source": "wiki:sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AWorm"
+  },
+  "Wynav": {
+    "detects": null,
+    "source": "no-detects-field",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AWynav"
+  },
+  "Wyrm": {
+    "detects": null,
+    "source": "no-detects-field",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AWyrm"
+  },
+  "Wyvern": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AWyvern"
+  },
+  "Wyvern_(Pet)": {
+    "detects": null,
+    "source": "missing-page",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AWyvern%20%28Pet%29"
+  },
+  "Xzomit": {
+    "detects": 0,
+    "source": "wiki:true sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AXzomit"
+  },
+  "Yagudo": {
+    "detects": 1,
+    "source": "wiki:sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AYagudo"
+  },
+  "Yggdreant": {
+    "detects": null,
+    "source": "no-detects-field",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AYggdreant"
+  },
+  "Yovra": {
+    "detects": 258,
+    "source": "wiki:True sound, sound, scent",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AYovra"
+  },
+  "Yztarg": {
+    "detects": 1,
+    "source": "wiki:Sight",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AYztarg"
+  },
+  "Zdei": {
+    "detects": 0,
+    "source": "wiki:true sight,",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AZdei"
+  },
+  "Zilant": {
+    "detects": 0,
+    "source": "wiki:true sight, true sound",
+    "page": "https://www.bg-wiki.com/ffxi/Category%3AZilant"
+  }
+}

@@ -8,8 +8,8 @@ local entity = {}
 entity.onMobEngage = function(mob, target)
     local mobid = mob:getID()
 
-    for member = mobid-7, mobid do
-        local m = GetMobByID(member)
+    for member = mobid - 7, mobid do
+        local m = GetEntityByID(member, nil, true)
         if m and m:getCurrentAction() == xi.action.category.ROAMING then
             m:updateEnmity(target)
         end

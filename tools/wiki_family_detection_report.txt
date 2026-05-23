@@ -1,0 +1,303 @@
+bg-wiki family detection audit (Category: pages via MediaWiki API)
+Families: 484 | Superfamilies: 208
+Mismatches (wiki parsed vs mob_family_system): 147
+Skipped (no wiki field or script override): 119
+
+=== MISMATCHES ===
+  300 Legendary_Adamantoise  | Adamantoise          | DB   3 (SIGHT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:Sound
+      https://www.bg-wiki.com/ffxi/Category%3AAdamantoise
+  320 Aern                   | Aern                 | DB   3 (SIGHT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3AAern
+  169 Amphiptere             | Amphiptere           | DB   1 (SIGHT           ) -> wiki 263 (SIGHT+HEARING+LOWHP+SCENT) | wiki:sight,sound,hp,scent
+      https://www.bg-wiki.com/ffxi/Category%3AAmphiptere
+  170 Sanguipteres           | Amphiptere           | DB   1 (SIGHT           ) -> wiki 263 (SIGHT+HEARING+LOWHP+SCENT) | wiki:sight,sound,hp,scent
+      https://www.bg-wiki.com/ffxi/Category%3AAmphiptere
+  117 Antica                 | Antica               | DB 258 (SCENT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound, links
+      https://www.bg-wiki.com/ffxi/Category%3AAntica
+  425 Blue_Bee               | Bee                  | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3ABee
+  426 Pephredo               | Bee                  | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3ABee
+  427 Red_Bee                | Bee                  | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3ABee
+  428 Yellow_Bee             | Bee                  | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3ABee
+  332 Belladonna             | Belladonna           | DB   2 (HEARING         ) -> wiki   0 (NONE            ) | wiki:true sound
+      https://www.bg-wiki.com/ffxi/Category%3ABelladonna
+  333 White_Belladonna       | Belladonna           | DB   2 (HEARING         ) -> wiki   0 (NONE            ) | wiki:true sound
+      https://www.bg-wiki.com/ffxi/Category%3ABelladonna
+   88 Buffalo                | Buffalo              | DB   1 (SIGHT           ) -> wiki 257 (SCENT+SIGHT     ) | wiki:sight, scent
+      https://www.bg-wiki.com/ffxi/Category%3ABuffalo
+  118 Bugbear                | Bugbear              | DB   1 (SIGHT           ) -> wiki 257 (SCENT+SIGHT     ) | wiki:Sight, Scent
+      https://www.bg-wiki.com/ffxi/Category%3ABugbear
+   53 Bishop                 | Caturae              | DB   1 (SIGHT           ) -> wiki   0 (NONE            ) | wiki:true sight
+      https://www.bg-wiki.com/ffxi/Category%3ACaturae
+   54 King                   | Caturae              | DB   1 (SIGHT           ) -> wiki   0 (NONE            ) | wiki:true sight
+      https://www.bg-wiki.com/ffxi/Category%3ACaturae
+   55 Knight                 | Caturae              | DB   1 (SIGHT           ) -> wiki   0 (NONE            ) | wiki:true sight
+      https://www.bg-wiki.com/ffxi/Category%3ACaturae
+   56 Pawn                   | Caturae              | DB   1 (SIGHT           ) -> wiki   0 (NONE            ) | wiki:true sight
+      https://www.bg-wiki.com/ffxi/Category%3ACaturae
+   57 Queen                  | Caturae              | DB   1 (SIGHT           ) -> wiki   0 (NONE            ) | wiki:true sight
+      https://www.bg-wiki.com/ffxi/Category%3ACaturae
+   58 Rook                   | Caturae              | DB   1 (SIGHT           ) -> wiki   0 (NONE            ) | wiki:true sight
+      https://www.bg-wiki.com/ffxi/Category%3ACaturae
+   90 Cerberus               | Cerberus             | DB   2 (HEARING         ) -> wiki 259 (SCENT+SIGHT+HEARING) | wiki:sight, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3ACerberus
+   91 Orthrus                | Cerberus             | DB   2 (HEARING         ) -> wiki 259 (SCENT+SIGHT+HEARING) | wiki:sight, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3ACerberus
+   75 Chariot                | Chariot              | DB  34 (MAGIC+SIGHT+NONE2) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3AChariot
+   76 Long-Armed_Chariot     | Chariot              | DB  34 (MAGIC+SIGHT+NONE2) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3AChariot
+   77 Shielded_Chariot       | Chariot              | DB  34 (MAGIC+SIGHT+NONE2) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3AChariot
+   59 Cluster                | Cluster              | DB   1 (SIGHT           ) -> wiki  33 (MAGIC+SIGHT     ) | wiki:Sight, Magic
+      https://www.bg-wiki.com/ffxi/Category%3ACluster
+   92 Coeurl                 | Coeurl               | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3ACoeurl
+   93 Collared_Lynx          | Coeurl               | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3ACoeurl
+   94 Lynx                   | Coeurl               | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3ACoeurl
+  280 Apex_Craver            | Craver               | DB   2 (HEARING         ) -> wiki 259 (SCENT+SIGHT+HEARING) | wiki:sight, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3ACraver
+  281 Craver                 | Craver               | DB   2 (HEARING         ) -> wiki 259 (SCENT+SIGHT+HEARING) | wiki:sight, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3ACraver
+  439 Eruca                  | Crawler              | DB 258 (SCENT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3ACrawler
+  198 Crystal_Demon          | Demon                | DB   1 (SIGHT           ) -> wiki 257 (SCENT+SIGHT     ) | wiki:sight, scent
+      https://www.bg-wiki.com/ffxi/Category%3ADemon
+  199 Demon                  | Demon                | DB   1 (SIGHT           ) -> wiki 257 (SCENT+SIGHT     ) | wiki:sight, scent
+      https://www.bg-wiki.com/ffxi/Category%3ADemon
+  200 Golden_Demon           | Demon                | DB   1 (SIGHT           ) -> wiki 257 (SCENT+SIGHT     ) | wiki:sight, scent
+      https://www.bg-wiki.com/ffxi/Category%3ADemon
+  202 Red_Demon              | Demon                | DB   1 (SIGHT           ) -> wiki 257 (SCENT+SIGHT     ) | wiki:sight, scent
+      https://www.bg-wiki.com/ffxi/Category%3ADemon
+   95 Dhalmel                | Dhalmel              | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3ADhalmel
+  203 Dokkalfar              | Dvergr               | DB   1 (SIGHT           ) -> wiki   0 (NONE            ) | wiki:true sound
+      https://www.bg-wiki.com/ffxi/Category%3ADvergr
+  204 Dvergr                 | Dvergr               | DB   1 (SIGHT           ) -> wiki   0 (NONE            ) | wiki:true sound
+      https://www.bg-wiki.com/ffxi/Category%3ADvergr
+  205 Warden                 | Dvergr               | DB   1 (SIGHT           ) -> wiki   0 (NONE            ) | wiki:true sound
+      https://www.bg-wiki.com/ffxi/Category%3ADvergr
+  321 Euvhi                  | Euvhi                | DB   2 (HEARING         ) -> wiki   0 (NONE            ) | wiki:true sound
+      https://www.bg-wiki.com/ffxi/Category%3AEuvhi
+    4 Blancmage              | Flan                 | DB 193 (SIGHT+WS+JA     ) -> wiki 129 (SIGHT+JA        ) | wiki:sight, ja
+      https://www.bg-wiki.com/ffxi/Category%3AFlan
+    5 Flan                   | Flan                 | DB 193 (SIGHT+WS+JA     ) -> wiki 129 (SIGHT+JA        ) | wiki:sight, ja
+      https://www.bg-wiki.com/ffxi/Category%3AFlan
+    6 Gold_Flan              | Flan                 | DB 193 (SIGHT+WS+JA     ) -> wiki 129 (SIGHT+JA        ) | wiki:sight, ja
+      https://www.bg-wiki.com/ffxi/Category%3AFlan
+  401 Ephramadian            | Fomor                | DB 198 (HEARING+LOWHP+WS+JA) -> wiki 134 (HEARING+LOWHP+JA) | wiki:Sound, HP, JA
+      https://www.bg-wiki.com/ffxi/Category%3AFomor
+  402 Fallen                 | Fomor                | DB 198 (HEARING+LOWHP+WS+JA) -> wiki 134 (HEARING+LOWHP+JA) | wiki:Sound, HP, JA
+      https://www.bg-wiki.com/ffxi/Category%3AFomor
+  403 Fomor                  | Fomor                | DB 198 (HEARING+LOWHP+WS+JA) -> wiki 134 (HEARING+LOWHP+JA) | wiki:Sound, HP, JA
+      https://www.bg-wiki.com/ffxi/Category%3AFomor
+  404 Hydra_Fomor            | Fomor                | DB 198 (HEARING+LOWHP+WS+JA) -> wiki 134 (HEARING+LOWHP+JA) | wiki:Sound, HP, JA
+      https://www.bg-wiki.com/ffxi/Category%3AFomor
+  405 Spectre                | Fomor                | DB 198 (HEARING+LOWHP+WS+JA) -> wiki 134 (HEARING+LOWHP+JA) | wiki:Sound, HP, JA
+      https://www.bg-wiki.com/ffxi/Category%3AFomor
+  406 Valkyr                 | Fomor                | DB 198 (HEARING+LOWHP+WS+JA) -> wiki 134 (HEARING+LOWHP+JA) | wiki:Sound, HP, JA
+      https://www.bg-wiki.com/ffxi/Category%3AFomor
+   30 Akagin                 | Frog                 | DB   2 (HEARING         ) -> wiki   3 (SIGHT+HEARING   ) | wiki:sight, sound
+      https://www.bg-wiki.com/ffxi/Category%3AFrog
+   31 Ginkoro                | Frog                 | DB   2 (HEARING         ) -> wiki   3 (SIGHT+HEARING   ) | wiki:sight, sound
+      https://www.bg-wiki.com/ffxi/Category%3AFrog
+   32 Toad                   | Frog                 | DB   2 (HEARING         ) -> wiki   3 (SIGHT+HEARING   ) | wiki:sight, sound
+      https://www.bg-wiki.com/ffxi/Category%3AFrog
+  208 Gargouille             | Gargouille           | DB 259 (SCENT+SIGHT+HEARING) -> wiki   3 (SIGHT+HEARING   ) | wiki:sight, sound
+      https://www.bg-wiki.com/ffxi/Category%3AGargouille
+  209 Vodoriga               | Gargouille           | DB 259 (SCENT+SIGHT+HEARING) -> wiki   3 (SIGHT+HEARING   ) | wiki:sight, sound
+      https://www.bg-wiki.com/ffxi/Category%3AGargouille
+  328 Bird_Ghrah             | Ghrah                | DB   2 (HEARING         ) -> wiki   0 (NONE            ) | wiki:true sound
+      https://www.bg-wiki.com/ffxi/Category%3AGhrah
+  329 Spider_Ghrah           | Ghrah                | DB   2 (HEARING         ) -> wiki   0 (NONE            ) | wiki:true sound
+      https://www.bg-wiki.com/ffxi/Category%3AGhrah
+  124 Armored_Goblin         | Goblin               | DB   1 (SIGHT           ) -> wiki 257 (SCENT+SIGHT     ) | wiki:Sight, Scent
+      https://www.bg-wiki.com/ffxi/Category%3AGoblin
+  125 Armored_Moblin         | Goblin               | DB   1 (SIGHT           ) -> wiki 257 (SCENT+SIGHT     ) | wiki:Sight, Scent
+      https://www.bg-wiki.com/ffxi/Category%3AGoblin
+  126 Goblin                 | Goblin               | DB   1 (SIGHT           ) -> wiki 257 (SCENT+SIGHT     ) | wiki:Sight, Scent
+      https://www.bg-wiki.com/ffxi/Category%3AGoblin
+  127 Moblin                 | Goblin               | DB   1 (SIGHT           ) -> wiki 257 (SCENT+SIGHT     ) | wiki:Sight, Scent
+      https://www.bg-wiki.com/ffxi/Category%3AGoblin
+  282 Apex_Gorger            | Gorger               | DB 280 (SCENT           ) -> wiki 259 (SCENT+SIGHT+HEARING) | wiki:sight, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3AGorger
+  283 Gorger                 | Gorger               | DB 280 (SCENT           ) -> wiki 259 (SCENT+SIGHT+HEARING) | wiki:sight, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3AGorger
+  187 Hippogryph             | Hippogryph           | DB   1 (SIGHT           ) -> wiki 256 (SCENT           ) | wiki:true sight, scent
+      https://www.bg-wiki.com/ffxi/Category%3AHippogryph
+  322 Hpemde                 | Hpemde               | DB   2 (HEARING         ) -> wiki   0 (NONE            ) | wiki:true sound, links
+      https://www.bg-wiki.com/ffxi/Category%3AHpemde
+  221 Alfard                 | Hydra                | DB   2 (HEARING         ) -> wiki   0 (NONE            ) | wiki:true sight
+      https://www.bg-wiki.com/ffxi/Category%3AHydra
+  222 Hydra                  | Hydra                | DB   2 (HEARING         ) -> wiki   0 (NONE            ) | wiki:true sight
+      https://www.bg-wiki.com/ffxi/Category%3AHydra
+   67 Khimaira               | Khimaira             | DB   3 (SIGHT+HEARING   ) -> wiki   0 (NONE            ) | wiki:true sight, true sound
+      https://www.bg-wiki.com/ffxi/Category%3AKhimaira
+   68 Khrysokhimaira         | Khimaira             | DB   3 (SIGHT+HEARING   ) -> wiki   0 (NONE            ) | wiki:true sight, true sound
+      https://www.bg-wiki.com/ffxi/Category%3AKhimaira
+  341 Cirrus                 | Leafkin              | DB   1 (SIGHT           ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3ALeafkin
+  342 Leafkin                | Leafkin              | DB   1 (SIGHT           ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3ALeafkin
+  343 Rosalia                | Leafkin              | DB   1 (SIGHT           ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3ALeafkin
+  344 Tulittia               | Leafkin              | DB   1 (SIGHT           ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3ALeafkin
+  474 Limule                 | Limule               | DB   2 (HEARING         ) -> wiki   6 (LOWHP+HEARING   ) | wiki:sound, hp
+      https://www.bg-wiki.com/ffxi/Category%3ALimule
+   97 Legendary_Manticore    | Manticore            | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:Sight
+      https://www.bg-wiki.com/ffxi/Category%3AManticore
+   98 Manticore              | Manticore            | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:Sight
+      https://www.bg-wiki.com/ffxi/Category%3AManticore
+   99 Marid                  | Marid                | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3AMarid
+   71 Marolith               | Marolith             | DB  33 (MAGIC+SIGHT     ) -> wiki  34 (MAGIC+SIGHT+NONE2) | wiki:sound, magic
+      https://www.bg-wiki.com/ffxi/Category%3AMarolith
+   72 Mirulith               | Marolith             | DB  33 (MAGIC+SIGHT     ) -> wiki  34 (MAGIC+SIGHT+NONE2) | wiki:sound, magic
+      https://www.bg-wiki.com/ffxi/Category%3AMarolith
+  309 Matamata               | Matamata             | DB   3 (SIGHT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3AMatamata
+  310 White_Matamata         | Matamata             | DB   3 (SIGHT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3AMatamata
+  136 Meeble                 | Meeble               | DB   1 (SIGHT           ) -> wiki   0 (NONE            ) | wiki:true sound
+      https://www.bg-wiki.com/ffxi/Category%3AMeeble
+  271 Alicorn                | Monoceros            | DB  41 (SIGHT+MAGIC     ) -> wiki   3 (SIGHT+HEARING   ) | wiki:sight,sound
+      https://www.bg-wiki.com/ffxi/Category%3AMonoceros
+  272 Monoceros              | Monoceros            | DB  41 (SIGHT+MAGIC     ) -> wiki   3 (SIGHT+HEARING   ) | wiki:sight,sound
+      https://www.bg-wiki.com/ffxi/Category%3AMonoceros
+  475 Murex                  | Murex                | DB 160 (MAGIC+JA        ) -> wiki 128 (JA              ) | wiki:JA
+      https://www.bg-wiki.com/ffxi/Category%3AMurex
+  139 Orc                    | Orc                  | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:Sight
+      https://www.bg-wiki.com/ffxi/Category%3AOrc
+  140 Red_Orc                | Orc                  | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:Sight
+      https://www.bg-wiki.com/ffxi/Category%3AOrc
+  141 Warchief               | Orc                  | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:Sight
+      https://www.bg-wiki.com/ffxi/Category%3AOrc
+  142 White_Orc              | Orc                  | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:Sight
+      https://www.bg-wiki.com/ffxi/Category%3AOrc
+  357 Panopt                 | Panopt               | DB   3 (SIGHT+HEARING   ) -> wiki   0 (NONE            ) | wiki:true sight
+      https://www.bg-wiki.com/ffxi/Category%3APanopt
+  273 Danaid                 | Pixie                | DB   1 (SIGHT           ) -> wiki   5 (SIGHT+LOWHP     ) | wiki:HP, Sight
+      https://www.bg-wiki.com/ffxi/Category%3APixie
+  274 Pixie                  | Pixie                | DB   1 (SIGHT           ) -> wiki   5 (SIGHT+LOWHP     ) | wiki:HP, Sight
+      https://www.bg-wiki.com/ffxi/Category%3APixie
+  275 Undeen                 | Pixie                | DB   1 (SIGHT           ) -> wiki   5 (SIGHT+LOWHP     ) | wiki:HP, Sight
+      https://www.bg-wiki.com/ffxi/Category%3APixie
+  276 Veela                  | Pixie                | DB   1 (SIGHT           ) -> wiki   5 (SIGHT+LOWHP     ) | wiki:HP, Sight
+      https://www.bg-wiki.com/ffxi/Category%3APixie
+  144 Blue_Poroggo           | Poroggo              | DB   2 (HEARING         ) -> wiki   0 (NONE            ) | wiki:true sound
+      https://www.bg-wiki.com/ffxi/Category%3APoroggo
+  145 Green_Poroggo          | Poroggo              | DB   2 (HEARING         ) -> wiki   0 (NONE            ) | wiki:true sound
+      https://www.bg-wiki.com/ffxi/Category%3APoroggo
+  146 Red_Poroggo            | Poroggo              | DB   2 (HEARING         ) -> wiki   0 (NONE            ) | wiki:true sound
+      https://www.bg-wiki.com/ffxi/Category%3APoroggo
+  277 Porxie                 | Porxie               | DB   1 (SIGHT           ) -> wiki   3 (SIGHT+HEARING   ) | wiki:sight, sound
+      https://www.bg-wiki.com/ffxi/Category%3APorxie
+  149 Golden_Quadav          | Quadav               | DB 258 (SCENT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3AQuadav
+  150 Quadav                 | Quadav               | DB 258 (SCENT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3AQuadav
+  101 Fazz                   | Raaz                 | DB   2 (HEARING         ) -> wiki 257 (SCENT+SIGHT     ) | wiki:sight, scent
+      https://www.bg-wiki.com/ffxi/Category%3ARaaz
+  102 Raaz                   | Raaz                 | DB   2 (HEARING         ) -> wiki 257 (SCENT+SIGHT     ) | wiki:sight, scent
+      https://www.bg-wiki.com/ffxi/Category%3ARaaz
+  107 Ovim                   | Ram                  | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3ARam
+  108 Ram                    | Ram                  | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3ARam
+  284 Receptacle             | Receptacle           | DB 256 (SCENT           ) -> wiki   0 (NONE            ) | wiki:True Sound
+      https://www.bg-wiki.com/ffxi/Category%3AReceptacle
+  457 Clawed_Scolopendrid    | Scorpion             | DB 258 (SCENT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3AScorpion
+  458 Great_Scorpion         | Scorpion             | DB 258 (SCENT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3AScorpion
+  459 Scolopendrid           | Scorpion             | DB 258 (SCENT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3AScorpion
+  460 Scorpion               | Scorpion             | DB 258 (SCENT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3AScorpion
+  285 Apex_Seether           | Seether              | DB 272 (SCENT           ) -> wiki 259 (SCENT+SIGHT+HEARING) | wiki:sight, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3ASeether
+  286 Seether                | Seether              | DB 272 (SCENT           ) -> wiki 259 (SCENT+SIGHT+HEARING) | wiki:sight, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3ASeether
+  110 Lucerewe               | Sheep                | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight, links
+      https://www.bg-wiki.com/ffxi/Category%3ASheep
+  111 Sheep                  | Sheep                | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight, links
+      https://www.bg-wiki.com/ffxi/Category%3ASheep
+   15 Boil                   | Slime                | DB 258 (SCENT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3ASlime
+   16 Clot                   | Slime                | DB 258 (SCENT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3ASlime
+   17 Scum                   | Slime                | DB 258 (SCENT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3ASlime
+   18 Slime                  | Slime                | DB 258 (SCENT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3ASlime
+   19 Slug                   | Slug                 | DB   2 (HEARING         ) -> wiki 258 (SCENT+HEARING   ) | wiki:sound,scent
+      https://www.bg-wiki.com/ffxi/Category%3ASlug
+  361 Jewelweed              | Snapweed             | DB 258 (SCENT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3ASnapweed
+  362 Snapweed               | Snapweed             | DB 258 (SCENT+HEARING   ) -> wiki   2 (HEARING         ) | wiki:sound
+      https://www.bg-wiki.com/ffxi/Category%3ASnapweed
+  214 Black_Robe_Flayer      | Soulflayer           | DB 482 (HEARING+MAGIC+WS+JA+SCENT) -> wiki 160 (MAGIC+JA        ) | wiki:magic, ja, tsound
+      https://www.bg-wiki.com/ffxi/Category%3ASoulflayer
+  215 Soulflayer             | Soulflayer           | DB 482 (HEARING+MAGIC+WS+JA+SCENT) -> wiki 160 (MAGIC+JA        ) | wiki:magic, ja, tsound
+      https://www.bg-wiki.com/ffxi/Category%3ASoulflayer
+  216 Falxitaur              | Taurus               | DB   1 (SIGHT           ) -> wiki 256 (SCENT           ) | wiki:true sight, scent
+      https://www.bg-wiki.com/ffxi/Category%3ATaurus
+  217 Taurus                 | Taurus               | DB   1 (SIGHT           ) -> wiki 256 (SCENT           ) | wiki:true sight, scent
+      https://www.bg-wiki.com/ffxi/Category%3ATaurus
+  287 Apex_Thinker           | Thinker              | DB   1 (SIGHT           ) -> wiki 259 (SCENT+SIGHT+HEARING) | wiki:sight, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3AThinker
+  288 Thinker                | Thinker              | DB   1 (SIGHT           ) -> wiki 259 (SCENT+SIGHT+HEARING) | wiki:sight, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3AThinker
+  113 Smilodon               | Tiger                | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3ATiger
+  114 Tiger                  | Tiger                | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3ATiger
+  465 Brown_Fluturini        | Twitherym            | DB   1 (SIGHT           ) -> wiki   2 (HEARING         ) | wiki:Sound
+      https://www.bg-wiki.com/ffxi/Category%3ATwitherym
+  466 Brown_Twitherym        | Twitherym            | DB   1 (SIGHT           ) -> wiki   2 (HEARING         ) | wiki:Sound
+      https://www.bg-wiki.com/ffxi/Category%3ATwitherym
+  467 Fluturini              | Twitherym            | DB   1 (SIGHT           ) -> wiki   2 (HEARING         ) | wiki:Sound
+      https://www.bg-wiki.com/ffxi/Category%3ATwitherym
+  468 Twitherym              | Twitherym            | DB   1 (SIGHT           ) -> wiki   2 (HEARING         ) | wiki:Sound
+      https://www.bg-wiki.com/ffxi/Category%3ATwitherym
+  164 Blue_Velkk             | Velkk                | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3AVelkk
+  165 Red_Velkk              | Velkk                | DB 257 (SCENT+SIGHT     ) -> wiki   1 (SIGHT           ) | wiki:sight
+      https://www.bg-wiki.com/ffxi/Category%3AVelkk
+  469 Coral_Wamoura          | Wamoura              | DB  34 (MAGIC+SIGHT+NONE2) -> wiki  32 (MAGIC           ) | wiki:true sound, magic
+      https://www.bg-wiki.com/ffxi/Category%3AWamoura
+  470 Wamoura                | Wamoura              | DB  34 (MAGIC+SIGHT+NONE2) -> wiki  32 (MAGIC           ) | wiki:true sound, magic
+      https://www.bg-wiki.com/ffxi/Category%3AWamoura
+  289 Apex_Wanderer          | Wanderer             | DB   2 (HEARING         ) -> wiki 259 (SCENT+SIGHT+HEARING) | wiki:true sight, sight, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3AWanderer
+  290 Wanderer               | Wanderer             | DB   2 (HEARING         ) -> wiki 259 (SCENT+SIGHT+HEARING) | wiki:true sight, sight, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3AWanderer
+  291 Apex_Weeper            | Weeper               | DB 257 (SCENT+SIGHT     ) -> wiki 259 (SCENT+SIGHT+HEARING) | wiki:sight, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3AWeeper
+  292 Weeper                 | Weeper               | DB 257 (SCENT+SIGHT     ) -> wiki 259 (SCENT+SIGHT+HEARING) | wiki:sight, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3AWeeper
+  325 Xzomit                 | Xzomit               | DB   1 (SIGHT           ) -> wiki   0 (NONE            ) | wiki:true sound
+      https://www.bg-wiki.com/ffxi/Category%3AXzomit
+  326 Xzomit_Child           | Xzomit               | DB   1 (SIGHT           ) -> wiki   0 (NONE            ) | wiki:true sound
+      https://www.bg-wiki.com/ffxi/Category%3AXzomit
+  327 Yovra                  | Yovra                | DB   2 (HEARING         ) -> wiki 258 (SCENT+HEARING   ) | wiki:True sound, sound, scent
+      https://www.bg-wiki.com/ffxi/Category%3AYovra
+  115 Red_Yztarg             | Yztarg               | DB 269 (SIGHT+LOWHP+SCENT) -> wiki   1 (SIGHT           ) | wiki:Sight
+      https://www.bg-wiki.com/ffxi/Category%3AYztarg
+  116 Yztarg                 | Yztarg               | DB 269 (SIGHT+LOWHP+SCENT) -> wiki   1 (SIGHT           ) | wiki:Sight
+      https://www.bg-wiki.com/ffxi/Category%3AYztarg
+  330 Green_Zdei             | Zdei                 | DB   1 (SIGHT           ) -> wiki   0 (NONE            ) | wiki:true sight,
+      https://www.bg-wiki.com/ffxi/Category%3AZdei
+  331 Zdei                   | Zdei                 | DB   1 (SIGHT           ) -> wiki   0 (NONE            ) | wiki:true sight,
+      https://www.bg-wiki.com/ffxi/Category%3AZdei
+  238 Zilant                 | Zilant               | DB   2 (HEARING         ) -> wiki   0 (NONE            ) | wiki:true sight, true sound
+      https://www.bg-wiki.com/ffxi/Category%3AZilant
+
+=== SCRIPT OVERRIDES (verify in scripts/mixins, not auto-changed) ===
+  Imp
