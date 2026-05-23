@@ -1,11 +1,13 @@
 # PegasusXI vs LandSandBoat Audit Tooling
 
-Phase 1 of the broader retail/reference audit effort tracked in PRs #198/#199.
-This directory contains **read-only** tools that diff PegasusXI SQL dumps
-against upstream LandSandBoat `base` and produce CSV + Markdown reports
-describing every divergence in mob behavior, detection, and drops.
+Phase 1 (#200) of the broader retail/reference audit effort tracked in PRs
+#198/#199 added the SQL-diff harness. Phase 2 (this revision) layers in
+**reference-aware** lookups against BG Wiki, FFXIclopedia, and FFXIDB so each
+row of the divergence report can be triaged against retail/community data.
 
-**This PR does not change any mob data.** It only adds tooling.
+**This PR still does not change any mob data.** It only adds tooling, tests,
+and tiny fixture-driven sample outputs. Reports are review queues, not
+automatic patches.
 
 ---
 
@@ -64,6 +66,21 @@ python3 -m tools.audit pools --upstream-sql /path/to/LandSandBoat/server/sql
 
 # Deterministic dry-run for CI:
 python3 -m tools.audit self-check
+
+# Reference-aware (phase 2): add BG Wiki + FFXIclopedia detection columns.
+# Names-file scopes the live wiki lookups to a hand-picked subset.
+python3 -m tools.audit pools --with-refs --names-file mobs.txt
+
+# Reference-aware drops: pass --zone-map (LSB->FFXIDB) and a TODO output
+# path; rows whose mapping is missing land in the TODO file instead of
+# being silently skipped.
+python3 -m tools.audit drops --with-refs \
+    --zone-map tools/audit/zone_map.json \
+    --ffxidb-todo tools/audit/reports/ffxidb_todo.csv \
+    --names-file mobs.txt
+
+# Fully offline reference run (CI / hermetic): cache must be pre-populated.
+AUDIT_OFFLINE=1 python3 -m tools.audit pools --with-refs --no-fetch
 ```
 
 Tests:
@@ -128,30 +145,114 @@ rates MEDIUM-LOW (sample sizes, no TH controls).
 
 ---
 
-## Phase 2 (next, not in this PR)
+## Phase 2 (this revision)
 
-Hooks the current code is structured to accept:
+What landed in phase 2 — wired into the CLI behind `--with-refs`:
 
-1. **Reference fetchers** alongside `upstream.py`:
-   - `bgwiki.py` — pull per-mob wikitext via the BG Wiki MediaWiki API,
-     parse zone-table detection codes (`A`, `L`, `S`, `H`, `M`, `T`, …)
-     and family infoboxes.
-   - `ffxiclopedia.py` — same, against Fandom.
-   - `ffxidb.py` — scrape per-zone HTML pages for TH-stratified drop rates.
-2. **Reference-aware report columns**: extend `audit_mob_pools.py` to add
-   `bgwiki_detects`, `ffxiclopedia_detects`, `bgwiki_family`, etc.,
-   flagging rows where PegasusXI agrees with neither LSB nor retail
-   references.
-3. **Confidence scoring** per row: agreement among (PegasusXI, LSB, BG
-   Wiki, FFXIclopedia, FFXIDB) collapses to a small confidence bucket so
-   reviewers can triage the most ambiguous rows first.
-4. **Targeted patch generation**: only after reviewers have approved a
-   batch of corrections, emit a focused SQL migration scoped to that batch
-   — never a mass-update.
+### Reference fetchers (`tools/audit/refs/`)
 
-Nothing in this PR ships any retail-reference ingestion or any data
-mutation: all of that is deferred to phase 2 so it can be reviewed
-incrementally.
+- `http_client.py` — shared cached HTTP client. Cache layout is
+  `tools/audit/cache/refs/<source>/<sha1>.body` plus a sibling `.meta`
+  JSON. Includes timeout, per-source rate limit (default 1s), bounded
+  retries with exponential backoff, polite `User-Agent`, and an offline
+  mode (`allow_fetch=False` or `AUDIT_OFFLINE=1`) that turns any cache miss
+  into a clearly-labelled `OfflineCacheMiss` instead of going to the
+  network. CI uses offline mode.
+- `bgwiki.py` — pulls per-mob wikitext via the BG Wiki MediaWiki API
+  (`https://www.bg-wiki.com/ffxi/api.php`, `action=query&prop=revisions`).
+  HTML pages are Cloudflare-gated, but the API endpoint is open. Returns a
+  `WikiPage` with a `detection()` and `drop_rates()` helper.
+- `ffxiclopedia.py` — same shape, against Fandom
+  (`https://ffxiclopedia.fandom.com/api.php`). Uses its own cache namespace.
+- `ffxidb.py` — parses FFXIDB drop-table HTML
+  (`http://www.ffxidb.com/zones/{zone_id}/{mob_slug}`) using stdlib
+  `html.parser`. Includes a `slugify(name)` helper and a `ZoneMap` for the
+  LSB→FFXIDB zoneid mapping that does not exist mechanically. Any lookup
+  that can't be resolved (missing zone mapping, page returns no drop
+  table) is appended to a `--ffxidb-todo` CSV instead of silently
+  skipped.
+- `wikitext.py` — robust parser for detection note codes
+  (`A`, `L`, `S`, `H`, `M`, `HP`, `T`, `Sc`, plus full-word variants and
+  `WS`/`JA`/`Ability` for ability-class detection) and
+  `{{Drop Rate|drops|kills}}` templates. Returns a `DetectionParse` with
+  an explicit `confidence` field; if the input is ambiguous (meta flags
+  `A/L/TS/TH` only, no sense type) the bitmask comes back as `None`
+  rather than being silently downgraded to `DETECT_NONE`.
+- `confidence.py` — kill-count bucket thresholds
+  (`high>=500, medium>=50, low>0, else none`) and an agreement-bucket
+  helper for cross-source detection comparisons.
+
+### CLI
+
+- `python3 -m tools.audit pools --with-refs [--no-fetch] [--names-file FILE]`
+  adds `bgwiki_detects`, `bgwiki_confidence`, `bgwiki_url`,
+  `ffxiclopedia_detects`, `ffxiclopedia_confidence`,
+  `ffxiclopedia_url`, `ref_agreement`, `ref_headline_confidence` columns
+  to the pool CSV. The Markdown summary adds three columns
+  (`bgwiki_detects`, `ffxiclopedia_detects`, `ref_agreement`).
+- `python3 -m tools.audit drops --with-refs [--no-fetch] [--zone-map JSON] [--ffxidb-todo CSV] [--names-file FILE]`
+  adds `ffxidb_avg_pct`, `ffxidb_th0_pct`, `ffxidb_th1_pct`,
+  `ffxidb_th2_pct`, `ffxidb_th3_pct`, `ffxidb_kills`,
+  `ffxidb_confidence`, `ffxidb_url`, `bgwiki_drop_pct`, `bgwiki_kills`,
+  `bgwiki_confidence`, `bgwiki_url` columns.
+
+### Tests
+
+`tools/audit/tests/test_refs.py` — 19 new tests covering confidence
+buckets, detection cell parsing, wiki-link / template formatting,
+drop-rate template extraction, the HTTP client's cache + offline
+contract, BG Wiki / FFXIclopedia / FFXIDB client behavior against
+staged cache entries, FFXIDB slug rules, the zone-map TODO mechanism,
+and an end-to-end `audit pools --with-refs` run against the bundled
+fixtures. Network is **never** touched; the suite stays deterministic.
+
+### Sample reference-aware output
+
+`tools/audit/samples/mob_pools_divergence_refs.{csv,md}` and
+`tools/audit/samples/mob_droplist_divergence_refs.{csv,md}` are
+regenerated by `tools/audit/samples/generate_refs_sample.py` from the
+test fixtures (offline, hermetic). They illustrate what the
+`--with-refs` columns look like without requiring a live fetch.
+
+### Confidence scoring
+
+Each ref-aware row carries one or more confidence buckets:
+
+| Bucket | Meaning |
+| --- | --- |
+| `high` | Either ≥500 empirical kills (FFXIDB / wiki) **or** ≥3 independent sources agree on the same detection bitmask. |
+| `medium` | ≥50 empirical kills, or 2 sources agree. |
+| `low` | <50 kills, or only meta flags (`A`/`L`/`TS`/`TH`) without a sense type. |
+| `none` | No reference data available. |
+
+These mirror the methodology report
+(`pegasusxi-validation-plan.pplx.md`, section 6).
+
+## What still requires a human
+
+1. **LSB→FFXIDB zone mapping.** FFXIDB's zone IDs are its own; we don't
+   guess. Build the mapping incrementally and pass it via `--zone-map
+   path/to/zone_map.json` — entries you haven't filled in show up in the
+   `--ffxidb-todo` CSV. The shape of `zone_map.json` is `{"lsb_zoneid":
+   ffxidb_zoneid, ...}` (string keys, integer values).
+2. **Name normalisation.** PegasusXI mob names use underscores
+   (`Goblin_Tinkerer`); wikis use spaces. The CLI handles the obvious
+   `_ → space` swap, but apostrophes, accents, and " (Family)"
+   suffixes still vary across sources. Use `--names-file` to scope
+   lookups to a hand-curated subset until ergonomics improve.
+3. **Drop rate semantics.** LSB's `itemRate` is `0-1000` (i.e.
+   thousandths); FFXIDB reports percentages. Compare
+   `itemRate / 10 == ffxidb_th0_pct` as the canonical check. FFXIDB
+   averages bake in `groupRate`; wiki drop rates do not.
+4. **Data age.** FFXIDB freezes at the Feb 2015 patch. For any
+   post-2015 content (Adoulin, Rhapsodies, Ambuscade) FFXIDB will be
+   silent — fall back to the wikis.
+
+## Future phases
+
+- **Phase 3 (not in this PR).** Reviewer-driven small-batch SQL
+  migrations sourced from the reference-aware reports. Always
+  human-approved; never mass-update.
 
 ---
 
@@ -169,12 +270,29 @@ tools/audit/
 ├── audit_mob_pools.py     ← pool/species/detection audit
 ├── audit_drops.py         ← droplist audit
 ├── self_check.py          ← deterministic fixture-driven run
-├── samples/               ← committed sample outputs from self-check
+├── refs/                  ← phase 2: reference-data fetchers and parsers
+│   ├── http_client.py     ← cache + rate limit + retry + offline mode
+│   ├── bgwiki.py          ← BG Wiki MediaWiki API
+│   ├── ffxiclopedia.py    ← FFXIclopedia (Fandom) MediaWiki API
+│   ├── ffxidb.py          ← FFXIDB HTML drop tables + ZoneMap
+│   ├── wikitext.py        ← detection codes + Drop Rate templates
+│   ├── confidence.py      ← high/medium/low/none buckets
+│   └── aggregate.py       ← per-mob lookup helpers used by the audits
+├── samples/               ← committed sample outputs
+│   ├── mob_pools_divergence.{csv,md}
+│   ├── mob_droplist_divergence.{csv,md}
+│   ├── mob_pools_divergence_refs.{csv,md}      ← --with-refs sample
+│   ├── mob_droplist_divergence_refs.{csv,md}
+│   └── generate_refs_sample.py
 ├── cache/                 ← gitignored; populated on first live run
+│   ├── base/              ← upstream LSB SQL
+│   └── refs/<source>/     ← wiki / FFXIDB response cache
 ├── reports/               ← gitignored; default --output destination
 └── tests/
-    ├── test_audit.py
+    ├── test_audit.py      ← phase 1 tests
+    ├── test_refs.py       ← phase 2 tests (offline, fixture-driven)
     └── fixtures/
         ├── local/
-        └── upstream/
+        ├── upstream/
+        └── refs/{bgwiki,ffxiclopedia,ffxidb}/
 ```

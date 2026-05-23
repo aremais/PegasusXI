@@ -1,0 +1,12 @@
+{{Mobbox
+|Name=Goblin Tinkerer
+|Type=Notorious Monster
+|Family=Goblin
+|Detection=Sight, Sound
+|Aggressive=Yes
+|Linking=Yes
+}}
+
+== Drops ==
+* [[Goblin Mask]] {{Drop Rate|10|100}}
+* [[Bomb Arm]] {{Drop Rate|2|500}}
