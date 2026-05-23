@@ -1,0 +1,5 @@
+poolid,status,name_local,name_upstream,changes,local_detects,upstream_detects,local_speciesid,local_behavior,local_aggro,local_true_detection,local_links,local_mobType,local_immunity,local_flag,local_entityFlags,local_roamflag,local_spellList,local_skill_list_id,local_resist_id,upstream_speciesid,upstream_behavior,upstream_aggro,upstream_true_detection,upstream_links,upstream_mobType,upstream_immunity,upstream_flag,upstream_entityFlags,upstream_roamflag,upstream_spellList,upstream_skill_list_id,upstream_resist_id
+100,changed,Goblin_Tinkerer,Goblin_Tinkerer,"aggro,links",SIGHT|HEARING (0x03) [species 50],SIGHT|HEARING (0x03) [species 50],50,0,1,0,1,0,0,0,3,0,0,12,12,50,0,0,0,0,0,0,0,3,0,0,12,12
+101,changed,River_Crab,River_Crab,effective_detects,HEARING (0x02) [override (MOBMOD_DETECTION=2)],SIGHT (0x01) [species 60],60,0,0,0,0,0,0,0,0,0,0,5,5,60,0,0,0,0,0,0,0,0,0,0,5,5
+102,only_local,Local_Only_Mob,,(local-only pool),NONE (0x00) [species 70],,70,0,0,0,0,0,0,0,0,0,0,5,5,,,,,,,,,,,,,
+103,only_upstream,,Upstream_Only_Mob,(missing locally),,NONE (0x00) [species 80],,,,,,,,,,,,,,80,0,0,0,0,0,0,0,0,0,0,5,5
