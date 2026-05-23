@@ -9,8 +9,15 @@ in mob_species_system, the mob will fail to load or load with corrupt data.
 
 A previous commit (f8e943d7) introduced ~3600 corrupt speciesid values caused by
 a stale schema comment at the bottom of mob_pools.sql that still labelled the
-4th column as `familyid`. This script enforces that mob_pools.speciesid always
-references a valid speciesID and never a familyID.
+4th column as `familyid`. PR #198 reverted those rewrites; this script enforces
+that mob_pools.speciesid always references a valid speciesID and never a
+familyID, and that no pool falls back to the column default of 0.
+
+Any pool that needs to point at a species mob_species_system does not yet model
+must add that row to sql/mob_species_system.sql first, or be aliased onto an
+existing close-fit species (e.g. Mammet Trust onto species 483 Mammet). New
+placeholder rows with speciesid=0 are rejected so the loader's INNER JOIN never
+silently drops them.
 
 Exit code: 0 = ok, 1 = invalid references.
 """
@@ -58,6 +65,7 @@ def main() -> int:
 
     missing: list[tuple[int, str, int]] = []
     looks_like_family: list[tuple[int, str, int]] = []
+    zero: list[tuple[int, str]] = []
 
     for r in pool_rows:
         if len(r) < 4:
@@ -68,7 +76,10 @@ def main() -> int:
         except ValueError:
             continue
         name = r[1].strip("'")
-        if species_id not in species_ids:
+        if species_id == 0:
+            zero.append((pool_id, name))
+            missing.append((pool_id, name, species_id))
+        elif species_id not in species_ids:
             missing.append((pool_id, name, species_id))
             if species_id in family_ids:
                 looks_like_family.append((pool_id, name, species_id))
@@ -77,12 +88,18 @@ def main() -> int:
     print(f"mob_family_system  rows: {len(family_ids)}")
     print(f"mob_pools          rows: {len(pool_rows)}")
     print(f"pools with bad speciesid: {len(missing)}")
+    print(f"  ... with speciesid=0 (column default — never valid): {len(zero)}")
     print(f"  ... of those, speciesid value matches a familyID (schema-confusion symptom): {len(looks_like_family)}")
 
     if missing:
         print("\nFirst 20 invalid references:")
         for pid, name, sid in missing[:20]:
-            tag = " (matches familyID)" if (pid, name, sid) in looks_like_family else ""
+            if (pid, name) in zero:
+                tag = " (zero default)"
+            elif (pid, name, sid) in looks_like_family:
+                tag = " (matches familyID)"
+            else:
+                tag = ""
             print(f"  pool {pid:>5} {name!r:30} speciesid={sid}{tag}")
         return 1
     print("\nOK: every mob_pools.speciesid resolves to a real mob_species_system.speciesID")
