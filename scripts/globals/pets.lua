@@ -198,7 +198,7 @@ xi.pet.setMobPet = function(mob, offset, petName)
         return
     end
 
-    local pet = GetMobByID(mob:getID() + offset)
+    local pet = GetEntityByID(mob:getID() + offset, nil, true)
     if not pet or pet:getName() ~= petName then
         return
     end

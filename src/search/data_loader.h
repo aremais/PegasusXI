@@ -23,6 +23,7 @@
 #define _CDATALOADER_H_
 
 #include "common/cbasetypes.h"
+#include "common/scheduler.h"
 
 #include <list>
 #include <stdio.h>
@@ -95,8 +96,11 @@ public:
     std::list<SearchEntity*> GetPlayersList(search_req sr, int* count);
     std::string              GetSearchComment(uint32 playerId);
     std::vector<ahItem*>     GetAHItemsToCategory(uint8 ahCategoryID, const std::string& orderByString);
+    auto                     GetAHItemsToCategoryAsync(Scheduler& scheduler, uint8 ahCategoryID, const std::string& orderByString) -> Task<std::vector<ahItem*>>;
     ahItem                   GetAHItemFromItemID(uint16 ItemID);
+    auto                     GetAHItemHistoryAsync(Scheduler& scheduler, uint16 ItemID, bool stack) -> Task<std::pair<std::vector<ahHistory*>, ahItem>>;
     void                     ExpireAHItems(uint16 expireAgeInDays);
+    void                     InvalidateAHCategoryCache();
 };
 
 #endif

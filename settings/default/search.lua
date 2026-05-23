@@ -37,4 +37,9 @@ xi.settings.search =
     -- true/false: Enable/disable logging the content of packets being sent to the client (required Debug mode)
     DEBUG_OUT_PACKETS = false,
 
+    -- Cache AH category browse results in memory to avoid repeating heavy GROUP BY queries.
+    -- TTL is short so listing counts stay reasonably fresh without map-server invalidation.
+    AH_CACHE_ENABLED     = true,
+    AH_CACHE_TTL_SECONDS = 45,
+
 }
