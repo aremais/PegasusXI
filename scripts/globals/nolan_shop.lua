@@ -45,7 +45,25 @@ local function buyEschalixir(player, exchange)
     end
 end
 
-local function openEschalixirMenu(player)
+xi.nolanShop.onTrade = function(player, npc, trade)
+    if
+        trade:getItemCount() == 1 and
+        (
+            trade:hasItemQty(xi.item.ESCHALIXIR, 1) or
+            trade:hasItemQty(xi.item.ESCHALIXIR_P1, 1) or
+            trade:hasItemQty(xi.item.ESCHALIXIR_P2, 1)
+        )
+    then
+        player:printToPlayer('Nolan recognizes the Eschalixir.', xi.msg.channel.NS_SAY)
+        player:printToPlayer('Mezzotinting is not ready yet.', xi.msg.channel.NS_SAY)
+        player:printToPlayer('No items were consumed.', xi.msg.channel.NS_SAY)
+    end
+end
+
+xi.nolanShop.onTrigger = function(player, npc)
+    player:printToPlayer('Another customer. Joy.', xi.msg.channel.NS_SAY)
+    player:printToPlayer('Trade eligible Escha equipment for mezzotinting.', xi.msg.channel.NS_SAY)
+
     showPrices(player)
 
     local menu =
@@ -70,55 +88,6 @@ local function openEschalixirMenu(player)
         function(_)
         end,
     })
-
-    player:customMenu(menu)
-end
-
-xi.nolanShop.onTrade = function(player, npc, trade)
-    if
-        trade:getItemCount() == 1 and
-        (
-            trade:hasItemQty(xi.item.ESCHALIXIR, 1) or
-            trade:hasItemQty(xi.item.ESCHALIXIR_P1, 1) or
-            trade:hasItemQty(xi.item.ESCHALIXIR_P2, 1)
-        )
-    then
-        player:printToPlayer('Nolan recognizes the Eschalixir.', xi.msg.channel.NS_SAY)
-        player:printToPlayer('Mezzotinting is not ready yet.', xi.msg.channel.NS_SAY)
-        player:printToPlayer('No items were consumed.', xi.msg.channel.NS_SAY)
-    end
-end
-
-xi.nolanShop.onTrigger = function(player, npc)
-    player:printToPlayer('Another customer. Joy.', xi.msg.channel.NS_SAY)
-
-    local menu =
-    {
-        title = 'Nolan',
-        options =
-        {
-            {
-                'Mezzotinting',
-                function(p)
-                    p:printToPlayer('Trade eligible Escha equipment to begin.', xi.msg.channel.NS_SAY)
-                    p:printToPlayer('Mezzotinting is not ready yet.', xi.msg.channel.NS_SAY)
-                end,
-            },
-
-            {
-                'Buy Eschalixirs',
-                function(p)
-                    openEschalixirMenu(p)
-                end,
-            },
-
-            {
-                'Cancel',
-                function(_)
-                end,
-            },
-        },
-    }
 
     player:customMenu(menu)
 end
