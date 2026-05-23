@@ -136,7 +136,7 @@ auto SearchHandler::run() -> Task<void>
                 std::memcpy(buffer_.data(), receiveStream_.data(), expectedLength);
                 receiveStream_.erase(receiveStream_.begin(), receiveStream_.begin() + expectedLength);
 
-                read_func(expectedLength);
+                co_await read_func(expectedLength);
             }
 
             while (!searchPackets_.empty())
@@ -267,12 +267,12 @@ inline std::string searchTypeToString(uint8 type)
     }
 }
 
-void SearchHandler::read_func(uint16_t length)
+auto SearchHandler::read_func(uint16_t length) -> Task<void>
 {
     if (length != ref<uint16>(buffer_.data(), 0x00) || length < 28)
     {
         ShowErrorFmt("Search packetsize wrong. Size {} should be {}.", length, ref<uint16>(buffer_.data(), 0x00));
-        return;
+        co_return;
     }
 
     decrypt(length);
@@ -316,13 +316,13 @@ void SearchHandler::read_func(uint16_t length)
             {
                 // MORE reuses the same payload layout but does not carry sort params at 0x12 (see below).
                 // Ignoring MORE leaves the client waiting for a reply and stalls the AH session.
-                HandleAuctionHouseRequest();
+                co_await HandleAuctionHouseRequest();
             }
             break;
             case TCP_AH_HISTORY_SINGLE:
             case TCP_AH_HISTORY_STACK:
             {
-                HandleAuctionHouseHistory();
+                co_await HandleAuctionHouseHistory();
             }
             break;
             default:
@@ -500,7 +500,7 @@ void SearchHandler::HandleSearchRequest()
     } while (currentResult < totalResults);
 }
 
-void SearchHandler::HandleAuctionHouseRequest()
+auto SearchHandler::HandleAuctionHouseRequest() -> Task<void>
 {
     uint8 AHCatID = ref<uint8>(buffer_.data(), 0x16);
 
@@ -566,8 +566,8 @@ void SearchHandler::HandleAuctionHouseRequest()
     OrderByString.append(" ah.itemid");
     const char* OrderByArray = OrderByString.data();
 
-    CDataLoader          PDataLoader;
-    std::vector<ahItem*> ItemList = PDataLoader.GetAHItemsToCategory(AHCatID, OrderByArray);
+    CDataLoader PDataLoader;
+    std::vector<ahItem*> ItemList = co_await PDataLoader.GetAHItemsToCategoryAsync(scheduler_, AHCatID, OrderByArray);
 
     const std::size_t nItems = ItemList.size();
     const std::size_t PacketsCount =
@@ -593,14 +593,13 @@ void SearchHandler::HandleAuctionHouseRequest()
     }
 }
 
-void SearchHandler::HandleAuctionHouseHistory()
+auto SearchHandler::HandleAuctionHouseHistory() -> Task<void>
 {
     uint16 ItemID = ref<uint16>(buffer_.data(), 0x12);
     uint8  stack  = ref<uint8>(buffer_.data(), 0x15);
 
-    CDataLoader             PDataLoader;
-    std::vector<ahHistory*> HistoryList = PDataLoader.GetAHItemHistory(ItemID, stack != 0);
-    ahItem                  item        = PDataLoader.GetAHItemFromItemID(ItemID);
+    CDataLoader PDataLoader;
+    auto [HistoryList, item] = co_await PDataLoader.GetAHItemHistoryAsync(scheduler_, ItemID, stack != 0);
 
     CAHHistoryPacket PAHPacket = CAHHistoryPacket(item, stack);
 
