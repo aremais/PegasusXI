@@ -7,7 +7,6 @@
 -- Custom changes: No Sagheera interaction required, no Limbus access
 -- required, no Vagary items required for Empyrean reforge.
 -----------------------------------
-local ID = zones[xi.zone.PORT_JEUNO]
 -----------------------------------
 ---@type TNpcEntity
 local entity = {}
