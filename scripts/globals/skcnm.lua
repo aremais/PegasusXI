@@ -167,11 +167,11 @@ end
 
 local difficultyLabels =
 {
-    [0] = '★     Very Easy',
-    [1] = '★★    Easy',
-    [2] = '★★★   Normal',
-    [3] = '★★★★  Difficult',
-    [4] = '★★★★★ Very Difficult',
+    [0] = 'Very Easy',
+    [1] = 'Easy',
+    [2] = 'Normal',
+    [3] = 'Difficult',
+    [4] = 'Very Difficult',
 }
 
 local difficultyShortNames =
@@ -190,6 +190,14 @@ local function showPreEntryDiffMenu(player, battlefield)
     local function onChosen(p, diffIndex)
         battlefield:setLocalVar('SKCNM_Difficulty', diffIndex)
         applyDiffScaling(battlefield, diffIndex)
+
+        -- Fire the orb wear message that was deferred from onBattlefieldEnter
+        local wearMsgId = battlefield:getLocalVar('SKCNM_WearMsg')
+        local wearItem  = battlefield:getLocalVar('SKCNM_WearItem')
+
+        if wearMsgId ~= 0 then
+            p:messageSpecial(wearMsgId, 0, 0, 0, wearItem)
+        end
 
         local chosen  = difficultyShortNames[diffIndex]
         local players = battlefield:getPlayers()
@@ -236,6 +244,34 @@ function SKCNMBattlefield:new(data)
     local obj = Battlefield:new(data)
     setmetatable(obj, self)
     return obj
+end
+
+-- Suppress the orb wear message (e.g. "A crack has formed...") that the base
+-- class normally fires here.  Instead we call incrementItemWear ourselves and
+-- store the message ID on the battlefield so it can be shown AFTER the player
+-- picks a difficulty in onEventFinishEnter.  This keeps the message order:
+--   Select Difficulty → "A crack has formed..." → warp into battle.
+function SKCNMBattlefield:onBattlefieldEnter(player, battlefield)
+    local initiatorId = select(1, battlefield:getInitiator())
+
+    if player:getID() == initiatorId and self.requiredItems.wearMessage then
+        local savedMsg = self.requiredItems.wearMessage
+        local itemId   = self.requiredItems[1]
+
+        -- Remove wearMessage so the base class skips the message block entirely
+        self.requiredItems.wearMessage = nil
+        Battlefield.onBattlefieldEnter(self, player, battlefield)
+        self.requiredItems.wearMessage = savedMsg
+
+        -- Wear the item manually (base class skipped it along with the message)
+        player:incrementItemWear(itemId)
+
+        -- Store for showPreEntryDiffMenu to use in the callback
+        battlefield:setLocalVar('SKCNM_WearMsg',  savedMsg)
+        battlefield:setLocalVar('SKCNM_WearItem', itemId)
+    else
+        Battlefield.onBattlefieldEnter(self, player, battlefield)
+    end
 end
 
 -- Override the post-fight-selection hook so we can show the difficulty menu
