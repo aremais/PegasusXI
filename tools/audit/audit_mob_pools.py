@@ -139,12 +139,75 @@ def _detects_str(state: PoolState, pid: int) -> str:
     return f"{decode_detects(v)} [{src}]" if v is not None else f"[{src}]"
 
 
-def run(local_sql_dir: Path, upstream_sql_dir: Path, output_dir: Path, *, limit: int | None = None) -> dict[str, Path]:
+REF_FIELDS = [
+    "bgwiki_detects", "bgwiki_confidence", "bgwiki_url",
+    "ffxiclopedia_detects", "ffxiclopedia_confidence", "ffxiclopedia_url",
+    "ref_agreement", "ref_headline_confidence",
+]
+
+
+def _attach_refs(
+    diffs: list[dict[str, Any]],
+    *,
+    bgwiki_client,
+    ffxiclopedia_client,
+    names_filter: set[str] | None,
+) -> None:
+    """In-place enrich pool diffs with BG Wiki / FFXIclopedia detection columns.
+
+    If ``names_filter`` is provided, only mobs whose ``name_local`` or
+    ``name_upstream`` are in the filter are looked up; others receive empty
+    columns (so the CSV header stays stable).
+    """
+    from .refs.aggregate import lookup_detection
+    for d in diffs:
+        for f in REF_FIELDS:
+            d.setdefault(f, "")
+        mob = d.get("name_local") or d.get("name_upstream")
+        if not mob:
+            continue
+        if names_filter is not None and mob not in names_filter:
+            continue
+        # Wiki pages use spaces, not underscores.
+        wiki_title = mob.replace("_", " ")
+        ref = lookup_detection(
+            wiki_title,
+            bgwiki=bgwiki_client,
+            ffxiclopedia=ffxiclopedia_client,
+        )
+        d["bgwiki_detects"] = ref.bgwiki_decoded
+        d["bgwiki_confidence"] = ref.bgwiki_confidence
+        d["bgwiki_url"] = ref.bgwiki_url
+        d["ffxiclopedia_detects"] = ref.ffxiclopedia_decoded
+        d["ffxiclopedia_confidence"] = ref.ffxiclopedia_confidence
+        d["ffxiclopedia_url"] = ref.ffxiclopedia_url
+        d["ref_agreement"] = ref.agreement
+        d["ref_headline_confidence"] = ref.headline_confidence()
+
+
+def run(
+    local_sql_dir: Path,
+    upstream_sql_dir: Path,
+    output_dir: Path,
+    *,
+    limit: int | None = None,
+    with_refs: bool = False,
+    bgwiki_client=None,
+    ffxiclopedia_client=None,
+    names_filter: set[str] | None = None,
+) -> dict[str, Path]:
     local = PoolState.load(local_sql_dir)
     upstream = PoolState.load(upstream_sql_dir)
     diffs = compare(local, upstream)
     if limit is not None:
         diffs = diffs[:limit]
+    if with_refs:
+        _attach_refs(
+            diffs,
+            bgwiki_client=bgwiki_client,
+            ffxiclopedia_client=ffxiclopedia_client,
+            names_filter=names_filter,
+        )
     output_dir.mkdir(parents=True, exist_ok=True)
     csv_header = [
         "poolid", "status", "name_local", "name_upstream", "changes",
@@ -152,15 +215,20 @@ def run(local_sql_dir: Path, upstream_sql_dir: Path, output_dir: Path, *, limit:
         *[f"local_{f}" for f in POOL_BEHAVIOR_FIELDS],
         *[f"upstream_{f}" for f in POOL_BEHAVIOR_FIELDS],
     ]
-    csv_rows = [[d[h] for h in csv_header] for d in diffs]
+    if with_refs:
+        csv_header += REF_FIELDS
+    csv_rows = [[d.get(h, "") for h in csv_header] for d in diffs]
     csv_path = output_dir / "mob_pools_divergence.csv"
     write_csv(csv_path, csv_header, csv_rows)
 
     md_path = output_dir / "mob_pools_divergence.md"
     summary_header = ["poolid", "name", "status", "changes", "local_detects", "upstream_detects"]
+    if with_refs:
+        summary_header += ["bgwiki_detects", "ffxiclopedia_detects", "ref_agreement"]
     summary_rows = [
         [d["poolid"], d["name_local"] or d["name_upstream"], d["status"],
-         d["changes"], d["local_detects"], d["upstream_detects"]]
+         d["changes"], d["local_detects"], d["upstream_detects"],
+         *([d.get("bgwiki_detects", ""), d.get("ffxiclopedia_detects", ""), d.get("ref_agreement", "")] if with_refs else [])]
         for d in diffs
     ]
     counts_header = ["status", "count"]
@@ -187,6 +255,10 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--output", type=Path, default=Path("tools/audit/reports"))
     p.add_argument("--no-fetch", action="store_true", help="Require cached upstream files; fail if missing.")
     p.add_argument("--limit", type=int, default=None)
+    p.add_argument("--with-refs", action="store_true",
+                   help="Enrich rows with BG Wiki / FFXIclopedia detection lookups.")
+    p.add_argument("--names-file", type=Path, default=None,
+                   help="Restrict reference lookups to mob names listed in this file (one per line).")
     args = p.parse_args(argv)
 
     if args.upstream_sql is None:
@@ -196,7 +268,26 @@ def main(argv: list[str] | None = None) -> int:
     else:
         upstream_dir = args.upstream_sql
 
-    res = run(args.local_sql, upstream_dir, args.output, limit=args.limit)
+    bgwiki_client = None
+    ffxiclopedia_client = None
+    names_filter: set[str] | None = None
+    if args.with_refs:
+        from .refs.bgwiki import BGWikiClient
+        from .refs.ffxiclopedia import FFXIclopediaClient
+        bgwiki_client = BGWikiClient(allow_fetch=not args.no_fetch)
+        ffxiclopedia_client = FFXIclopediaClient(allow_fetch=not args.no_fetch)
+        if args.names_file is not None:
+            from .refs.aggregate import names_from_file
+            names_filter = set(names_from_file(str(args.names_file)))
+
+    res = run(
+        args.local_sql, upstream_dir, args.output,
+        limit=args.limit,
+        with_refs=args.with_refs,
+        bgwiki_client=bgwiki_client,
+        ffxiclopedia_client=ffxiclopedia_client,
+        names_filter=names_filter,
+    )
     print(f"Wrote {res['csv']} and {res['md']} ({res['count']} divergent rows)")
     return 0
 

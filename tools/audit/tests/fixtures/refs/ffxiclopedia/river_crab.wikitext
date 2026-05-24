@@ -1,0 +1,3 @@
+River Crab is a basic crab.
+
+Detection: [[Sight|S]], [[Sound|H]]

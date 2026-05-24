@@ -1,0 +1,8 @@
+{{Mobbox
+|Name=River Crab
+|Family=Crab
+}}
+
+Detection: S, H
+
+Drops bronze ingots at {{Drop Rate|123|456}}.
