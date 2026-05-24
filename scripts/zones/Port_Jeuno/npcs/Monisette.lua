@@ -7,7 +7,6 @@
 -- Custom changes: No Sagheera interaction required, no Limbus access
 -- required, no Vagary items required for Empyrean reforge.
 -----------------------------------
-local ID = zones[xi.zone.PORT_JEUNO]
 -----------------------------------
 ---@type TNpcEntity
 local entity = {}
@@ -1493,7 +1492,7 @@ entity.onTrade = function(player, npc, trade)
     if isRemsTaleOnlyTrade(trade) then
         if depositRemsTales(player, trade) then
             player:confirmTrade()
-            player:messageSpecial(ID.text.ITEM_OBTAINED, xi.item.COPY_OF_REMS_TALE_CHAPTER_1) -- generic confirmation
+            player:printToPlayer('I will keep your Rem\'s Tales safe. Come back for them whenever you like!', xi.msg.channel.SAY, npc:getName())
         end
 
         return
@@ -1502,6 +1501,8 @@ entity.onTrade = function(player, npc, trade)
     -- Armor upgrade trades
     for _, entry in pairs(allUpgrades) do
         if npcUtil.tradeHasExactly(trade, entry.trade) then
+            player:printToPlayer('Splendid! These materials are exactly what I need. Your armor has been reforged!', xi.msg.channel.SAY, npc:getName())
+
             if npcUtil.giveItem(player, entry.reward) then
                 player:confirmTrade()
             end
@@ -1509,6 +1510,9 @@ entity.onTrade = function(player, npc, trade)
             return
         end
     end
+
+    -- No matching trade found — items are automatically returned to the player
+    player:printToPlayer("Hmm... I'm afraid these materials don't match any reforge I can perform. Please check that you have all of the correct items.", xi.msg.channel.SAY, npc:getName())
 end
 
 -----------------------------------
