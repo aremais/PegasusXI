@@ -1,5 +1,5 @@
 -----------------------------------
--- Trust: Star Sibyl
+-- Trust: Cornelia
 -----------------------------------
 ---@type TSpellTrust
 local spellObject = {}
@@ -13,13 +13,7 @@ spellObject.onSpellCast = function(caster, target, spell)
 end
 
 spellObject.onMobSpawn = function(mob)
-    xi.trust.teamworkMessage(mob, {
-        [xi.magic.spell.AJIDO_MARUJIDO] = xi.trust.messageOffset.TEAMWORK_1,
-        [xi.magic.spell.SHANTOTTO] = xi.trust.messageOffset.TEAMWORK_2,
-        [xi.magic.spell.KUPIPI] = xi.trust.messageOffset.TEAMWORK_3,
-        [xi.magic.spell.KARAHA_BARUHA] = xi.trust.messageOffset.TEAMWORK_4,
-        [xi.magic.spell.SEMIH_LAFIHNA] = xi.trust.messageOffset.TEAMWORK_5,
-    })
+    xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
     mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.NON_COMBAT)
 
@@ -30,16 +24,16 @@ spellObject.onMobSpawn = function(mob)
         power = 6,
         origin = mob,
         tick = 3,
-        subType = xi.effect.TRUST_AURA_MAGIC_ATTACK,
+        subType = xi.effect.TRUST_AURA_HASTE,
         subPower = mob:getMainLvl(),
-        subIcon = xi.effect.GEO_MAGIC_ATK_BOOST,
+        subIcon = xi.effect.GEO_HASTE,
         tier = xi.auraTarget.ALLIES,
         flag = xi.effectFlag.AURA
     }
 
     mob:addStatusEffect(xi.effect.COLURE_ACTIVE, effectParams)
 
-    mob:addGambit(ai.t.SELF, { { ai.c.TIMER, 5 }, { ai.c.RANDOM, 45 } }, { ai.r.ANIM_STRING, ai.s.RANDOM_ANIMATION, 3 })
+    mob:addGambit(ai.t.SELF, { { ai.c.TIMER, 5 }, { ai.c.RANDOM, 45 } }, { ai.r.ANIM_STRING, ai.s.RANDOM_ANIMATION, 4 })
 
     mob:setAutoAttackEnabled(false)
 end
