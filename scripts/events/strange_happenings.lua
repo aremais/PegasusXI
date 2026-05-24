@@ -66,7 +66,7 @@ xi.events.strangeHappenings.onMobDeath = function(mob)
         return
     end
 
-    local chest = GetNPCByID(enc.chest)
+    local chest = GetEntityByID(enc.chest, nil, true)
     if not chest then
         return
     end
@@ -146,7 +146,7 @@ event:setEndFunction(function()
         end
 
         if enc.chest then
-            local chest = GetNPCByID(enc.chest)
+            local chest = GetEntityByID(enc.chest, nil, true)
             if chest and chest:getStatus() == xi.status.NORMAL then
                 removeChest(chest)
             end
