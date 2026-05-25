@@ -908,6 +908,28 @@ end
 function CBaseEntity:setHomePoint()
 end
 
+---@param voucherId integer
+---@return nil
+function CBaseEntity:learnMazeVoucher(voucherId)
+end
+
+---@nodiscard
+---@param voucherId integer
+---@return boolean
+function CBaseEntity:hasMazeVoucher(voucherId)
+end
+
+---@param runeId integer
+---@return nil
+function CBaseEntity:learnMazeRune(runeId)
+end
+
+---@nodiscard
+---@param runeId integer
+---@return boolean
+function CBaseEntity:hasMazeRune(runeId)
+end
+
 ---@param charName string
 ---@return nil
 function CBaseEntity:resetPlayer(charName)
@@ -2874,6 +2896,7 @@ end
 ---@field icon xi.effect? Defaults to effectId if not set
 ---@field subType integer?
 ---@field subPower number?
+---@field subIcon? xi.effect? Defaults to effectId if not set
 ---@field tier integer?
 ---@field flag xi.effectFlag?
 ---@field sourceType xi.effectSourceType?
@@ -3645,18 +3668,30 @@ function CBaseEntity:setMobLevel(level, recover)
 end
 
 ---@nodiscard
+---@param statType integer
+---@return integer
+function CBaseEntity:getStatRank(statType)
+end
+
+---@param statType integer
+---@param rank integer
+---@return nil
+function CBaseEntity:setStatRank(statType, rank)
+end
+
+---@nodiscard
 ---@return integer
 function CBaseEntity:getEcosystem()
 end
 
 ---@nodiscard
 ---@return integer
-function CBaseEntity:getSuperFamily()
+function CBaseEntity:getFamily()
 end
 
 ---@nodiscard
 ---@return integer
-function CBaseEntity:getFamily()
+function CBaseEntity:getSpecies()
 end
 
 ---@nodiscard

@@ -309,6 +309,7 @@ void init(IPP mapIPP, bool isRunningInCI)
         return sol::lua_nil;
     });
     lua.set_function("GetNPCByID", &luautils::GetNPCByID);
+    lua.set_function("FindNPCsByName", &luautils::FindNPCsByName);
     lua.set_function("GetMobByID", &luautils::GetMobByID);
     lua.set_function("GetEntityByID", &luautils::GetEntityByID);
     lua.set_function("WeekUpdateConquest", &luautils::WeekUpdateConquest);
@@ -327,6 +328,10 @@ void init(IPP mapIPP, bool isRunningInCI)
     lua.set_function("SendToJailOffline", &luautils::SendToJailOffline);
     lua.set_function("DrawIn", &luautils::DrawIn);
     lua.set_function("GetSystemTime", &luautils::GetSystemTime);
+    lua.set_function("LoadLinkshellConciergeSlots", &luautils::LoadLinkshellConciergeSlots);
+    lua.set_function("SetLinkshellConciergeSlot", &luautils::SetLinkshellConciergeSlot);
+    lua.set_function("DeleteLinkshellConciergeSlot", &luautils::DeleteLinkshellConciergeSlot);
+    lua.set_function("DecrementLinkshellConciergeMembersGoal", &luautils::DecrementLinkshellConciergeMembersGoal);
     lua.set_function("JstMidnight", &luautils::JstMidnight);
     lua.set_function("JstDayOfTheYear", &luautils::JstDayOfTheYear);
     lua.set_function("JstDayOfTheMonth", &luautils::JstDayOfTheMonth);
@@ -1375,6 +1380,59 @@ CBaseEntity* GetNPCByID(uint32 npcid, const sol::object& instanceObj)
     return PNpc;
 }
 
+auto FindNPCsByName(const std::string& pattern) -> sol::table
+{
+    TracyZoneScoped;
+
+    sol::table results = lua.create_table();
+
+    if (pattern.empty())
+    {
+        return results;
+    }
+
+    std::string likePattern = pattern;
+    if (likePattern.find('%') == std::string::npos)
+    {
+        likePattern = "%" + likePattern + "%";
+    }
+
+    const auto query =
+        "SELECT npc_list.npcid, npc_list.name, npc_list.polutils_name, "
+        "npc_list.pos_x, npc_list.pos_y, npc_list.pos_z, npc_list.pos_rot, "
+        "zone_settings.name AS zone_name, ((npc_list.npcid >> 12) & 0xFFF) AS zoneid "
+        "FROM npc_list "
+        "INNER JOIN zone_settings ON ((npc_list.npcid >> 12) & 0xFFF) = zone_settings.zoneid "
+        "WHERE (UPPER(npc_list.name) LIKE UPPER(?) OR UPPER(npc_list.polutils_name) LIKE UPPER(?)) "
+        "AND npc_list.name != 'blank' "
+        "AND NOT (npc_list.pos_x = 0 AND npc_list.pos_y = 0 AND npc_list.pos_z = 0) "
+        "ORDER BY zoneid, npc_list.npcid "
+        "LIMIT 30";
+
+    const auto rset = db::preparedStmt(query, likePattern, likePattern);
+    if (!rset || rset->rowsCount() == 0)
+    {
+        return results;
+    }
+
+    int index = 1;
+    while (rset->next())
+    {
+        sol::table entry   = lua.create_table();
+        entry["npcid"]     = rset->get<uint32>("npcid");
+        entry["name"]      = rset->get<std::string>("name");
+        entry["zoneName"]  = rset->get<std::string>("zone_name");
+        entry["zoneId"]    = rset->get<uint16>("zoneid");
+        entry["x"]         = rset->get<float>("pos_x");
+        entry["y"]         = rset->get<float>("pos_y");
+        entry["z"]         = rset->get<float>("pos_z");
+        entry["rot"]       = rset->get<uint8>("pos_rot");
+        results[index++]   = entry;
+    }
+
+    return results;
+}
+
 void InitInteractionGlobal()
 {
     auto       initZones   = lua["InteractionGlobal"]["initZones"];
@@ -1670,6 +1728,98 @@ uint32 GetSystemTime()
 {
     TracyZoneScoped;
     return earth_time::timestamp();
+}
+
+auto LoadLinkshellConciergeSlots(uint16 zoneId) -> sol::table
+{
+    TracyZoneScoped;
+
+    sol::table result = lua.create_table();
+    const auto rset   = db::preparedStmt("SELECT lc.slot_index, lc.linkshellid, lc.owner_char_id, lc.group_key, lc.flag, "
+                                         "lc.lang, lc.members_goal, lc.active_tier, lc.characteristics, "
+                                         "lc.tz, lc.days, lc.times, lc.posted_date, ls.name, ls.color "
+                                         "FROM linkshell_concierge lc "
+                                         "JOIN linkshells ls ON ls.linkshellid = lc.linkshellid "
+                                         "WHERE lc.zone_id = ? AND ls.broken = 0",
+                                       zoneId);
+    if (!rset)
+    {
+        return result;
+    }
+
+    while (rset->next())
+    {
+        sol::table row         = lua.create_table();
+        row["slotIndex"]       = rset->get<uint8>("slot_index");
+        row["linkshellid"]     = rset->get<uint32>("linkshellid");
+        row["ownerCharId"]     = rset->get<uint32>("owner_char_id");
+        row["groupKey"]        = rset->get<uint16>("group_key");
+        row["flag"]            = rset->get<uint8>("flag");
+        row["lang"]            = rset->get<uint8>("lang");
+        row["membersGoal"]     = rset->get<uint8>("members_goal");
+        row["activeTier"]      = rset->get<uint8>("active_tier");
+        row["characteristics"] = rset->get<uint16>("characteristics");
+        row["tz"]              = rset->get<uint8>("tz");
+        row["days"]            = rset->get<uint8>("days");
+        row["times"]           = rset->get<uint32>("times");
+        row["postedDate"]      = rset->get<uint32>("posted_date");
+        row["name"]            = rset->get<std::string>("name");
+        row["color"]           = rset->get<uint16>("color");
+        result.add(row);
+    }
+
+    return result;
+}
+
+void SetLinkshellConciergeSlot(uint16 zoneId, uint8 slotIndex, const sol::table& data)
+{
+    TracyZoneScoped;
+
+    db::preparedStmt("REPLACE INTO linkshell_concierge SET "
+                     "zone_id = ?, slot_index = ?, linkshellid = ?, owner_char_id = ?, group_key = ?, "
+                     "flag = ?, lang = ?, members_goal = ?, active_tier = ?, "
+                     "characteristics = ?, tz = ?, days = ?, times = ?, posted_date = ?",
+                     zoneId,
+                     slotIndex,
+                     data.get_or<uint32>("linkshellid", 0),
+                     data.get_or<uint32>("ownerCharId", 0),
+                     data.get_or<uint16>("groupKey", 0),
+                     data.get_or<uint8>("flag", 0),
+                     data.get_or<uint8>("lang", 0),
+                     data.get_or<uint8>("membersGoal", 0),
+                     data.get_or<uint8>("activeTier", 0),
+                     data.get_or<uint16>("characteristics", 0),
+                     data.get_or<uint8>("tz", 0),
+                     data.get_or<uint8>("days", 0),
+                     data.get_or<uint32>("times", 0),
+                     data.get_or<uint32>("postedDate", 0));
+}
+
+void DeleteLinkshellConciergeSlot(uint16 zoneId, uint8 slotIndex)
+{
+    TracyZoneScoped;
+
+    db::preparedStmt("DELETE FROM linkshell_concierge WHERE zone_id = ? AND slot_index = ?", zoneId, slotIndex);
+}
+
+void DecrementLinkshellConciergeMembersGoal(uint16 zoneId, uint32 linkshellid)
+{
+    TracyZoneScoped;
+
+    db::preparedStmt("UPDATE linkshell_concierge "
+                     "SET members_goal = members_goal - 1 "
+                     "WHERE zone_id = ? "
+                     "AND linkshellid = ? "
+                     "AND members_goal > 0",
+                     zoneId,
+                     linkshellid);
+
+    db::preparedStmt("DELETE FROM linkshell_concierge "
+                     "WHERE zone_id = ? "
+                     "AND linkshellid  = ? "
+                     "AND members_goal = 0",
+                     zoneId,
+                     linkshellid);
 }
 
 /************************************************************************
@@ -2125,6 +2275,8 @@ void OnZoneIn(CCharEntity* PChar)
         return;
     }
 
+    PChar->m_zoneInCutscene = false;
+
     CZone*      prevZone    = zoneutils::GetZone(PChar->loc.prevzone);
     std::string prevZoneStr = "Unknown";
     if (prevZone)
@@ -2160,6 +2312,14 @@ void OnZoneIn(CCharEntity* PChar)
     else if (result.get_type() == sol::type::number)
     {
         PChar->currentEvent->eventId = result.get<int32>();
+    }
+
+    // On zone-in events
+    if (PChar->currentEvent->eventId >= 0)
+    {
+        PChar->currentEvent->type = CUTSCENE;
+        PChar->m_zoneInCutscene   = true;
+        PChar->setLocked(true);
     }
 }
 

@@ -1879,13 +1879,12 @@ void CStatusEffectContainer::HandleAura(CStatusEffect* PStatusEffect)
 
     CBattleEntity* PEntity    = m_POwner;
     AURA_TARGET    auraTarget = static_cast<AURA_TARGET>(PStatusEffect->GetTier());
+    float          aura_range = 6.0f + (PEntity->getMod(Mod::AURA_SIZE) / 100.0f); // Adding to this mod should be the value you want * 100
 
     if (PEntity->objtype == TYPE_PET || PEntity->objtype == TYPE_TRUST)
     {
         PEntity = PEntity->PMaster;
     }
-
-    float aura_range = 6.0f + (PEntity->getMod(Mod::AURA_SIZE) / 100.0f); // Adding to this mod should be the value you want * 100
 
     if (PEntity->objtype == TYPE_PC)
     {
@@ -1921,8 +1920,10 @@ void CStatusEffectContainer::HandleAura(CStatusEffect* PStatusEffect)
                     }
                     else
                     {
+                        uint16 icon = PStatusEffect->GetSubIcon() > 0 ? PStatusEffect->GetSubIcon() : PStatusEffect->GetSubID();
+
                         PEffect = new CStatusEffect(static_cast<EFFECT>(PStatusEffect->GetSubID()), // Effect ID
-                                                    PStatusEffect->GetSubID(),                      // Effect Icon (Associated with ID)
+                                                    icon,                                           // Effect Icon
                                                     PStatusEffect->GetSubPower(),                   // Power
                                                     3s,                                              // Tick
                                                     4s);                                             // Duration
@@ -1963,8 +1964,10 @@ void CStatusEffectContainer::HandleAura(CStatusEffect* PStatusEffect)
                     }
                     else
                     {
+                        uint16 icon = PStatusEffect->GetSubIcon() > 0 ? PStatusEffect->GetSubIcon() : PStatusEffect->GetSubID();
+
                         PEffect = new CStatusEffect(static_cast<EFFECT>(PStatusEffect->GetSubID()), // Effect ID
-                                                    PStatusEffect->GetSubID(),                      // Effect Icon (Associated with ID)
+                                                    icon,                                           // Effect Icon
                                                     PStatusEffect->GetSubPower(),                   // Power
                                                     3s,                                             // Tick
                                                     4s);                                            // Duration
@@ -2008,8 +2011,10 @@ void CStatusEffectContainer::HandleAura(CStatusEffect* PStatusEffect)
                     }
                     else
                     {
+                        uint16 icon = PStatusEffect->GetSubIcon() > 0 ? PStatusEffect->GetSubIcon() : PStatusEffect->GetSubID();
+
                         PEffect = new CStatusEffect(static_cast<EFFECT>(PStatusEffect->GetSubID()), // Effect ID
-                                                    PStatusEffect->GetSubID(),                      // Effect Icon (Associated with ID)
+                                                    icon,                                           // Effect Icon
                                                     PStatusEffect->GetSubPower(),                   // Power
                                                     3s,                                              // Tick
                                                     4s);                                             // Duration
@@ -2053,8 +2058,10 @@ void CStatusEffectContainer::HandleAura(CStatusEffect* PStatusEffect)
                     }
                     else
                     {
+                        uint16 icon = PStatusEffect->GetSubIcon() > 0 ? PStatusEffect->GetSubIcon() : PStatusEffect->GetSubID();
+
                         PEffect = new CStatusEffect(static_cast<EFFECT>(PStatusEffect->GetSubID()), // Effect ID
-                                                    PStatusEffect->GetSubID(),                      // Effect Icon (Associated with ID)
+                                                    icon,                                           // Effect Icon
                                                     PStatusEffect->GetSubPower(),                   // Power
                                                     3s,                                             // Tick
                                                     4s);                                            // Duration
@@ -2166,16 +2173,29 @@ void CStatusEffectContainer::TickRegen(timer::time_point tick)
             {
                 CPetEntity* PPet          = (CPetEntity*)m_POwner->PPet;
                 ELEMENT     petElement    = static_cast<ELEMENT>(PPet->m_Element);
-                uint8       petElementIdx = static_cast<uint8>(petElement) - 1;
+                bool        elementValid  = petElement >= ELEMENT_FIRE && petElement <= ELEMENT_DARK; // Check if the element is not 0 (None) or out of bounds
+                uint8       petElementIdx = 0;
                 ELEMENT     dayElement    = battleutils::GetDayElement();
                 auto        weather       = battleutils::GetWeather(PChar, false);
+
+                if (!elementValid)
+                {
+                    ShowWarning("CStatusEffectContainer::TickRegen() - Pet %s (PetID %u) has invalid element %u for avatar perpetuation. Check pet_list.sql.",
+                                PPet->getName(),
+                                PPet->m_PetID,
+                                PPet->m_Element);
+                }
+                else
+                {
+                    petElementIdx = static_cast<uint8>(petElement) - 1;
+                }
 
                 static const Mod     strong[8]        = { Mod::FIRE_AFFINITY_PERP, Mod::ICE_AFFINITY_PERP, Mod::WIND_AFFINITY_PERP, Mod::EARTH_AFFINITY_PERP, Mod::THUNDER_AFFINITY_PERP, Mod::WATER_AFFINITY_PERP, Mod::LIGHT_AFFINITY_PERP, Mod::DARK_AFFINITY_PERP };
                 static const Weather weatherStrong[8] = { Weather::HotSpell, Weather::Snow, Weather::Wind, Weather::DustStorm, Weather::Thunder, Weather::Rain, Weather::Auroras, Weather::Gloom };
 
                 // Day / Weather elemental matches.
-                bool dayMatch     = dayElement == petElement;
-                bool weatherMatch = weather == weatherStrong[petElementIdx] || weather == static_cast<Weather>(static_cast<uint16_t>(weatherStrong[petElementIdx]) + 1);
+                bool dayMatch     = elementValid && dayElement == petElement;
+                bool weatherMatch = elementValid && (weather == weatherStrong[petElementIdx] || weather == static_cast<Weather>(static_cast<uint16_t>(weatherStrong[petElementIdx]) + 1));
 
                 // Halve perpetuation cost before all regular reductions.
                 bool halfFromCarby   = PChar->getMod(Mod::HALF_PERPETUATION_CARBUNCLE) != 0 && PPet->m_PetID == PETID_CARBUNCLE;
@@ -2191,7 +2211,10 @@ void CStatusEffectContainer::TickRegen(timer::time_point tick)
                 perpetuationCost = perpetuationCost - PChar->getMod(Mod::PERPETUATION_REDUCTION);
 
                 // Apply elemental affinity perpetuation bonus/penalty.
-                perpetuationCost = perpetuationCost - PChar->getMod(strong[petElementIdx]);
+                if (elementValid)
+                {
+                    perpetuationCost = perpetuationCost - PChar->getMod(strong[petElementIdx]);
+                }
 
                 // Apply day element perpetuation reduction.
                 if (dayMatch)

@@ -1,6 +1,5 @@
 -----------------------------------
 -- Mob family IDs
--- NOT USED YET
 -----------------------------------
 xi = xi or {}
 
@@ -213,6 +212,7 @@ xi.mobFamily =
     OMEGA               = 204,
     STATUE              = 205,
     ULTIMA              = 206,
+    UNCLASSIFIED        = 207,
 }
 
 return xi.mobFamily

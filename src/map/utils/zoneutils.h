@@ -48,10 +48,10 @@ struct LazyLoadState
 
 } // namespace detail
 
-auto LoadZones(Scheduler& scheduler, MapConfig config, const std::vector<uint16>& zoneIds) -> Task<void>;
-auto LoadZoneList(Scheduler& scheduler, MapConfig config) -> Task<void>;
-auto Initialize(Scheduler& scheduler, MapConfig config) -> Task<void>;
-auto ProcessLoadQueue(Scheduler& scheduler, MapConfig config) -> Task<void>;
+auto LoadZones(Scheduler& scheduler, const MapConfig& config, const std::vector<uint16>& zoneIds) -> Task<void>;
+auto LoadZoneList(Scheduler& scheduler, const MapConfig& config) -> Task<void>;
+auto Initialize(Scheduler& scheduler, const MapConfig& config) -> Task<void>;
+auto ProcessLoadQueue(Scheduler& scheduler, const MapConfig& config) -> Task<void>;
 
 auto IsLazyLoadingEnabled() -> bool;
 
@@ -62,7 +62,7 @@ void EnsureDestinationZoneLoaded(uint16 zoneId);
 // TODO:
 // This shouldn't have side effects, it should be const and the caller should be responsible
 // for requesting the zone is loaded if it isn't ready.
-auto IsZoneReady(Scheduler& scheduler, MapConfig config, uint16 zoneId) -> Task<bool>;
+auto IsZoneReady(Scheduler& scheduler, const MapConfig& config, uint16 zoneId) -> Task<bool>;
 
 auto GetManagedZones() -> std::vector<std::pair<uint16, std::string>>;
 void FreeZoneList();

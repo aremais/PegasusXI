@@ -39,10 +39,12 @@ local function getMoogleEvents(npc)
     if byName then
         return byName
     end
+
     local key = moogleEventKeyByNpcId[npc:getID()]
     if key then
         return moogleEventTable[key]
     end
+
     return nil
 end
 
@@ -191,6 +193,7 @@ xi.crafting.ephemeralMoogleOnEventFinish = function(player, csid, option, npc)
     if crystalType < xi.element.FIRE or crystalType > xi.element.DARK then
         return
     end
+
     local crystalAmount = totalQuantity % 12
     local clusterAmount = math.floor(totalQuantity / 12)
 

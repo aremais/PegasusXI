@@ -26,11 +26,9 @@ return {
     ['Louartain']        = { event = 84 },
     ['Ludiault']         = { event = 82 },
     ['Magephaud']        = { event = 115 },
-    ['Nolan']            = { event = 9500 },
     ['Odilinia']         = { event = 92 },
     ['Ogugu']            = { event = 79 },
     ['Oruga']            = { event = 87 },
-    ['Oseem']            = { event = 9504 },
     ['Paito-Maito']      = { event = 90 },
     ['Parlemaille']      = { event = 88 },
     ['Rafid']            = { event = 65 },
@@ -44,5 +42,4 @@ return {
     ['Vishwas']          = { event = 218 },
     ['Washu']            = { event = 80 },
     ['Wistful+Bison']    = { event = 268 },
-    ['Zurim']            = { event = 9510 },
 }

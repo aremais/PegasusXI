@@ -274,7 +274,7 @@ local zoneList =
     { 0x27, 0x5A, xi.zone.MOG_GARDEN                   },
     { 0x27, 0x59, xi.zone.CELENNIA_MEMORIAL_LIBRARY    },
     { 0x27, 0x5B, xi.zone.FERETORY                     },
-    { 0x14, 0x09, xi.zone.ESCHA_ZITAH                  },
+    { 0x27, 0x18, xi.zone.ESCHA_ZITAH                  },
     { 0x27, 0x1B, xi.zone.ESCHA_RUAUN                  },
     { 0x27, 0x1D, xi.zone.REISENJIMA                   },
 }

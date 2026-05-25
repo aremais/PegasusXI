@@ -1,0 +1,4 @@
+dropId,groupId,itemId,item_name,mob_names,status,changes,local_dropType,upstream_dropType,local_groupRate,upstream_groupRate,local_itemRate,upstream_itemRate
+1,0,1000,goblin_tooth,Goblin_Tinkerer,changed,itemRate,0,0,1000,1000,150,100
+1,0,1002,,Goblin_Tinkerer,only_upstream,(missing locally),,0,,1000,,50
+2,0,2000,crab_shell,River_Crab,only_local,(local-only),0,,1000,,250,

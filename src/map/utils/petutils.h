@@ -172,7 +172,7 @@ struct Pet_t
     uint8           name_prefix;
     uint8           modelSize{ 0 };
     float           modelHitboxSize{ 0.0f };
-    uint16          m_Family;
+    uint16          m_Species;
     timer::duration time; // Duration of pet's "life span" before despawning
 
     uint8 mJob;
@@ -182,6 +182,7 @@ struct Pet_t
     float MPscale; // MP boost percentage
 
     uint16      cmbDelay;
+    uint16      dmgMult;
     DAMAGE_TYPE m_dmgType;
     uint8       speed;
     // stat ranks
@@ -244,7 +245,7 @@ struct Pet_t
     , minLevel(-1)
     , maxLevel(99)
     , name_prefix(0)
-    , m_Family(0)
+    , m_Species(0)
     , time(0s)
     , mJob(0)
     , sJob(0)
@@ -252,6 +253,7 @@ struct Pet_t
     , HPscale(0.f)
     , MPscale(0.f)
     , cmbDelay(0)
+    , dmgMult(100)
     , m_dmgType(DAMAGE_TYPE::NONE)
     , speed(0)
     , strRank(0)

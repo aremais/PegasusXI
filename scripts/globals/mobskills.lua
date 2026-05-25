@@ -182,6 +182,8 @@ local function normalizePhysicalSkillParams(skillParams)
         result[paramName] = utils.defaultIfNil(skillParams[paramName], defaultValue)
     end
 
+    result.baseDamage = skillParams.baseDamage
+
     return result
 end
 
@@ -1691,15 +1693,6 @@ xi.mobskills.unequipRandomSlots = function(target, numberToUnequip)
         local index = math.random(#slots)
         target:unequipItem(table.remove(slots, index))
     end
-end
-
----@param target CBaseEntity
----@param attacker CBaseEntity
----@param skill CMobSkill
----@param action CAction
----@return xi.action.knockback
-xi.mobskills.calculateKnockback = function(target, attacker, skill, action)
-    return utils.clamp(skill:getKnockback() - target:getMod(xi.mod.KNOCKBACK_REDUCTION), xi.action.knockback.NONE, xi.action.knockback.LEVEL7)
 end
 
 ---@param target CBaseEntity

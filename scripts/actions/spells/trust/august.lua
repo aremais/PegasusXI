@@ -104,10 +104,16 @@ spellObject.onMobSpawn = function(mob)
 
         -- During Daybreak, use Divine Emblem and then Holy.
         if mobArg:getAnimationSub() == 5 then
-            if mobArg:getStatusEffect(xi.effect.DIVINE_EMBLEM) == nil and now >= divineEmblemTime then
+            if
+                mobArg:getStatusEffect(xi.effect.DIVINE_EMBLEM) == nil and
+                now >= divineEmblemTime
+            then
                 mobArg:useJobAbility(xi.ja.DIVINE_EMBLEM)
                 mobArg:setLocalVar('DivineEmblemTime', now + 3)
-            elseif mobArg:getStatusEffect(xi.effect.DIVINE_EMBLEM) ~= nil and now >= daybreakHolyTime then
+            elseif
+                mobArg:getStatusEffect(xi.effect.DIVINE_EMBLEM) ~= nil and
+                now >= daybreakHolyTime
+            then
                 mobArg:castSpell(xi.magic.spell.HOLY)
                 mobArg:setLocalVar('DaybreakHolyTime', now + 8)
             end

@@ -107,6 +107,8 @@ end
 ---@param chance integer
 ---@param cooldown integer
 ---@param params table?
+-- Trusts use this for lottery PH; keep complexity bounded for luacheck.
+-- luacheck: ignore 561
 xi.mob.phOnDespawn = function(ph, phNmId, chance, cooldown, params)
     params = params or {}
 

@@ -87,7 +87,11 @@ spellObject.onMobSpawn = function(mob)
     mob:setAutoAttackEnabled(false)
     mob:setMobMod(xi.mobMod.NO_MOVE, 1)
 
-    -- Apply once immediately so Brygid's aura is active as soon as she is summoned.
+    -- Retail-style Indi-CHR aura. This uses the same COLURE_ACTIVE aura pattern
+    -- as Moogle/Sakura/Kupofried so CHR is active immediately on summon.
+    mob:addStatusEffect(xi.effect.COLURE_ACTIVE, { power = 6, origin = mob, tick = 3, subType = xi.effect.GEO_CHR_BOOST, subPower = 5, tier = xi.auraTarget.ALLIES, flag = xi.effectFlag.AURA })
+
+    -- Custom Brygid bonuses not covered by normal GEO_CHR_BOOST.
     applyBrygidAura(mob)
     mob:setLocalVar('BrygidAuraTick', GetSystemTime() + 3)
 end

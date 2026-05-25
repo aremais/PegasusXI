@@ -14,7 +14,6 @@ entity.onMobInitialize = function(mob)
     mob:setMobMod(xi.mobMod.ASTRAL_PET_OFFSET, 3)
     mob:setMod(xi.mod.DARK_SLEEP_RES_RANK, 6)
     mob:setMod(xi.mod.LIGHT_SLEEP_RES_RANK, 7)
-    mob:setMobMod(xi.mobMod.SUPERLINK, 1)
 end
 
 entity.onMobSpawn = function(mob)
@@ -22,7 +21,8 @@ end
 
 entity.onMobDeath = function(mob, player, optParams)
     local elementalId = mob:getID() + 2
-    if GetMobByID(elementalId):isSpawned() then
+    local elemental   = GetEntityByID(elementalId, nil, true)
+    if elemental and elemental:isSpawned() then
         DespawnMob(elementalId)
     end
 end
