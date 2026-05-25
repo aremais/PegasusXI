@@ -16,4 +16,12 @@ entity.onTrigger = function(player, npc)
     xi.nolanShop.onTrigger(player, npc)
 end
 
+entity.onEventUpdate = function(player, csid, option, npc)
+    xi.nolanShop.onEventUpdate(player, csid, option, npc)
+end
+
+entity.onEventFinish = function(player, csid, option, npc)
+    xi.nolanShop.onEventFinish(player, csid, option, npc)
+end
+
 return entity

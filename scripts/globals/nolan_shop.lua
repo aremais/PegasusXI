@@ -6,19 +6,20 @@ require('scripts/globals/npc_util')
 xi = xi or {}
 xi.nolanShop = xi.nolanShop or {}
 
-local function buyEschalixir(player, itemId, cost)
-    local beads = player:getCurrency('escha_beads') or 0
+local eventId = 9512
 
-    if beads < cost then
-        player:printToPlayer(string.format('You need %u Escha Beads.', cost), xi.msg.channel.NS_SAY)
-        return
-    end
-
-    if npcUtil.giveItem(player, { { itemId, 1 } }) then
-        player:delCurrency('escha_beads', cost)
-        player:printToPlayer(string.format('Nolan accepts %u Escha Beads.', cost), xi.msg.channel.NS_SAY)
-    end
-end
+local eschalixirItems =
+{
+    [1] =
+    {
+        [1] =
+        {
+            [1] = { item = xi.item.ESCHALIXIR,    cost = 10 },
+            [2] = { item = xi.item.ESCHALIXIR_P1, cost = 50 },
+            [3] = { item = xi.item.ESCHALIXIR_P2, cost = 2000 },
+        },
+    },
+}
 
 xi.nolanShop.onTrade = function(player, npc, trade)
     if
@@ -36,35 +37,35 @@ xi.nolanShop.onTrade = function(player, npc, trade)
 end
 
 xi.nolanShop.onTrigger = function(player, npc)
-    player:printToPlayer('Another customer. Joy.', xi.msg.channel.NS_SAY)
+    local beads = player:getCurrency('escha_beads')
 
-    player:customMenu({
-        title = 'Buy Eschalixirs',
-        options =
-        {
-            {
-                'Eschalixir',
-                function(p)
-                    buyEschalixir(p, xi.item.ESCHALIXIR, 10)
-                end,
-            },
-            {
-                '+1',
-                function(p)
-                    buyEschalixir(p, xi.item.ESCHALIXIR_P1, 50)
-                end,
-            },
-            {
-                '+2',
-                function(p)
-                    buyEschalixir(p, xi.item.ESCHALIXIR_P2, 2000)
-                end,
-            },
-            {
-                'Cancel',
-                function(_)
-                end,
-            },
-        },
-    })
+    player:startEvent(eventId, beads)
+end
+
+xi.nolanShop.onEventUpdate = function(player, csid, option, npc)
+    if csid ~= eventId then
+        return
+    end
+
+    local itemPage = bit.band(bit.rshift(option, 2), 0x0F) + 1
+    local itemSelected = bit.band(bit.rshift(option, 6), 0x0F) + 1
+    local itemSubPage = bit.band(bit.rshift(option, 10), 0x0F) + 1
+    local beads = player:getCurrency('escha_beads')
+    local purchase = eschalixirItems[itemPage] and
+        eschalixirItems[itemPage][itemSubPage] and
+        eschalixirItems[itemPage][itemSubPage][itemSelected]
+
+    if
+        purchase ~= nil and
+        beads >= purchase.cost and
+        npcUtil.giveItem(player, { { purchase.item, 1 } })
+    then
+        player:delCurrency('escha_beads', purchase.cost)
+        beads = beads - purchase.cost
+    end
+
+    player:updateEvent(beads)
+end
+
+xi.nolanShop.onEventFinish = function(player, csid, option, npc)
 end
