@@ -14,6 +14,7 @@ zones[xi.zone.BASTOK_MINES] =
         GIL_OBTAINED                   = 6394,  -- Obtained <number> gil.
         KEYITEM_OBTAINED               = 6396,  -- Obtained key item: <keyitem>.
         KEYITEM_LOST                   = 6397,  -- Lost key item: <keyitem>.
+        ITEMS_OBTAINED                 = 6402,  -- You obtain <number> <item>!
         NOT_HAVE_ENOUGH_GIL            = 6398,  -- You do not have enough gil.
         YOU_MUST_WAIT_ANOTHER_N_DAYS   = 6429,  -- You must wait another <number> [day/days] to perform that action.
         CARRIED_OVER_POINTS            = 6432,  -- You have carried over <number> login point[/s].
