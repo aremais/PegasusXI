@@ -69,6 +69,7 @@
 #include "linkshell.h"
 #include "map_networking.h"
 #include "mob_modifier.h"
+#include "nominate_manager.h"
 #include "recast_container.h"
 #include "roe.h"
 #include "spell.h"
@@ -79,6 +80,7 @@
 #include "unitychat.h"
 #include "universal_container.h"
 #include "weapon_skill.h"
+#include "zone.h"
 
 #include "entities/automatonentity.h"
 #include "entities/charentity.h"
@@ -1064,6 +1066,28 @@ void LoadSpells(CCharEntity* PChar)
             {
                 PChar->m_SpellList.set(spellId);
             }
+        }
+    }
+
+    // Handle trust spells that are enabled via settings.
+    bool hasTrustPermit =
+        charutils::hasKeyItem(PChar, KeyItem::WINDURST_TRUST_PERMIT) ||
+        charutils::hasKeyItem(PChar, KeyItem::BASTOK_TRUST_PERMIT) ||
+        charutils::hasKeyItem(PChar, KeyItem::SAN_DORIA_TRUST_PERMIT);
+
+    if (hasTrustPermit)
+    {
+        static const std::unordered_map<uint8, uint16> trustSpells = {
+            { 1, 1002 }, // Cornelia
+            { 2, 1003 }, // Matsui-P
+        }; // This can be expanded if more trust spells are added as settings options.
+
+        uint8 trustSetting = settings::get<uint8>("main.ENABLE_LIMITED_TIME_TRUST");
+
+        auto it = trustSpells.find(trustSetting);
+        if (it != trustSpells.end())
+        {
+            PChar->m_SpellList.set(it->second);
         }
     }
 }
@@ -8131,6 +8155,14 @@ void removeCharFromZone(CCharEntity* PChar)
 
     PChar->TradePending.clean();
     PChar->InvitePending.clean();
+
+    if (PChar->loc.zone != nullptr)
+    {
+        if (auto* manager = PChar->loc.zone->nominateManager())
+        {
+            manager->onCharLeavingZone(PChar);
+        }
+    }
 
     PChar->WideScanTarget = std::nullopt;
 
