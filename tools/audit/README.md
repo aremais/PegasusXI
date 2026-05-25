@@ -40,6 +40,19 @@ so divergences against PegasusXI's numeric rates are expected and are the
 single largest signal: they tell you where PegasusXI deviates from
 upstream's rate macros.
 
+### `fix_mob_pools_speciesid`
+
+Restores corrupted ``mob_pools.speciesid`` values from upstream LSB ``base``
+(only that column; preserves other local pool tweaks). Writes
+``sql/mob_pools.sql.bak`` before updating.
+
+```bash
+py -3 -m tools.audit.fix_mob_pools_speciesid --dry-run
+py -3 -m tools.audit.fix_mob_pools_speciesid
+# Then re-import (Windows):
+powershell -File tools/apply_mob_pools_speciesid_fix.ps1
+```
+
 ### `audit self-check`
 
 Runs both audits against tiny bundled SQL fixtures in

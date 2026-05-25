@@ -8,9 +8,9 @@ zones[xi.zone.QUICKSAND_CAVES] =
     text =
     {
         ITEM_CANNOT_BE_OBTAINED       = 6385,  -- You cannot obtain the <item>. Come back after sorting your inventory.
-        ITEM_OBTAINED                 = 6393,  -- Obtained: <item>.
-        GIL_OBTAINED                  = 6394,  -- Obtained <number> gil.
-        KEYITEM_OBTAINED              = 6396,  -- Obtained key item: <keyitem>.
+        ITEM_OBTAINED                 = 6391,  -- Obtained: <item>.
+        GIL_OBTAINED                  = 6392,  -- Obtained <number> gil.
+        KEYITEM_OBTAINED              = 6394,  -- Obtained key item: <keyitem>.
         NOTHING_OUT_OF_ORDINARY       = 6407,  -- There is nothing out of the ordinary here.
         SENSE_OF_FOREBODING           = 6408,  -- You are suddenly overcome with a sense of foreboding...
         NOW_IS_NOT_THE_TIME           = 6409,  -- Now is not the time for that!
