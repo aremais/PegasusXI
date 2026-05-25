@@ -319,6 +319,7 @@ function npcUtil.giveItem(player, items, params)
     end
 
     -- give items to player
+    local obtainMultipleMsg = ID.text.ITEMS_OBTAINED or (ID.text.ITEM_OBTAINED + 9)
     local messagedItems = {}
     for _, v in pairs(givenItems) do
         if player:addItem({ id = v[1], quantity = v[2], silent = true }) then
@@ -330,7 +331,7 @@ function npcUtil.giveItem(player, items, params)
                     v[2] > 1 or
                     params.multiple
                 then
-                    player:messageSpecial(ID.text.ITEM_OBTAINED + 9, v[1], v[2])
+                    player:messageSpecial(obtainMultipleMsg, v[1], v[2])
                 else
                     player:messageSpecial(ID.text.ITEM_OBTAINED, v[1])
                 end
@@ -404,12 +405,13 @@ function npcUtil.giveTempItem(player, items, params)
     end
 
     -- give items to player
+    local obtainMultipleMsg = ID.text.ITEMS_OBTAINED or (ID.text.ITEM_OBTAINED + 9)
     local messagedItems = {}
     for _, v in pairs(givenItems) do
         if player:addTempItem(v[1], v[2]) then
             if not params.silent and not messagedItems[v[1]] then
                 if v[2] > 1 then
-                    player:messageSpecial(ID.text.ITEM_OBTAINED + 9, v[1], v[2])
+                    player:messageSpecial(obtainMultipleMsg, v[1], v[2])
                 else
                     player:messageSpecial(ID.text.ITEM_OBTAINED, v[1])
                 end
