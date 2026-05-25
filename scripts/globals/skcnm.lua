@@ -13,6 +13,13 @@
 -- DIFFICULTY (stored in battlefield localVar 'SKCNM_Difficulty'):
 --   0 = Very Easy | 1 = Easy | 2 = Normal | 3 = Difficult | 4 = Very Difficult
 --   Defaults to Normal (2) if unset.
+--
+-- FLOW:
+--   Trade orb → difficulty menu → fight-selection CS (event 32000)
+--   → pick fight → warp into arena → battle begins.
+--   Difficulty is chosen BEFORE the fight-selection cutscene so the warp
+--   cannot race ahead of the selection.  The chosen index is stashed in
+--   the player localVar '[SKCNM]Difficulty' and read in battlefieldEntry.
 -----------------------------------
 
 xi       = xi or {}
@@ -155,19 +162,10 @@ local function applyDiffScaling(battlefield, diffIndex)
 end
 
 -----------------------------------
--- Difficulty selection menu
+-- Difficulty menu labels (Shift-JIS safe ASCII)
 -----------------------------------
 
 local difficultyLabels =
-{
-    [0] = '★     Very Easy',
-    [1] = '★★    Easy',
-    [2] = '★★★   Normal',
-    [3] = '★★★★  Difficult',
-    [4] = '★★★★★ Very Difficult',
-}
-
-local difficultyShortNames =
 {
     [0] = 'Very Easy',
     [1] = 'Easy',
@@ -176,47 +174,12 @@ local difficultyShortNames =
     [4] = 'Very Difficult',
 }
 
-local function showDifficultyMenu(player, battlefield)
-    -- Default to Normal in case the player dismisses without picking
-    battlefield:setLocalVar('SKCNM_Difficulty', xi.skcnm.difficulty.NORMAL)
-
-    local menu =
-    {
-        title   = 'Select Battle Difficulty',
-        options = {},
-    }
-
-    for value = 0, 4 do
-        local label = difficultyLabels[value]
-
-        table.insert(menu.options, {
-            label,
-            function(_)
-                battlefield:setLocalVar('SKCNM_Difficulty', value)
-                applyDiffScaling(battlefield, value)
-
-                local chosen  = difficultyShortNames[value]
-                local players = battlefield:getPlayers()
-
-                for _, member in ipairs(players) do
-                    member:printToPlayer(
-                        'Difficulty: ' .. chosen .. '.',
-                        xi.msg.channel.NS_SAY
-                    )
-                end
-            end,
-        })
-    end
-
-    player:customMenu(menu)
-end
-
 -----------------------------------
 -- SKCNMBattlefield class
 -----------------------------------
 -- Extends Battlefield directly (orb-based entry, not quest/KI gated).
 -- All SKCNM fight scripts use SKCNMBattlefield:new() instead of
--- Battlefield:new() so the difficulty menu is shown automatically on entry.
+-- Battlefield:new() so the difficulty menu is wired in automatically.
 
 SKCNMBattlefield         = setmetatable({}, { __index = Battlefield })
 SKCNMBattlefield.__index = SKCNMBattlefield
@@ -227,11 +190,139 @@ function SKCNMBattlefield:new(data)
     return obj
 end
 
--- The first player to enter sees the difficulty menu; subsequent members do not.
--- A localVar flag prevents the menu from showing more than once per instance.
+-----------------------------------
+-- Trade handler (registered via Battlefield.register)
+-----------------------------------
+-- battlefield.lua line 546 uses self.onEntryTrade so that subclasses can
+-- override the trade handler.  This static function replaces the default
+-- Battlefield.onEntryTrade for all SKCNM fights:
+--
+--   FLOW: orb trade → difficulty menu (GMPROMPT) → fight-selection CS.
+--
+-- Difficulty is stored in the player localVar '[SKCNM]Difficulty' and read
+-- back in battlefieldEntry() once the battlefield exists and mobs are spawned.
+-----------------------------------
+
+function SKCNMBattlefield.onEntryTrade(player, npc, trade, onUpdate)
+    -- ---- shared validation (mirrors Battlefield.onEntryTrade) ---------------
+
+    if xi.battlefield.rejectLevelSyncedParty(player, npc) then
+        return
+    end
+
+    if not trade then
+        return
+    end
+
+    if player:hasStatusEffect(xi.effect.BATTLEFIELD) and not onUpdate then
+        player:messageBasic(xi.msg.basic.WAIT_LONGER, 0, 0)
+        return
+    end
+
+    local alliance = player:getAlliance()
+    for _, member in pairs(alliance) do
+        if member:hasStatusEffect(xi.effect.BATTLEFIELD) then
+            player:messageBasic(xi.msg.basic.WAIT_LONGER, 0, 0)
+            return
+        end
+    end
+
+    local zoneId   = player:getZoneID()
+    local contents = xi.battlefield.contentsByZone[zoneId]
+
+    for _, content in ipairs(contents) do
+        if
+            #content.requiredItems > 0 and
+            content.requiredItems.wornMessage and
+            npcUtil.tradeHas(trade, content.tradeItems)
+        then
+            local itemId    = content.requiredItems[1]
+            local totalUses = xi.battlefield.itemUses[itemId] or 1
+
+            if player:getWornUses(itemId) >= totalUses then
+                if type(content.requiredItems.wornMessage) == 'table' then
+                    player:messageSpecial(unpack(content.requiredItems.wornMessage))
+                elseif totalUses > 1 then
+                    player:messageSpecial(content.requiredItems.wornMessage, itemId)
+                else
+                    player:messageSpecial(content.requiredItems.wornMessage, 0, 0, 0, itemId)
+                end
+
+                return
+            end
+        end
+    end
+
+    -- If called from onEntryEventUpdate (onUpdate=true) let base class handle.
+    if onUpdate then
+        return Battlefield.onEntryTrade(player, npc, trade, onUpdate)
+    end
+
+    -- ---- SKCNM-specific: difficulty menu BEFORE fight selection CS ----------
+
+    local options = xi.battlefield.getBattlefieldOptions(player, npc, trade)
+
+    if options == 0 then
+        local noEntryMsg = zones[zoneId].text.NO_BATTLEFIELD_ENTRY
+        if noEntryMsg then
+            player:messageSpecial(noEntryMsg)
+        end
+        return
+    end
+
+    -- Build and show the difficulty menu.  The callback stores the selection
+    -- in a player localVar, then starts the fight-selection cutscene (event 32000).
+    local function onChosen(p, diffIndex)
+        p:setLocalVar('[SKCNM]Difficulty', diffIndex)
+        p:startEvent(32000, 0, 0, 0, options, 0, 0, 0, 0)
+    end
+
+    local menu =
+    {
+        title   = 'Select Battle Difficulty',
+        options = {},
+        onCancelled = function(p)
+            onChosen(p, xi.skcnm.difficulty.NORMAL)
+        end,
+    }
+
+    for value = 0, 4 do
+        table.insert(menu.options, {
+            difficultyLabels[value],
+            function(p)
+                onChosen(p, value)
+            end,
+        })
+    end
+
+    player:customMenu(menu)
+    -- Return nil — do NOT start event 32000 here; the callback above does it.
+end
+
+-----------------------------------
+-- battlefieldEntry: apply difficulty once mobs exist
+-----------------------------------
+-- Fires at the end of onBattlefieldEnter (base class calls self:battlefieldEntry).
+-- By this point registerBattlefield has run, mobs are spawned, and the
+-- '[SKCNM]Difficulty' localVar set in onEntryTrade is readable.
+
 function SKCNMBattlefield:battlefieldEntry(player, battlefield)
-    if battlefield:getLocalVar('SKCNM_Difficulty_Set') == 0 then
-        battlefield:setLocalVar('SKCNM_Difficulty_Set', 1)
-        showDifficultyMenu(player, battlefield)
+    local initiatorId = select(1, battlefield:getInitiator())
+
+    if player:getID() ~= initiatorId then
+        return
+    end
+
+    local diffIndex = player:getLocalVar('[SKCNM]Difficulty')
+    player:setLocalVar('[SKCNM]Difficulty', 0)               -- consume
+
+    battlefield:setLocalVar('SKCNM_Difficulty', diffIndex)
+    applyDiffScaling(battlefield, diffIndex)
+
+    local label   = difficultyLabels[diffIndex] or 'Normal'
+    local players = battlefield:getPlayers()
+
+    for _, member in ipairs(players) do
+        member:printToPlayer('Difficulty: ' .. label .. '.', xi.msg.channel.NS_SAY)
     end
 end
