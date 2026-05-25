@@ -569,7 +569,7 @@ function Battlefield:register()
             utils.append(zoneSection, {
                 [entryNpc] =
                 {
-                    onTrade   = Battlefield.onEntryTrade,
+                    onTrade   = self.onEntryTrade,
                     onTrigger = Battlefield.onEntryTrigger,
                 }
             })
