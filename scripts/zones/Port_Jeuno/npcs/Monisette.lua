@@ -1521,6 +1521,8 @@ end
 -- Rem's Tales directly when the player talks to Monisette.
 -----------------------------------
 entity.onTrigger = function(player, npc)
+    player:printToPlayer('Oh crap, it\'s you...', xi.msg.channel.SAY, npc:getName())
+
     for chapter = 1, 10 do
         local stored = getStoredTales(player, chapter)
 
