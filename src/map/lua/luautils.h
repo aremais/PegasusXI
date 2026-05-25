@@ -131,6 +131,7 @@ auto findGlobalLuaFunction(const std::string& funcName) -> sol::function;
 } // namespace detail
 
 void init(IPP mapIPP, bool isRunningInCI);
+void ReloadCommandScripts();
 void garbageCollectStep();
 void garbageCollectFull();
 void cleanup();

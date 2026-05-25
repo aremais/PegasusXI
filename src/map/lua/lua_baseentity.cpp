@@ -556,6 +556,83 @@ void CLuaBaseEntity::messageSpecial(uint16 messageID, sol::variadic_args va)
 }
 
 /************************************************************************
+ *  Function: messageItemObtained()
+ *  Purpose : Retail-style item obtain line; never uses GIL_OBTAINED or ID 0
+ *  Example : player:messageItemObtained(14893, 1)
+ *  Notes   : Returns false if zone text IDs are missing or unsafe
+ ************************************************************************/
+
+auto CLuaBaseEntity::messageItemObtained(uint16 itemId, const sol::object& quantityObj) -> bool
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowError("messageItemObtained called on non-PC entity (%s)", m_PBaseEntity->name.c_str());
+        return false;
+    }
+
+    const auto zoneId  = m_PBaseEntity->getZone();
+    const auto itemMsg = luautils::GetTextIDVariable(zoneId, "ITEM_OBTAINED");
+    const auto gilMsg  = luautils::GetTextIDVariable(zoneId, "GIL_OBTAINED");
+
+    if (itemMsg <= 0)
+    {
+        return false;
+    }
+
+    // GIL is normally ITEM_OBTAINED + 1; only reject if ITEM_OBTAINED is mis-set to the gil slot.
+    if (gilMsg > 0 && itemMsg == gilMsg)
+    {
+        ShowWarning("messageItemObtained: zone %u ITEM_OBTAINED (%d) equals GIL_OBTAINED (%d)", zoneId, itemMsg, gilMsg);
+        return false;
+    }
+
+    uint32 quantity = 1;
+    if (quantityObj != sol::lua_nil && quantityObj.is<uint32>())
+    {
+        quantity = quantityObj.as<uint32>();
+    }
+    else if (quantityObj != sol::lua_nil && quantityObj.is<int>())
+    {
+        const auto qty = quantityObj.as<int>();
+        if (qty > 0)
+        {
+            quantity = static_cast<uint32>(qty);
+        }
+    }
+
+    if (quantity == 0)
+    {
+        quantity = 1;
+    }
+
+    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
+
+    if (quantity > 1)
+    {
+        auto pluralMsg = luautils::GetTextIDVariable(zoneId, "ITEMS_OBTAINED");
+        if (pluralMsg <= 0)
+        {
+            pluralMsg = itemMsg + 9;
+        }
+
+        if (gilMsg > 0 && (pluralMsg == gilMsg || pluralMsg == itemMsg + 1))
+        {
+            pluralMsg = 0;
+        }
+
+        if (pluralMsg > 0)
+        {
+            PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK>(m_PBaseEntity, static_cast<uint16>(pluralMsg), itemId, quantity, 0, 0, false);
+            return true;
+        }
+    }
+
+    ShowInfo("messageItemObtained: %s zone %u msg %d item %u qty %u", m_PBaseEntity->name.c_str(), zoneId, itemMsg, itemId, quantity);
+    PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK>(m_PBaseEntity, static_cast<uint16>(itemMsg), itemId, 0, 0, 0, false);
+    return true;
+}
+
+/************************************************************************
  *  Function: messageSystem()
  *  Purpose : Sends a standard system message
  *  Example : player:messageSystem("Text")
@@ -14081,6 +14158,7 @@ auto CLuaBaseEntity::copyStatusEffect(const CLuaStatusEffect* PStatusEffect) con
         remainingDuration,
         POriginal->GetSubID(),
         POriginal->GetSubPower(),
+        POriginal->GetSubIcon(),
         POriginal->GetTier(),
         POriginal->GetEffectFlags(),
         POriginal->GetSourceType(),
@@ -20188,6 +20266,7 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("messageName", CLuaBaseEntity::messageName);
     SOL_REGISTER("messagePublic", CLuaBaseEntity::messagePublic);
     SOL_REGISTER("messageSpecial", CLuaBaseEntity::messageSpecial);
+    SOL_REGISTER("messageItemObtained", CLuaBaseEntity::messageItemObtained);
     SOL_REGISTER("messageSystem", CLuaBaseEntity::messageSystem);
     SOL_REGISTER("messageCombat", CLuaBaseEntity::messageCombat);
     SOL_REGISTER("messageStandard", CLuaBaseEntity::messageStandard);

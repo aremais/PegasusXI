@@ -23,56 +23,77 @@ commandObj.onTrigger = function(player, target, itemId, amount, aug0, aug0val, a
         return
     end
 
-    -- Load needed text ids for target's current zone..
     local ID = zones[targ:getZoneID()]
 
-    -- Attempt to give the target the item..
     if targ:getFreeSlotsCount() == 0 then
         targ:messageSpecial(ID.text.ITEM_CANNOT_BE_OBTAINED, itemId)
         player:printToPlayer(string.format('Player \'%s\' does not have free space for that item!', target))
-    else
-        local itemData =
-        {
-            id       = itemId,
-            quantity = amount,
-        }
-
-        local hasExdata = false
-        local augments  = {}
-        local augmentPairs =
-        {
-            { aug0, aug0val },
-            { aug1, aug1val },
-            { aug2, aug2val },
-            { aug3, aug3val },
-        }
-
-        for _, augmentData in ipairs(augmentPairs) do
-            local augmentId = augmentData[1]
-            if augmentId ~= nil and augmentId > 0 then
-                hasExdata = true
-                table.insert(augments, { id = augmentId, value = augmentData[2] or 0 })
-            end
-        end
-
-        if hasExdata then
-            itemData.exdata =
-            {
-                augmentKind    = xi.augment.kind.HAS_AUGMENTS,
-                augmentSubKind = xi.augment.subKind.STANDARD,
-                augments       = augments,
-            }
-        end
-
-        targ:addItem(itemData)
-        if amount and amount > 1 then
-            targ:messageSpecial(ID.text.ITEM_OBTAINED + 9, itemId, amount)
-        else
-            targ:messageSpecial(ID.text.ITEM_OBTAINED, itemId)
-        end
-
-        player:printToPlayer(string.format('Gave player \'%s\' Item with ID of \'%u\'', target, itemId))
+        return
     end
+
+    if not amount or amount < 1 then
+        amount = 1
+    end
+
+    local itemProto = GetItemByID(itemId)
+    if not itemProto then
+        player:printToPlayer(string.format('Item ID %u is not in the item database.', itemId))
+        return
+    end
+
+    local itemData =
+    {
+        id       = itemId,
+        quantity = amount,
+        silent   = true,
+    }
+
+    local hasExdata = false
+    local augments  = {}
+    local augmentPairs =
+    {
+        { aug0, aug0val },
+        { aug1, aug1val },
+        { aug2, aug2val },
+        { aug3, aug3val },
+    }
+
+    for _, augmentData in ipairs(augmentPairs) do
+        local augmentId = augmentData[1]
+        if augmentId ~= nil and augmentId > 0 then
+            hasExdata = true
+            table.insert(augments, { id = augmentId, value = augmentData[2] or 0 })
+        end
+    end
+
+    if hasExdata then
+        itemData.exdata =
+        {
+            augmentKind    = xi.augment.kind.HAS_AUGMENTS,
+            augmentSubKind = xi.augment.subKind.STANDARD,
+            augments       = augments,
+        }
+    end
+
+    local countBefore = targ:getItemCount(itemId)
+    local obtained    = targ:addItem(itemData)
+    local countAfter  = targ:getItemCount(itemId)
+    local added       = countAfter - countBefore
+
+    if not obtained or added <= 0 then
+        player:printToPlayer(string.format('Failed to give item %u to %s.', itemId, target))
+        return
+    end
+
+    if type(targ.messageItemObtained) == 'function' and targ:messageItemObtained(itemId, amount) then
+        -- retail obtain packet sent
+    elseif amount > 1 then
+        targ:printToPlayer(string.format('You obtain %u x %s!', amount, itemProto:getName()), xi.msg.channel.SYSTEM_3)
+    else
+        targ:printToPlayer(string.format('Obtained: %s.', itemProto:getName()), xi.msg.channel.SYSTEM_3)
+    end
+
+    player:printToPlayer(string.format('Gave %u x %s (ID %u) to %s.', added, itemProto:getName(), itemId, target))
 end
 
 return commandObj

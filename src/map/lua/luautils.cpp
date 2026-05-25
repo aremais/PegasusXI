@@ -397,6 +397,7 @@ void init(IPP mapIPP, bool isRunningInCI)
     lua.set_function("GetSynergyRecipeByTrade", &luautils::GetSynergyRecipeByTrade);
     lua.set_function("ReloadSynthRecipes", &synthutils::LoadSynthRecipes);
     lua.set_function("LoadExpDifficultyCurves", &luautils::LoadExpDifficultyCurves);
+    lua.set_function("ReloadCommandScripts", &luautils::ReloadCommandScripts);
 
     // Fishing Contest Functions
     lua.set_function("GetFishingContest", &luautils::GetFishingContest);
@@ -514,14 +515,7 @@ void init(IPP mapIPP, bool isRunningInCI)
             }
         }
 
-        // Load Commands
-        for (auto const& entry : sorted_directory_iterator<std::filesystem::directory_iterator>("./scripts/commands"))
-        {
-            if (entry.extension() == ".lua")
-            {
-                CacheLuaObjectFromFile(entry.relative_path().generic_string());
-            }
-        }
+        ReloadCommandScripts();
 
         // Load all lua files (for sanity testing, no need for during regular use)
         if (isRunningInCI)
@@ -571,6 +565,55 @@ void init(IPP mapIPP, bool isRunningInCI)
     {
         g_mapScheduler = nullptr;
         moduleutils::CleanupLuaModules();
+    }
+
+    void ReloadCommandScripts()
+    {
+        TracyZoneScoped;
+
+        constexpr auto commandsDir = "./scripts/commands";
+        if (!std::filesystem::is_directory(commandsDir))
+        {
+            ShowError("luautils::ReloadCommandScripts: directory not found: %s (cwd: %s)",
+                        commandsDir,
+                        std::filesystem::current_path().generic_string().c_str());
+            return;
+        }
+
+        uint32 loaded = 0;
+        for (auto const& entry : sorted_directory_iterator<std::filesystem::directory_iterator>(commandsDir))
+        {
+            if (entry.extension() != ".lua")
+            {
+                continue;
+            }
+
+            const auto scriptPath = fmt::format("scripts/commands/{}", entry.filename().generic_string());
+            auto       result     = lua.safe_script_file(scriptPath);
+            if (!result.valid())
+            {
+                sol::error err = result;
+                ShowError("luautils::ReloadCommandScripts: Failed to load %s: %s", scriptPath.c_str(), err.what());
+                continue;
+            }
+
+            if (result.return_count() == 0)
+            {
+                ShowError("luautils::ReloadCommandScripts: %s did not return a table", scriptPath.c_str());
+                continue;
+            }
+
+            sol::table cmdTable = result;
+            if (cmdTable["cmdprops"].valid() && cmdTable["onTrigger"].valid())
+            {
+                const auto cmdName = entry.stem().generic_string();
+                lua[sol::create_if_nil]["xi"]["commands"][cmdName] = cmdTable;
+                ShowInfo("Loaded command script %s -> !%s", scriptPath.c_str(), cmdName.c_str());
+                ++loaded;
+            }
+        }
+
+        ShowInfo("ReloadCommandScripts: loaded %u command(s) from %s", loaded, commandsDir);
     }
 
     void garbageCollectStep()
@@ -884,6 +927,34 @@ void init(IPP mapIPP, bool isRunningInCI)
             }
 
             ShowInfo("[FileWatcher] GLOBAL %s -> \"%s\"", filename, requireName);
+            return;
+        }
+
+        // Handle GM commands (scripts/commands/<name>.lua)
+        if (parts.size() == 2 && parts[0] == "commands")
+        {
+            auto result = lua.safe_script_file(filename);
+            if (!result.valid())
+            {
+                sol::error err = result;
+                ShowError("luautils::CacheLuaObjectFromFile: Load command error: %s: %s", filename, err.what());
+                return;
+            }
+
+            if (result.return_count() == 0)
+            {
+                ShowError("luautils::CacheLuaObjectFromFile: Command %s did not return a table", filename);
+                return;
+            }
+
+            sol::table cmdTable = result;
+            if (cmdTable["cmdprops"].valid() && cmdTable["onTrigger"].valid())
+            {
+                const auto cmdName = parts[1];
+                lua[sol::create_if_nil]["xi"]["commands"][cmdName] = cmdTable;
+                ShowInfo("[FileWatcher] COMMAND %s -> !%s", filename, cmdName.c_str());
+            }
+
             return;
         }
 

@@ -1393,6 +1393,7 @@ CStatusEffect* CStatusEffectContainer::StealStatusEffect(EFFECTFLAG flag, Effect
             oldEffect->GetDuration(),
             oldEffect->GetSubID(),
             oldEffect->GetSubPower(),
+            oldEffect->GetSubIcon(),
             oldEffect->GetTier(),
             oldEffect->GetEffectFlags(),
             oldEffect->GetSourceType(),

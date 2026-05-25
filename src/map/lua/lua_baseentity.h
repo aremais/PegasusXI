@@ -68,6 +68,7 @@ public:
     void messageName(uint16 messageID, const sol::object& entity, const sol::object& p0, const sol::object& p1, const sol::object& p2, const sol::object& p3, const sol::object& chat, const sol::object& showSender);
     void messagePublic(uint16 messageID, const CLuaBaseEntity* PEntity, const sol::object& arg2, const sol::object& arg3);
     void messageSpecial(uint16 messageID, sol::variadic_args va);
+    auto messageItemObtained(uint16 itemId, const sol::object& quantityObj) -> bool;
     void messageSystem(MsgStd messageID, const sol::object& p0, const sol::object& p1);
     void messageCombat(const sol::object& speaker, int32 p0, int32 p1, MsgBasic message) const;
     void messageStandard(uint16 messageID);
