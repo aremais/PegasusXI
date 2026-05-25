@@ -195,11 +195,16 @@ end
 -- HTBFBattlefield:new() instead of BattlefieldQuest:new() so that
 -- the difficulty selection menu is shown automatically on entry.
 
-HTBFBattlefield         = setmetatable({}, { __index = BattlefieldQuest })
+-- HTBFBattlefield extends Battlefield (NOT BattlefieldQuest).
+-- BattlefieldQuest:checkRequirements adds a mandatory quest-status check that
+-- always fails for HTBF because these fights have no associated quest — entry
+-- is gated only by phantom gem key items, which Battlefield:checkRequirements
+-- already handles via requiredKeyItems.
+HTBFBattlefield         = setmetatable({}, { __index = Battlefield })
 HTBFBattlefield.__index = HTBFBattlefield
 
 function HTBFBattlefield:new(data)
-    local obj = BattlefieldQuest:new(data)
+    local obj = Battlefield:new(data)
     setmetatable(obj, self)
     return obj
 end

@@ -13,6 +13,13 @@
 -- DIFFICULTY (stored in battlefield localVar 'SKCNM_Difficulty'):
 --   0 = Very Easy | 1 = Easy | 2 = Normal | 3 = Difficult | 4 = Very Difficult
 --   Defaults to Normal (2) if unset.
+--
+-- FLOW:
+--   Trade orb → difficulty menu → fight-selection CS (event 32000)
+--   → pick fight → warp into arena → battle begins.
+--   Difficulty is chosen BEFORE the fight-selection cutscene so the warp
+--   cannot race ahead of the selection.  The chosen index is stashed in
+--   the player localVar '[SKCNM]Difficulty' and read in battlefieldEntry.
 -----------------------------------
 
 xi       = xi or {}
@@ -155,14 +162,7 @@ local function applyDiffScaling(battlefield, diffIndex)
 end
 
 -----------------------------------
--- Difficulty selection menu
------------------------------------
--- The menu is shown in onEventFinishEnter, AFTER the player confirms the fight
--- name in event 32000 but BEFORE setEnteredBattlefield fires the warp.
--- At that point the battlefield exists, mobs are spawned, and the player is
--- NOT in any event — so MESSAGE_GMPROMPT renders immediately.
--- The selection callback calls player:setEnteredBattlefield(true) to complete
--- the warp once a difficulty is chosen (or the menu is dismissed).
+-- Difficulty menu labels (Shift-JIS safe ASCII)
 -----------------------------------
 
 local difficultyLabels =
@@ -174,39 +174,107 @@ local difficultyLabels =
     [4] = 'Very Difficult',
 }
 
-local difficultyShortNames =
-{
-    [0] = 'Very Easy',
-    [1] = 'Easy',
-    [2] = 'Normal',
-    [3] = 'Difficult',
-    [4] = 'Very Difficult',
-}
+-----------------------------------
+-- SKCNMBattlefield class
+-----------------------------------
+-- Extends Battlefield directly (orb-based entry, not quest/KI gated).
+-- All SKCNM fight scripts use SKCNMBattlefield:new() instead of
+-- Battlefield:new() so the difficulty menu is wired in automatically.
 
-local function showPreEntryDiffMenu(player, battlefield)
-    -- Pre-set Normal so dismiss/cancel has a safe default
-    battlefield:setLocalVar('SKCNM_Difficulty', xi.skcnm.difficulty.NORMAL)
+SKCNMBattlefield         = setmetatable({}, { __index = Battlefield })
+SKCNMBattlefield.__index = SKCNMBattlefield
 
+function SKCNMBattlefield:new(data)
+    local obj = Battlefield:new(data)
+    setmetatable(obj, self)
+    return obj
+end
+
+-----------------------------------
+-- Trade handler (registered via Battlefield.register)
+-----------------------------------
+-- battlefield.lua line 546 uses self.onEntryTrade so that subclasses can
+-- override the trade handler.  This static function replaces the default
+-- Battlefield.onEntryTrade for all SKCNM fights:
+--
+--   FLOW: orb trade → difficulty menu (GMPROMPT) → fight-selection CS.
+--
+-- Difficulty is stored in the player localVar '[SKCNM]Difficulty' and read
+-- back in battlefieldEntry() once the battlefield exists and mobs are spawned.
+-----------------------------------
+
+function SKCNMBattlefield.onEntryTrade(player, npc, trade, onUpdate)
+    -- ---- shared validation (mirrors Battlefield.onEntryTrade) ---------------
+
+    if xi.battlefield.rejectLevelSyncedParty(player, npc) then
+        return
+    end
+
+    if not trade then
+        return
+    end
+
+    if player:hasStatusEffect(xi.effect.BATTLEFIELD) and not onUpdate then
+        player:messageBasic(xi.msg.basic.WAIT_LONGER, 0, 0)
+        return
+    end
+
+    local alliance = player:getAlliance()
+    for _, member in pairs(alliance) do
+        if member:hasStatusEffect(xi.effect.BATTLEFIELD) then
+            player:messageBasic(xi.msg.basic.WAIT_LONGER, 0, 0)
+            return
+        end
+    end
+
+    local zoneId   = player:getZoneID()
+    local contents = xi.battlefield.contentsByZone[zoneId]
+
+    for _, content in ipairs(contents) do
+        if
+            #content.requiredItems > 0 and
+            content.requiredItems.wornMessage and
+            npcUtil.tradeHas(trade, content.tradeItems)
+        then
+            local itemId    = content.requiredItems[1]
+            local totalUses = xi.battlefield.itemUses[itemId] or 1
+
+            if player:getWornUses(itemId) >= totalUses then
+                if type(content.requiredItems.wornMessage) == 'table' then
+                    player:messageSpecial(unpack(content.requiredItems.wornMessage))
+                elseif totalUses > 1 then
+                    player:messageSpecial(content.requiredItems.wornMessage, itemId)
+                else
+                    player:messageSpecial(content.requiredItems.wornMessage, 0, 0, 0, itemId)
+                end
+
+                return
+            end
+        end
+    end
+
+    -- If called from onEntryEventUpdate (onUpdate=true) let base class handle.
+    if onUpdate then
+        return Battlefield.onEntryTrade(player, npc, trade, onUpdate)
+    end
+
+    -- ---- SKCNM-specific: difficulty menu BEFORE fight selection CS ----------
+
+    local options = xi.battlefield.getBattlefieldOptions(player, npc, trade)
+
+    if options == 0 then
+        local noEntryMsg = zones[zoneId].text.NO_BATTLEFIELD_ENTRY
+        if noEntryMsg then
+            player:messageSpecial(noEntryMsg)
+        end
+        return
+    end
+
+    -- Build and show the difficulty menu.  The callback stores the selection
+    -- in a player localVar, then starts the fight-selection cutscene (event 32000).
     local function onChosen(p, diffIndex)
-        battlefield:setLocalVar('SKCNM_Difficulty', diffIndex)
-        applyDiffScaling(battlefield, diffIndex)
-
-        -- Fire the orb wear message that was deferred from onBattlefieldEnter
-        local wearMsgId = battlefield:getLocalVar('SKCNM_WearMsg')
-        local wearItem  = battlefield:getLocalVar('SKCNM_WearItem')
-
-        if wearMsgId ~= 0 then
-            p:messageSpecial(wearMsgId, 0, 0, 0, wearItem)
-        end
-
-        local chosen  = difficultyShortNames[diffIndex]
-        local players = battlefield:getPlayers()
-
-        for _, member in ipairs(players) do
-            member:printToPlayer('Difficulty: ' .. chosen .. '.', xi.msg.channel.NS_SAY)
-        end
-
-        p:setEnteredBattlefield(true)
+        p:setLocalVar('[SKCNM]Difficulty', diffIndex)
+        p:startEvent(32000, 0, 0, 0, options, 0, 0, 0, 0)
     end
 
     local menu =
@@ -228,69 +296,33 @@ local function showPreEntryDiffMenu(player, battlefield)
     end
 
     player:customMenu(menu)
+    -- Return nil — do NOT start event 32000 here; the callback above does it.
 end
 
 -----------------------------------
--- SKCNMBattlefield class
+-- battlefieldEntry: apply difficulty once mobs exist
 -----------------------------------
--- Extends Battlefield directly (orb-based entry, not quest/KI gated).
--- All SKCNM fight scripts use SKCNMBattlefield:new() instead of
--- Battlefield:new() so the difficulty menu is shown automatically on entry.
+-- Fires at the end of onBattlefieldEnter (base class calls self:battlefieldEntry).
+-- By this point registerBattlefield has run, mobs are spawned, and the
+-- '[SKCNM]Difficulty' localVar set in onEntryTrade is readable.
 
-SKCNMBattlefield         = setmetatable({}, { __index = Battlefield })
-SKCNMBattlefield.__index = SKCNMBattlefield
-
-function SKCNMBattlefield:new(data)
-    local obj = Battlefield:new(data)
-    setmetatable(obj, self)
-    return obj
-end
-
--- Suppress the orb wear message (e.g. "A crack has formed...") that the base
--- class normally fires here.  Instead we call incrementItemWear ourselves and
--- store the message ID on the battlefield so it can be shown AFTER the player
--- picks a difficulty in onEventFinishEnter.  This keeps the message order:
---   Select Difficulty → "A crack has formed..." → warp into battle.
-function SKCNMBattlefield:onBattlefieldEnter(player, battlefield)
+function SKCNMBattlefield:battlefieldEntry(player, battlefield)
     local initiatorId = select(1, battlefield:getInitiator())
 
-    if player:getID() == initiatorId and self.requiredItems.wearMessage then
-        local savedMsg = self.requiredItems.wearMessage
-        local itemId   = self.requiredItems[1]
-
-        -- Remove wearMessage so the base class skips the message block entirely
-        self.requiredItems.wearMessage = nil
-        Battlefield.onBattlefieldEnter(self, player, battlefield)
-        self.requiredItems.wearMessage = savedMsg
-
-        -- Wear the item manually (base class skipped it along with the message)
-        player:incrementItemWear(itemId)
-
-        -- Store for showPreEntryDiffMenu to use in the callback
-        battlefield:setLocalVar('SKCNM_WearMsg',  savedMsg)
-        battlefield:setLocalVar('SKCNM_WearItem', itemId)
-    else
-        Battlefield.onBattlefieldEnter(self, player, battlefield)
+    if player:getID() ~= initiatorId then
+        return
     end
-end
 
--- Override the post-fight-selection hook so we can show the difficulty menu
--- before the player physically warps in.
--- Only the battlefield initiator (the player who traded the orb) sees the menu;
--- party members who enter separately warp in immediately using the already-set
--- difficulty.
-function SKCNMBattlefield:onEventFinishEnter(player, csid, option)
-    -- Mirror base-class bookkeeping (minus setEnteredBattlefield)
-    player:setLocalVar('[battlefield]area', 0)
-    self:setLocalVar(player, 'CS', 1)
+    local diffIndex = player:getLocalVar('[SKCNM]Difficulty')
+    player:setLocalVar('[SKCNM]Difficulty', 0)               -- consume
 
-    local battlefield = player:getBattlefield()
-    local initiatorId = battlefield and select(1, battlefield:getInitiator()) or 0
+    battlefield:setLocalVar('SKCNM_Difficulty', diffIndex)
+    applyDiffScaling(battlefield, diffIndex)
 
-    if battlefield and player:getID() == initiatorId then
-        showPreEntryDiffMenu(player, battlefield)
-    else
-        -- Party member, or unexpected nil battlefield: warp straight in
-        player:setEnteredBattlefield(true)
+    local label   = difficultyLabels[diffIndex] or 'Normal'
+    local players = battlefield:getPlayers()
+
+    for _, member in ipairs(players) do
+        member:printToPlayer('Difficulty: ' .. label .. '.', xi.msg.channel.NS_SAY)
     end
 end
