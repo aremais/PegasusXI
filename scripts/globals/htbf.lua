@@ -21,7 +21,8 @@ xi      = xi or {}
 xi.htbf = xi.htbf or {}
 
 -- Number of gems shown per menu page.
-local itemsPerPage = 5
+-- Client window holds 3 lines total: 2 gem options + 1 nav button.
+local itemsPerPage = 2
 
 -- Minimum main-job level required to purchase any Phantom Gem.
 local minLevel = 95
@@ -104,9 +105,17 @@ local function tryPurchase(player, gem)
         return
     end
 
-    -- Spend merits and award key item
+    -- Spend merits and award key item.
+    -- Use addKeyItem + printToPlayer directly instead of npcUtil.giveKeyItem:
+    -- messageSpecial (used internally by giveKeyItem) misbehaves outside of
+    -- NPC event/cutscene context (customMenu callbacks), causing the client
+    -- to display "You do not have enough gil." instead of the obtained message.
     player:setMerits(available - gem.cost)
-    npcUtil.giveKeyItem(player, gem.ki)
+    player:addKeyItem(gem.ki)
+    player:printToPlayer(
+        string.format('Obtained key item: %s.', gem.name),
+        xi.msg.channel.NS_SAY
+    )
 end
 
 ---Build and display the Phantom Gem selection menu.

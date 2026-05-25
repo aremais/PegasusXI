@@ -284,10 +284,8 @@ public:
     virtual bool GetUntargetable() const; // checks if entity is untargetable
     virtual bool isWideScannable();       // checks if the entity should show up on wide scan
 
-    bool CanSeeTarget(CBaseEntity* target);
-    bool CanSeeTarget(CBaseEntity* target, bool fallbackNavMesh);
-    bool CanSeeTarget(const position_t& targetPoint);
-    bool CanSeeTarget(const position_t& targetPoint, bool fallbackNavMesh);
+    bool CanSeeTarget(CBaseEntity* target, bool fallbackNavMesh = true);
+    bool CanSeeTarget(const position_t& targetPoint, bool fallbackNavMesh = true);
 
     CBaseEntity* GetEntity(uint16 targid, uint8 filter = -1) const;
     void         SendZoneUpdate();

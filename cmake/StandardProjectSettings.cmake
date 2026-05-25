@@ -74,6 +74,8 @@ if(MSVC)
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /INCREMENTAL:NO /LTCG /OPT:REF /OPT:ICF")
         list(APPEND FLAGS_AND_DEFINES
             /Oi # Generate Intrinsic Functions
+            # /GL is supplied per-target by CMake when INTERPROCEDURAL_OPTIMIZATION is ON (see CMAKE_INTERPROCEDURAL_OPTIMIZATION).
+            # Putting /GL here duplicates that and forces disable_lto() targets to use /GL-, which triggers MSVC D9025 for every TU.
             /Gy # Enable Function Level Linking
             /TP # C++ Source Files
         )
@@ -117,7 +119,7 @@ function(disable_lto target)
     set_target_properties(${target} PROPERTIES INTERPROCEDURAL_OPTIMIZATION OFF)
 
     if(MSVC)
-        target_compile_options(${target} PRIVATE /GL-)
+        # Do not add /GL- here: IPO OFF already omits /GL from CMake, and a global /GL in CXX_FLAGS was removed to avoid D9025 overrides.
         target_link_options(${target} PRIVATE /LTCG:OFF)
     else()
         target_compile_options(${target} PRIVATE -fno-lto)
