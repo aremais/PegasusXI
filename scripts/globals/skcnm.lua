@@ -262,6 +262,7 @@ function SKCNMBattlefield.onEntryTrade(player, npc, trade, onUpdate)
         if noEntryMsg then
             player:messageSpecial(noEntryMsg)
         end
+
         return
     end
 
