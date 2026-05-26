@@ -3637,6 +3637,12 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_AAGK',1111,3726); -- Tachi: Fudo
 -- Reserved for future Trust 6002 (ID: 1117)
 -- Reserved for future Trust 6003 (ID: 1118) (Formerly Cornelia)
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Excenmille_S',1119,0);
+-- Trust: Excenmille (S)
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Excenmille_S',1119,3291); -- stags_call
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Excenmille_S',1119,3292); -- gyre_strike
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Excenmille_S',1119,3293); -- stags_charge
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Excenmille_S',1119,3294); -- orcsbane
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Excenmille_S',1119,3295); -- songbird_swoop
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Ayame_UC',1120,148); -- Tachi: Jinpu
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Ayame_UC',1120,149); -- Tachi: Koki
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Ayame_UC',1120,152); -- Tachi: Kasha

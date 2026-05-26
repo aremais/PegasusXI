@@ -3319,10 +3319,10 @@ INSERT INTO `mob_skills` VALUES (3286,283,'lock_and_load',0,0.0,7.0,2000,1500,4,
 -- INSERT INTO `mob_skills` VALUES (3288,3032,'swath_of_silence',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
 -- INSERT INTO `mob_skills` VALUES (3289,3033,'damning_edict',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
 -- INSERT INTO `mob_skills` VALUES (3290,3034,'bowels_of_agony',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
-INSERT INTO `mob_skills` VALUES (3291,1724,'stags_call',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0); -- Excenmille (S)
+INSERT INTO `mob_skills` VALUES (3291,1724,'stags_call',1,6.0,7.0,2000,1500,4,0,0,0,0,0,0); -- Excenmille (S)
 INSERT INTO `mob_skills` VALUES (3292,1725,'gyre_strike',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
 INSERT INTO `mob_skills` VALUES (3293,1727,'stags_charge',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
-INSERT INTO `mob_skills` VALUES (3294,1726,'orcsbane',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
+INSERT INTO `mob_skills` VALUES (3294,1726,'orcsbane',1,7.0,7.0,2000,1500,4,0,0,0,0,0,0);
 INSERT INTO `mob_skills` VALUES (3295,1721,'songbird_swoop',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
 INSERT INTO `mob_skills` VALUES (3296,259,'temblor_blade',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0); -- Ingrid
 INSERT INTO `mob_skills` VALUES (3297,260,'cobra_clamp',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0); -- RomaaMihgo
