@@ -223,6 +223,8 @@ void SendEntityVisualPacket(uint32 npcId, const char* command);
 void InitInteractionGlobal();
 auto GetZone(uint16 zoneId) -> CZone*;
 auto GetItemByID(uint32 itemId) -> const CItem*;
+auto GetItemFlagsByID(uint32 itemId) -> ItemFlag;
+auto GetItemLevelRequirementsByID(uint32 itemId) -> uint8;
 auto GetNPCByID(uint32 npcid, const sol::object& instanceObj) -> CBaseEntity*;
 auto FindNPCsByName(const std::string& pattern) -> sol::table;
 auto GetMobByID(uint32 mobid, const sol::object& instanceObj) -> CBaseEntity*;
@@ -344,7 +346,7 @@ void OnManeuverLose(CBattleEntity* PEntity, const CItemPuppet* attachment, uint8
 void OnUpdateAttachment(CBattleEntity* PEntity, const CItemPuppet* attachment, uint8 maneuvers);
 
 int32 OnItemUse(CBaseEntity* PUser, CBaseEntity* PTarget, CItem* PItem, action_t& action);
-auto  OnItemCheck(CBaseEntity* PTarget, CItem* PItem, ITEMCHECK param = ITEMCHECK::NONE, CBaseEntity* PCaster = nullptr) -> std::tuple<int32, int32, int32>;
+auto  OnItemCheck(CBaseEntity* PTarget, CItem* PItem, CBaseEntity* PCaster = nullptr) -> std::tuple<int32, int32, int32>;
 void  OnItemDrop(CBaseEntity* PUser, CItem* PItem, IsRecycleBin recycleBin = IsRecycleBin::No);
 void  OnItemEquip(CBaseEntity* PUser, CItem* PItem);
 void  OnItemUnequip(CBaseEntity* PUser, CItem* PItem);
