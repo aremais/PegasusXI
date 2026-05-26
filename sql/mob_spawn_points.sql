@@ -54624,24 +54624,28 @@ INSERT INTO `mob_spawn_points` VALUES (17346924,0,'Cottontail','Cottontail',45,0
 INSERT INTO `mob_spawn_points` VALUES (17346925,0,'Cottontail','Cottontail',45,0,0,0.000,0.000,0.000,0);
 
 -- *Dismemberment Brigade (SKC20)
-INSERT INTO `mob_spawn_points` VALUES (17346927,0,'Armsmaster_Dekbuk','Armsmaster Dekbuk',46,110,110,-400.255,93.766,-54.213,248);
-INSERT INTO `mob_spawn_points` VALUES (17346928,0,'Longarmed_Gottditt','Longarmed Gottditt',47,110,110,-400.132,94.164,-60.734,238);
-INSERT INTO `mob_spawn_points` VALUES (17346929,0,'Keeneyed_Aufwuf','Keeneyed Aufwuf',48,110,110,-403.917,93.926,-69.208,135);
-INSERT INTO `mob_spawn_points` VALUES (17346930,0,'Invulnerable_Mazzgozz','Invulnerable Mazzgozz',49,110,110,-399.955,93.811,-57.928,23);
-INSERT INTO `mob_spawn_points` VALUES (17346931,0,'Undefeatable_Sappdapp','Undefeatable Sappdapp',50,110,110,-405.592,93.817,-71.357,174);
-INSERT INTO `mob_spawn_points` VALUES (17346932,0,'Minds-eyed_Klugwug','Mind\'s-eyed Klugwug',51,110,110,-399.811,93.973,-59.247,8);
-INSERT INTO `mob_spawn_points` VALUES (17346934,0,'Armsmaster_Dekbuk','Armsmaster Dekbuk',46,110,110,-394.154,94.247,-63.212,7);
-INSERT INTO `mob_spawn_points` VALUES (17346935,0,'Longarmed_Gottditt','Longarmed Gottditt',47,110,110,-392.890,94.248,-60.898,35);
-INSERT INTO `mob_spawn_points` VALUES (17346936,0,'Keeneyed_Aufwuf','Keeneyed Aufwuf',48,110,110,-400.129,94.385,-64.792,152);
-INSERT INTO `mob_spawn_points` VALUES (17346937,0,'Invulnerable_Mazzgozz','Invulnerable Mazzgozz',49,110,110,-394.159,94.029,-60.257,252);
-INSERT INTO `mob_spawn_points` VALUES (17346938,0,'Undefeatable_Sappdapp','Undefeatable Sappdapp',50,110,110,-393.704,94.452,-62.032,20);
-INSERT INTO `mob_spawn_points` VALUES (17346939,0,'Minds-eyed_Klugwug','Mind\'s-eyed Klugwug',51,110,110,-391.034,94.319,-64.803,184);
-INSERT INTO `mob_spawn_points` VALUES (17346941,0,'Armsmaster_Dekbuk','Armsmaster Dekbuk',46,110,110,-394.381,94.211,-64.687,44);
-INSERT INTO `mob_spawn_points` VALUES (17346942,0,'Longarmed_Gottditt','Longarmed Gottditt',47,110,110,-396.019,94.211,-64.405,12);
-INSERT INTO `mob_spawn_points` VALUES (17346943,0,'Keeneyed_Aufwuf','Keeneyed Aufwuf',48,110,110,-400.000,94.313,-63.500,42);
-INSERT INTO `mob_spawn_points` VALUES (17346944,0,'Invulnerable_Mazzgozz','Invulnerable Mazzgozz',49,110,110,-395.995,94.211,-63.886,218);
-INSERT INTO `mob_spawn_points` VALUES (17346945,0,'Undefeatable_Sappdapp','Undefeatable Sappdapp',50,110,110,-397.100,94.305,-62.000,148);
-INSERT INTO `mob_spawn_points` VALUES (17346946,0,'Minds-eyed_Klugwug','Mind\'s-eyed Klugwug',51,110,110,-394.100,94.313,-60.849,80);
+-- 3x2 grid: front row Z=-59 (south/entrance side), back row Z=-65, 5-unit X spacing, rot=128
+-- Arena 1 (Y~93.9)
+INSERT INTO `mob_spawn_points` VALUES (17346927,0,'Armsmaster_Dekbuk','Armsmaster Dekbuk',46,110,110,-394.000,93.900,-59.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346928,0,'Longarmed_Gottditt','Longarmed Gottditt',47,110,110,-399.000,93.900,-59.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346929,0,'Keeneyed_Aufwuf','Keeneyed Aufwuf',48,110,110,-404.000,93.900,-59.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346930,0,'Invulnerable_Mazzgozz','Invulnerable Mazzgozz',49,110,110,-394.000,93.900,-65.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346931,0,'Undefeatable_Sappdapp','Undefeatable Sappdapp',50,110,110,-399.000,93.900,-65.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346932,0,'Minds-eyed_Klugwug','Mind\'s-eyed Klugwug',51,110,110,-404.000,93.900,-65.000,128);
+-- Arena 2 (Y~94.3)
+INSERT INTO `mob_spawn_points` VALUES (17346934,0,'Armsmaster_Dekbuk','Armsmaster Dekbuk',46,110,110,-394.000,94.300,-59.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346935,0,'Longarmed_Gottditt','Longarmed Gottditt',47,110,110,-399.000,94.300,-59.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346936,0,'Keeneyed_Aufwuf','Keeneyed Aufwuf',48,110,110,-404.000,94.300,-59.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346937,0,'Invulnerable_Mazzgozz','Invulnerable Mazzgozz',49,110,110,-394.000,94.300,-65.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346938,0,'Undefeatable_Sappdapp','Undefeatable Sappdapp',50,110,110,-399.000,94.300,-65.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346939,0,'Minds-eyed_Klugwug','Mind\'s-eyed Klugwug',51,110,110,-404.000,94.300,-65.000,128);
+-- Arena 3 (Y~94.3)
+INSERT INTO `mob_spawn_points` VALUES (17346941,0,'Armsmaster_Dekbuk','Armsmaster Dekbuk',46,110,110,-394.000,94.300,-59.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346942,0,'Longarmed_Gottditt','Longarmed Gottditt',47,110,110,-399.000,94.300,-59.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346943,0,'Keeneyed_Aufwuf','Keeneyed Aufwuf',48,110,110,-404.000,94.300,-59.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346944,0,'Invulnerable_Mazzgozz','Invulnerable Mazzgozz',49,110,110,-394.000,94.300,-65.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346945,0,'Undefeatable_Sappdapp','Undefeatable Sappdapp',50,110,110,-399.000,94.300,-65.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17346946,0,'Minds-eyed_Klugwug','Mind\'s-eyed Klugwug',51,110,110,-404.000,94.300,-65.000,128);
 INSERT INTO `mob_spawn_points` VALUES (17346948,0,'Armsmaster_Dekbuk','Armsmaster Dekbuk',46,110,110,-397.447,94.138,-68.536,107);
 INSERT INTO `mob_spawn_points` VALUES (17346949,0,'Longarmed_Gottditt','Longarmed Gottditt',47,110,110,-402.652,94.652,-65.953,142);
 INSERT INTO `mob_spawn_points` VALUES (17346950,0,'Keeneyed_Aufwuf','Keeneyed Aufwuf',48,110,110,-400.079,94.386,-64.795,41);
@@ -57457,24 +57461,29 @@ INSERT INTO `mob_spawn_points` VALUES (17375626,0,'Domovoi','Domovoi',57,0,0,0.0
 INSERT INTO `mob_spawn_points` VALUES (17375627,0,'Domovoi','Domovoi',57,0,0,0.000,0.000,0.000,0);
 
 -- *Divine Punishers (SKC20)
-INSERT INTO `mob_spawn_points` VALUES (17375629,0,'Voo_Tolu_the_Ghostfist','Voo Tolu the Ghostfist',58,110,110,-138.132,55.463,-216.736,218);
-INSERT INTO `mob_spawn_points` VALUES (17375630,0,'Cuu_Doko_the_Blizzard','Cuu Doko the Blizzard',59,110,110,-137.011,55.576,-215.020,208);
-INSERT INTO `mob_spawn_points` VALUES (17375631,0,'Zuu_Xowu_the_Darksmoke','Zuu Xowu the Darksmoke',60,110,110,-142.867,56.237,-225.346,85);
-INSERT INTO `mob_spawn_points` VALUES (17375632,0,'Gii_Jaha_the_Raucous','Gii Jaha the Raucous',61,110,110,-139.866,55.463,-216.089,116);
-INSERT INTO `mob_spawn_points` VALUES (17375633,0,'Aa_Nawu_the_Thunderblade','Aa Nawu the Thunderblade',62,110,110,-139.477,55.435,-215.723,118);
-INSERT INTO `mob_spawn_points` VALUES (17375634,0,'Yoo_Mihi_the_Haze','Yoo Mihi the Haze',63,110,110,-141.960,56.144,-222.270,83);
-INSERT INTO `mob_spawn_points` VALUES (17375636,0,'Voo_Tolu_the_Ghostfist','Voo Tolu the Ghostfist',58,110,110,-144.047,55.655,-215.276,222);
-INSERT INTO `mob_spawn_points` VALUES (17375637,0,'Cuu_Doko_the_Blizzard','Cuu Doko the Blizzard',59,110,110,-137.073,55.291,-209.563,247);
-INSERT INTO `mob_spawn_points` VALUES (17375638,0,'Zuu_Xowu_the_Darksmoke','Zuu Xowu the Darksmoke',60,110,110,-144.381,55.662,-217.978,141);
-INSERT INTO `mob_spawn_points` VALUES (17375639,0,'Gii_Jaha_the_Raucous','Gii Jaha the Raucous',61,110,110,-146.999,55.755,-224.474,191);
-INSERT INTO `mob_spawn_points` VALUES (17375640,0,'Aa_Nawu_the_Thunderblade','Aa Nawu the Thunderblade',62,110,110,-144.860,55.557,-219.601,127);
-INSERT INTO `mob_spawn_points` VALUES (17375641,0,'Yoo_Mihi_the_Haze','Yoo Mihi the Haze',63,110,110,-141.009,56.144,-219.962,175);
-INSERT INTO `mob_spawn_points` VALUES (17375643,0,'Voo_Tolu_the_Ghostfist','Voo Tolu the Ghostfist',58,110,110,-135.378,55.591,-215.483,240);
-INSERT INTO `mob_spawn_points` VALUES (17375644,0,'Cuu_Doko_the_Blizzard','Cuu Doko the Blizzard',59,110,110,-130.676,55.352,-213.588,235);
-INSERT INTO `mob_spawn_points` VALUES (17375645,0,'Zuu_Xowu_the_Darksmoke','Zuu Xowu the Darksmoke',60,110,110,-143.032,56.240,-224.604,62);
-INSERT INTO `mob_spawn_points` VALUES (17375646,0,'Gii_Jaha_the_Raucous','Gii Jaha the Raucous',61,110,110,-138.212,55.319,-213.089,163);
-INSERT INTO `mob_spawn_points` VALUES (17375647,0,'Aa_Nawu_the_Thunderblade','Aa Nawu the Thunderblade',62,110,110,-138.314,55.450,-216.476,98);
-INSERT INTO `mob_spawn_points` VALUES (17375648,0,'Yoo_Mihi_the_Haze','Yoo Mihi the Haze',63,110,110,-141.682,56.144,-221.641,185);
+-- 3x2 grid: front row Z=-214 (south end), back row Z=-221, 4-unit X spacing, rot=0 (facing north/entrance)
+-- All arenas share the same physical space; Y~55.7
+-- Arena 1
+INSERT INTO `mob_spawn_points` VALUES (17375629,0,'Voo_Tolu_the_Ghostfist','Voo Tolu the Ghostfist',58,110,110,-136.000,55.700,-214.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375630,0,'Cuu_Doko_the_Blizzard','Cuu Doko the Blizzard',59,110,110,-140.000,55.700,-214.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375631,0,'Zuu_Xowu_the_Darksmoke','Zuu Xowu the Darksmoke',60,110,110,-144.000,55.700,-214.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375632,0,'Gii_Jaha_the_Raucous','Gii Jaha the Raucous',61,110,110,-136.000,55.700,-221.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375633,0,'Aa_Nawu_the_Thunderblade','Aa Nawu the Thunderblade',62,110,110,-140.000,55.700,-221.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375634,0,'Yoo_Mihi_the_Haze','Yoo Mihi the Haze',63,110,110,-144.000,55.700,-221.000,0);
+-- Arena 2
+INSERT INTO `mob_spawn_points` VALUES (17375636,0,'Voo_Tolu_the_Ghostfist','Voo Tolu the Ghostfist',58,110,110,-136.000,55.700,-214.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375637,0,'Cuu_Doko_the_Blizzard','Cuu Doko the Blizzard',59,110,110,-140.000,55.700,-214.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375638,0,'Zuu_Xowu_the_Darksmoke','Zuu Xowu the Darksmoke',60,110,110,-144.000,55.700,-214.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375639,0,'Gii_Jaha_the_Raucous','Gii Jaha the Raucous',61,110,110,-136.000,55.700,-221.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375640,0,'Aa_Nawu_the_Thunderblade','Aa Nawu the Thunderblade',62,110,110,-140.000,55.700,-221.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375641,0,'Yoo_Mihi_the_Haze','Yoo Mihi the Haze',63,110,110,-144.000,55.700,-221.000,0);
+-- Arena 3
+INSERT INTO `mob_spawn_points` VALUES (17375643,0,'Voo_Tolu_the_Ghostfist','Voo Tolu the Ghostfist',58,110,110,-136.000,55.700,-214.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375644,0,'Cuu_Doko_the_Blizzard','Cuu Doko the Blizzard',59,110,110,-140.000,55.700,-214.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375645,0,'Zuu_Xowu_the_Darksmoke','Zuu Xowu the Darksmoke',60,110,110,-144.000,55.700,-214.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375646,0,'Gii_Jaha_the_Raucous','Gii Jaha the Raucous',61,110,110,-136.000,55.700,-221.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375647,0,'Aa_Nawu_the_Thunderblade','Aa Nawu the Thunderblade',62,110,110,-140.000,55.700,-221.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17375648,0,'Yoo_Mihi_the_Haze','Yoo Mihi the Haze',63,110,110,-144.000,55.700,-221.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17375650,0,'Voo_Tolu_the_Ghostfist','Voo Tolu the Ghostfist',58,110,110,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17375651,0,'Cuu_Doko_the_Blizzard','Cuu Doko the Blizzard',59,110,110,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17375652,0,'Zuu_Xowu_the_Darksmoke','Zuu Xowu the Darksmoke',60,110,110,0.000,0.000,0.000,0);
@@ -62296,24 +62305,27 @@ INSERT INTO `mob_spawn_points` VALUES (17444937,0,'Puffy_Marshmaw','Puffy Marshm
 INSERT INTO `mob_spawn_points` VALUES (17444938,0,'Slimey_Simeon','Slimey Simeon',20,0,0,0.000,0.000,0.000,0);
 
 -- *Jungle Boogymen (SKC20)
-INSERT INTO `mob_spawn_points` VALUES (17444940,0,'Sable-tongued_Gonberry','Sable-tongued Gonberry',21,110,110,-272.878,-32.500,326.971,32);
-INSERT INTO `mob_spawn_points` VALUES (17444941,0,'Virid-faced_Shanberry','Virid-faced Shanberry',22,110,110,-276.878,-32.500,333.899,32);
-INSERT INTO `mob_spawn_points` VALUES (17444942,0,'Cyaneous-toed_Yallberry','Cyaneous-toed Yallberry',23,110,110,-284.878,-32.500,333.899,32);
-INSERT INTO `mob_spawn_points` VALUES (17444943,0,'Vermilion-eared_Noberry','Vermilion-eared Noberry',24,110,110,-288.878,-32.500,326.971,32);
-INSERT INTO `mob_spawn_points` VALUES (17444945,0,'Tonberrys_Elemental','Tonberry\'s Elemental',4,110,110,-276.878,-32.500,320.043,32);
-INSERT INTO `mob_spawn_points` VALUES (17444946,0,'Tonberrys_Avatar','Tonberry\'s Avatar',5,110,110,-272.878,-32.500,326.971,32);
-INSERT INTO `mob_spawn_points` VALUES (17444947,0,'Sable-tongued_Gonberry','Sable-tongued Gonberry',21,110,110,6.906,-0.500,47.607,32);
-INSERT INTO `mob_spawn_points` VALUES (17444948,0,'Virid-faced_Shanberry','Virid-faced Shanberry',22,110,110,2.906,-0.500,54.535,32);
-INSERT INTO `mob_spawn_points` VALUES (17444949,0,'Cyaneous-toed_Yallberry','Cyaneous-toed Yallberry',23,110,110,-5.094,-0.500,54.535,32);
-INSERT INTO `mob_spawn_points` VALUES (17444950,0,'Vermilion-eared_Noberry','Vermilion-eared Noberry',24,110,110,-9.094,-0.500,47.607,32);
-INSERT INTO `mob_spawn_points` VALUES (17444952,0,'Tonberrys_Elemental','Tonberry\'s Elemental',4,110,110,2.906,-0.500,40.679,32);
-INSERT INTO `mob_spawn_points` VALUES (17444953,0,'Tonberrys_Avatar','Tonberry\'s Avatar',5,110,110,6.906,-0.500,47.607,32);
-INSERT INTO `mob_spawn_points` VALUES (17444954,0,'Sable-tongued_Gonberry','Sable-tongued Gonberry',21,110,110,289.130,31.500,-273.224,32);
-INSERT INTO `mob_spawn_points` VALUES (17444955,0,'Virid-faced_Shanberry','Virid-faced Shanberry',22,110,110,285.130,31.500,-266.296,32);
-INSERT INTO `mob_spawn_points` VALUES (17444956,0,'Cyaneous-toed_Yallberry','Cyaneous-toed Yallberry',23,110,110,277.130,31.500,-266.296,32);
-INSERT INTO `mob_spawn_points` VALUES (17444957,0,'Vermilion-eared_Noberry','Vermilion-eared Noberry',24,110,110,273.130,31.500,-273.224,32);
-INSERT INTO `mob_spawn_points` VALUES (17444959,0,'Tonberrys_Elemental','Tonberry\'s Elemental',4,110,110,285.130,31.500,-280.152,32);
-INSERT INTO `mob_spawn_points` VALUES (17444960,0,'Tonberrys_Avatar','Tonberry\'s Avatar',5,110,110,289.130,31.500,-273.224,32);
+-- Arena 1 (y=-32.5): east-west line at Z=330, rot=128 (facing south/entrance), Elemental centred behind, Avatar further back
+INSERT INTO `mob_spawn_points` VALUES (17444940,0,'Sable-tongued_Gonberry','Sable-tongued Gonberry',21,110,110,-272.000,-32.500,330.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444941,0,'Virid-faced_Shanberry','Virid-faced Shanberry',22,110,110,-277.000,-32.500,330.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444942,0,'Cyaneous-toed_Yallberry','Cyaneous-toed Yallberry',23,110,110,-282.000,-32.500,330.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444943,0,'Vermilion-eared_Noberry','Vermilion-eared Noberry',24,110,110,-287.000,-32.500,330.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444945,0,'Tonberrys_Elemental','Tonberry\'s Elemental',4,110,110,-279.500,-32.500,336.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444946,0,'Tonberrys_Avatar','Tonberry\'s Avatar',5,110,110,-279.500,-32.500,342.000,128);
+-- Arena 2 (y=-0.5): east-west line at Z=52, rot=128 (facing south/entrance), Elemental centred behind, Avatar further back
+INSERT INTO `mob_spawn_points` VALUES (17444947,0,'Sable-tongued_Gonberry','Sable-tongued Gonberry',21,110,110,6.000,-0.500,52.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444948,0,'Virid-faced_Shanberry','Virid-faced Shanberry',22,110,110,1.000,-0.500,52.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444949,0,'Cyaneous-toed_Yallberry','Cyaneous-toed Yallberry',23,110,110,-4.000,-0.500,52.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444950,0,'Vermilion-eared_Noberry','Vermilion-eared Noberry',24,110,110,-9.000,-0.500,52.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444952,0,'Tonberrys_Elemental','Tonberry\'s Elemental',4,110,110,-1.500,-0.500,58.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444953,0,'Tonberrys_Avatar','Tonberry\'s Avatar',5,110,110,-1.500,-0.500,64.000,128);
+-- Arena 3 (y=31.5): east-west line at Z=-270, rot=128 (facing south/entrance), Elemental centred behind, Avatar further back
+INSERT INTO `mob_spawn_points` VALUES (17444954,0,'Sable-tongued_Gonberry','Sable-tongued Gonberry',21,110,110,289.000,31.500,-270.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444955,0,'Virid-faced_Shanberry','Virid-faced Shanberry',22,110,110,284.000,31.500,-270.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444956,0,'Cyaneous-toed_Yallberry','Cyaneous-toed Yallberry',23,110,110,279.000,31.500,-270.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444957,0,'Vermilion-eared_Noberry','Vermilion-eared Noberry',24,110,110,274.000,31.500,-270.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444959,0,'Tonberrys_Elemental','Tonberry\'s Elemental',4,110,110,281.500,31.500,-264.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17444960,0,'Tonberrys_Avatar','Tonberry\'s Avatar',5,110,110,281.500,31.500,-258.000,128);
 INSERT INTO `mob_spawn_points` VALUES (17444961,0,'Sable-tongued_Gonberry','Sable-tongued Gonberry',21,110,110,-272.878,-32.500,326.971,32);
 INSERT INTO `mob_spawn_points` VALUES (17444962,0,'Virid-faced_Shanberry','Virid-faced Shanberry',22,110,110,-276.878,-32.500,333.899,32);
 INSERT INTO `mob_spawn_points` VALUES (17444963,0,'Cyaneous-toed_Yallberry','Cyaneous-toed Yallberry',23,110,110,-284.878,-32.500,333.899,32);
@@ -62388,21 +62400,24 @@ INSERT INTO `mob_spawn_points` VALUES (17445043,0,'Tonberrys_Elemental','Tonberr
 INSERT INTO `mob_spawn_points` VALUES (17445044,0,'Tonberrys_Avatar','Tonberry\'s Avatar',5,0,0,0.000,0.000,0.000,0);
 
 -- *Amphibian Assault (SKC20)
-INSERT INTO `mob_spawn_points` VALUES (17445045,0,'Qull_the_Fallstopper','Qull the Fallstopper',27,110,110,-272.878,-32.500,326.971,32);
-INSERT INTO `mob_spawn_points` VALUES (17445046,0,'Rauu_the_Whaleswooner','Rauu the Whaleswooner',28,110,110,-278.406,-32.500,334.579,32);
-INSERT INTO `mob_spawn_points` VALUES (17445047,0,'Hyohh_the_Conchblower','Hyohh the Conchblower',29,110,110,-287.350,-32.500,331.673,32);
-INSERT INTO `mob_spawn_points` VALUES (17445048,0,'Pevv_the_Riverleaper','Pevv the Riverleaper',30,110,110,-287.350,-32.500,322.269,32);
-INSERT INTO `mob_spawn_points` VALUES (17445050,0,'Sahagins_Wyvern','Sahagin\'s Wyvern',31,110,110,-272.878,-32.500,326.971,32);
-INSERT INTO `mob_spawn_points` VALUES (17445051,0,'Qull_the_Fallstopper','Qull the Fallstopper',27,110,110,6.906,-0.500,47.607,32);
-INSERT INTO `mob_spawn_points` VALUES (17445052,0,'Rauu_the_Whaleswooner','Rauu the Whaleswooner',28,110,110,1.378,-0.500,55.215,32);
-INSERT INTO `mob_spawn_points` VALUES (17445053,0,'Hyohh_the_Conchblower','Hyohh the Conchblower',29,110,110,-7.566,-0.500,52.309,32);
-INSERT INTO `mob_spawn_points` VALUES (17445054,0,'Pevv_the_Riverleaper','Pevv the Riverleaper',30,110,110,-7.566,-0.500,42.905,32);
-INSERT INTO `mob_spawn_points` VALUES (17445056,0,'Sahagins_Wyvern','Sahagin\'s Wyvern',31,110,110,6.906,-0.500,47.607,32);
-INSERT INTO `mob_spawn_points` VALUES (17445057,0,'Qull_the_Fallstopper','Qull the Fallstopper',27,110,110,289.130,31.500,-273.224,32);
-INSERT INTO `mob_spawn_points` VALUES (17445058,0,'Rauu_the_Whaleswooner','Rauu the Whaleswooner',28,110,110,283.602,31.500,-265.616,32);
-INSERT INTO `mob_spawn_points` VALUES (17445059,0,'Hyohh_the_Conchblower','Hyohh the Conchblower',29,110,110,274.658,31.500,-268.522,32);
-INSERT INTO `mob_spawn_points` VALUES (17445060,0,'Pevv_the_Riverleaper','Pevv the Riverleaper',30,110,110,274.658,31.500,-277.926,32);
-INSERT INTO `mob_spawn_points` VALUES (17445062,0,'Sahagins_Wyvern','Sahagin\'s Wyvern',31,110,110,289.130,31.500,-273.224,32);
+-- Arena 1 (y=-32.5): east-west line at Z=330, rot=128 (facing south/entrance), Wyvern centred 6 units behind
+INSERT INTO `mob_spawn_points` VALUES (17445045,0,'Qull_the_Fallstopper','Qull the Fallstopper',27,110,110,-272.000,-32.500,330.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17445046,0,'Rauu_the_Whaleswooner','Rauu the Whaleswooner',28,110,110,-277.000,-32.500,330.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17445047,0,'Hyohh_the_Conchblower','Hyohh the Conchblower',29,110,110,-282.000,-32.500,330.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17445048,0,'Pevv_the_Riverleaper','Pevv the Riverleaper',30,110,110,-287.000,-32.500,330.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17445050,0,'Sahagins_Wyvern','Sahagin\'s Wyvern',31,110,110,-279.500,-32.500,336.000,128);
+-- Arena 2 (y=-0.5): east-west line at Z=52, rot=128 (facing south/entrance), Wyvern centred 6 units behind
+INSERT INTO `mob_spawn_points` VALUES (17445051,0,'Qull_the_Fallstopper','Qull the Fallstopper',27,110,110,6.000,-0.500,52.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17445052,0,'Rauu_the_Whaleswooner','Rauu the Whaleswooner',28,110,110,1.000,-0.500,52.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17445053,0,'Hyohh_the_Conchblower','Hyohh the Conchblower',29,110,110,-4.000,-0.500,52.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17445054,0,'Pevv_the_Riverleaper','Pevv the Riverleaper',30,110,110,-9.000,-0.500,52.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17445056,0,'Sahagins_Wyvern','Sahagin\'s Wyvern',31,110,110,-1.500,-0.500,58.000,128);
+-- Arena 3 (y=31.5): east-west line at Z=-270, rot=128 (facing south/entrance), Wyvern centred 6 units behind
+INSERT INTO `mob_spawn_points` VALUES (17445057,0,'Qull_the_Fallstopper','Qull the Fallstopper',27,110,110,289.000,31.500,-270.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17445058,0,'Rauu_the_Whaleswooner','Rauu the Whaleswooner',28,110,110,284.000,31.500,-270.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17445059,0,'Hyohh_the_Conchblower','Hyohh the Conchblower',29,110,110,279.000,31.500,-270.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17445060,0,'Pevv_the_Riverleaper','Pevv the Riverleaper',30,110,110,274.000,31.500,-270.000,128);
+INSERT INTO `mob_spawn_points` VALUES (17445062,0,'Sahagins_Wyvern','Sahagin\'s Wyvern',31,110,110,281.500,31.500,-264.000,128);
 INSERT INTO `mob_spawn_points` VALUES (17445063,0,'Qull_the_Fallstopper','Qull the Fallstopper',27,110,110,-272.878,-32.500,326.971,32);
 INSERT INTO `mob_spawn_points` VALUES (17445064,0,'Rauu_the_Whaleswooner','Rauu the Whaleswooner',28,110,110,-278.406,-32.500,334.579,32);
 INSERT INTO `mob_spawn_points` VALUES (17445065,0,'Hyohh_the_Conchblower','Hyohh the Conchblower',29,110,110,-287.350,-32.500,331.673,32);
@@ -62977,19 +62992,19 @@ INSERT INTO `mob_spawn_points` VALUES (17453133,0,'Duke_Amduscias','Duke Amdusci
 INSERT INTO `mob_spawn_points` VALUES (17453134,0,'Count_Andromalius','Count Andromalius',18,110,110,-468.527,-167.580,-234.648,0);
 INSERT INTO `mob_spawn_points` VALUES (17453135,0,'Duke_Dantalian','Duke Dantalian',19,110,110,-472.527,-167.580,-241.576,0);
 INSERT INTO `mob_spawn_points` VALUES (17453137,0,'Demons_Elemental','Demon\'s Elemental',10,110,110,-460.527,-167.580,-248.504,0);
-INSERT INTO `mob_spawn_points` VALUES (17453138,0,'Demons_Avatar','Demon\'s Avatar',11,110,110,-456.527,-167.580,-241.576,0);
+INSERT INTO `mob_spawn_points` VALUES (17453138,0,'Demons_Avatar','Demon\'s Avatar',11,110,110,-464.527,-167.580,-241.576,0);
 INSERT INTO `mob_spawn_points` VALUES (17453139,0,'Grand_Marquis_Chomiel','Grand Marquis Chomiel',16,110,110,-776.527,-407.580,-481.576,0);
 INSERT INTO `mob_spawn_points` VALUES (17453140,0,'Duke_Amduscias','Duke Amduscias',17,110,110,-780.527,-407.580,-474.648,0);
 INSERT INTO `mob_spawn_points` VALUES (17453141,0,'Count_Andromalius','Count Andromalius',18,110,110,-788.527,-407.580,-474.648,0);
 INSERT INTO `mob_spawn_points` VALUES (17453142,0,'Duke_Dantalian','Duke Dantalian',19,110,110,-792.527,-407.580,-481.576,0);
 INSERT INTO `mob_spawn_points` VALUES (17453144,0,'Demons_Elemental','Demon\'s Elemental',10,110,110,-780.527,-407.580,-488.504,0);
-INSERT INTO `mob_spawn_points` VALUES (17453145,0,'Demons_Avatar','Demon\'s Avatar',11,110,110,-776.527,-407.580,-481.576,0);
+INSERT INTO `mob_spawn_points` VALUES (17453145,0,'Demons_Avatar','Demon\'s Avatar',11,110,110,-784.527,-407.580,-481.576,0);
 INSERT INTO `mob_spawn_points` VALUES (17453146,0,'Grand_Marquis_Chomiel','Grand Marquis Chomiel',16,110,110,-1096.527,-647.580,-721.576,0);
 INSERT INTO `mob_spawn_points` VALUES (17453147,0,'Duke_Amduscias','Duke Amduscias',17,110,110,-1100.527,-647.580,-714.648,0);
 INSERT INTO `mob_spawn_points` VALUES (17453148,0,'Count_Andromalius','Count Andromalius',18,110,110,-1108.527,-647.580,-714.648,0);
 INSERT INTO `mob_spawn_points` VALUES (17453149,0,'Duke_Dantalian','Duke Dantalian',19,110,110,-1112.527,-647.580,-721.576,0);
 INSERT INTO `mob_spawn_points` VALUES (17453151,0,'Demons_Elemental','Demon\'s Elemental',10,110,110,-1100.527,-647.580,-728.504,0);
-INSERT INTO `mob_spawn_points` VALUES (17453152,0,'Demons_Avatar','Demon\'s Avatar',11,110,110,-1096.527,-647.580,-721.576,0);
+INSERT INTO `mob_spawn_points` VALUES (17453152,0,'Demons_Avatar','Demon\'s Avatar',11,110,110,-1104.527,-647.580,-721.576,0);
 INSERT INTO `mob_spawn_points` VALUES (17453153,0,'Grand_Marquis_Chomiel','Grand Marquis Chomiel',16,110,110,-456.527,-167.580,-241.576,0);
 INSERT INTO `mob_spawn_points` VALUES (17453154,0,'Duke_Amduscias','Duke Amduscias',17,110,110,-460.527,-167.580,-234.648,0);
 INSERT INTO `mob_spawn_points` VALUES (17453155,0,'Count_Andromalius','Count Andromalius',18,110,110,-468.527,-167.580,-234.648,0);
