@@ -14,6 +14,9 @@ end
 
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
+
+    -- Wiki notes Excenmille (S) possesses a form of Regain, but the exact value is verification-needed.
+    mob:addMod(xi.mod.REGAIN, 25)
 end
 
 spellObject.onMobDespawn = function(mob)
