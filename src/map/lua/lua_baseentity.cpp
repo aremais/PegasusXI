@@ -18034,7 +18034,7 @@ void CLuaBaseEntity::setNpcAlwaysRelevant(bool alwaysRelevant)
         return;
     }
 
-    auto* PNpc = dynamic_cast<CNpcEntity*>(m_PBaseEntity);
+    auto* PNpc = static_cast<CNpcEntity*>(m_PBaseEntity);
 
     if (PNpc != nullptr)
     {
