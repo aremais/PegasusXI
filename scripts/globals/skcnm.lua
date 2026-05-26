@@ -230,24 +230,19 @@ function SKCNMBattlefield.onEntryTrade(player, npc, trade, onUpdate)
     local zoneId   = player:getZoneID()
     local contents = xi.battlefield.contentsByZone[zoneId]
 
+    -- Check whether the traded Macrocosmic Orb has already been cracked.
+    -- We use printToPlayer instead of messageSpecial(ORB_IS_CRACKED, itemId)
+    -- because item 4063 resolves to "bureau" in vanilla client DATs.
     for _, content in ipairs(contents) do
         if
             #content.requiredItems > 0 and
-            content.requiredItems.wornMessage and
             npcUtil.tradeHas(trade, content.tradeItems)
         then
             local itemId    = content.requiredItems[1]
             local totalUses = xi.battlefield.itemUses[itemId] or 1
 
             if player:getWornUses(itemId) >= totalUses then
-                if type(content.requiredItems.wornMessage) == 'table' then
-                    player:messageSpecial(unpack(content.requiredItems.wornMessage))
-                elseif totalUses > 1 then
-                    player:messageSpecial(content.requiredItems.wornMessage, itemId)
-                else
-                    player:messageSpecial(content.requiredItems.wornMessage, 0, 0, 0, itemId)
-                end
-
+                player:printToPlayer('The Macrocosmic Orb no longer contains a monster.', xi.msg.channel.NS_SAY)
                 return
             end
         end
@@ -267,6 +262,7 @@ function SKCNMBattlefield.onEntryTrade(player, npc, trade, onUpdate)
         if noEntryMsg then
             player:messageSpecial(noEntryMsg)
         end
+
         return
     end
 
@@ -321,6 +317,11 @@ function SKCNMBattlefield:battlefieldEntry(player, battlefield)
 
     local label   = difficultyLabels[diffIndex] or 'Normal'
     local players = battlefield:getPlayers()
+
+    -- Custom wear message shown to the initiator.
+    -- Replaces messageSpecial(A_CRACK_HAS_FORMED, 0, 0, 0, 4063) which renders
+    -- "bureau" in the client because item 4063 conflicts with a vanilla furniture ID.
+    player:printToPlayer('A crack forms on the Macrocosmic Orb. The beast within has been unleashed!', xi.msg.channel.NS_SAY)
 
     for _, member in ipairs(players) do
         member:printToPlayer('Difficulty: ' .. label .. '.', xi.msg.channel.NS_SAY)

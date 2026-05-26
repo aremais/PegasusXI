@@ -15,7 +15,7 @@ local content = SKCNMBattlefield:new({
     index         = 6,
     entryNpc      = '_4j0',
     exitNpcs      = { '_4j2', '_4j3', '_4j4' },
-    requiredItems = { xi.item.MACROCOSMIC_ORB, wearMessage = sacrificialChamberID.text.A_CRACK_HAS_FORMED, wornMessage = sacrificialChamberID.text.ORB_IS_CRACKED },
+    requiredItems = { xi.item.MACROCOSMIC_ORB }, -- wear/worn messages handled centrally in skcnm.lua
 })
 
 -- Win only when all Sahagin AND the wyvern (if alive) are dead.

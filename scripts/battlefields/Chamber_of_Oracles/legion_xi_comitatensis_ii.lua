@@ -15,7 +15,7 @@ local content = SKCNMBattlefield:new({
     index         = 10,
     entryNpc      = 'SC_Entrance',
     exitNpc       = 'Shimmering_Circle',
-    requiredItems = { xi.item.MACROCOSMIC_ORB, wearMessage = chamberOfOraclesID.text.A_CRACK_HAS_FORMED, wornMessage = chamberOfOraclesID.text.ORB_IS_CRACKED },
+    requiredItems = { xi.item.MACROCOSMIC_ORB }, -- wear/worn messages handled centrally in skcnm.lua
 })
 
 content.groups =
