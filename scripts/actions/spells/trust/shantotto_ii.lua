@@ -18,9 +18,10 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.TARGET, { ai.c.MB_AVAILABLE, 0 }, { ai.r.MA, ai.s.MB_ELEMENT, xi.magic.spellFamily.NONE })
     mob:addGambit(ai.t.TARGET, { ai.c.NOT_SC_AVAILABLE, 0 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.NONE }, 45)
 
-    local trustLevel  = mob:getMainLvl()
-    local power       = trustLevel / 10
-    local spellDamage = math.floor(trustLevel * 1.5)
+    local trustLevel             = mob:getMainLvl()
+    local power                  = trustLevel / 10
+    local spellDamage            = math.floor(trustLevel * 1.25)
+    local meleeAttackReduction   = trustLevel
 
     mob:addMod(xi.mod.MATT, power)
     mob:addMod(xi.mod.MACC, power)
@@ -28,6 +29,10 @@ spellObject.onMobSpawn = function(mob)
 
     -- Shantotto's tier I spells scale up to mimic tier 2, 3, etc, spells.
     mob:addMod(xi.mod.MAGIC_DAMAGE, spellDamage)
+
+    -- Reduce melee attack power while preserving Shantotto II's retail-like
+    -- 100% accurate typeless physical auto-attacks.
+    mob:addMod(xi.mod.ATT, -meleeAttackReduction)
 
     -- Shantotto has 100% melee hit rate always.
     -- TODO: Add support for 'perfect accuracy' in c++ land and stop hacking her accuracy.
