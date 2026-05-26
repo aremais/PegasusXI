@@ -48,7 +48,7 @@ local lootTable =
 content.groups =
 {
     {
-        mobs = { 'Diabolos' },
+        mobs = { 'Diabolos_HTBF' },
         allDeath = function(battlefield, mob)
             local diff = battlefield:getLocalVar('HTBF_Difficulty')
 
@@ -62,7 +62,7 @@ content.groups =
 
             xi.htbf.onWin(battlefield, {
                 battlefieldId = xi.battlefield.id.WAKING_DREAMS_HTBF,
-                chapterItemId = xi.item.REMS_TALE_CH_8,
+                chapterItemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_8,
                 mob           = mob,
                 lootTable     = lootTable,
             })

@@ -105,7 +105,7 @@ end
 --
 -- params = {
 --   battlefieldId : xi.battlefield.id constant for this fight
---   chapterItemId : xi.item.REMS_TALE_CH_X for this fight
+--   chapterItemId : xi.item.COPY_OF_REMS_TALE_CHAPTER_X for this fight
 --   mob           : the mob reference passed into allDeath (loot anchor)
 --   lootTable     : content.loot table (may be nil for fights with no
 --                   treasure pool drops such as Alexander/Odin/Cait Sith)

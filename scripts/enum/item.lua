@@ -12317,18 +12317,6 @@ xi.item =
     MOOGLE_STORAGE_SLIP_32              = 29343,
     MOOGLE_STORAGE_SLIP_33              = 29344,
 
-    -- ── High-Tier Mission Battlefield rewards ─────────────────────────────────
-    REMS_TALE_CH_1                      = 29345,
-    REMS_TALE_CH_2                      = 29346,
-    REMS_TALE_CH_3                      = 29347,
-    REMS_TALE_CH_4                      = 29348,
-    REMS_TALE_CH_5                      = 29349,
-    REMS_TALE_CH_6                      = 29350,
-    REMS_TALE_CH_7                      = 29351,
-    REMS_TALE_CH_8                      = 29352,
-    REMS_TALE_CH_9                      = 29353,
-    REMS_TALE_CH_10                     = 29354,
-
     -- ── HTBF unique equipment ─────────────────────────────────────────────────
     MALIYAKALEYA_CORAL                  = 29359, -- shared unique material drop
     HEPATIZON_ORE                       = 29360, -- shared unique material drop
