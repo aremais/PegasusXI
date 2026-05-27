@@ -62,7 +62,7 @@ content.groups =
 
             xi.htbf.onWin(battlefield, {
                 battlefieldId = xi.battlefield.id.TRIAL_BY_LIGHTNING_HTBF,
-                chapterItemId = xi.item.REMS_TALE_CH_7,
+                chapterItemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_7,
                 mob           = mob,
                 lootTable     = lootTable,
             })

@@ -811,6 +811,7 @@ public:
     void SetEffectType(uint16 Type);
     void SetEffectSlot(uint8 Slot);
     void SetIcon(uint16 Icon);
+    void SetSubIcon(uint16 subIcon);
     auto SetSource(uint16 sourceType, uint32 sourceTypeParam) -> void;
     void SetPower(uint16 Power);
     void SetSubPower(uint16 subPower);

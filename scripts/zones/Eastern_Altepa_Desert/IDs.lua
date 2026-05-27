@@ -8,10 +8,10 @@ zones[xi.zone.EASTERN_ALTEPA_DESERT] =
     text =
     {
         ITEM_CANNOT_BE_OBTAINED       = 6385,  -- You cannot obtain the <item>. Come back after sorting your inventory.
-        ITEM_OBTAINED                 = 6393,  -- Obtained: <item>.
-        GIL_OBTAINED                  = 6394,  -- Obtained <number> gil.
-        KEYITEM_OBTAINED              = 6396,  -- Obtained key item: <keyitem>.
-        KEYITEM_LOST                  = 6397,  -- Lost key item: <keyitem>.
+        ITEM_OBTAINED                 = 6391,  -- Obtained: <item>.
+        GIL_OBTAINED                  = 6392,  -- Obtained <number> gil.
+        KEYITEM_OBTAINED              = 6394,  -- Obtained key item: <keyitem>.
+        KEYITEM_LOST                  = 6395,  -- Lost key item: <keyitem>.
         NOTHING_OUT_OF_ORDINARY       = 6407,  -- There is nothing out of the ordinary here.
         SENSE_OF_FOREBODING           = 6408,  -- You are suddenly overcome with a sense of foreboding...
         FELLOW_MESSAGE_OFFSET         = 6422,  -- I'm ready. I suppose.

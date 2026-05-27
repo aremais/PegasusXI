@@ -6,18 +6,78 @@ require('scripts/globals/npc_util')
 xi = xi or {}
 xi.nolanShop = xi.nolanShop or {}
 
-local function buyEschalixir(player, itemId, cost)
+local eschalixirExchange =
+{
+    {
+        label = 'Eschalixir',
+        item  = xi.item.ESCHALIXIR,
+        cost  = 10,
+    },
+    {
+        label = '+1',
+        item  = xi.item.ESCHALIXIR_P1,
+        cost  = 50,
+    },
+    {
+        label = '+2',
+        item  = xi.item.ESCHALIXIR_P2,
+        cost  = 2000,
+    },
+}
+
+local function showPrices(player)
+    player:printToPlayer('Eschalixir: 10 beads.', xi.msg.channel.NS_SAY)
+    player:printToPlayer('Eschalixir +1: 50 beads.', xi.msg.channel.NS_SAY)
+    player:printToPlayer('Eschalixir +2: 2000 beads.', xi.msg.channel.NS_SAY)
+end
+
+local function buyEschalixir(player, exchange)
     local beads = player:getCurrency('escha_beads') or 0
 
-    if beads < cost then
-        player:printToPlayer(string.format('You need %u Escha Beads.', cost), xi.msg.channel.NS_SAY)
+    if beads < exchange.cost then
+        player:printToPlayer(string.format('You need %u Escha Beads.', exchange.cost), xi.msg.channel.NS_SAY)
         return
     end
 
-    if npcUtil.giveItem(player, { { itemId, 1 } }) then
-        player:delCurrency('escha_beads', cost)
-        player:printToPlayer(string.format('Nolan accepts %u Escha Beads.', cost), xi.msg.channel.NS_SAY)
+    if npcUtil.giveItem(player, { { exchange.item, 1 } }) then
+        player:delCurrency('escha_beads', exchange.cost)
+        player:printToPlayer(string.format('Nolan accepts %u Escha Beads.', exchange.cost), xi.msg.channel.NS_SAY)
     end
+end
+
+local function openEschalixirMenu(player)
+    local menu =
+    {
+        title = 'Buy Eschalixirs',
+        options = {},
+    }
+
+    for _, entry in ipairs(eschalixirExchange) do
+        local exchange = entry
+
+        table.insert(menu.options, {
+            exchange.label,
+            function(p)
+                buyEschalixir(p, exchange)
+            end,
+        })
+    end
+
+    table.insert(menu.options, {
+        'Prices',
+        function(p)
+            showPrices(p)
+        end,
+    })
+
+    table.insert(menu.options, {
+        'Back',
+        function(p)
+            xi.nolanShop.onTrigger(p)
+        end,
+    })
+
+    player:customMenu(menu)
 end
 
 xi.nolanShop.onTrade = function(player, npc, trade)
@@ -39,27 +99,24 @@ xi.nolanShop.onTrigger = function(player, npc)
     player:printToPlayer('Another customer. Joy.', xi.msg.channel.NS_SAY)
 
     player:customMenu({
-        title = 'Buy Eschalixirs',
+        title = 'Nolan',
         options =
         {
             {
-                'Eschalixir',
+                'Mezzotinting',
                 function(p)
-                    buyEschalixir(p, xi.item.ESCHALIXIR, 10)
+                    p:printToPlayer('Trade eligible Escha equipment to begin.', xi.msg.channel.NS_SAY)
+                    p:printToPlayer('Mezzotinting is not ready yet.', xi.msg.channel.NS_SAY)
                 end,
             },
+
             {
-                '+1',
+                'Buy Eschalixirs',
                 function(p)
-                    buyEschalixir(p, xi.item.ESCHALIXIR_P1, 50)
+                    openEschalixirMenu(p)
                 end,
             },
-            {
-                '+2',
-                function(p)
-                    buyEschalixir(p, xi.item.ESCHALIXIR_P2, 2000)
-                end,
-            },
+
             {
                 'Cancel',
                 function(_)

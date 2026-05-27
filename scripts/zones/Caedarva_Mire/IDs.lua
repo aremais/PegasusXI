@@ -9,10 +9,9 @@ zones[xi.zone.CAEDARVA_MIRE] =
     {
         NOTHING_HAPPENS               = 119,  -- Nothing happens...
         ITEM_CANNOT_BE_OBTAINED       = 6385, -- You cannot obtain the <item>. Come back after sorting your inventory.
-        ITEM_OBTAINED                 = 6393, -- Obtained: <item>.
-        GIL_OBTAINED                  = 6394, -- Obtained <number> gil.
-        KEYITEM_OBTAINED              = 6396, -- Obtained key item: <keyitem>.
-        ITEMS_OBTAINED                = 6402, -- You obtain <number> <item>!
+        ITEM_OBTAINED                 = 6391, -- Obtained: <item>.
+        GIL_OBTAINED                  = 6392, -- Obtained <number> gil.
+        KEYITEM_OBTAINED              = 6394, -- Obtained key item: <keyitem>.
         WARHORSE_HOOFPRINT            = 6403, -- You find the hoofprint of a gigantic warhorse...
         WARHORSE_HOOFPRINT_SET        = 6404, -- You set the <keyitem> in the warhorse hoofprint.
         NOTHING_OUT_OF_ORDINARY       = 6407, -- There is nothing out of the ordinary here.

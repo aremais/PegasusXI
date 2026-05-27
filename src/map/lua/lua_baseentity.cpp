@@ -558,6 +558,83 @@ void CLuaBaseEntity::messageSpecial(uint16 messageID, sol::variadic_args va)
 }
 
 /************************************************************************
+ *  Function: messageItemObtained()
+ *  Purpose : Retail-style item obtain line; never uses GIL_OBTAINED or ID 0
+ *  Example : player:messageItemObtained(14893, 1)
+ *  Notes   : Returns false if zone text IDs are missing or unsafe
+ ************************************************************************/
+
+auto CLuaBaseEntity::messageItemObtained(uint16 itemId, const sol::object& quantityObj) -> bool
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowError("messageItemObtained called on non-PC entity (%s)", m_PBaseEntity->name.c_str());
+        return false;
+    }
+
+    const auto zoneId  = m_PBaseEntity->getZone();
+    const auto itemMsg = luautils::GetTextIDVariable(zoneId, "ITEM_OBTAINED");
+    const auto gilMsg  = luautils::GetTextIDVariable(zoneId, "GIL_OBTAINED");
+
+    if (itemMsg <= 0)
+    {
+        return false;
+    }
+
+    // GIL is normally ITEM_OBTAINED + 1; only reject if ITEM_OBTAINED is mis-set to the gil slot.
+    if (gilMsg > 0 && itemMsg == gilMsg)
+    {
+        ShowWarning("messageItemObtained: zone %u ITEM_OBTAINED (%d) equals GIL_OBTAINED (%d)", zoneId, itemMsg, gilMsg);
+        return false;
+    }
+
+    uint32 quantity = 1;
+    if (quantityObj != sol::lua_nil && quantityObj.is<uint32>())
+    {
+        quantity = quantityObj.as<uint32>();
+    }
+    else if (quantityObj != sol::lua_nil && quantityObj.is<int>())
+    {
+        const auto qty = quantityObj.as<int>();
+        if (qty > 0)
+        {
+            quantity = static_cast<uint32>(qty);
+        }
+    }
+
+    if (quantity == 0)
+    {
+        quantity = 1;
+    }
+
+    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
+
+    if (quantity > 1)
+    {
+        auto pluralMsg = luautils::GetTextIDVariable(zoneId, "ITEMS_OBTAINED");
+        if (pluralMsg <= 0)
+        {
+            pluralMsg = itemMsg + 9;
+        }
+
+        if (gilMsg > 0 && (pluralMsg == gilMsg || pluralMsg == itemMsg + 1))
+        {
+            pluralMsg = 0;
+        }
+
+        if (pluralMsg > 0)
+        {
+            PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK>(m_PBaseEntity, static_cast<uint16>(pluralMsg), itemId, quantity, 0, 0, false);
+            return true;
+        }
+    }
+
+    ShowInfo("messageItemObtained: %s zone %u msg %d item %u qty %u", m_PBaseEntity->name.c_str(), zoneId, itemMsg, itemId, quantity);
+    PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK>(m_PBaseEntity, static_cast<uint16>(itemMsg), itemId, 0, 0, 0, false);
+    return true;
+}
+
+/************************************************************************
  *  Function: messageSystem()
  *  Purpose : Sends a standard system message
  *  Example : player:messageSystem("Text")
@@ -14040,6 +14117,99 @@ sol::table CLuaBaseEntity::getNotorietyList()
 }
 
 /************************************************************************
+ *  Function: getMasterThreatMob(rangeOverride)
+ *  Purpose : Returns a mob in the master's notoriety list that threatens
+ *            the master's owner, preferring non-master-target mobs first.
+ *  Example : local target = entity:getMasterThreatMob(22)
+ *  Notes   : Intended for trust combat scripts that need efficient target
+ *            selection without Lua-side entity/enmity table iteration.
+ ************************************************************************/
+
+auto CLuaBaseEntity::getMasterThreatMob(const sol::object& rangeOverride) -> CBaseEntity*
+{
+    auto* PBattleEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
+    if (!PBattleEntity)
+    {
+        ShowWarning("Attempting to get master threat target for invalid entity type (%s).", m_PBaseEntity->getName());
+        return nullptr;
+    }
+
+    auto* PMaster = PBattleEntity->PMaster;
+
+    if (!PMaster)
+    {
+        return nullptr;
+    }
+
+    const auto maxDistance = rangeOverride.is<float>() ? rangeOverride.as<float>() : 22.0f;
+    auto*      PMastersTarget{ PMaster->GetEntity(PMaster->GetBattleTargetID()) };
+
+    auto isMasterTopEnmityOnMob = [PMaster](CMobEntity* PMob) -> bool
+    {
+        if (!PMob)
+        {
+            return false;
+        }
+
+        auto* enmityList = PMob->PEnmityContainer->GetEnmityList();
+        if (!enmityList)
+        {
+            return false;
+        }
+
+        CBattleEntity* PTopEntity = nullptr;
+        int32          topHate    = std::numeric_limits<int32>::min();
+
+        for (const auto& [_, enmityObject] : *enmityList)
+        {
+            if (!enmityObject.active || !enmityObject.PEnmityOwner || !enmityObject.PEnmityOwner->isAlive())
+            {
+                continue;
+            }
+
+            const auto totalHate = enmityObject.CE + enmityObject.VE;
+            if (totalHate > topHate)
+            {
+                topHate    = totalHate;
+                PTopEntity = enmityObject.PEnmityOwner;
+            }
+        }
+
+        return PTopEntity && PTopEntity->id == PMaster->id;
+    };
+
+    CMobEntity* threateningTarget = nullptr;
+
+    for (auto* entity : *PMaster->PNotorietyContainer)
+    {
+        auto* PMob = dynamic_cast<CMobEntity*>(entity);
+        if (!PMob || !PMob->isAlive() || distance(PMaster->loc.p, PMob->loc.p) > maxDistance)
+        {
+            continue;
+        }
+
+        auto* PTarget            = PMob->GetEntity(PMob->GetBattleTargetID());
+        bool  isTargetingMaster  = PTarget && PTarget->id == PMaster->id;
+        bool  masterHasTopEnmity = isMasterTopEnmityOnMob(PMob);
+
+        if (isTargetingMaster || masterHasTopEnmity)
+        {
+            if (!PMastersTarget || PMob->id != PMastersTarget->id)
+            {
+                return PMob;
+            }
+
+            if (!threateningTarget)
+            {
+                threateningTarget = PMob;
+            }
+        }
+    }
+
+    return threateningTarget;
+}
+
+/************************************************************************
  *  Function: clearEnmityForEntity(...)
  *  Purpose :
  *  Example : mob:clearEnmityForEntity(player)
@@ -17946,6 +18116,28 @@ void CLuaBaseEntity::setNpcFlags(uint32 flags)
 }
 
 /************************************************************************
+ *  Function: setNpcAlwaysRelevant()
+ *  Purpose : Set NPC such that it is always relevant to players regardless of distance
+ *  Example : npc:setNpcAlwaysRelevant(true)
+ *  Notes   :
+ ************************************************************************/
+
+void CLuaBaseEntity::setNpcAlwaysRelevant(bool alwaysRelevant)
+{
+    if (m_PBaseEntity->objtype != TYPE_NPC)
+    {
+        return;
+    }
+
+    auto* PNpc = static_cast<CNpcEntity*>(m_PBaseEntity);
+
+    if (PNpc != nullptr)
+    {
+        PNpc->m_alwaysRelevant = alwaysRelevant;
+    }
+}
+
+/************************************************************************
  *  Function: spawn()
  *  Purpose : Forces a mob to spawn with optional Despawn/Respawn values
  *  Example : mob:spawn(60,3600); mob:spawn()
@@ -18666,6 +18858,25 @@ auto CLuaBaseEntity::getCrystalElement() const -> ELEMENT
     }
 
     return static_cast<ELEMENT>(PMob->m_Element);
+}
+
+/************************************************************************
+ *  Function: setCrystalElement()
+ *  Purpose : Sets a mob crystal element
+ *  Example : mob:getCrystalElement(xi.element.FIRE)
+ *  Notes   :
+ ************************************************************************/
+void CLuaBaseEntity::setCrystalElement(ELEMENT crystalElement)
+{
+    auto* PMob = dynamic_cast<CMobEntity*>(m_PBaseEntity);
+
+    if (!PMob)
+    {
+        ShowWarning("Invalid Entity (NPC: %s) calling function.", m_PBaseEntity->getName());
+        return;
+    }
+
+    PMob->m_Element = crystalElement;
 }
 
 /************************************************************************
@@ -20265,6 +20476,7 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("messageName", CLuaBaseEntity::messageName);
     SOL_REGISTER("messagePublic", CLuaBaseEntity::messagePublic);
     SOL_REGISTER("messageSpecial", CLuaBaseEntity::messageSpecial);
+    SOL_REGISTER("messageItemObtained", CLuaBaseEntity::messageItemObtained);
     SOL_REGISTER("messageSystem", CLuaBaseEntity::messageSystem);
     SOL_REGISTER("messageCombat", CLuaBaseEntity::messageCombat);
     SOL_REGISTER("messageStandard", CLuaBaseEntity::messageStandard);
@@ -20857,6 +21069,7 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("hasClaim", CLuaBaseEntity::hasClaim);
     SOL_REGISTER("hasEnmity", CLuaBaseEntity::hasEnmity);
     SOL_REGISTER("getNotorietyList", CLuaBaseEntity::getNotorietyList);
+    SOL_REGISTER("getMasterThreatMob", CLuaBaseEntity::getMasterThreatMob);
     SOL_REGISTER("clearEnmityForEntity", CLuaBaseEntity::clearEnmityForEntity);
 
     // Status Effects
@@ -21038,6 +21251,7 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("setMobFlags", CLuaBaseEntity::setMobFlags);
     SOL_REGISTER("getMobFlags", CLuaBaseEntity::getMobFlags);
     SOL_REGISTER("setNpcFlags", CLuaBaseEntity::setNpcFlags);
+    SOL_REGISTER("setNpcAlwaysRelevant", CLuaBaseEntity::setNpcAlwaysRelevant);
 
     SOL_REGISTER("spawn", CLuaBaseEntity::spawn);
     SOL_REGISTER("isSpawned", CLuaBaseEntity::isSpawned);
@@ -21080,6 +21294,7 @@ void CLuaBaseEntity::Register()
 
     SOL_REGISTER("getBattleTime", CLuaBaseEntity::getBattleTime);
     SOL_REGISTER("getCrystalElement", CLuaBaseEntity::getCrystalElement);
+    SOL_REGISTER("setCrystalElement", CLuaBaseEntity::setCrystalElement);
 
     SOL_REGISTER("getBehavior", CLuaBaseEntity::getBehavior);
     SOL_REGISTER("setBehavior", CLuaBaseEntity::setBehavior);

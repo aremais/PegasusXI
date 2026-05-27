@@ -98,7 +98,11 @@ local attachmentModifiers =
     ['accelerator_ii']      = { { xi.mod.EVA,                         {    10,    15,    20,    25 }, true  }, },
     ['accelerator_iii']     = { { xi.mod.EVA,                         {    20,    30,    40,    50 }, true  }, },
     ['accelerator_iv']      = { { xi.mod.EVA,                         {    30,    45,    60,    80 }, true  }, },
-    ['analyzer']            = { { xi.mod.AUTO_ANALYZER,               {     1,     2,     4,     6 }, true  }, },
+    ['analyzer']            = { { xi.mod.AUTO_ANALYZER,               {     1,     2,     4,     6 }, false }, },
+    ['amplifier']           = { { xi.mod.MAGIC_BURST_BONUS_UNCAPPED,  {    10,    20,    35,    50 }, true  },
+                                { xi.mod.ELEMENTAL_CELERITY,          {    25,    25,    25,    25 }, true  }, },
+    ['amplifier_ii']        = { { xi.mod.MAGIC_BURST_BONUS_UNCAPPED,  {    20,    30,    50,    70 }, true  },
+                                { xi.mod.ELEMENTAL_CELERITY,          {    25,    25,    25,    25 }, true  }, },
     ['arcanic_cell']        = { { xi.mod.OCCULT_ACUMEN,               {    10,    20,    35,    50 }, true  }, },
     ['arcanic_cell_ii']     = { { xi.mod.OCCULT_ACUMEN,               {    20,    40,    70,   100 }, true  }, },
     ['arcanoclutch']        = { { xi.mod.MAGIC_DAMAGE,                {    20,    40,    60,    80 }, true  }, },
@@ -160,7 +164,10 @@ local attachmentModifiers =
     ['optic_fiber']         = { { xi.mod.AUTO_PERFORMANCE_BOOST,      {    10,    20,    25,    30 }, false }, },
     ['optic_fiber_ii']      = { { xi.mod.AUTO_PERFORMANCE_BOOST,      {    15,    30,    37,    45 }, false }, },
     ['percolator']          = { { xi.mod.COMBAT_SKILLUP_RATE,         {     5,    10,    15,    20 }, true  }, },
+    ['power_cooler']        = { { xi.mod.MP_COST_REDUCTION,           {    10,    20,    35,    50 }, true  }, },
     ['repeater']            = { { xi.mod.DOUBLE_SHOT_RATE,            {    10,    15,    35,    65 }, true  }, },
+    ['resister']            = { { xi.mod.STATUSRES,                   {     5,    10,    20,    30 }, true  }, },
+    ['resister_ii']         = { { xi.mod.STATUSRES,                   {    10,    20,    40,    60 }, true  }, },
     ['scanner']             = { { xi.mod.AUTO_SCAN_RESISTS,           {     0,     1,     1,     1 }, false }, },
     ['schurzen']            = { { xi.mod.AUTO_SCHURZEN,               {     0,     1,     1,     1 }, false }, },
     ['scope']               = { { xi.mod.RACC,                        {    10,    20,    30,    40 }, true  }, },
@@ -248,9 +255,7 @@ local function calculatePerformanceBoost(pet)
     local performanceBoost = 0
 
     local numLightManeuvers = master and master:countEffect(xi.effect.LIGHT_MANEUVER) or 0
-    for _, attachmentObj in ipairs(pet:getAttachments()) do
-        local attachmentName = attachmentObj:getName()
-
+    for _, attachmentName in pairs(pet:getAttachments()) do
         if isOpticFiber(attachmentName) then
             performanceBoost = performanceBoost + attachmentModifiers[attachmentName][1][2][numLightManeuvers + 1]
         end

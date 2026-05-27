@@ -1521,7 +1521,7 @@ end
 -- Rem's Tales directly when the player talks to Monisette.
 -----------------------------------
 entity.onTrigger = function(player, npc)
-    player:printToPlayer('Oh crap, it\'s you...', xi.msg.channel.SAY, npc:getName())
+    player:printToPlayer('Trade me your armor along with the Rem\'s Tales and upgrade materials, and I\'ll reforge it. I can also hold onto any Rem\'s Tales you bring me.', xi.msg.channel.SAY, npc:getName())
 
     for chapter = 1, 10 do
         local stored = getStoredTales(player, chapter)

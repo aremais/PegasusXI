@@ -6,8 +6,8 @@
 ---@type TItem
 local itemObject = {}
 
-itemObject.onItemCheck = function(target, item, param, caster)
-    return xi.itemUtils.itemBoxOnItemCheck(caster)
+itemObject.onItemCheck = function(target, item, caster)
+    return xi.itemUtils.itemBoxOnItemCheck(target)
 end
 
 itemObject.onItemUse = function(target, user)

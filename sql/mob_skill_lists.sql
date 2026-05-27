@@ -3520,7 +3520,10 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Semih_Lafihna',1055,3487); -- Sidew
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Semih_Lafihna',1055,3488); -- Arching Arrow (Semih Lafihna)
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Semih_Lafihna',1055,3489); -- Lux Arrow
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Semih_Lafihna',1055,3490); -- Stellar Arrow
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Elivira',1056,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Elivira',1056,216); -- Coronach
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Elivira',1056,212); -- Slug Shot
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Elivira',1056,214); -- Heavy Shot
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Elivira',1056,209); -- Split Shot
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Noillurie',1057,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Lhu_Mhakaracca',1058,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Ferreous_Coffin',1059,170); -- Randgrith
@@ -3539,7 +3542,9 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rahal', 1066, 41); -- Swift Blade
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Invincible_Shield_UC',1069,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Apururu_UC',1070,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Jakoh_Wahcondalo_UC',1071,0);
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Flaviria_UC',1072,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Flaviria_UC',1072,118); -- Skewer
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Flaviria_UC',1072,120); -- Impulse Drive
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Flaviria_UC',1072,124); -- Camlann's Torment / Celidon's Torment fallback
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Babban',1073,3351);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Babban',1073,3352);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Babban',1073,3353);
@@ -3634,6 +3639,12 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_AAGK',1111,3726); -- Tachi: Fudo
 -- Reserved for future Trust 6002 (ID: 1117)
 -- Reserved for future Trust 6003 (ID: 1118) (Formerly Cornelia)
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Excenmille_S',1119,0);
+-- Trust: Excenmille (S)
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Excenmille_S',1119,3291); -- stags_call
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Excenmille_S',1119,3292); -- gyre_strike
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Excenmille_S',1119,3293); -- stags_charge
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Excenmille_S',1119,3294); -- orcsbane
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Excenmille_S',1119,3295); -- songbird_swoop
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Ayame_UC',1120,148); -- Tachi: Jinpu
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Ayame_UC',1120,149); -- Tachi: Koki
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Ayame_UC',1120,152); -- Tachi: Kasha

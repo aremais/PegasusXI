@@ -15,7 +15,7 @@ local content = SKCNMBattlefield:new({
     index         = 23,
     entryNpc      = 'BC_Entrance',
     exitNpc       = 'Burning_Circle',
-    requiredItems = { xi.item.MACROCOSMIC_ORB, wearMessage = waughroonID.text.A_CRACK_HAS_FORMED, wornMessage = waughroonID.text.ORB_IS_CRACKED },
+    requiredItems = { xi.item.MACROCOSMIC_ORB }, -- wear/worn messages handled centrally in skcnm.lua
 })
 
 content.groups =
@@ -109,24 +109,13 @@ content.loot =
         { itemId = xi.item.VILE_ELIXIR_P1,                   weight =  400 },
     },
 
-    -- Rem's Tale Chapter 5: 1x guaranteed + up to 3 more at 50% each (1–4x total)
+    -- Rem's Tale Chapter 5: 2x guaranteed in treasure pool
     {
         { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_5,      weight = 10000 },
     },
 
     {
-        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_5,      weight =  5000 },
-        { itemId = xi.item.NONE,                              weight =  5000 },
-    },
-
-    {
-        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_5,      weight =  5000 },
-        { itemId = xi.item.NONE,                              weight =  5000 },
-    },
-
-    {
-        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_5,      weight =  5000 },
-        { itemId = xi.item.NONE,                              weight =  5000 },
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_5,      weight = 10000 },
     },
 }
 

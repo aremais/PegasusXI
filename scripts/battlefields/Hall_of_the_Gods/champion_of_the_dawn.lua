@@ -35,11 +35,11 @@ local lootTable =
 {
     -- Treasure-pool chapter (any of Ch.6-10)
     {
-        { itemId = xi.item.REMS_TALE_CH_6,      weight = 2000 },
-        { itemId = xi.item.REMS_TALE_CH_7,      weight = 2000 },
-        { itemId = xi.item.REMS_TALE_CH_8,      weight = 2000 },
-        { itemId = xi.item.REMS_TALE_CH_9,      weight = 2000 },
-        { itemId = xi.item.REMS_TALE_CH_10,     weight = 2000 },
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_6,      weight = 2000 },
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_7,      weight = 2000 },
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_8,      weight = 2000 },
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_9,      weight = 2000 },
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_10,     weight = 2000 },
     },
 
     -- Unique weapons
@@ -60,11 +60,11 @@ local function giveAllChapters(battlefield)
     local players = battlefield:getPlayers()
 
     for _, player in ipairs(players) do
-        npcUtil.giveItem(player, xi.item.REMS_TALE_CH_6)
-        npcUtil.giveItem(player, xi.item.REMS_TALE_CH_7)
-        npcUtil.giveItem(player, xi.item.REMS_TALE_CH_8)
-        npcUtil.giveItem(player, xi.item.REMS_TALE_CH_9)
-        npcUtil.giveItem(player, xi.item.REMS_TALE_CH_10)
+        npcUtil.giveItem(player, xi.item.COPY_OF_REMS_TALE_CHAPTER_6)
+        npcUtil.giveItem(player, xi.item.COPY_OF_REMS_TALE_CHAPTER_7)
+        npcUtil.giveItem(player, xi.item.COPY_OF_REMS_TALE_CHAPTER_8)
+        npcUtil.giveItem(player, xi.item.COPY_OF_REMS_TALE_CHAPTER_9)
+        npcUtil.giveItem(player, xi.item.COPY_OF_REMS_TALE_CHAPTER_10)
     end
 end
 
