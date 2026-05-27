@@ -96,6 +96,7 @@ public:
     void entityVisualPacket(const std::string& command, const sol::object& entity) const;
     void entityAnimationPacket(const char* command, const sol::object& target);
     void sendDebugPacket(const sol::table& packetData);
+    void sendLinkshellConcierge(const sol::table& data) const;
     void addPacketMod(uint16 packetId, uint16 offset, uint8 value);
     void clearPacketMods();
 

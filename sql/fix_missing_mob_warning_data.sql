@@ -30,7 +30,10 @@ INSERT INTO `mob_spawn_points` VALUES
     (16896165,0,'Ziryu','Ziryu',22,74,76,-693.144,0.284,816.515,0),
     (16990224,0,'Fomors_Bats','Fomor''s Bats',9,58,60,1.000,1.000,1.000,0),
     (16990233,0,'Fomors_Bats','Fomor''s Bats',9,58,60,1.000,1.000,1.000,0),
-    (16990248,0,'Fomors_Bats','Fomor''s Bats',9,58,60,1.000,1.000,1.000,0)
+    (16990248,0,'Fomors_Bats','Fomor''s Bats',9,58,60,1.000,1.000,1.000,0),
+    -- Ro'Maeve: Bastok 7-1 Mokkurkalfi (QM pop; required for GetMobByID)
+    (17276929,0,'Mokkurkalfi','Mokkurkalfi',1,68,70,104.729,-4.143,-115.265,215),
+    (17276930,0,'Mokkurkalfi','Mokkurkalfi',1,68,70,101.918,-4.000,-115.265,215)
 ON DUPLICATE KEY UPDATE
     `spawnslotid` = VALUES(`spawnslotid`),
     `mobname` = VALUES(`mobname`),
@@ -42,3 +45,17 @@ ON DUPLICATE KEY UPDATE
     `pos_y` = VALUES(`pos_y`),
     `pos_z` = VALUES(`pos_z`),
     `pos_rot` = VALUES(`pos_rot`);
+
+-- Bastok 7-1: ensure group row exists if mob_groups was imported without Ro'Maeve NMs
+INSERT INTO `mob_groups` VALUES
+    (1,2717,122,'Mokkurkalfi',0,128,0,0,0,0,NULL)
+ON DUPLICATE KEY UPDATE
+    `poolid` = VALUES(`poolid`),
+    `name` = VALUES(`name`),
+    `respawntime` = VALUES(`respawntime`),
+    `spawntype` = VALUES(`spawntype`),
+    `dropid` = VALUES(`dropid`),
+    `HP` = VALUES(`HP`),
+    `MP` = VALUES(`MP`),
+    `allegiance` = VALUES(`allegiance`),
+    `content_tag` = VALUES(`content_tag`);

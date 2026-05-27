@@ -2489,8 +2489,16 @@ int32 OnTrigger(CCharEntity* PChar, CBaseEntity* PNpc)
     PChar->eventPreparation->targetEntity = PNpc;
     PChar->eventPreparation->scriptFile   = filename;
 
+    // GetCacheEntryFromFile can create empty tables before OnEntityLoad runs; ensure the script is loaded.
+    auto cacheEntry = GetCacheEntryFromFilename(filename);
+    auto onTrigger  = cacheEntry["onTrigger"];
+    if (!onTrigger.valid() || onTrigger.get_type() != sol::type::function)
+    {
+        CacheLuaObjectFromFile(filename, true);
+        onTrigger = GetCacheEntryFromFilename(filename)["onTrigger"];
+    }
+
     auto onTriggerFramework = lua["InteractionGlobal"]["onTrigger"];
-    auto onTrigger          = GetCacheEntryFromFilename(filename)["onTrigger"];
 
     auto result = onTriggerFramework(PChar, PNpc, onTrigger);
     if (!result.valid())

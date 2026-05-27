@@ -181,19 +181,9 @@ bool CBaseEntity::isWideScannable()
     return status != STATUS_TYPE::DISAPPEAR && !IsNameHidden() && !GetUntargetable();
 }
 
-bool CBaseEntity::CanSeeTarget(CBaseEntity* target)
-{
-    return CanSeeTarget(target, true);
-}
-
 bool CBaseEntity::CanSeeTarget(CBaseEntity* target, bool fallbackNavMesh)
 {
     return CanSeeTarget(target->loc.p, fallbackNavMesh);
-}
-
-bool CBaseEntity::CanSeeTarget(const position_t& targetPointBase)
-{
-    return CanSeeTarget(targetPointBase, true);
 }
 
 bool CBaseEntity::CanSeeTarget(const position_t& targetPointBase, bool fallbackNavMesh)

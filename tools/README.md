@@ -7,7 +7,20 @@ Tools
 `python dbtool.py backup lite` - creates a backup only of tables defined in settings  
 `python dbtool.py update` - performs an express update with backup and migrations if necessary  
 `python dbtool.py update full` - performs a full update with backup and migrations  
-`python dbtool.py migrate` - checks and performs any needed migrations
+`python dbtool.py migrate` - checks and performs any needed migrations  
+`python dbtool.py ah-indexes` - apply auction house search indexes with per-index progress (or Maintenance Tasks → 6)  
+`python tools/apply_ah_indexes.py` - same indexes, standalone script with progress output
+
+### Server DB recovery (stuck AH / missing triggers)
+Stop all `xi_*` processes, then from repo root:
+
+`.\tools\recover_server.ps1` — kills stuck DB queries, installs required triggers, truncates auction house (fresh empty AH)
+
+`.\tools\recover_server.ps1 -StartServers` — same, then launches connect/search/world/map
+
+`.\tools\recover_server.ps1 -KeepAh` — skip AH truncate
+
+`.\tools\recover_server.ps1 -WithIndexes` — also apply search indexes (can be slow)
 
 This tool creates or connects to the database defined in `../settings/network.lua`. It 
 allows the user to backup or restore the database, import any `custom.sql` 

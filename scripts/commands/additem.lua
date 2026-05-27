@@ -124,9 +124,9 @@ commandObj.onTrigger = function(player, item, quantity, aug0, aug0val, aug1, aug
 
     if obtained then
         if quantity and quantity > 1 then
-            player:messageSpecial(ID.text.ITEM_OBTAINED + 9, itemToGet, quantity)
+            player:messageSpecial(6391 + 9, itemToGet, quantity)
         else
-            player:messageSpecial(ID.text.ITEM_OBTAINED, itemToGet)
+            player:messageSpecial(6391, itemToGet)
         end
     end
 end

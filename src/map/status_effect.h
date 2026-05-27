@@ -792,6 +792,7 @@ public:
     uint16 GetIcon() const;
     uint16 GetPower() const;
     uint16 GetSubPower() const;
+    uint16 GetSubIcon() const;
     uint16 GetTier() const;
     uint32 GetEffectFlags() const;
     uint16 GetEffectType() const;
@@ -813,6 +814,7 @@ public:
     auto SetSource(uint16 sourceType, uint32 sourceTypeParam) -> void;
     void SetPower(uint16 Power);
     void SetSubPower(uint16 subPower);
+    void SetSubIcon(uint16 subIcon);
     void SetTier(uint16 tier);
     void SetDuration(timer::duration Duration);
     void SetOwner(CBattleEntity* Owner);
@@ -832,7 +834,7 @@ public:
     std::vector<CModifier> modList; // List of modifiers
     bool                   deleted{ false };
 
-    CStatusEffect(EFFECT id, uint16 icon, uint16 power, timer::duration tick, timer::duration duration, uint32 subid = 0, uint16 subPower = 0, uint16 tier = 0, uint32 flags = 0, uint16 sourceType = EffectSourceType::SOURCE_NONE, uint32 sourceTypeParam = 0, uint32 originID = 0);
+    CStatusEffect(EFFECT id, uint16 icon, uint16 power, timer::duration tick, timer::duration duration, uint32 subid = 0, uint16 subPower = 0, uint16 subIcon = 0, uint16 tier = 0, uint32 flags = 0, uint16 sourceType = EffectSourceType::SOURCE_NONE, uint32 sourceTypeParam = 0, uint32 originID = 0);
 
     ~CStatusEffect();
 
@@ -844,6 +846,7 @@ private:
     uint16 m_Icon{ 0 };               // Effect icon
     uint16 m_Power{ 0 };              // Strength of effect
     uint16 m_SubPower{ 0 };           // Secondary power of the effect
+    uint16 m_SubIcon{ 0 };            // Icon used by sub effects of auras etc
     uint16 m_Tier{ 0 };               // Tier of the effect
     uint32 m_Flags{ 0 };              // Effect flags (conditions for its disappearance)
     uint32 m_OriginID{ 0 };           // The effect's origin ID. (This is usually the ID of the entity that created the effect)

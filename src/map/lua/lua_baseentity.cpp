@@ -14155,6 +14155,7 @@ auto CLuaBaseEntity::copyStatusEffect(const CLuaStatusEffect* PStatusEffect) con
         remainingDuration,
         POriginal->GetSubID(),
         POriginal->GetSubPower(),
+        POriginal->GetSubIcon(),
         POriginal->GetTier(),
         POriginal->GetEffectFlags(),
         POriginal->GetSourceType(),
@@ -15012,6 +15013,7 @@ auto CLuaBaseEntity::addCorsairRoll(sol::variadic_args va) -> bool
                                                std::chrono::seconds(duration), // Duration
                                                subType,                        // SubType (Mod ID)
                                                subPower,                       // SubPower (Roll #)
+                                               0,                              // SubIcon
                                                tier                            // Tier
     );
 
@@ -15125,6 +15127,7 @@ bool CLuaBaseEntity::addBardSong(CLuaBaseEntity* PEntity, uint16 effectID, uint1
                                                std::chrono::seconds(duration), // Duration
                                                subType,                        // SubType
                                                subPower,                       // SubPower
+                                               0,                              // SubIcon
                                                tier                            // Tier
     );
 
