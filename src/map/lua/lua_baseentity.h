@@ -688,6 +688,7 @@ public:
     bool  hasClaim(CLuaBaseEntity* PTarget);
     bool  hasEnmity();
     auto  getNotorietyList() -> sol::table;
+    auto  getMasterThreatMob(const sol::object& rangeOverride) -> CBaseEntity*;
     void  clearEnmityForEntity(CLuaBaseEntity* PEntity);
 
     // Status Effects
@@ -909,6 +910,7 @@ public:
 
     uint32 getBattleTime();
     auto   getCrystalElement() const -> ELEMENT;
+    void   setCrystalElement(ELEMENT crystalElement);
 
     uint16 getBehavior();
     void   setBehavior(uint16 behavior);

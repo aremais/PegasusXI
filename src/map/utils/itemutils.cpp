@@ -534,6 +534,7 @@ void LoadDropList()
 void Initialize()
 {
     TracyZoneScoped;
+
     LoadItemList();
     LoadDropList();
 
