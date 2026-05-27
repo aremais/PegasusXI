@@ -13201,7 +13201,7 @@ INSERT INTO `mob_spawn_points` VALUES (16998402,0,'Arrapago_Leech','Arrapago Lee
 INSERT INTO `mob_spawn_points` VALUES (16998403,0,'Chimera_Clot','Chimera Clot',3,75,76,1.000,1.000,1.000,0);
 INSERT INTO `mob_spawn_points` VALUES (16998404,0,'Lahama','Lahama',4,78,80,1.000,1.000,1.000,0);
 INSERT INTO `mob_spawn_points` VALUES (16998405,0,'Llamhigyn_Y_Dwr','Llamhigyn Y Dwr',5,76,78,1.000,1.000,1.000,0);
-INSERT INTO `mob_spawn_points` VALUES (16998406,0,'Giant_Orobon','Giant Orobon',6,78,83,1.000,1.000,1.000,0);
+INSERT INTO `mob_spawn_points` VALUES (16998406,0,'Giant_Orobon','Giant Orobon',6,79,80,1.000,1.000,1.000,0);
 
 INSERT INTO `mob_spawn_points` VALUES (16998407,0,'Reserve_Draugar','Reserve Draugar',7,72,73,453.738,-8.966,66.754,94);
 INSERT INTO `mob_spawn_points` VALUES (16998408,0,'Reserve_Draugar','Reserve Draugar',8,72,73,478.340,-9.761,81.387,62);
@@ -14068,7 +14068,7 @@ INSERT INTO `mob_spawn_points` VALUES (17010690,0,'Arrapago_Leech','Arrapago Lee
 INSERT INTO `mob_spawn_points` VALUES (17010691,0,'Talacca_Clot','Talacca Clot',3,75,75,1.000,1.000,1.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17010692,0,'Lahama','Lahama',4,77,78,1.000,1.000,1.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17010693,0,'Llamhigyn_Y_Dwr','Llamhigyn Y Dwr',5,77,79,1.000,1.000,1.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17010694,0,'Giant_Orobon','Giant Orobon',6,78,83,1.000,1.000,1.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17010694,0,'Giant_Orobon','Giant Orobon',6,79,80,1.000,1.000,1.000,0);
 
 -- ISMN: Call to Arms
 INSERT INTO `mob_spawn_points` VALUES (17010695,0,'Imp_Bandsman','Imp Bandsman',7,63,64,-180,39.5,185,65);
@@ -14376,7 +14376,7 @@ INSERT INTO `mob_spawn_points` VALUES (17027074,0,'Zazalda_Clot','Zazalda Clot',
 INSERT INTO `mob_spawn_points` VALUES (17027075,0,'Vozold_Clot','Vozold Clot',3,75,75,1.000,1.000,1.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17027076,0,'Zazalda_Jagil','Zazalda Jagil',4,73,75,1.000,1.000,1.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17027077,0,'Vozold_Jagil','Vozold Jagil',5,71,78,1.000,1.000,1.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17027078,0,'Giant_Orobon','Giant Orobon',6,78,83,1.000,1.000,1.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17027078,0,'Giant_Orobon','Giant Orobon',6,79,80,1.000,1.000,1.000,0);
 
 INSERT INTO `mob_spawn_points` VALUES (17027079,0,'Wootzshell','Wootzshell',7,70,71,305.570,-15.020,-336.600,175);
 INSERT INTO `mob_spawn_points` VALUES (17027080,0,'Wootzshell','Wootzshell',7,70,71,292.820,-14.970,-341.410,35);
@@ -47989,7 +47989,7 @@ INSERT INTO `mob_spawn_points` VALUES (17289649,0,'Antican_Hoplomachus','Antican
 INSERT INTO `mob_spawn_points` VALUES (17289650,0,'Antican_Hoplomachus','Antican Hoplomachus',17,54,58,-779.065,-9.692,-693.424,36);
 INSERT INTO `mob_spawn_points` VALUES (17289651,0,'Antican_Hoplomachus','Antican Hoplomachus',17,54,58,-765.857,-8.678,-672.943,111);
 INSERT INTO `mob_spawn_points` VALUES (17289652,0,'Goblin_Digger','Goblin Digger',31,51,54,-406.759,0.180,-540.065,5);
-INSERT INTO `mob_spawn_points` VALUES (17289653,0,'Sabotender_Enamorado','Sabotender Enamorado',32,62,62,-262.568,-8.248,51.540,0);
+INSERT INTO `mob_spawn_points` VALUES (17289653,0,'Sabotender_Enamorado','Sabotender Enamorado',32,63,63,-262.568,-8.248,51.540,0);
 INSERT INTO `mob_spawn_points` VALUES (17289654,0,'Eastern_Sphinx','Eastern Sphinx',33,62,62,-327.799,-2.859,-114.501,55);
 INSERT INTO `mob_spawn_points` VALUES (17289655,0,'Western_Sphinx','Western Sphinx',34,62,62,-329.357,-4.004,-110.601,175);
 INSERT INTO `mob_spawn_points` VALUES (17289656,0,'Maharaja','Maharaja',35,80,80,-652.300,0.200,-341.500,141);
@@ -93138,6 +93138,107 @@ INSERT INTO `mob_spawn_points` VALUES (17973558,0,'Transcended_Porxie','Transcen
 INSERT INTO `mob_spawn_points` VALUES (17973559,0,'Transcended_Panopt','Transcended Panopt',71,129,129,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17973560,0,'Transcended_Unseelie','Transcended Unseelie',72,129,129,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17973561,0,'Ou','Ou',73,0,0,0.000,0.000,0.000,0);
+-- TVR: Nii's Last Stand
+INSERT INTO `mob_spawn_points` VALUES (20983809,0,'Nii_Aquu','Nii Aquu',75,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983810,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983811,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983812,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983813,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983814,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983815,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983816,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983817,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983818,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983819,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983820,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983821,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983822,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983823,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983824,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983825,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983826,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983827,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983828,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983829,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983830,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983831,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983832,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983833,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983834,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983835,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983836,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983837,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983838,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983839,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983840,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983841,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983842,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983843,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983844,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983845,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983846,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983847,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983848,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983849,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983850,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983851,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983852,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983853,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983854,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983855,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983856,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983857,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983858,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983859,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983860,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983861,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983862,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983863,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983864,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983865,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983866,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983867,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983868,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983869,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983870,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983871,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983872,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20983873,0,'Katashiro','Katashiro',74,0,0,0.000,0.000,0.000,0);
+-- TVR: Dance of the Tengu (phase 1)
+INSERT INTO `mob_spawn_points` VALUES (20987905,0,'Zhuu_Buxu_the_Silent','Zhuu Buxu the Silent',76,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20987906,0,'Nii_Aquu','Nii Aquu',75,0,0,0.000,0.000,0.000,0);
+-- TVR: Dance of the Tengu (phase 2)
+INSERT INTO `mob_spawn_points` VALUES (20992001,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992002,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992003,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992004,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992005,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992006,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992007,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992008,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992009,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992010,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992011,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992012,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992013,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992014,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992015,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992016,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992017,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992018,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992019,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992020,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992021,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992022,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992023,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992024,0,'Reikuu','Reikuu',78,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992025,0,'Gessho','Gessho',77,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992026,0,'Gessho','Gessho',77,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992027,0,'Gessho','Gessho',77,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992028,0,'Gessho','Gessho',77,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992029,0,'Gessho','Gessho',77,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992030,0,'Gessho','Gessho',77,0,0,0.000,0.000,0.000,0);
+INSERT INTO `mob_spawn_points` VALUES (20992031,0,'Gessho','Gessho',77,0,0,0.000,0.000,0.000,0);
 
 -- ------------------------------------------------------------
 -- Reisenjima Sanctorium (Zone 293)
