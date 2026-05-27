@@ -13,6 +13,7 @@ zones[xi.zone.BHAFLAU_THICKETS] =
         GIL_OBTAINED                  = 6392, -- Obtained <number> gil.
         KEYITEM_OBTAINED              = 6394, -- Obtained key item: <keyitem>.
         WARHORSE_HOOFPRINT            = 6403, -- You find the hoofprint of a gigantic warhorse...
+        WARHORSE_HOOFPRINT_SET        = 6404, -- You set the <keyitem> in the warhorse hoofprint.
         FELLOW_MESSAGE_OFFSET         = 6422, -- I'm ready. I suppose.
         CARRIED_OVER_POINTS           = 7004, -- You have carried over <number> login point[/s].
         LOGIN_CAMPAIGN_UNDERWAY       = 7005, -- The [/January/February/March/April/May/June/July/August/September/October/November/December] <number> Login Campaign is currently underway!

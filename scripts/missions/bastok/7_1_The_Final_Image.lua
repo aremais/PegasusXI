@@ -132,10 +132,13 @@ mission.sections =
                         if mission:getLocalVar(player, 'nmDefeated') == 1 then
                             player:setMissionStatus(mission.areaId, 2)
                             return mission:keyItem(xi.ki.REINFORCED_CERMET)
-                        else
-                            npcUtil.popFromQM(player, npc, { romaeveID.mob.MOKKURKALFI, romaeveID.mob.MOKKURKALFI + 1 }, { claim = false, look = true, radius = 2 })
+                        elseif
+                            npcUtil.popFromQM(player, npc, { romaeveID.mob.MOKKURKALFI, romaeveID.mob.MOKKURKALFI + 1 }, { claim = false, look = true, radius = 2, hide = 0 })
+                        then
                             npc:hideNPC(0)
                             return mission:messageSpecial(romaeveID.text.A_CHILL_RUNS_DOWN_SPINE)
+                        else
+                            return mission:messageSpecial(romaeveID.text.SENSE_OMINOUS_PRESENCE)
                         end
                     end
                 end,

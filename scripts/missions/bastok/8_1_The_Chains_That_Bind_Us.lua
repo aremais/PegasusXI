@@ -80,12 +80,12 @@ mission.sections =
 
         [xi.zone.BASTOK_MARKETS] =
         {
-            ['Cleades'] = mission:messageSpecial(bastokMarketsID.text.EXTENDED_MISSION_OFFSET + 10),
+            ['Cleades'] = mission:messageSpecial(bastokMarketsID.text.EXTENDED_MISSION_OFFSET + 10):setPriority(1000),
         },
 
         [xi.zone.BASTOK_MINES] =
         {
-            ['Rashid'] = mission:messageSpecial(bastokMinesID.text.EXTENDED_MISSION_OFFSET + 10),
+            ['Rashid'] = mission:messageSpecial(bastokMinesID.text.EXTENDED_MISSION_OFFSET + 10):setPriority(1000),
         },
 
         [xi.zone.METALWORKS] =
@@ -114,7 +114,7 @@ mission.sections =
                 end,
             },
 
-            ['Malduc'] = mission:messageSpecial(metalworksID.text.EXTENDED_MISSION_OFFSET + 10),
+            ['Malduc'] = mission:messageSpecial(metalworksID.text.EXTENDED_MISSION_OFFSET + 10):setPriority(1000),
 
             onEventFinish =
             {
@@ -132,7 +132,7 @@ mission.sections =
 
         [xi.zone.PORT_BASTOK] =
         {
-            ['Argus'] = mission:messageSpecial(portBastokID.text.EXTENDED_MISSION_OFFSET + 10),
+            ['Argus'] = mission:messageSpecial(portBastokID.text.EXTENDED_MISSION_OFFSET + 10):setPriority(1000),
         },
 
         [xi.zone.QUICKSAND_CAVES] =

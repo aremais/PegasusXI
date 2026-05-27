@@ -10,8 +10,8 @@ itemObject.onItemCheck = function(target, item, caster)
     return xi.itemUtils.itemBoxOnItemCheck(target)
 end
 
-itemObject.onItemUse = function(target)
-    npcUtil.giveItem(target, { { xi.item.WIND_CRYSTAL, 12 } })
+itemObject.onItemUse = function(target, user)
+    npcUtil.giveItem(user, { { xi.item.WIND_CRYSTAL, 12 } })
 end
 
 return itemObject

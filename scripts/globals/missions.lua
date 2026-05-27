@@ -876,6 +876,94 @@ xi.mission.getMissionMask = function(player)
     return missionMask, repeatMission
 end
 
+-- Bastok gate guards (Cleades, Rashid, Malduc, Argus) fall back to event 1002 for any active
+-- mission when the interaction framework is unavailable.  Mirror mission reminder text here so
+-- the correct dialogue shows without requiring !reloadinteraction or a map restart.
+local bastokLogId = xi.mission.log_id.BASTOK
+local bastokId    = xi.mission.id.bastok
+
+local bastokGateGuardActiveReminders =
+{
+    [bastokId.THE_ZERUHN_REPORT]        = { extended = false, offset = 0 },
+    [bastokId.GEOLOGICAL_SURVEY]        = { extended = false, offset = 3 },
+    [bastokId.FETICHISM]                = { extended = false, offset = 6 },
+    [bastokId.THE_CRYSTAL_LINE]         = { extended = false, offset = 19 },
+    [bastokId.WADING_BEASTS]            = { extended = false, offset = 21 },
+    [bastokId.THE_EMISSARY]             = { extended = false, offset = 23 },
+    [bastokId.THE_FOUR_MUSKETEERS]      = { event = 1002 },
+    [bastokId.TO_THE_FORSAKEN_MINES]    = { event = 1002 },
+    [bastokId.JEUNO]                    = { event = 1002 },
+    [bastokId.XARCABARD_LAND_OF_TRUTHS] = { extended = false, offset = 39 },
+    [bastokId.RETURN_OF_THE_TALEKEEPER] = { extended = true,  offset = 0 },
+    [bastokId.THE_PIRATES_COVE]         = { extended = true,  offset = 3 },
+    [bastokId.THE_FINAL_IMAGE]          = { extended = true,  offset = 5 },
+    [bastokId.THE_CHAINS_THAT_BIND_US]  = { extended = true,  offset = 10 },
+    [bastokId.ENTER_THE_TALEKEEPER]     = { extended = true,  offset = 12 },
+    [bastokId.THE_SALT_OF_THE_EARTH]    = { extended = true,  offset = 14 },
+    [bastokId.WHERE_TWO_PATHS_CONVERGE] = { extended = true,  offset = 19 },
+}
+
+local function bastokGateGuardOnMyWayReminder(player)
+    local zoneId = player:getZoneID()
+    local ID     = zones[zoneId]
+
+    if
+        player:getMissionStatus(bastokLogId) == 3 and
+        xi.mission.getVar(player, bastokLogId, bastokId.ON_MY_WAY, 'Option') == 1
+    then
+        player:startEvent(1011)
+    else
+        player:messageSpecial(ID.text.EXTENDED_MISSION_OFFSET + 7)
+    end
+
+    return true
+end
+
+---@param player CBaseEntity
+---@param npc CBaseEntity
+---@return boolean handled True if this NPC should not run default gate-guard logic
+xi.mission.bastokGateGuardOnTrigger = function(player, npc)
+    if player:getNation() ~= xi.nation.BASTOK then
+        return false
+    end
+
+    local currentMission = player:getCurrentMission(bastokLogId)
+
+    if currentMission == bastokId.NONE then
+        if
+            player:hasCompletedMission(bastokLogId, bastokId.ON_MY_WAY) and
+            xi.mission.getVar(player, bastokLogId, bastokId.ON_MY_WAY, 'Option') == 1
+        then
+            player:startEvent(1011)
+            return true
+        end
+
+        return false
+    end
+
+    if currentMission == bastokId.ON_MY_WAY then
+        return bastokGateGuardOnMyWayReminder(player)
+    end
+
+    local reminder = bastokGateGuardActiveReminders[currentMission]
+
+    if reminder then
+        if reminder.event then
+            player:startEvent(reminder.event)
+        else
+            local ID   = zones[player:getZoneID()]
+            local base = reminder.extended and ID.text.EXTENDED_MISSION_OFFSET or ID.text.ORIGINAL_MISSION_OFFSET
+
+            player:messageSpecial(base + reminder.offset)
+        end
+
+        return true
+    end
+
+    player:startEvent(1002)
+    return true
+end
+
 -- Interaction Framework Helper Functions
 local function getVarPrefix(areaId, missionId)
     return string.format('Mission[%d][%d]', areaId, missionId)
