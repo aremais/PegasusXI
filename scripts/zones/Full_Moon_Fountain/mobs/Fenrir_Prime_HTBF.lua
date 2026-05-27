@@ -9,6 +9,7 @@ mixins = { require('scripts/mixins/job_special') }
 local entity = {}
 
 entity.onMobInitialize = function(mob)
+    mob:setMobMod(xi.mobMod.ALWAYS_AGGRO, 1)
     mob:addImmunity(xi.immunity.BLIND)
     mob:addImmunity(xi.immunity.PETRIFY)
     mob:addImmunity(xi.immunity.SILENCE)
