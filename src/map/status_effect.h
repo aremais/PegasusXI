@@ -815,6 +815,7 @@ public:
     auto SetSource(uint16 sourceType, uint32 sourceTypeParam) -> void;
     void SetPower(uint16 Power);
     void SetSubPower(uint16 subPower);
+    void SetSubIcon(uint16 subIcon);
     void SetTier(uint16 tier);
     void SetDuration(timer::duration Duration);
     void SetOwner(CBattleEntity* Owner);

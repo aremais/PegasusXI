@@ -236,6 +236,39 @@ player_data = [
     "zone_settings.sql",
 ]
 
+# Not table dumps: skip on bulk "Update DB" (use Maintenance Tasks or dedicated scripts).
+# auction_house_search_perf_indexes.sql can take hours on large auction_house tables.
+sql_bulk_import_skip = {
+    "auction_house_search_perf_indexes.sql",
+    "fix_all_required_triggers.sql",
+    "verify_triggers.sql",
+    "triggers.sql",
+}
+
+# (index_name, table_name, sql) — keep in sync with sql/auction_house_search_perf_indexes.sql
+AH_SEARCH_INDEX_STATEMENTS = [
+    (
+        "idx_item_basic_ah",
+        "item_basic",
+        "CREATE INDEX IF NOT EXISTS `idx_item_basic_ah` ON `item_basic` (`aH`)",
+    ),
+    (
+        "idx_auction_house_item_buyer",
+        "auction_house",
+        "CREATE INDEX IF NOT EXISTS `idx_auction_house_item_buyer` ON `auction_house` (`itemid`, `buyer_name`)",
+    ),
+    (
+        "idx_auction_house_item_stack_sell",
+        "auction_house",
+        "CREATE INDEX IF NOT EXISTS `idx_auction_house_item_stack_sell` ON `auction_house` (`itemid`, `stack`, `sell_date`)",
+    ),
+    (
+        "idx_auction_house_buyer_date",
+        "auction_house",
+        "CREATE INDEX IF NOT EXISTS `idx_auction_house_buyer_date` ON `auction_house` (`buyer_name`, `date`)",
+    ),
+]
+
 import_files = []
 import_protected = []
 backups = []
@@ -525,6 +558,77 @@ def import_file(file):
     _ = db_query(query)
 
 
+def import_file_verbose(file):
+    """Import a .sql file via the mysql client with live stdout/stderr (no capture)."""
+    file = os.path.normpath(file).replace("\\", "/")
+    if not os.path.exists(file):
+        print_red(
+            f"Trying to import file that does not exist ({file}), or is an incomplete path."
+        )
+        return False
+    print(f"Importing {file} (mysql client output below)...", flush=True)
+    started = time.perf_counter()
+    with open(file, encoding="utf-8") as sql_file:
+        result = subprocess.run(
+            [
+                f"{mysql_bin}mysql{exe}",
+                f"-h{host}",
+                f"-P{str(port)}",
+                f"-u{login}",
+                f"-p{password}",
+                database,
+            ],
+            stdin=sql_file,
+            text=True,
+        )
+    if result.returncode != 0:
+        print_red(f"mysql exited with code {result.returncode} while importing {file}")
+        print_red("Exiting...")
+        exit(-1)
+    elapsed = time.perf_counter() - started
+    print(f"Finished {os.path.basename(file)} in {elapsed:.1f}s.", flush=True)
+    return True
+
+
+def _db_index_exists(table, index_name):
+    if not cur:
+        connect()
+    cur.execute(f"SHOW INDEX FROM `{table}` WHERE Key_name = %s", (index_name,))
+    return cur.fetchone() is not None
+
+
+def execute_ah_search_indexes_with_progress(silent=False):
+    """Apply AH search indexes one at a time with progress (uses mariadb connector)."""
+    if not cur:
+        connect()
+    total = len(AH_SEARCH_INDEX_STATEMENTS)
+    if not silent:
+        print(
+            f"Applying {total} auction house search indexes on {database} "
+            f"({login}@{host}:{port})...",
+            flush=True,
+        )
+    for step, (index_name, table, stmt) in enumerate(AH_SEARCH_INDEX_STATEMENTS, 1):
+        if not silent:
+            print(f"[{step}/{total}] {index_name} on `{table}` ...", flush=True)
+        if _db_index_exists(table, index_name):
+            if not silent:
+                print_green("  already present, skipping.")
+            continue
+        started = time.perf_counter()
+        try:
+            cur.execute(stmt)
+            db.commit()
+        except mariadb.Error as err:
+            print_red(f"  failed: {err}")
+            raise
+        elapsed = time.perf_counter() - started
+        if not silent:
+            print_green(f"  done ({elapsed:.1f}s).")
+    if not silent:
+        print_green("All auction house search indexes are in place.")
+
+
 def _disconnect_mysql():
     """Close the connector-managed MariaDB session (best-effort)."""
     global db, cur
@@ -675,7 +779,10 @@ def update_db(silent=False, express=False):
         for sql_file in import_protected:
             import_file(sql_file)
         for sql_file in import_files:
-            if pathlib.Path(sql_file).name not in player_data:
+            name = pathlib.Path(sql_file).name
+            if name in sql_bulk_import_skip:
+                continue
+            if name not in player_data:
                 import_file(sql_file)
         print_green("Finished importing!")
         express_enabled = False
@@ -1060,10 +1167,10 @@ def present_menu(title, contents):
     # Footer
     print(colorama.Fore.GREEN + "o" + colorama.Fore.RED + "-" + "-" * length + "-" + colorama.Fore.GREEN + "o\n")
 
-    # Handle inputs
+    # Handle inputs (run action before clear so long tasks show live output)
     selection = input("> ").lower()
-    print(colorama.ansi.clear_screen())
     contents.get(selection, ["", bad_selection])[1]()
+    print(colorama.ansi.clear_screen())
 # fmt: on
 
 
@@ -1315,6 +1422,39 @@ def dump_all_tables(silent=False):
         print_green(f"Replaced values in all .sql files with data from the database.")
 
 
+def install_required_triggers(silent=False):
+    path = from_server_path("sql/fix_all_required_triggers.sql")
+    if not silent:
+        print(
+            "Installing map/search required triggers (fix_all_required_triggers.sql)...",
+            flush=True,
+        )
+    import_file_verbose(path)
+    if not silent:
+        print_green("Triggers installed.")
+
+
+def apply_ah_search_indexes(silent=False):
+    if not cur:
+        connect()
+    if not silent:
+        try:
+            cur.execute("SELECT COUNT(*) FROM auction_house")
+            n = cur.fetchone()[0]
+            print(f"auction_house row count: {n:,}", flush=True)
+            if n > 500000:
+                print(
+                    "Large auction_house table: each new index can take hours. "
+                    "Stop all server processes first.",
+                    flush=True,
+                )
+        except Exception as e:
+            print_red(f"Could not read auction_house size: {e}")
+        if input("Apply auction house search performance indexes? [y/N] ").lower() != "y":
+            return
+    execute_ah_search_indexes_with_progress(silent=silent)
+
+
 def tasks_menu():
     present_menu(
         "Maintenance Tasks",
@@ -1323,6 +1463,11 @@ def tasks_menu():
             "2": ["Set zone IP addresses", set_external_ip_dialog],
             "3": ["Server-wide announcement", announce_menu],
             "4": ["Show table sizes (min 2MB)", print_db_tables_by_size],
+            "5": ["Install required DB triggers (map startup)", install_required_triggers],
+            "6": [
+                "Apply auction house search indexes (can be slow)",
+                apply_ah_search_indexes,
+            ],
             # "5": [
             #     "Offload historical auction data to auction_house_history",
             #     offload_to_auction_house_history,
@@ -1415,6 +1560,11 @@ def main():
                     dump_table(str(sys.argv[2]), True)
                 else:
                     dump_all_tables(True)
+                return
+            elif "ah-indexes" == arg1:
+                if connect() is not False:
+                    execute_ah_search_indexes_with_progress(silent=False)
+                    close()
                 return
         # Main loop
         print(colorama.ansi.clear_screen())

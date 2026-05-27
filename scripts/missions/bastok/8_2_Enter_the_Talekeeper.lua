@@ -159,7 +159,8 @@ mission.sections =
 
                 [204] = function(player, csid, option, npc)
                     player:setMissionStatus(mission.areaId, 5)
-                    player:setPos(23, 0, 4)
+                    -- Force the intended handoff zone so completion CS 176 reliably triggers.
+                    player:setPos(23, 0, 4, 0, xi.zone.BASTOK_MINES)
                 end,
             },
         },
@@ -245,7 +246,10 @@ mission.sections =
 
                 [13] = function(player, csid, option, npc)
                     player:setMissionStatus(mission.areaId, 4)
-                    npcUtil.giveKeyItem(player, xi.ki.OLD_PIECE_OF_WOOD)
+                    if not player:hasKeyItem(xi.ki.OLD_PIECE_OF_WOOD) then
+                        player:addKeyItem(xi.ki.OLD_PIECE_OF_WOOD)
+                        player:messageSpecial(kuftalID.text.KEYITEM_OBTAINED, xi.ki.OLD_PIECE_OF_WOOD)
+                    end
                 end,
             },
         },
