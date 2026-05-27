@@ -999,13 +999,14 @@ void init(IPP mapIPP, bool isRunningInCI)
                     if package.loaded["{0}"] then
                         local old = package.loaded["{0}"]
                         package.loaded["{0}"] = nil
-                        if InteractionGlobal and old then
+                        if InteractionGlobal and type(old) == 'table' then
                             InteractionGlobal.lookup:removeContainer(old)
                         end
                     end
 
                     local res = utils.prequire("{0}")
-                    if InteractionGlobal and res then
+                    if InteractionGlobal and type(res) == 'table' then
+                        res.filename = "{0}"
                         InteractionGlobal.lookup:addContainer(res)
                     end
                 )",
