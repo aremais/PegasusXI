@@ -1537,6 +1537,132 @@ local menuJobIdToAbbrev =
     [xi.job.GEO] = 'GEO', [xi.job.RUN] = 'RUN',
 }
 
+-- Map job abbreviation → full display name
+local menuJobFullName =
+{
+    WAR = 'Warrior',     MNK = 'Monk',        WHM = 'White Mage',  BLM = 'Black Mage',
+    RDM = 'Red Mage',    THF = 'Thief',        PLD = 'Paladin',     DRK = 'Dark Knight',
+    BST = 'Beastmaster', BRD = 'Bard',         RNG = 'Ranger',      SAM = 'Samurai',
+    NIN = 'Ninja',       DRG = 'Dragoon',      SMN = 'Summoner',    BLU = 'Blue Mage',
+    COR = 'Corsair',     PUP = 'Puppetmaster', DNC = 'Dancer',      SCH = 'Scholar',
+    GEO = 'Geomancer',   RUN = 'Rune Fencer',
+}
+
+-- Per-job armor set list.
+-- Each entry: { label = display name, key109 = i109 type key or nil, key119 = i119 type key }
+-- GEO and RUN have no i109 AF/Relic versions.
+local menuJobSetList =
+{
+    WAR = {
+        { label = "Pummeler's", key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Agoge',      key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Boii',       key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    MNK = {
+        { label = "Anchorite's", key109 = 'AF109',  key119 = 'AF119'  },
+        { label = "Hesychast's", key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Bhikku',      key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    WHM = {
+        { label = 'Theophany', key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Piety',     key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Ebers',     key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    BLM = {
+        { label = "Spaekona's", key109 = 'AF109',  key119 = 'AF119'  },
+        { label = "Archmage's", key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Wicce',      key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    RDM = {
+        { label = 'Atrophy',   key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Vitiation', key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Lethargy',  key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    THF = {
+        { label = "Pillager's",  key109 = 'AF109',  key119 = 'AF119'  },
+        { label = "Plunderer's", key109 = 'REL109', key119 = 'REL119' },
+        { label = "Skulker's",   key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    PLD = {
+        { label = 'Reverence',   key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Caballarius', key109 = 'REL109', key119 = 'REL119' },
+        { label = "Chevalier's", key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    DRK = {
+        { label = 'Ignominy',  key109 = 'AF109',  key119 = 'AF119'  },
+        { label = "Fallen's",  key109 = 'REL109', key119 = 'REL119' },
+        { label = "Heathen's", key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    BST = {
+        { label = 'Totemic', key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Ankusa',  key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Nukumi',  key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    BRD = {
+        { label = 'Brioso', key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Bihu',   key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Fili',   key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    RNG = {
+        { label = 'Orion',    key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Arcadian', key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Amini',    key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    SAM = {
+        { label = 'Wakido',  key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Sakonji', key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Kasuga',  key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    NIN = {
+        { label = 'Hachiya',   key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Mochizuki', key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Hattori',   key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    DRG = {
+        { label = 'Vishap',      key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Pteroslaver', key109 = 'REL109', key119 = 'REL119' },
+        { label = "Peltast's",   key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    SMN = {
+        { label = "Convoker's", key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Glyphic',    key109 = 'REL109', key119 = 'REL119' },
+        { label = "Beckoner's", key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    BLU = {
+        { label = "Assimilator's", key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Luhlaza',       key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Hashishin',     key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    COR = {
+        { label = "Laksamana's", key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Lanun',       key109 = 'REL109', key119 = 'REL119' },
+        { label = "Chasseur's",  key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    PUP = {
+        { label = 'Foire',   key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Pitre',   key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Karagoz', key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    DNC = {
+        { label = 'Maxixi',   key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Horos',    key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Maculele', key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    SCH = {
+        { label = "Academic's", key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Pedagogy',   key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Arbatel',    key109 = 'EMP109', key119 = 'EMP119' },
+    },
+    GEO = {
+        { label = 'Geomancy', key109 = nil, key119 = 'AF119'  },
+        { label = 'Bagua',    key109 = nil, key119 = 'REL119' },
+    },
+    RUN = {
+        { label = 'Runeist', key109 = nil, key119 = 'AF119'  },
+        { label = 'Futhark', key109 = nil, key119 = 'REL119' },
+    },
+}
+
 -----------------------------------
 -- Print a recipe description to the player's chat log.
 -----------------------------------
@@ -1643,129 +1769,43 @@ local function menuShowSlots(player, npc, typeKey, jobAbbrev, pageNum, useTimer)
 end
 
 -----------------------------------
--- Menu: job selection
--- Player's current main job appears first (marked with *) if supported by this type.
+-- Menu: tier selection (i109 / i119) for a given armor set.
+-- If the set has no i109 version, jumps straight to slot selection for i119.
 -----------------------------------
-local function menuShowJobs(player, npc, typeKey, pageNum, useTimer)
-    local rawJobs         = menuTypeJobs[typeKey]
-    local playerAbbrev    = menuJobIdToAbbrev[player:getMainJob()]
-    local playerSupported = false
-    for _, j in ipairs(rawJobs) do
-        if j == playerAbbrev then playerSupported = true break end
-    end
-
-    -- Build list: player's job first (with *), then remaining jobs in order
-    local jobEntries = {}
-    if playerSupported then
-        table.insert(jobEntries, { abbrev = playerAbbrev, label = playerAbbrev .. '*' })
-    end
-    for _, j in ipairs(rawJobs) do
-        if not (playerSupported and j == playerAbbrev) then
-            table.insert(jobEntries, { abbrev = j, label = j })
-        end
-    end
-
-    local itemsPerPage = 2
-    local totalItems   = #jobEntries
-    local totalPages   = math.ceil(totalItems / itemsPerPage)
-    pageNum = math.max(1, math.min(pageNum, totalPages))
-
-    local options  = {}
-    local startIdx = (pageNum - 1) * itemsPerPage + 1
-    local endIdx   = math.min(startIdx + itemsPerPage - 1, totalItems)
-
-    for i = startIdx, endIdx do
-        local entry        = jobEntries[i]
-        local abbrevCapture = entry.abbrev
-        table.insert(options, {
-            label    = entry.label,
-            callback = function(p)
-                p:timer(50, function(pp) menuShowSlots(pp, npc, typeKey, abbrevCapture, 1, false) end)
-            end,
-        })
-    end
-
-    if totalPages > 1 then
-        if pageNum < totalPages then
-            local next = pageNum + 1
-            table.insert(options, {
-                label    = string.format('Next >> %u/%u', next, totalPages),
-                callback = function(p)
-                    p:timer(50, function(pp) menuShowJobs(pp, npc, typeKey, next, false) end)
-                end,
-            })
+local function menuShowTier(player, npc, setEntry, jobAbbrev, useTimer)
+    -- Sets with no i109 (GEO/RUN AF and Relic lines) go straight to slots
+    if not setEntry.key109 then
+        if useTimer then
+            player:timer(50, function(p) menuShowSlots(p, npc, setEntry.key119, jobAbbrev, 1, false) end)
         else
-            local prev = pageNum - 1
-            table.insert(options, {
-                label    = string.format('<< Prev %u/%u', prev, totalPages),
-                callback = function(p)
-                    p:timer(50, function(pp) menuShowJobs(pp, npc, typeKey, prev, false) end)
-                end,
-            })
+            menuShowSlots(player, npc, setEntry.key119, jobAbbrev, 1, false)
         end
+        return
     end
+
+    local key109Capture = setEntry.key109
+    local key119Capture = setEntry.key119
+    local labelCapture  = setEntry.label
+
+    local options =
+    {
+        {
+            label    = 'i109',
+            callback = function(p)
+                p:timer(50, function(pp) menuShowSlots(pp, npc, key109Capture, jobAbbrev, 1, false) end)
+            end,
+        },
+        {
+            label    = 'i119',
+            callback = function(p)
+                p:timer(50, function(pp) menuShowSlots(pp, npc, key119Capture, jobAbbrev, 1, false) end)
+            end,
+        },
+    }
 
     local function draw(p)
         p:customMenu({
-            title   = string.format('%s - Job', menuTypeLabel[typeKey]),
-            options = options,
-        })
-    end
-
-    if useTimer then
-        player:timer(50, function(p) draw(p) end)
-    else
-        draw(player)
-    end
-end
-
------------------------------------
--- Menu: upgrade type selection
------------------------------------
-local function menuShowTypes(player, npc, pageNum, useTimer)
-    local itemsPerPage = 2
-    local totalItems   = #menuTypeList
-    local totalPages   = math.ceil(totalItems / itemsPerPage)
-    pageNum = math.max(1, math.min(pageNum, totalPages))
-
-    local options  = {}
-    local startIdx = (pageNum - 1) * itemsPerPage + 1
-    local endIdx   = math.min(startIdx + itemsPerPage - 1, totalItems)
-
-    for i = startIdx, endIdx do
-        local entry      = menuTypeList[i]
-        local keyCapture = entry.key
-        table.insert(options, {
-            label    = entry.label,
-            callback = function(p)
-                p:timer(50, function(pp) menuShowJobs(pp, npc, keyCapture, 1, false) end)
-            end,
-        })
-    end
-
-    if totalPages > 1 then
-        if pageNum < totalPages then
-            local next = pageNum + 1
-            table.insert(options, {
-                label    = string.format('Next >> %u/%u', next, totalPages),
-                callback = function(p)
-                    p:timer(50, function(pp) menuShowTypes(pp, npc, next, false) end)
-                end,
-            })
-        else
-            local prev = pageNum - 1
-            table.insert(options, {
-                label    = string.format('<< Prev %u/%u', prev, totalPages),
-                callback = function(p)
-                    p:timer(50, function(pp) menuShowTypes(pp, npc, prev, false) end)
-                end,
-            })
-        end
-    end
-
-    local function draw(p)
-        p:customMenu({
-            title   = 'Browse Recipes',
+            title   = labelCapture,
             options = options,
         })
     end
@@ -1931,29 +1971,32 @@ local function menuShowChapters(player, npc, pageNum, useTimer)
 end
 
 -----------------------------------
--- Root menu shown when player triggers Monisette.
+-- Root menu: shows the player's job-specific armor set names (paginated),
+-- plus a "Get Tales" option at the end if they have any stored.
+-- Greeting is printed to chat by onTrigger before this is called.
 -----------------------------------
-local function menuShowRoot(player, npc)
-    local hasTales = false
-    for chapter = 1, 10 do
-        if getStoredTales(player, chapter) > 0 then
-            hasTales = true
-            break
-        end
+local function menuShowRoot(player, npc, pageNum, useTimer)
+    local jobAbbrev = menuJobIdToAbbrev[player:getMainJob()] or 'WAR'
+    local setList   = menuJobSetList[jobAbbrev] or {}
+
+    -- Build flat item list: set names first, then Get Tales if applicable
+    local items = {}
+    for _, setEntry in ipairs(setList) do
+        local entryCapture = setEntry
+        table.insert(items, {
+            label    = setEntry.label,
+            callback = function(p)
+                p:timer(50, function(pp) menuShowTier(pp, npc, entryCapture, jobAbbrev, false) end)
+            end,
+        })
     end
 
-    local options =
-    {
-        {
-            label    = 'Browse recipes',
-            callback = function(p)
-                p:timer(50, function(pp) menuShowTypes(pp, npc, 1, false) end)
-            end,
-        },
-    }
-
+    local hasTales = false
+    for chapter = 1, 10 do
+        if getStoredTales(player, chapter) > 0 then hasTales = true break end
+    end
     if hasTales then
-        table.insert(options, {
+        table.insert(items, {
             label    = 'Get Tales',
             callback = function(p)
                 p:timer(50, function(pp) menuShowChapters(pp, npc, 1, false) end)
@@ -1961,10 +2004,52 @@ local function menuShowRoot(player, npc)
         })
     end
 
-    player:customMenu({
-        title   = 'Monisette',
-        options = options,
-    })
+    -- Paginate: 2 items per page
+    local itemsPerPage = 2
+    local totalItems   = #items
+    local totalPages   = math.max(1, math.ceil(totalItems / itemsPerPage))
+    pageNum = math.max(1, math.min(pageNum, totalPages))
+
+    local options  = {}
+    local startIdx = (pageNum - 1) * itemsPerPage + 1
+    local endIdx   = math.min(startIdx + itemsPerPage - 1, totalItems)
+
+    for i = startIdx, endIdx do
+        table.insert(options, items[i])
+    end
+
+    if totalPages > 1 then
+        if pageNum < totalPages then
+            local next = pageNum + 1
+            table.insert(options, {
+                label    = string.format('Next >> %u/%u', next, totalPages),
+                callback = function(p)
+                    p:timer(50, function(pp) menuShowRoot(pp, npc, next, false) end)
+                end,
+            })
+        else
+            local prev = pageNum - 1
+            table.insert(options, {
+                label    = string.format('<< Prev %u/%u', prev, totalPages),
+                callback = function(p)
+                    p:timer(50, function(pp) menuShowRoot(pp, npc, prev, false) end)
+                end,
+            })
+        end
+    end
+
+    local function draw(p)
+        p:customMenu({
+            title   = 'Monisette',
+            options = options,
+        })
+    end
+
+    if useTimer then
+        player:timer(50, function(p) draw(p) end)
+    else
+        draw(player)
+    end
 end
 
 -----------------------------------
@@ -2045,7 +2130,13 @@ end
 -- event data that cannot be bypassed from Lua.  Instead open the custom menu.
 -----------------------------------
 entity.onTrigger = function(player, npc)
-    menuShowRoot(player, npc)
+    local jobAbbrev = menuJobIdToAbbrev[player:getMainJob()] or 'WAR'
+    local jobName   = menuJobFullName[jobAbbrev] or jobAbbrev
+    player:printToPlayer(
+        string.format('Ah! I see you are a %s, this is what I can upgrade for you:', jobName),
+        xi.msg.channel.SAY, npc:getName()
+    )
+    menuShowRoot(player, npc, 1, false)
 end
 
 return entity
