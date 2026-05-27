@@ -15,7 +15,7 @@ local content = SKCNMBattlefield:new({
     index         = 5,
     entryNpc      = '_4l1',
     exitNpcs      = { '_4l2', '_4l3', '_4l4' },
-    requiredItems = { xi.item.MACROCOSMIC_ORB, wearMessage = throneRoomID.text.A_CRACK_HAS_FORMED, wornMessage = throneRoomID.text.ORB_IS_CRACKED },
+    requiredItems = { xi.item.MACROCOSMIC_ORB }, -- wear/worn messages handled centrally in skcnm.lua
 })
 
 content.groups =
@@ -120,24 +120,13 @@ content.loot =
         { itemId = xi.item.VILE_ELIXIR_P1,                   weight =  400 },
     },
 
-    -- Rem's Tale Chapter 2: 1x guaranteed + up to 3 more at 50% each (1–4x total)
+    -- Rem's Tale Chapter 2: 2x guaranteed in treasure pool
     {
         { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_2,      weight = 10000 },
     },
 
     {
-        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_2,      weight =  5000 },
-        { itemId = xi.item.NONE,                              weight =  5000 },
-    },
-
-    {
-        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_2,      weight =  5000 },
-        { itemId = xi.item.NONE,                              weight =  5000 },
-    },
-
-    {
-        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_2,      weight =  5000 },
-        { itemId = xi.item.NONE,                              weight =  5000 },
+        { itemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_2,      weight = 10000 },
     },
 }
 

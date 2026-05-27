@@ -62,7 +62,7 @@ content.groups =
 
             xi.htbf.onWin(battlefield, {
                 battlefieldId = xi.battlefield.id.MOONLIT_PATH_HTBF,
-                chapterItemId = xi.item.REMS_TALE_CH_6,
+                chapterItemId = xi.item.COPY_OF_REMS_TALE_CHAPTER_6,
                 mob           = mob,
                 lootTable     = lootTable,
             })
