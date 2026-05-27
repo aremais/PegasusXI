@@ -48,7 +48,7 @@ end
 local function openEschalixirMenu(player)
     local menu =
     {
-        title = 'Buy Eschalixirs',
+        title = 'Eschalixirs',
         options = {},
     }
 
@@ -111,7 +111,7 @@ xi.nolanShop.onTrigger = function(player, npc)
             },
 
             {
-                'Buy Eschalixirs',
+                'Eschalixirs',
                 function(p)
                     openEschalixirMenu(p)
                 end,
@@ -124,4 +124,10 @@ xi.nolanShop.onTrigger = function(player, npc)
             },
         },
     })
+end
+
+xi.nolanShop.onEventUpdate = function(player, csid, option, npc)
+end
+
+xi.nolanShop.onEventFinish = function(player, csid, option, npc)
 end
