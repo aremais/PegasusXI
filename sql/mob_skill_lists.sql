@@ -3542,7 +3542,9 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rahal', 1066, 41); -- Swift Blade
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Invincible_Shield_UC',1069,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Apururu_UC',1070,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Jakoh_Wahcondalo_UC',1071,0);
--- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Flaviria_UC',1072,0);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Flaviria_UC',1072,118); -- Skewer
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Flaviria_UC',1072,120); -- Impulse Drive
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Flaviria_UC',1072,124); -- Camlann's Torment / Celidon's Torment fallback
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Babban',1073,3351);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Babban',1073,3352);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Babban',1073,3353);
