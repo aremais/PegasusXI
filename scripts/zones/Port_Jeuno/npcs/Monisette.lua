@@ -1443,6 +1443,531 @@ for k, v in pairs(empReforgeI119) do
 end
 
 -----------------------------------
+-- In-game menu system
+-- Root menu → Browse Recipes (type → job → slot → chat output)
+--           → Get Tales (chapter → quantity → give)
+--
+-- Menu window fits 3 lines: 2 selectable options + 1 nav button.
+-- First display: no timer.  Page/menu transitions: player:timer(50, ...).
+-----------------------------------
+
+-- Ordered job abbreviations and per-type support lists
+local menuTypeJobs =
+{
+    AF109  = { 'WAR','MNK','WHM','BLM','RDM','THF','PLD','DRK','BST','BRD','RNG','SAM','NIN','DRG','SMN','BLU','COR','PUP','DNC','SCH' },
+    AF119  = { 'WAR','MNK','WHM','BLM','RDM','THF','PLD','DRK','BST','BRD','RNG','SAM','NIN','DRG','SMN','BLU','COR','PUP','DNC','SCH','GEO','RUN' },
+    REL109 = { 'WAR','MNK','WHM','BLM','RDM','THF','PLD','DRK','BST','BRD','RNG','SAM','NIN','DRG','SMN','BLU','COR','PUP','DNC','SCH' },
+    REL119 = { 'WAR','MNK','WHM','BLM','RDM','THF','PLD','DRK','BST','BRD','RNG','SAM','NIN','DRG','SMN','BLU','COR','PUP','DNC','SCH','GEO','RUN' },
+    EMP109 = { 'WAR','MNK','WHM','BLM','RDM','THF','PLD','DRK','BST','BRD','RNG','SAM','NIN','DRG','SMN','BLU','COR','PUP','DNC','SCH' },
+    EMP119 = { 'WAR','MNK','WHM','BLM','RDM','THF','PLD','DRK','BST','BRD','RNG','SAM','NIN','DRG','SMN','BLU','COR','PUP','DNC','SCH' },
+}
+
+-- Job-specific upgrade material per type (index = position in menuTypeJobs list above)
+local menuJobMats =
+{
+    AF109  = { 'Black Tiger Lth.', 'Gold Thread',         'Imp. Silk Cloth',    'Karakul Cloth',
+               'Scarlet Linen',    'Gold Thread',         'Gold Sheet',         'Darksteel Sheet',
+               'Black Tiger Lth.', 'Imp. Silk Cloth',     'Karakul Cloth',      'Tama-Hagane',
+               'Tama-Hagane',      'Gold Sheet',          'Scarlet Linen',      'Imp. Silk Cloth',
+               'Karakul Cloth',    'Karakul Cloth',       'Gold Thread',        'Scarlet Linen' },
+
+    AF119  = { 'Behemoth Leather', 'Plat. Silk Thread',   'Raxa',               'Twill Damask',
+               "Siren's Hair",     'Plat. Silk Thread',   'Orichalcum Sheet',   'Durium Sheet',
+               'Behemoth Leather', 'Raxa',                'Twill Damask',       'Damascus Ingot',
+               'Damascus Ingot',   'Orichalcum Sheet',    "Siren's Hair",       'Raxa',
+               'Twill Damask',     'Twill Damask',        'Plat. Silk Thread',  "Siren's Hair",
+               'Raxa',             'Damascus Ingot' },
+
+    REL109 = { 'Wootz Ore',        'Griffon Hide',        'Sparkling Stone',    'Sparkling Stone',
+               'Griffon Hide',     'Griffon Hide',        'Wootz Ore',          'Wootz Ore',
+               'Mammoth Tusk',     'Griffon Hide',        'Griffon Hide',       'Relic Iron',
+               'Relic Iron',       'Griffon Hide',        'Lancewood Log',      'Griffon Hide',
+               'Sparkling Stone',  'Lancewood Log',       'Mammoth Tusk',       'Lancewood Log' },
+
+    REL119 = { 'Voidwrought Plate', "Kaggen's Cuticle",   "Akvan's Pennon",     "Akvan's Pennon",
+               "Pil's Tuille",     "Kaggen's Cuticle",    "Pil's Tuille",       "Pil's Tuille",
+               "Hahava's Mail",    "Kaggen's Cuticle",    "Celaeno's Cloth",    "Pil's Tuille",
+               'Voidwrought Plate','Voidwrought Plate',   "Hahava's Mail",      "Pil's Tuille",
+               "Kaggen's Cuticle", "Hahava's Mail",       "Celaeno's Cloth",    "Akvan's Pennon",
+               "Akvan's Pennon",   "Celaeno's Cloth" },
+
+    EMP109 = { 'Helm of Briareus',  "Itzpapalotl's Scale", "Orthrus's Claw",    'Glavoid Shell',
+               "Cirein-croin's Lantern", "Alfard's Fang", "Kulkulkan's Fang",   'Helm of Briareus',
+               "Carabosse's Gem",  "Dragua's Scale",      "Ulhuadshi's Fang",   "Apademak's Horn",
+               "Bukhis's Wing",    "Azdaja's Horn",       "Carabosse's Gem",    "Isgebind's Heart",
+               "Sobek's Skin",     "Carabosse's Gem",     'Two-Leaf Chloris Bud', "Sedna's Tusk" },
+}
+
+-- Slot-specific upgrade material per type (index 1-5 = Head/Body/Hands/Legs/Feet)
+local menuSlotMats =
+{
+    AF109  = { 'Phoenix Feather',     'Malboro Fiber',        'Black Beetle Blood',  'Damascene Cloth',     'Oxblood'              },
+    AF119  = { 'Maliyakaleya Coral',  'Hepatizon Ore',        'Beryllium Ore',       'Exalted Log',         "Sif's Lock"           },
+    REL109 = { 'Phoenix Feather',     'Malboro Fiber',        'Black Beetle Blood',  'Damascene Cloth',     'Oxblood'              },
+    REL119 = { 'Gabbrath Horn',       'Yggdreant Bole',       'Bztavian Stinger',    'Waktza Rostrum',      'Rockfin Tooth'        },
+    EMP109 = { 'Phoenix Feather',     'Malboro Fiber',        'Black Beetle Blood',  'Damascene Cloth',     'Oxblood'              },
+    EMP119 = { 'Defiant Sweat',       'Dark Matter',          'Macuil Horn',         'Tartarian Chain',     'Plovid Effluvium'     },
+}
+
+-- Etched Memory qty for Emp i119 per slot (Head/Body/Hands/Legs/Feet)
+local menuEtchedQty = { 15, 25, 15, 20, 15 }
+
+local menuSlotNames = { 'Head', 'Body', 'Hands', 'Legs', 'Feet' }
+
+local menuTypeLabel = { AF109='AF i109', AF119='AF i119', REL109='Rel i109', REL119='Rel i119', EMP109='Emp i109', EMP119='Emp i119' }
+
+local menuTypeList =
+{
+    { key = 'AF109',  label = 'AF i109'  },
+    { key = 'AF119',  label = 'AF i119'  },
+    { key = 'REL109', label = 'Rel i109' },
+    { key = 'REL119', label = 'Rel i119' },
+    { key = 'EMP109', label = 'Emp i109' },
+    { key = 'EMP119', label = 'Emp i119' },
+}
+
+-- Map numeric FFXI job ID → abbreviation
+local menuJobIdToAbbrev =
+{
+    [xi.job.WAR] = 'WAR', [xi.job.MNK] = 'MNK', [xi.job.WHM] = 'WHM', [xi.job.BLM] = 'BLM',
+    [xi.job.RDM] = 'RDM', [xi.job.THF] = 'THF', [xi.job.PLD] = 'PLD', [xi.job.DRK] = 'DRK',
+    [xi.job.BST] = 'BST', [xi.job.BRD] = 'BRD', [xi.job.RNG] = 'RNG', [xi.job.SAM] = 'SAM',
+    [xi.job.NIN] = 'NIN', [xi.job.DRG] = 'DRG', [xi.job.SMN] = 'SMN', [xi.job.BLU] = 'BLU',
+    [xi.job.COR] = 'COR', [xi.job.PUP] = 'PUP', [xi.job.DNC] = 'DNC', [xi.job.SCH] = 'SCH',
+    [xi.job.GEO] = 'GEO', [xi.job.RUN] = 'RUN',
+}
+
+-----------------------------------
+-- Print a recipe description to the player's chat log.
+-----------------------------------
+local function menuPrintRecipe(player, npc, typeKey, jobAbbrev, slotIdx)
+    local typeJobs = menuTypeJobs[typeKey]
+    local jobIdx   = nil
+    for i, j in ipairs(typeJobs) do
+        if j == jobAbbrev then jobIdx = i break end
+    end
+    if not jobIdx then return end
+
+    local slot      = menuSlotNames[slotIdx]
+    local typeLabel = menuTypeLabel[typeKey]
+    local rtCh      = slotIdx       -- i109 types: Ch.1–5 (Head=Ch.1 … Feet=Ch.5)
+    local rtCh2     = slotIdx + 5   -- i119 types: Ch.6–10
+    local jobMat    = menuJobMats[typeKey] and menuJobMats[typeKey][jobIdx] or nil
+    local slotMat   = menuSlotMats[typeKey] and menuSlotMats[typeKey][slotIdx] or nil
+
+    player:printToPlayer(string.format('--- %s  %s  %s ---', typeLabel, jobAbbrev, slot), xi.msg.channel.SAY, npc:getName())
+
+    if typeKey == 'AF109' then
+        player:printToPlayer(string.format('Path A (base AF):  10x RT Ch.%d  +  %s  +  %s', rtCh, jobMat, slotMat), xi.msg.channel.SAY, npc:getName())
+        player:printToPlayer(string.format('Path B (AF+1):      5x RT Ch.%d  (no extra mats needed)', rtCh), xi.msg.channel.SAY, npc:getName())
+
+    elseif typeKey == 'AF119' then
+        player:printToPlayer(string.format('i109 piece  +  8x RT Ch.%d  +  %s  +  %s', rtCh2, jobMat, slotMat), xi.msg.channel.SAY, npc:getName())
+
+    elseif typeKey == 'REL109' then
+        player:printToPlayer(string.format('Path A (Relic+2):  10x RT Ch.%d  +  %s  +  %s', rtCh, jobMat, slotMat), xi.msg.channel.SAY, npc:getName())
+        player:printToPlayer(string.format('Path B (Relic+1):  10x RT Ch.%d  (no extra mats needed)', rtCh), xi.msg.channel.SAY, npc:getName())
+        player:printToPlayer(string.format('Path C (Relic):    10x RT Ch.%d  (no extra mats needed)', rtCh), xi.msg.channel.SAY, npc:getName())
+
+    elseif typeKey == 'REL119' then
+        player:printToPlayer(string.format('i109 piece  +  8x RT Ch.%d  +  %s  +  %s', rtCh2, jobMat, slotMat), xi.msg.channel.SAY, npc:getName())
+
+    elseif typeKey == 'EMP109' then
+        player:printToPlayer(string.format('Path A (Emp+2):   5x RT Ch.%d  +  %s  +  %s', rtCh, jobMat, slotMat), xi.msg.channel.SAY, npc:getName())
+        player:printToPlayer(string.format('Path B (Emp+1):  10x RT Ch.%d  (no extra mats needed)', rtCh), xi.msg.channel.SAY, npc:getName())
+
+    elseif typeKey == 'EMP119' then
+        local etched = menuEtchedQty[slotIdx]
+        player:printToPlayer(string.format('i109 piece  +  8x RT Ch.%d  +  %dx Etched Memory  +  %s', rtCh2, etched, slotMat), xi.msg.channel.SAY, npc:getName())
+    end
+end
+
+-----------------------------------
+-- Menu: slot selection (Head/Body/Hands/Legs/Feet)
+-- Prints recipe to chat on selection; redisplays menu for continued browsing.
+-----------------------------------
+local function menuShowSlots(player, npc, typeKey, jobAbbrev, pageNum, useTimer)
+    local itemsPerPage = 2
+    local totalPages   = math.ceil(5 / itemsPerPage)
+    pageNum = math.max(1, math.min(pageNum, totalPages))
+
+    local options  = {}
+    local startIdx = (pageNum - 1) * itemsPerPage + 1
+    local endIdx   = math.min(startIdx + itemsPerPage - 1, 5)
+
+    for s = startIdx, endIdx do
+        local slotCapture = s
+        table.insert(options, {
+            label    = menuSlotNames[s],
+            callback = function(p)
+                menuPrintRecipe(p, npc, typeKey, jobAbbrev, slotCapture)
+                p:timer(50, function(pp)
+                    menuShowSlots(pp, npc, typeKey, jobAbbrev, pageNum, false)
+                end)
+            end,
+        })
+    end
+
+    if totalPages > 1 then
+        if pageNum < totalPages then
+            local next = pageNum + 1
+            table.insert(options, {
+                label    = string.format('Next >> %u/%u', next, totalPages),
+                callback = function(p)
+                    p:timer(50, function(pp) menuShowSlots(pp, npc, typeKey, jobAbbrev, next, false) end)
+                end,
+            })
+        else
+            local prev = pageNum - 1
+            table.insert(options, {
+                label    = string.format('<< Prev %u/%u', prev, totalPages),
+                callback = function(p)
+                    p:timer(50, function(pp) menuShowSlots(pp, npc, typeKey, jobAbbrev, prev, false) end)
+                end,
+            })
+        end
+    end
+
+    local function draw(p)
+        p:customMenu({
+            title   = string.format('%s %s', menuTypeLabel[typeKey], jobAbbrev),
+            options = options,
+        })
+    end
+
+    if useTimer then
+        player:timer(50, function(p) draw(p) end)
+    else
+        draw(player)
+    end
+end
+
+-----------------------------------
+-- Menu: job selection
+-- Player's current main job appears first (marked with *) if supported by this type.
+-----------------------------------
+local function menuShowJobs(player, npc, typeKey, pageNum, useTimer)
+    local rawJobs         = menuTypeJobs[typeKey]
+    local playerAbbrev    = menuJobIdToAbbrev[player:getMainJob()]
+    local playerSupported = false
+    for _, j in ipairs(rawJobs) do
+        if j == playerAbbrev then playerSupported = true break end
+    end
+
+    -- Build list: player's job first (with *), then remaining jobs in order
+    local jobEntries = {}
+    if playerSupported then
+        table.insert(jobEntries, { abbrev = playerAbbrev, label = playerAbbrev .. '*' })
+    end
+    for _, j in ipairs(rawJobs) do
+        if not (playerSupported and j == playerAbbrev) then
+            table.insert(jobEntries, { abbrev = j, label = j })
+        end
+    end
+
+    local itemsPerPage = 2
+    local totalItems   = #jobEntries
+    local totalPages   = math.ceil(totalItems / itemsPerPage)
+    pageNum = math.max(1, math.min(pageNum, totalPages))
+
+    local options  = {}
+    local startIdx = (pageNum - 1) * itemsPerPage + 1
+    local endIdx   = math.min(startIdx + itemsPerPage - 1, totalItems)
+
+    for i = startIdx, endIdx do
+        local entry        = jobEntries[i]
+        local abbrevCapture = entry.abbrev
+        table.insert(options, {
+            label    = entry.label,
+            callback = function(p)
+                p:timer(50, function(pp) menuShowSlots(pp, npc, typeKey, abbrevCapture, 1, false) end)
+            end,
+        })
+    end
+
+    if totalPages > 1 then
+        if pageNum < totalPages then
+            local next = pageNum + 1
+            table.insert(options, {
+                label    = string.format('Next >> %u/%u', next, totalPages),
+                callback = function(p)
+                    p:timer(50, function(pp) menuShowJobs(pp, npc, typeKey, next, false) end)
+                end,
+            })
+        else
+            local prev = pageNum - 1
+            table.insert(options, {
+                label    = string.format('<< Prev %u/%u', prev, totalPages),
+                callback = function(p)
+                    p:timer(50, function(pp) menuShowJobs(pp, npc, typeKey, prev, false) end)
+                end,
+            })
+        end
+    end
+
+    local function draw(p)
+        p:customMenu({
+            title   = string.format('%s - Job', menuTypeLabel[typeKey]),
+            options = options,
+        })
+    end
+
+    if useTimer then
+        player:timer(50, function(p) draw(p) end)
+    else
+        draw(player)
+    end
+end
+
+-----------------------------------
+-- Menu: upgrade type selection
+-----------------------------------
+local function menuShowTypes(player, npc, pageNum, useTimer)
+    local itemsPerPage = 2
+    local totalItems   = #menuTypeList
+    local totalPages   = math.ceil(totalItems / itemsPerPage)
+    pageNum = math.max(1, math.min(pageNum, totalPages))
+
+    local options  = {}
+    local startIdx = (pageNum - 1) * itemsPerPage + 1
+    local endIdx   = math.min(startIdx + itemsPerPage - 1, totalItems)
+
+    for i = startIdx, endIdx do
+        local entry      = menuTypeList[i]
+        local keyCapture = entry.key
+        table.insert(options, {
+            label    = entry.label,
+            callback = function(p)
+                p:timer(50, function(pp) menuShowJobs(pp, npc, keyCapture, 1, false) end)
+            end,
+        })
+    end
+
+    if totalPages > 1 then
+        if pageNum < totalPages then
+            local next = pageNum + 1
+            table.insert(options, {
+                label    = string.format('Next >> %u/%u', next, totalPages),
+                callback = function(p)
+                    p:timer(50, function(pp) menuShowTypes(pp, npc, next, false) end)
+                end,
+            })
+        else
+            local prev = pageNum - 1
+            table.insert(options, {
+                label    = string.format('<< Prev %u/%u', prev, totalPages),
+                callback = function(p)
+                    p:timer(50, function(pp) menuShowTypes(pp, npc, prev, false) end)
+                end,
+            })
+        end
+    end
+
+    local function draw(p)
+        p:customMenu({
+            title   = 'Browse Recipes',
+            options = options,
+        })
+    end
+
+    if useTimer then
+        player:timer(50, function(p) draw(p) end)
+    else
+        draw(player)
+    end
+end
+
+-----------------------------------
+-- Menu: quantity selection for Rem's Tales retrieval
+-----------------------------------
+local function menuShowTalesQty(player, npc, chapter, stored, useTimer)
+    -- Build quantity options: 1, 5, 10 (if enough stored), then "Return All"
+    -- Only append stored if it is not already the last entry in the list.
+    local qtyList = {}
+    if stored >= 1  then table.insert(qtyList, 1)  end
+    if stored >= 5  then table.insert(qtyList, 5)  end
+    if stored >= 10 then table.insert(qtyList, 10) end
+    if #qtyList == 0 or qtyList[#qtyList] ~= stored then
+        table.insert(qtyList, stored)
+    end
+
+    local itemsPerPage = 2
+    local totalItems   = #qtyList
+    local totalPages   = math.ceil(totalItems / itemsPerPage)
+
+    local function buildPage(pageNum, pgUseTimer)
+        pageNum = math.max(1, math.min(pageNum, totalPages))
+
+        local options  = {}
+        local startIdx = (pageNum - 1) * itemsPerPage + 1
+        local endIdx   = math.min(startIdx + itemsPerPage - 1, totalItems)
+
+        for i = startIdx, endIdx do
+            local qty = qtyList[i]
+            local lbl = (qty == stored) and string.format('Return All (%d)', stored) or string.format('Return %d', qty)
+            local qtyCapture = qty
+            table.insert(options, {
+                label    = lbl,
+                callback = function(p)
+                    local currentStored = getStoredTales(p, chapter)
+                    local give          = math.min(qtyCapture, currentStored)
+                    if give > 0 then
+                        if npcUtil.giveItem(p, { { remsTaleItems[chapter], give } }) then
+                            setStoredTales(p, chapter, currentStored - give)
+                            p:printToPlayer(string.format('Here are %dx RT Ch.%d for you!', give, chapter), xi.msg.channel.SAY, npc:getName())
+                        end
+                    end
+                end,
+            })
+        end
+
+        if totalPages > 1 then
+            if pageNum < totalPages then
+                local next = pageNum + 1
+                table.insert(options, {
+                    label    = string.format('Next >> %u/%u', next, totalPages),
+                    callback = function(p)
+                        p:timer(50, function(pp) buildPage(next, false) end)
+                    end,
+                })
+            else
+                local prev = pageNum - 1
+                table.insert(options, {
+                    label    = string.format('<< Prev %u/%u', prev, totalPages),
+                    callback = function(p)
+                        p:timer(50, function(pp) buildPage(prev, false) end)
+                    end,
+                })
+            end
+        end
+
+        local function draw(p)
+            p:customMenu({
+                title   = string.format('RT Ch.%d (%d stored)', chapter, stored),
+                options = options,
+            })
+        end
+
+        if pgUseTimer then
+            player:timer(50, function(p) draw(p) end)
+        else
+            draw(player)
+        end
+    end
+
+    buildPage(1, useTimer)
+end
+
+-----------------------------------
+-- Menu: chapter selection for Rem's Tales retrieval
+-----------------------------------
+local function menuShowChapters(player, npc, pageNum, useTimer)
+    local chapters = {}
+    for ch = 1, 10 do
+        local stored = getStoredTales(player, ch)
+        if stored > 0 then
+            table.insert(chapters, { ch = ch, stored = stored })
+        end
+    end
+
+    if #chapters == 0 then
+        player:printToPlayer("I don't have any Rem's Tales stored for you right now.", xi.msg.channel.SAY, npc:getName())
+        return
+    end
+
+    local itemsPerPage = 2
+    local totalItems   = #chapters
+    local totalPages   = math.ceil(totalItems / itemsPerPage)
+    pageNum = math.max(1, math.min(pageNum, totalPages))
+
+    local options  = {}
+    local startIdx = (pageNum - 1) * itemsPerPage + 1
+    local endIdx   = math.min(startIdx + itemsPerPage - 1, totalItems)
+
+    for i = startIdx, endIdx do
+        local entry    = chapters[i]
+        local chCap    = entry.ch
+        local storeCap = entry.stored
+        table.insert(options, {
+            label    = string.format('Ch.%d (%d)', entry.ch, entry.stored),
+            callback = function(p)
+                p:timer(50, function(pp) menuShowTalesQty(pp, npc, chCap, storeCap, false) end)
+            end,
+        })
+    end
+
+    if totalPages > 1 then
+        if pageNum < totalPages then
+            local next = pageNum + 1
+            table.insert(options, {
+                label    = string.format('Next >> %u/%u', next, totalPages),
+                callback = function(p)
+                    p:timer(50, function(pp) menuShowChapters(pp, npc, next, false) end)
+                end,
+            })
+        else
+            local prev = pageNum - 1
+            table.insert(options, {
+                label    = string.format('<< Prev %u/%u', prev, totalPages),
+                callback = function(p)
+                    p:timer(50, function(pp) menuShowChapters(pp, npc, prev, false) end)
+                end,
+            })
+        end
+    end
+
+    local function draw(p)
+        p:customMenu({
+            title   = "Rem's Tales",
+            options = options,
+        })
+    end
+
+    if useTimer then
+        player:timer(50, function(p) draw(p) end)
+    else
+        draw(player)
+    end
+end
+
+-----------------------------------
+-- Root menu shown when player triggers Monisette.
+-----------------------------------
+local function menuShowRoot(player, npc)
+    local hasTales = false
+    for chapter = 1, 10 do
+        if getStoredTales(player, chapter) > 0 then
+            hasTales = true
+            break
+        end
+    end
+
+    local options =
+    {
+        {
+            label    = 'Browse recipes',
+            callback = function(p)
+                p:timer(50, function(pp) menuShowTypes(pp, npc, 1, false) end)
+            end,
+        },
+    }
+
+    if hasTales then
+        table.insert(options, {
+            label    = 'Get Tales',
+            callback = function(p)
+                p:timer(50, function(pp) menuShowChapters(pp, npc, 1, false) end)
+            end,
+        })
+    end
+
+    player:customMenu({
+        title   = 'Monisette',
+        options = options,
+    })
+end
+
+-----------------------------------
 -- Deposit Rem's Tales that appear in the trade.
 -- Returns true if any tales were deposited.
 -----------------------------------
@@ -1517,21 +2042,10 @@ end
 
 -----------------------------------
 -- Avoid event 384: it contains a hard-coded Sagheera prerequisite check in its
--- event data that cannot be bypassed from Lua.  Instead, return all stored
--- Rem's Tales directly when the player talks to Monisette.
+-- event data that cannot be bypassed from Lua.  Instead open the custom menu.
 -----------------------------------
 entity.onTrigger = function(player, npc)
-    player:printToPlayer('Trade me your armor along with the Rem\'s Tales and upgrade materials, and I\'ll reforge it. I can also hold onto any Rem\'s Tales you bring me.', xi.msg.channel.SAY, npc:getName())
-
-    for chapter = 1, 10 do
-        local stored = getStoredTales(player, chapter)
-
-        if stored > 0 then
-            if npcUtil.giveItem(player, { { remsTaleItems[chapter], stored } }) then
-                setStoredTales(player, chapter, 0)
-            end
-        end
-    end
+    menuShowRoot(player, npc)
 end
 
 return entity
