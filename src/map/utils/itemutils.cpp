@@ -302,11 +302,9 @@ void LoadItemList()
                 // TODO
             }
 
-            // For some reason weapons and equipments always match ITEM_USABLE even when they aren't usable
-            // The 2nd condition ensures we only load usable data for items that are purely usable or
-            // equipment/weapons that are also usable (have validTargets set)
-            if (PItem->isType(ITEM_USABLE) &&
-                (!(PItem->isType(ITEM_EQUIPMENT) || PItem->isType(ITEM_WEAPON)) || !rset->isNull("validTargets")))
+            // item_basic.type can include ITEM_USABLE without a matching item_usable row (LEFT JOIN).
+            // Only load usable columns when that row exists (validTargets is the join sentinel).
+            if (PItem->isType(ITEM_USABLE) && !rset->isNull("validTargets"))
             {
                 static_cast<CItemUsable*>(PItem)->setValidTarget(rset->get<uint16>("validTargets"));
                 static_cast<CItemUsable*>(PItem)->setActivationTime(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::duration<float>(rset->get<float>("activation"))));

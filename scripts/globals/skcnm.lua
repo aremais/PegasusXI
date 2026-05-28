@@ -153,31 +153,5 @@ function SKCNMBattlefield.onEntryTrade(player, npc, trade, onUpdate)
         return
     end
 
-    -- Build and show the difficulty menu.  The callback stores the selection
-    -- in a player localVar, then starts the fight-selection cutscene (event 32000).
-    local function onChosen(p, diffIndex)
-        p:setLocalVar('[SKCNM]Difficulty', diffIndex)
-        p:startEvent(32000, 0, 0, 0, options, 0, 0, 0, 0)
-    end
-
-        return
-    end
-
-    local diffIndex = player:getLocalVar('[SKCNM]Difficulty')
-    player:setLocalVar('[SKCNM]Difficulty', 0)               -- consume
-
-    battlefield:setLocalVar('SKCNM_Difficulty', diffIndex)
-    applyDiffScaling(battlefield, diffIndex)
-
-    local label   = difficultyLabels[diffIndex] or 'Normal'
-    local players = battlefield:getPlayers()
-
-    -- Custom wear message shown to the initiator.
-    -- Replaces messageSpecial(A_CRACK_HAS_FORMED, 0, 0, 0, 4063) which renders
-    -- "bureau" in the client because item 4063 conflicts with a vanilla furniture ID.
-    player:printToPlayer('A crack forms on the Macrocosmic Orb. The beast within has been unleashed!', xi.msg.channel.NS_SAY)
-
-    for _, member in ipairs(players) do
-        member:printToPlayer('Difficulty: ' .. label .. '.', xi.msg.channel.NS_SAY)
-    end
+    return Battlefield:event(32000, 0, 0, 0, options, 0, 0, 0, 0)
 end

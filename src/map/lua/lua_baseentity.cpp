@@ -5096,11 +5096,11 @@ void CLuaBaseEntity::createShop(uint8 size, const sol::object& arg1)
  *  Purpose : Adds an item and established price to an existing shop
  *          : Optionally accepts a GuildID + Guild Rank requirement
  *  Example : addShopItem(512, 8000)                                                   --Regular item
- *          : addShopItem(512, 8000, xi.skill.CLOTHCRAFT, xi.craftRank.JOURNEYMAN)   --Guild-rank locked item
+ *          : addShopItem(512, 8000, { guild = xi.skill.CLOTHCRAFT, rank = xi.craftRank.JOURNEYMAN })
  *  Notes   : Use with createShop() - 16 Max Items in Shop
  ************************************************************************/
 
-void CLuaBaseEntity::addShopItem(uint16 itemID, double rawPrice, const sol::object& arg2, const sol::object& arg3)
+void CLuaBaseEntity::addShopItem(uint16 itemID, double rawPrice, sol::optional<sol::table> requirements) const
 {
     if (m_PBaseEntity->objtype != TYPE_PC)
     {
@@ -5118,13 +5118,16 @@ void CLuaBaseEntity::addShopItem(uint16 itemID, double rawPrice, const sol::obje
     // so track the shop's number of items separately from the container's size.
     PChar->Container->setExSize(PChar->Container->getExSize() + 1);
 
-    if (arg2.is<int>() && arg3.is<int>())
+    if (requirements)
     {
-        uint8  guildID   = arg2.as<uint8>();
-        uint16 guildRank = arg3.as<uint16>();
-
-        static_cast<CCharEntity*>(m_PBaseEntity)->Container->setGuildID(slotID, guildID);
-        static_cast<CCharEntity*>(m_PBaseEntity)->Container->setGuildRank(slotID, guildRank);
+        const sol::table& req = *requirements;
+        if (req.get<sol::object>("guild").valid())
+        {
+            GuildRestriction restriction{};
+            restriction.guildId = req.get_or<uint8>("guild", 0);
+            restriction.rank    = req.get_or<uint16>("rank", 0);
+            PChar->Container->setRestriction(slotID, restriction);
+        }
     }
 }
 
@@ -19842,35 +19845,33 @@ uint16 CLuaBaseEntity::getDespoilDebuff(uint16 itemID)
  *  Notes   : Used in scripts/globals/job_utils/thief.lua
  ************************************************************************/
 
-bool CLuaBaseEntity::itemStolen()
+void CLuaBaseEntity::itemStolen(bool stolen)
 {
     if (m_PBaseEntity->objtype != TYPE_MOB)
     {
         ShowWarning("Attempting to flag stolen item for invalid entity type (%s).", m_PBaseEntity->getName());
-        return false;
+        return;
     }
 
-    static_cast<CMobEntity*>(m_PBaseEntity)->m_ItemStolen = true;
-    return true;
+    static_cast<CMobEntity*>(m_PBaseEntity)->m_ItemStolen = stolen;
 }
 
 /************************************************************************
  *  Function: itemDespoiled()
- *  Purpose : Flags a mob's item as despoiled, returns true upon update
- *  Example : target:itemDespoiled()
+ *  Purpose : Sets whether a mob's item has been despoiled
+ *  Example : target:itemDespoiled(true)
  *  Notes   : Used in scripts/globals/job_utils/thief.lua
  ************************************************************************/
 
-bool CLuaBaseEntity::itemDespoiled()
+void CLuaBaseEntity::itemDespoiled(bool despoiled)
 {
     if (m_PBaseEntity->objtype != TYPE_MOB)
     {
         ShowWarning("Attempting to flag despoiled item for invalid entity type (%s).", m_PBaseEntity->getName());
-        return false;
+        return;
     }
 
-    static_cast<CMobEntity*>(m_PBaseEntity)->m_ItemDespoiled = true;
-    return true;
+    static_cast<CMobEntity*>(m_PBaseEntity)->m_ItemDespoiled = despoiled;
 }
 
 /************************************************************************
