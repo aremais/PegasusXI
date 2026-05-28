@@ -302,11 +302,7 @@ void LoadItemList()
                 // TODO
             }
 
-            // For some reason weapons and equipments always match ITEM_USABLE even when they aren't usable
-            // The 2nd condition ensures we only load usable data for items that are purely usable or
-            // equipment/weapons that are also usable (have validTargets set)
-            if (PItem->isType(ITEM_USABLE) &&
-                (!(PItem->isType(ITEM_EQUIPMENT) || PItem->isType(ITEM_WEAPON)) || !rset->isNull("validTargets")))
+            if (PItem->isType(ITEM_USABLE) && !rset->isNull("validTargets"))
             {
                 static_cast<CItemUsable*>(PItem)->setValidTarget(rset->get<uint16>("validTargets"));
                 static_cast<CItemUsable*>(PItem)->setActivationTime(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::duration<float>(rset->get<float>("activation"))));
@@ -317,6 +313,11 @@ void LoadItemList()
                 static_cast<CItemUsable*>(PItem)->setUseDelay(std::chrono::seconds(rset->get<uint32>("useDelay")));
                 static_cast<CItemUsable*>(PItem)->setReuseDelay(std::chrono::seconds(rset->get<uint32>("reuseDelay")));
                 static_cast<CItemUsable*>(PItem)->setAoE(rset->get<uint16>("aoe"));
+            }
+            else if (rset->get<ItemType>("type") == ItemType::Usable && rset->isNull("validTargets"))
+            {
+                ShowWarningFmt("LoadItemList({}): item_basic type is Usable but item_usable row is missing; apply sql/patches/item_usable_missing_rows.sql",
+                               PItem->getID());
             }
 
             if (PItem->isType(ITEM_PUPPET) && !rset->isNull("pup_slot"))

@@ -270,7 +270,7 @@ public:
     auto   getItems(const sol::object& location) -> sol::table;
 
     void createShop(uint8 size, const sol::object& arg1);
-    void addShopItem(uint16 itemID, double rawPrice, sol::optional<sol::table> requirements) const;
+    void addShopItem(uint16 itemID, double rawPrice, const sol::object& arg2, const sol::object& arg3);
     auto getCurrentGPItem(uint8 guildId) const -> std::tuple<uint16, uint16>;
     bool breakLinkshell(const std::string& lsname);
     bool addLinkpearl(const std::string& lsname, bool equip);
@@ -834,6 +834,7 @@ public:
     auto getActiveManeuverCount() const -> uint8;
     void removeOldestManeuver() const;
     void removeAllManeuvers() const;
+    auto getAttachment(uint8 slotId) const -> const CItem*;
     auto getAttachments() const -> sol::table;
     void setAttachment(uint8 attachmentItemID, uint8 slotID) const;
     void updateAttachments() const;

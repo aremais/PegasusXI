@@ -5123,8 +5123,7 @@ void CLuaBaseEntity::addShopItem(uint16 itemID, double rawPrice, const sol::obje
         uint8  guildID   = arg2.as<uint8>();
         uint16 guildRank = arg3.as<uint16>();
 
-        static_cast<CCharEntity*>(m_PBaseEntity)->Container->setGuildID(slotID, guildID);
-        static_cast<CCharEntity*>(m_PBaseEntity)->Container->setGuildRank(slotID, guildRank);
+        PChar->Container->setRestriction(slotID, GuildRestriction{ guildID, guildRank });
     }
 }
 
@@ -19842,16 +19841,15 @@ uint16 CLuaBaseEntity::getDespoilDebuff(uint16 itemID)
  *  Notes   : Used in scripts/globals/job_utils/thief.lua
  ************************************************************************/
 
-bool CLuaBaseEntity::itemStolen()
+void CLuaBaseEntity::itemStolen(bool stolen)
 {
     if (m_PBaseEntity->objtype != TYPE_MOB)
     {
         ShowWarning("Attempting to flag stolen item for invalid entity type (%s).", m_PBaseEntity->getName());
-        return false;
+        return;
     }
 
-    static_cast<CMobEntity*>(m_PBaseEntity)->m_ItemStolen = true;
-    return true;
+    static_cast<CMobEntity*>(m_PBaseEntity)->m_ItemStolen = stolen;
 }
 
 /************************************************************************
@@ -19861,16 +19859,15 @@ bool CLuaBaseEntity::itemStolen()
  *  Notes   : Used in scripts/globals/job_utils/thief.lua
  ************************************************************************/
 
-bool CLuaBaseEntity::itemDespoiled()
+void CLuaBaseEntity::itemDespoiled(bool despoiled)
 {
     if (m_PBaseEntity->objtype != TYPE_MOB)
     {
         ShowWarning("Attempting to flag despoiled item for invalid entity type (%s).", m_PBaseEntity->getName());
-        return false;
+        return;
     }
 
-    static_cast<CMobEntity*>(m_PBaseEntity)->m_ItemDespoiled = true;
-    return true;
+    static_cast<CMobEntity*>(m_PBaseEntity)->m_ItemDespoiled = despoiled;
 }
 
 /************************************************************************
