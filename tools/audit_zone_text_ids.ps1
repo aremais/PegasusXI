@@ -42,8 +42,8 @@ function Get-ChainIssues($text) {
         $issues += "CRITICAL: ITEM_OBTAINED equals GIL_OBTAINED"
     }
     if ($text.ContainsKey("ITEM_CANNOT_BE_OBTAINED") -and $text["ITEM_CANNOT_BE_OBTAINED"] -eq 6385 -and -not $text.ContainsKey("FULL_INVENTORY_AFTER_TRADE")) {
-        if ($item -ge 6393) {
-            $issues += "CRITICAL: compact zone (6385) uses city ITEM slot $item (expect 6391)"
+        if ($item -lt 6393) {
+            $issues += "CRITICAL: compact zone (6385) ITEM_OBTAINED=$item (expect 6393 = CANNOT+8)"
         }
     }
     return $issues
@@ -61,10 +61,10 @@ function Get-OffsetWarnings($text) {
         $warn += "FULL_INVENTORY=$($text['FULL_INVENTORY_AFTER_TRADE']) expected $($cannot+4)"
     }
 
-    $expectedItem = if ($hasFull) { $cannot + 8 } else { $cannot + 6 }
+    $expectedItem = $cannot + 8
     if ($item -ne $expectedItem) {
         $layout = if ($hasFull) { "A" } else { "B" }
-        $warn += "ITEM_OBTAINED=$item expected $expectedItem (CANNOT+$(if($hasFull){8}else{6}), layout $layout) [may be valid if chain OK]"
+        $warn += "ITEM_OBTAINED=$item expected $expectedItem (CANNOT+8, layout $layout)"
     }
     return $warn
 }

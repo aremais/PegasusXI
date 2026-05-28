@@ -9,9 +9,9 @@ zones[xi.zone.SOUTHERN_SAN_DORIA_S] =
     {
         ITEM_CANNOT_BE_OBTAINED       = 6385,  -- You cannot obtain the <item>. Come back after sorting your inventory.
         CANNOT_OBTAIN_MYSTIC          = 6388,  -- You cannot obtain the <item>. Speak with the mystic retriever after sorting your inventory.
-        ITEM_OBTAINED                 = 6391,  -- Obtained: <item>.
-        GIL_OBTAINED                  = 6392,  -- Obtained <number> gil.
-        KEYITEM_OBTAINED              = 6394,  -- Obtained key item: <keyitem>.
+        ITEM_OBTAINED                 = 6393,  -- Obtained: <item>.
+        GIL_OBTAINED                  = 6394,  -- Obtained <number> gil.
+        KEYITEM_OBTAINED              = 6396,  -- Obtained key item: <keyitem>.
         REPORT_TO_CAIT_SITH           = 6995,  -- You have obtained all of Lilisette's memory fragments. Make haste and report to Cait Sith.
         CARRIED_OVER_POINTS           = 7004,  -- You have carried over <number> login point[/s].
         LOGIN_CAMPAIGN_UNDERWAY       = 7005,  -- The [/January/February/March/April/May/June/July/August/September/October/November/December] <number> Login Campaign is currently underway!
