@@ -1,0 +1,5 @@
+Category,NPC_or_Entity,Source_File,Reference_Type,Reference,Sample_Text,Pegasus_Value,LSB_Value,Match,Notes
+DefaultActions,DefaultActions,scripts/zones/Metalworks/DefaultActions.lua,(file summary),(entire file),,,,SCRIPT_DIFF,Lua file differs from LSB upstream/base
+NPC/Zone Script,Malduc,scripts/zones/Metalworks/npcs/Malduc.lua,(file summary),(entire file),,,,SCRIPT_DIFF,Lua file differs from LSB upstream/base
+NPC/Zone Script,Mythily,scripts/zones/Metalworks/npcs/Mythily.lua,(file summary),(entire file),,,,SCRIPT_DIFF,Lua file differs from LSB upstream/base
+DefaultActions,(file),DefaultActions.lua,(file summary),(entire file),,,,SCRIPT_DIFF,DefaultActions.lua differs from LSB (e.g. Taulluque removed on Pegasus)

@@ -576,6 +576,33 @@ local expRings =
     [xi.item.EMPEROR_BAND] = { chargesWhenFull = 3, costPerCharge = 200 },
 }
 
+-- Discarded bands in the recycle bin do not count as owned (retail: throw away frees the ownership slot).
+local function countExpRingsHeld(player)
+    local count = 0
+
+    for ringId = xi.item.CHARIOT_BAND, xi.item.EMPEROR_BAND do
+        for loc = xi.inv.INVENTORY, xi.inv.MAX_CONTAINER_ID - 1 do
+            if loc ~= xi.inv.RECYCLEBIN and player:hasItem(ringId, loc) then
+                count = count + 1
+            end
+        end
+    end
+
+    return count
+end
+
+local function findTradedExpRing(trade, itemId)
+    for slot = 0, 7 do
+        local tradeItem = trade:getItem(slot)
+
+        if tradeItem and tradeItem:getID() == itemId then
+            return tradeItem
+        end
+    end
+
+    return nil
+end
+
 local function conquestRanking()
     -- computes part of argument 3 for gate guard events. represents the conquest standing of the 3 nations. Verified.
     return GetNationRank(xi.nation.SANDORIA) + 4 * GetNationRank(xi.nation.BASTOK) + 16 * GetNationRank(xi.nation.WINDURST)
@@ -972,14 +999,10 @@ local function canBuyExpRing(player, item)
     local text = zones[player:getZoneID()].text
 
     -- Cannot own another chariot / empress / emperor band (any of the trio).
-    if xi.settings.main.ALLOW_MULTIPLE_EXP_RINGS ~= 1 then
-        for i = 15761, 15763 do
-            if player:hasItem(i) then
-                player:messageSpecial(text.CONQUEST + 60, 0, 0, item) -- You do not meet the requirements to purchase the <item>.
+    if xi.settings.main.ALLOW_MULTIPLE_EXP_RINGS ~= 1 and countExpRingsHeld(player) > 0 then
+        player:messageSpecial(text.CONQUEST + 60, 0, 0, item) -- You do not meet the requirements to purchase the <item>.
 
-                return false
-            end
-        end
+        return false
     end
 
     -- One purchase or recharge of these bands per conquest tally (unless bypassed in settings).
@@ -1127,14 +1150,18 @@ xi.conquest.overseerOnTrade = function(player, npc, trade, guardNation, guardTyp
         -- RECHARGE EXP RING
         if not tradeConfirmed and expRings[item] and npcUtil.tradeHas(trade, item) then
             if
+                xi.settings.main.ALLOW_MULTIPLE_EXP_RINGS ~= 1 and
+                countExpRingsHeld(player) > 1
+            then
+                player:showText(npc, mOffset + 60, 0, 0, item) -- own more than one of the trio
+            elseif
                 xi.settings.main.BYPASS_EXP_RING_ONE_PER_WEEK == 1 or
                 player:getCharVar('CONQUEST_RING_RECHARGE') == 0
             then
                 local ring = expRings[item]
 
-                -- find the item so can determine the actual charges used
-                -- (if still some charges left then recharging is proportionally less CP)
-                local ringItem = player:findItem(item)
+                -- Use the traded item instance (still in inventory while in the trade window).
+                local ringItem = findTradedExpRing(trade, item) or player:findItem(item)
                 if ringItem then
                     -- by default assume all charges used and calculate CP cost for a full recharge
                     local cpCost = ring.chargesWhenFull * ring.costPerCharge
@@ -1156,18 +1183,19 @@ xi.conquest.overseerOnTrade = function(player, npc, trade, guardNation, guardTyp
                     end
 
                     -- if enough CP then perform the recharge
-                    if player:getCP() >= cpCost then
-                        player:delCP(cpCost)
-                        player:confirmTrade()
-                        player:addItem(item)
-                        player:setCharVar('CONQUEST_RING_RECHARGE', 1, NextConquestTally())
-                        player:showText(npc, mOffset + 58, item, cpCost, chargesUsed) -- 'Your ring is now fully recharged.'
-                    else
+                    if player:getCP() < cpCost then
                         player:showText(npc, mOffset + 55, item, cpCost) -- 'You do not have the required conquest points to recharge.'
+                    elseif not trade:confirmItem(item, 1) then
+                        return
+                    else
+                        player:confirmTrade()
+
+                        if player:addItem(item) then
+                            player:delCP(cpCost)
+                            player:setCharVar('CONQUEST_RING_RECHARGE', 1, NextConquestTally())
+                            player:showText(npc, mOffset + 58, item, cpCost, chargesUsed) -- 'Your ring is now fully charged.'
+                        end
                     end
-                -- could not find the player's current ring so stop attempt
-                else
-                    return
                 end
             else
                 player:showText(npc, mOffset + 56, item) -- 'Please be aware that you can only purchase or recharge <item> once during the period between each conquest results tally.
