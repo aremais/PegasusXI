@@ -6,11 +6,9 @@
 local entity = {}
 
 entity.onTrigger = function(player, npc)
-    local ID = zones[xi.zone.NASHMAU]
-
     -- Must have PUP30+ to get access to the shop
     if player:getJobLevel(xi.job.PUP) < 30 then
-        player:showText(npc, ID.text.RARAROON_SHOP_CLOSED)
+        player:showText(npc, 10611)
         return
     end
 
@@ -66,7 +64,7 @@ entity.onTrigger = function(player, npc)
         { xi.item.MANA_TANK_IV,        112632, { job = xi.job.PUP, level = 99 } },
     }
 
-    player:showText(npc, ID.text.RARAROON_SHOP_DIALOG)
+    player:showText(npc, 10612)
     xi.shop.general(player, stock)
 end
 
