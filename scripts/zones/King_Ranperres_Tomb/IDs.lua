@@ -9,9 +9,9 @@ zones[xi.zone.KING_RANPERRES_TOMB] =
     {
         CONQUEST_BASE                 = 0,     -- Tallying conquest results...
         ITEM_CANNOT_BE_OBTAINED       = 6544,  -- You cannot obtain the <item>. Come back after sorting your inventory.
-        ITEM_OBTAINED                 = 6550,  -- Obtained: <item>.
-        GIL_OBTAINED                  = 6551,  -- Obtained <number> gil.
-        KEYITEM_OBTAINED              = 6553,  -- Obtained key item: <keyitem>.
+        ITEM_OBTAINED                 = 6552,  -- Obtained: <item>.
+        GIL_OBTAINED                  = 6553,  -- Obtained <number> gil.
+        KEYITEM_OBTAINED              = 6555,  -- Obtained key item: <keyitem>.
         NOTHING_OUT_OF_ORDINARY       = 6564,  -- There is nothing out of the ordinary here.
         FELLOW_MESSAGE_OFFSET         = 6579,  -- I'm ready. I suppose.
         CARRIED_OVER_POINTS           = 7161,  -- You have carried over <number> login point[/s].

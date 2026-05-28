@@ -2,7 +2,7 @@
 -- Trust: Flaviria UC
 -- Job: DRG/WAR
 -- Wiki behavior:
--- Uses Jump, High Jump, Super Jump, Angon, Berserk.
+-- Uses Jump, High Jump, Super Jump, and Berserk.
 -- Uses Skewer, Impulse Drive, and Camlann/Celidon's Torment-style WS at 1000 TP.
 -- Does not try to skillchain.
 -----------------------------------
@@ -34,8 +34,6 @@ spellObject.onMobSpawn = function(mob)
     -- Retail behavior says Super Jump is available. Use it conservatively,
     -- matching common DRG Trust behavior: shed hate only if she has top enmity.
     mob:addGambit(ai.t.SELF, { ai.c.HAS_TOP_ENMITY, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SUPER_JUMP })
-
-    mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.ANGON })
 
     -- Uses WS at 1000 TP and does not try to skillchain.
     -- Actual available WS are controlled by sql/mob_skill_lists.sql list 1072.

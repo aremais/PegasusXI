@@ -23280,7 +23280,7 @@ INSERT INTO `mob_spawn_points` VALUES (17113171,0,'Thunder_Elemental','Thunder E
 INSERT INTO `mob_spawn_points` VALUES (17113172,0,'Decrepit_Gnole','Decrepit Gnole',15,73,75,-279.910,-0.246,23.214,117);
 INSERT INTO `mob_spawn_points` VALUES (17113173,0,'Decrepit_Gnole','Decrepit Gnole',15,73,75,-253.022,0.305,-38.102,101);
 INSERT INTO `mob_spawn_points` VALUES (17113174,0,'Decrepit_Gnole','Decrepit Gnole',15,73,75,-204.612,-0.313,-119.120,173);
-INSERT INTO `mob_spawn_points` VALUES (17113175,0,'Voirloup','Voirloup',20,88,88,-197.795,-0.346,-119.842,224);
+INSERT INTO `mob_spawn_points` VALUES (17113175,0,'Voirloup','Voirloup',20,89,89,-197.795,-0.346,-119.842,224);
 INSERT INTO `mob_spawn_points` VALUES (17113176,0,'Decrepit_Gnole','Decrepit Gnole',15,73,75,-327.970,-1.758,85.189,83);
 INSERT INTO `mob_spawn_points` VALUES (17113177,0,'Decrepit_Gnole','Decrepit Gnole',15,73,75,-354.501,-1.278,28.178,218);
 INSERT INTO `mob_spawn_points` VALUES (17113178,0,'Decrepit_Gnole','Decrepit Gnole',15,73,75,-324.974,-0.410,-7.310,57);

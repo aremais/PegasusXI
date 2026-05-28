@@ -8,10 +8,10 @@ zones[xi.zone.BIBIKI_BAY] =
     text =
     {
         ITEM_CANNOT_BE_OBTAINED       = 6385, -- You cannot obtain the <item>. Come back after sorting your inventory.
-        ITEM_OBTAINED                 = 6391, -- Obtained: <item>.
-        GIL_OBTAINED                  = 6392, -- Obtained <number> gil.
-        KEYITEM_OBTAINED              = 6394, -- Obtained key item: <keyitem>.
-        YOU_OBTAIN                    = 6402, -- You obtain <number> <item>!
+        ITEM_OBTAINED                 = 6393, -- Obtained: <item>.
+        GIL_OBTAINED                  = 6394, -- Obtained <number> gil.
+        KEYITEM_OBTAINED              = 6396, -- Obtained key item: <keyitem>.
+        YOU_OBTAIN                    = 6404, -- You obtain <number> <item>!
         NOTHING_OUT_OF_ORDINARY       = 6407, -- There is nothing out of the ordinary here.
         FELLOW_MESSAGE_OFFSET         = 6422, -- I'm ready. I suppose.
         CARRIED_OVER_POINTS           = 7004, -- You have carried over <number> login point[/s].
