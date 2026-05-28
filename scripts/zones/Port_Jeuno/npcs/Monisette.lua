@@ -1923,8 +1923,8 @@ local function menuShowTalesQty(player, npc, chapter, stored, useTimer)
 
         if pgUseTimer then
             player:timer(50, function(p)
-            draw(p)
-        end)
+                draw(p)
+            end)
         else
             draw(player)
         end
