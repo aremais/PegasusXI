@@ -3,7 +3,7 @@
 -- HTBF: ★Trial by Wind (Garuda Prime)
 -- Entry KI: Avatar Phantom Gem (10 merits)
 -- Direct drop: Rem's Tale Ch.6 per player
--- Title (Very Difficult): Sirocco Tamer
+-- Title: Sirocco Tamer
 -----------------------------------
 require('scripts/globals/htbf_rewards')
 -----------------------------------
@@ -50,14 +50,10 @@ content.groups =
     {
         mobs = { 'Garuda_Prime_HTBF' },
         allDeath = function(battlefield, mob)
-            local diff = battlefield:getLocalVar('HTBF_Difficulty')
+            local players = battlefield:getPlayers()
 
-            if diff == xi.htbf.difficulty.VERY_DIFFICULT then
-                local players = battlefield:getPlayers()
-
-                for _, player in ipairs(players) do
-                    player:addTitle(xi.title.SIROCCO_TAMER)
-                end
+            for _, player in ipairs(players) do
+                player:addTitle(xi.title.SIROCCO_TAMER)
             end
 
             xi.htbf.onWin(battlefield, {

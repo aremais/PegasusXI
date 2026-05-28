@@ -896,6 +896,14 @@ void init(IPP mapIPP, bool isRunningInCI)
             return;
         }
 
+        // Completely ignore specs, they're for the linter, not for runtime.
+        // (BAD THINGS HAPPEN IF YOU RELOAD SPEC FILES AT RUNTIME!)
+        if (parts.size() >= 2 && parts[0] == "scripts" && parts[1] == "specs")
+        {
+            ShowInfo("[FileWatcher] Skipping reload of spec file: %s", filename);
+            return;
+        }
+
         auto it = std::find(parts.begin(), parts.end(), "scripts");
         if (it == parts.end())
         {
@@ -999,13 +1007,14 @@ void init(IPP mapIPP, bool isRunningInCI)
                     if package.loaded["{0}"] then
                         local old = package.loaded["{0}"]
                         package.loaded["{0}"] = nil
-                        if InteractionGlobal and old then
+                        if InteractionGlobal and type(old) == 'table' then
                             InteractionGlobal.lookup:removeContainer(old)
                         end
                     end
 
                     local res = utils.prequire("{0}")
-                    if InteractionGlobal and res then
+                    if InteractionGlobal and type(res) == 'table' then
+                        res.filename = "{0}"
                         InteractionGlobal.lookup:addContainer(res)
                     end
                 )",
@@ -3072,7 +3081,7 @@ void OnUpdateAttachment(CBattleEntity* PEntity, const CItemPuppet* attachment, u
 
 // We check the possibility of using the item.
 // If all is well, then return value - 0, in case of failure - error message number
-auto OnItemCheck(CBaseEntity* PTarget, CItem* PItem, ITEMCHECK param, CBaseEntity* PCaster) -> std::tuple<int32, int32, int32>
+auto OnItemCheck(CBaseEntity* PTarget, CItem* PItem, CBaseEntity* PCaster) -> std::tuple<int32, int32, int32>
 {
     TracyZoneScoped;
 
@@ -3084,7 +3093,7 @@ auto OnItemCheck(CBaseEntity* PTarget, CItem* PItem, ITEMCHECK param, CBaseEntit
         return { 56, 0, 0 };
     }
 
-    auto result = onItemCheck(PTarget, PItem, static_cast<uint32>(param), PCaster);
+    auto result = onItemCheck(PTarget, PItem, PCaster);
     if (!result.valid())
     {
         sol::error err = result;

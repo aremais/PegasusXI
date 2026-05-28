@@ -6,9 +6,7 @@
 local entity = {}
 
 entity.onTrigger = function(player, npc)
-    local ID = zones[xi.zone.NASHMAU]
-
-    player:showText(npc, ID.text.NOMAD_MOOGLE_DIALOG)
+    player:showText(npc, 7347)
     player:sendMenu(xi.menuType.MOOGLE)
 end
 

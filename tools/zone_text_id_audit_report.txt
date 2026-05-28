@@ -1,5 +1,5 @@
 ﻿Zone Text ID Audit
-Generated: 2026-05-25 15:55:29
+Generated: 2026-05-27 19:04:48
 Zones scanned: 297
 
 === ERRORS (broken chains / gil-template bug) ===
@@ -7,49 +7,8 @@ Count: 0
   (none)
 
 === WARNINGS (offset vs CANNOT; many zones use +8 without FULL in Lua) ===
-Count: 42
-  Aht_Urhgan_Whitegate: ITEM_OBTAINED=230 expected 228 (CANNOT+6, layout B) [may be valid if chain OK]
-  Batallia_Downs: ITEM_OBTAINED=6415 expected 6413 (CANNOT+6, layout B) [may be valid if chain OK]
-  Beaucedine_Glacier: FULL_INVENTORY=6570 expected 6572; ITEM_OBTAINED=6574 expected 6576 (CANNOT+8, layout A) [may be valid if chain OK]
-  Bostaunieux_Oubliette: ITEM_OBTAINED=6552 expected 6550 (CANNOT+6, layout B) [may be valid if chain OK]
-  Buburimu_Peninsula: ITEM_OBTAINED=6428 expected 6426 (CANNOT+6, layout B) [may be valid if chain OK]
-  Castle_Zvahl_Baileys: ITEM_OBTAINED=6552 expected 6550 (CANNOT+6, layout B) [may be valid if chain OK]
-  Castle_Zvahl_Keep: ITEM_OBTAINED=6552 expected 6550 (CANNOT+6, layout B) [may be valid if chain OK]
-  Chateau_dOraguille: ITEM_OBTAINED=6601 expected 6599 (CANNOT+6, layout B) [may be valid if chain OK]
-  Crawlers_Nest: ITEM_OBTAINED=6583 expected 6581 (CANNOT+6, layout B) [may be valid if chain OK]
-  Crawlers_Nest_[S]: ITEM_OBTAINED=6915 expected 6913 (CANNOT+6, layout B) [may be valid if chain OK]
-  Dangruf_Wadi: ITEM_OBTAINED=6552 expected 6550 (CANNOT+6, layout B) [may be valid if chain OK]
-  East_Ronfaure: ITEM_OBTAINED=6415 expected 6413 (CANNOT+6, layout B) [may be valid if chain OK]
-  FeiYin: ITEM_OBTAINED=6572 expected 6570 (CANNOT+6, layout B) [may be valid if chain OK]
-  Fort_Ghelsba: ITEM_OBTAINED=6552 expected 6550 (CANNOT+6, layout B) [may be valid if chain OK]
-  Garlaige_Citadel: ITEM_OBTAINED=6552 expected 6550 (CANNOT+6, layout B) [may be valid if chain OK]
-  Ghelsba_Outpost: ITEM_OBTAINED=6925 expected 6923 (CANNOT+6, layout B) [may be valid if chain OK]
-  Heavens_Tower: ITEM_OBTAINED=7134 expected 7132 (CANNOT+6, layout B) [may be valid if chain OK]
-  Inner_Horutoto_Ruins: ITEM_OBTAINED=6562 expected 6560 (CANNOT+6, layout B) [may be valid if chain OK]
-  Jugner_Forest: ITEM_OBTAINED=6415 expected 6413 (CANNOT+6, layout B) [may be valid if chain OK]
-  Lower_Delkfutts_Tower: ITEM_OBTAINED=6582 expected 6580 (CANNOT+6, layout B) [may be valid if chain OK]
-  Meriphataud_Mountains: ITEM_OBTAINED=6415 expected 6413 (CANNOT+6, layout B) [may be valid if chain OK]
-  Middle_Delkfutts_Tower: ITEM_OBTAINED=6556 expected 6554 (CANNOT+6, layout B) [may be valid if chain OK]
-  Mordion_Gaol: ITEM_OBTAINED=6552 expected 6550 (CANNOT+6, layout B) [may be valid if chain OK]
-  Northern_San_dOria: ITEM_OBTAINED=6601 expected 6599 (CANNOT+6, layout B) [may be valid if chain OK]
-  Outer_Horutoto_Ruins: ITEM_OBTAINED=6598 expected 6596 (CANNOT+6, layout B) [may be valid if chain OK]
-  Pashhow_Marshlands: ITEM_OBTAINED=6415 expected 6413 (CANNOT+6, layout B) [may be valid if chain OK]
-  Port_San_dOria: ITEM_OBTAINED=6435 expected 6437 (CANNOT+8, layout A) [may be valid if chain OK]
-  Rolanberry_Fields: ITEM_OBTAINED=6415 expected 6413 (CANNOT+6, layout B) [may be valid if chain OK]
-  South_Gustaberg: ITEM_OBTAINED=6415 expected 6413 (CANNOT+6, layout B) [may be valid if chain OK]
-  Tahrongi_Canyon: ITEM_OBTAINED=6574 expected 6572 (CANNOT+6, layout B) [may be valid if chain OK]
-  The_Eldieme_Necropolis: ITEM_OBTAINED=6552 expected 6550 (CANNOT+6, layout B) [may be valid if chain OK]
-  Toraimarai_Canal: ITEM_OBTAINED=6439 expected 6437 (CANNOT+6, layout B) [may be valid if chain OK]
-  Uleguerand_Range: ITEM_OBTAINED=6406 expected 6404 (CANNOT+6, layout B) [may be valid if chain OK]
-  Upper_Delkfutts_Tower: ITEM_OBTAINED=6428 expected 6426 (CANNOT+6, layout B) [may be valid if chain OK]
-  Upper_Jeuno: ITEM_OBTAINED=6552 expected 6550 (CANNOT+6, layout B) [may be valid if chain OK]
-  Valkurm_Dunes: ITEM_OBTAINED=6415 expected 6413 (CANNOT+6, layout B) [may be valid if chain OK]
-  West_Ronfaure: ITEM_OBTAINED=6415 expected 6413 (CANNOT+6, layout B) [may be valid if chain OK]
-  Windurst_Waters: ITEM_OBTAINED=6552 expected 6550 (CANNOT+6, layout B) [may be valid if chain OK]
-  Windurst_Woods: ITEM_OBTAINED=6552 expected 6550 (CANNOT+6, layout B) [may be valid if chain OK]
-  Xarcabard: ITEM_OBTAINED=6406 expected 6404 (CANNOT+6, layout B) [may be valid if chain OK]
-  Yughott_Grotto: ITEM_OBTAINED=6552 expected 6550 (CANNOT+6, layout B) [may be valid if chain OK]
-  Zeruhn_Mines: ITEM_OBTAINED=6552 expected 6550 (CANNOT+6, layout B) [may be valid if chain OK]
+Count: 0
+  (none)
 
 Relative chain rules (errors):
   GIL = ITEM+1, KEY = GIL+2, KEY_LOST = KEY+1, NOT_HAVE_GIL = KEY+2, ITEMS = ITEM+9
