@@ -2016,25 +2016,10 @@ end
 -----------------------------------
 -- Root menu: shows the player's job-specific armor set names (paginated),
 -- plus a "Get Tales" option at the end if they have any stored.
--- Greeting is printed via timer on page 1 so it fires after onTrigger returns
--- and cannot cause the game engine to re-fire onTrigger.
 -----------------------------------
 local function menuShowRoot(player, npc, pageNum, useTimer)
     local jobAbbrev = menuJobIdToAbbrev[player:getMainJob()] or 'WAR'
     local setList   = menuJobSetList[jobAbbrev] or {}
-
-    -- Print greeting once when the root menu first opens (page 1 only).
-    -- Using a 100 ms timer keeps this outside the onTrigger call stack so the
-    -- SAY message from the NPC does not loop back into onTrigger a second time.
-    if pageNum == 1 then
-        local jobName = menuJobFullName[jobAbbrev] or jobAbbrev
-        player:timer(100, function(p)
-            p:printToPlayer(
-                string.format('Ah! I see you are a %s, this is what I can upgrade for you:', jobName),
-                xi.msg.channel.SAY, npc:getName()
-            )
-        end)
-    end
 
     -- Build flat item list: set names first, then Get Tales if applicable
     local items = {}
