@@ -1,0 +1,134 @@
+Category,NPC_or_Entity,Source_File,Reference_Type,Reference,Sample_Text,Pegasus_Value,LSB_Value,Match,Notes
+IDs.lua,(zone constant),IDs.lua,text_constant,AMULYA_SHOP_DIALOG,Hello. Welcome to the Blacksmiths' Guild shop.,8023,8023,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,CALL_MULTIPLE_ALTER_EGO,You are now able to call multiple alter egos.,6510,6510,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,CARRIED_OVER_POINTS,You have carried over <number> login point[/s].,6485,6485,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,CELEBRATORY_GOODS,An assortment of celebratory goods is available for purchase.,10850,10850,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,CONQUEST,You've earned conquest points!,8228,8228,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,CONQUEST_BASE,Tallying conquest results...,6552,6552,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,DETONATOR_LEARNED,You have learned the weapon skill Detonator!,9061,9061,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,EXTENDED_MISSION_OFFSET,Go to Ore Street and talk to Medicine Eagle. He says he was there when the commotion started.,8618,8618,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,FISHING_MESSAGE_OFFSET,You can't fish here.,8027,8027,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,FULL_INVENTORY_AFTER_TRADE,You cannot obtain the <item>. Try trading again after sorting your inventory.,6444,6444,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,GIL_OBTAINED,Obtained <number> gil.,6447,6447,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,GLAROCIQUET_DIALOG,"I am <name>, a Temple Knight. I am one of the guards charged with overseeing San d'Oria's conquest campaign.",8230,8230,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,GOOD_LUCK,"Good luck on your mission. Bastokers like to do things by the book, so stay out of trouble and follow their rules.",7467,7467,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,GP_OBTAINED,Obtained: <number> guild points.,6914,6914,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,GUILD_NEW_CONTRACT,You have formed a new trading contract with the [Fishermen's/Carpenters'/Blacksmiths'/Goldsmiths'/Weavers'/Tanners'/Boneworkers'/Alchemists'/Culinarians'] Guild.,6902,6902,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,GUILD_TERMINATE_CONTRACT,You have terminated your trading contract with the [Fishermen's/Carpenters'/Blacksmiths'/Goldsmiths'/Weavers'/Tanners'/Boneworkers'/Alchemists'/Culinarians'] Guild and formed a new one with the [Fishermen's/Carpenters'/Blacksmiths'/Goldsmiths'/Weavers'/Tanners'/Boneworkers'/Alchemists'/Culinarians'] Guild.,6894,6894,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,HOMEPOINT_SET,Home point set!,11038,11038,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,IMAGE_SUPPORT,Your [fishing/woodworking/smithing/goldsmithing/clothcraft/leatherworking/bonecraft/alchemy/cooking] skills went up [a little/ever so slightly/ever so slightly].,6880,6880,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,ITEMS_OBTAINED,You obtain <number> <item>!,6455,6455,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,ITEM_CANNOT_BE_OBTAINED,You cannot obtain the <item>. Come back after sorting your inventory.,6440,6440,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,ITEM_OBTAINED,Obtained: <item>.,6446,6446,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,ITS_LOCKED,It's locked.,8005,8005,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,KEYITEM_LOST,Lost key item: <keyitem>.,6450,6450,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,KEYITEM_OBTAINED,Obtained key item: <keyitem>.,6449,6449,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,LEXUN_MARIXUN_DIALOG,"I am <name>, a War Warlock. I am one of the guards charged with overseeing Windurst's conquest campaign.",8232,8232,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,LOGIN_CAMPAIGN_UNDERWAY,The [/January/February/March/April/May/June/July/August/September/October/November/December] <number> Login Campaign is currently underway!,6486,6486,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,LOGIN_NUMBER,"In celebration of your most recent login (login no. <number>), we have provided you with <number> points! You currently have a total of <number> points.",6487,6487,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,MEMBERS_LEVELS_ARE_RESTRICTED,Your party is unable to participate because certain members' levels are restricted.,6507,6507,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,MISSION_DIALOG_CID_TO_AYAME,Give it to one of his Mythril Musketeers instead. Ayame and Naji should be on guard near the President's Office. Either one will do.,7594,7594,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,NOGGA_SHOP_DIALOG,I've got some items you won't find elsewhere!,8025,8025,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,NOTHING_OUT_OF_ORDINARY,There is nothing out of the ordinary here.,6460,6460,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,NOT_HAVE_ENOUGH_GIL,You do not have enough gil.,6451,6451,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,NOT_HAVE_ENOUGH_GP,You do not have enough guild points.,6915,6915,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,NO_MORE_GP_ELIGIBLE,You are not eligible to receive guild points at this time.,6909,6909,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,OLAF_SHOP_DIALOG,"We sell items in the Gunpowder Room, too. What do you need?",8024,8024,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,ORIGINAL_MISSION_OFFSET,You can consult the Mission section of the main menu to review your objectives. Speed and efficiency are your priorities. Dismissed.,14,14,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,RENOUNCE_CRAFTSMAN,You have successfully renounced your status as a [craftsman/artisan/adept] of the [Carpenters'/Blacksmiths'/Goldsmiths'/Weavers'/Tanners'/Boneworkers'/Alchemists'/Culinarians'] Guild.,6931,6931,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,STEEL_CYCLONE_LEARNED,You have learned the weapon skill Steel Cyclone!,9036,9036,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,TAKIYAH_CLOSED_DIALOG,Maybe someday I'll be able to sell goods from Qufim Island... Someday...,10002,10002,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,TAKIYAH_OPEN_DIALOG,"Hey, it's your lucky day! I've got a fresh batch of goods straight from the island of Qufim!",10003,10003,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,TOMASA_SHOP_DIALOG,"This is the Craftsmen's Eatery. Make room for the next customer when you're done, all right?",8026,8026,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,VICIOUS_EYE_SHOP_DIALOG,Hi. This is where blacksmiths buy what they need.,8022,8022,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,YOU_ACCEPT_THE_MISSION,You have accepted the mission.,9,9,YES,
+IDs.lua,(zone constant),IDs.lua,text_constant,YOU_LEARNED_TRUST,You learned Trust: <name>!,6509,6509,YES,
+DefaultActions,DefaultActions,scripts/zones/Metalworks/DefaultActions.lua,ID.text key,ITS_LOCKED,It's locked.,8005,8005,YES,
+DefaultActions,DefaultActions,scripts/zones/Metalworks/DefaultActions.lua,ID.text key,ITS_LOCKED,It's locked.,8005,8005,YES,
+DefaultActions,DefaultActions,scripts/zones/Metalworks/DefaultActions.lua,(file summary),(entire file),,,,SCRIPT_DIFF,Lua file differs from LSB upstream/base
+NPC/Zone Script,Amulya,scripts/zones/Metalworks/npcs/Amulya.lua,ID.text key,AMULYA_SHOP_DIALOG,Hello. Welcome to the Blacksmiths' Guild shop.,8023,8023,YES,
+NPC/Zone Script,Celebratory_Chest,scripts/zones/Metalworks/npcs/Celebratory_Chest.lua,ID.text key,CELEBRATORY_GOODS,An assortment of celebratory goods is available for purchase.,10850,10850,YES,
+NPC/Zone Script,Ferghus,scripts/zones/Metalworks/npcs/Ferghus.lua,startEvent,946,,946,946,SAME_SCRIPT,Cutscene/event ID (client DAT)
+NPC/Zone Script,Ferghus,scripts/zones/Metalworks/npcs/Ferghus.lua,startEvent,947,,947,947,SAME_SCRIPT,Cutscene/event ID (client DAT)
+NPC/Zone Script,Ferghus,scripts/zones/Metalworks/npcs/Ferghus.lua,startEvent,420,,420,420,SAME_SCRIPT,Cutscene/event ID (client DAT)
+NPC/Zone Script,Iron_Eater,scripts/zones/Metalworks/npcs/Iron_Eater.lua,startEvent,956,,956,956,SAME_SCRIPT,Cutscene/event ID (client DAT)
+NPC/Zone Script,Iron_Eater,scripts/zones/Metalworks/npcs/Iron_Eater.lua,startEvent,957,,957,957,SAME_SCRIPT,Cutscene/event ID (client DAT)
+NPC/Zone Script,Leonhardt,scripts/zones/Metalworks/npcs/Leonhardt.lua,startEvent,950,,950,950,SAME_SCRIPT,Cutscene/event ID (client DAT)
+NPC/Zone Script,Leonhardt,scripts/zones/Metalworks/npcs/Leonhardt.lua,startEvent,948,,948,948,SAME_SCRIPT,Cutscene/event ID (client DAT)
+NPC/Zone Script,Leonhardt,scripts/zones/Metalworks/npcs/Leonhardt.lua,startEvent,945,,945,945,SAME_SCRIPT,Cutscene/event ID (client DAT)
+NPC/Zone Script,Lorena,scripts/zones/Metalworks/npcs/Lorena.lua,ID.text key,GP_OBTAINED,Obtained: <number> guild points.,6914,6914,YES,
+NPC/Zone Script,Malduc,scripts/zones/Metalworks/npcs/Malduc.lua,startEvent,1003,,1003,1003,YES,Cutscene/event ID (client DAT)
+NPC/Zone Script,Malduc,scripts/zones/Metalworks/npcs/Malduc.lua,startEvent,1001,,1001,1001,YES,Cutscene/event ID (client DAT)
+NPC/Zone Script,Malduc,scripts/zones/Metalworks/npcs/Malduc.lua,(file summary),(entire file),,,,SCRIPT_DIFF,Lua file differs from LSB upstream/base
+NPC/Zone Script,Mighty_Fist,scripts/zones/Metalworks/npcs/Mighty_Fist.lua,startEvent,561,,561,561,SAME_SCRIPT,Cutscene/event ID (client DAT)
+NPC/Zone Script,Mighty_Fist,scripts/zones/Metalworks/npcs/Mighty_Fist.lua,startEvent,560,,560,560,SAME_SCRIPT,Cutscene/event ID (client DAT)
+NPC/Zone Script,Mythily,scripts/zones/Metalworks/npcs/Mythily.lua,startEvent,362,,362,362,YES,Cutscene/event ID (client DAT)
+NPC/Zone Script,Mythily,scripts/zones/Metalworks/npcs/Mythily.lua,startEvent,361,,361,361,YES,Cutscene/event ID (client DAT)
+NPC/Zone Script,Mythily,scripts/zones/Metalworks/npcs/Mythily.lua,startEvent,360,,360,360,YES,Cutscene/event ID (client DAT)
+NPC/Zone Script,Mythily,scripts/zones/Metalworks/npcs/Mythily.lua,(file summary),(entire file),,,,SCRIPT_DIFF,Lua file differs from LSB upstream/base
+NPC/Zone Script,Nogga,scripts/zones/Metalworks/npcs/Nogga.lua,ID.text key,NOGGA_SHOP_DIALOG,I've got some items you won't find elsewhere!,8025,8025,YES,
+NPC/Zone Script,Olaf,scripts/zones/Metalworks/npcs/Olaf.lua,ID.text key,OLAF_SHOP_DIALOG,"We sell items in the Gunpowder Room, too. What do you need?",8024,8024,YES,
+NPC/Zone Script,relic,scripts/zones/Metalworks/npcs/relic.lua,ID.text key,NOTHING_OUT_OF_ORDINARY,There is nothing out of the ordinary here.,6460,6460,YES,
+NPC/Zone Script,relic,scripts/zones/Metalworks/npcs/relic.lua,startEvent,843,,843,843,SAME_SCRIPT,Cutscene/event ID (client DAT)
+NPC/Zone Script,Savae_E_Paleade,scripts/zones/Metalworks/npcs/Savae_E_Paleade.lua,startEvent,208,,208,208,SAME_SCRIPT,Cutscene/event ID (client DAT)
+NPC/Zone Script,Savae_E_Paleade,scripts/zones/Metalworks/npcs/Savae_E_Paleade.lua,startEvent,200,,200,200,SAME_SCRIPT,Cutscene/event ID (client DAT)
+NPC/Zone Script,Tomasa,scripts/zones/Metalworks/npcs/Tomasa.lua,ID.text key,TOMASA_SHOP_DIALOG,"This is the Craftsmen's Eatery. Make room for the next customer when you're done, all right?",8026,8026,YES,
+NPC/Zone Script,Udine_AMAN,scripts/zones/Metalworks/npcs/Udine_AMAN.lua,startEvent,826,,826,826,SAME_SCRIPT,Cutscene/event ID (client DAT)
+NPC/Zone Script,Vicious_Eye,scripts/zones/Metalworks/npcs/Vicious_Eye.lua,ID.text key,VICIOUS_EYE_SHOP_DIALOG,Hi. This is where blacksmiths buy what they need.,8022,8022,YES,
+DefaultActions,Abbudin,DefaultActions.lua,default startEvent,event 558,,558,558,YES,Default CS when no mission/quest override
+DefaultActions,Alois,DefaultActions.lua,default startEvent,event 370,,370,370,YES,Default CS when no mission/quest override
+DefaultActions,Ayame,DefaultActions.lua,default startEvent,event 701,,701,701,YES,Default CS when no mission/quest override
+DefaultActions,Baldric,DefaultActions.lua,default startEvent,event 552,,552,552,YES,Default CS when no mission/quest override
+DefaultActions,Cerberus,DefaultActions.lua,default startEvent,event 303,,303,303,YES,Default CS when no mission/quest override
+DefaultActions,Chantain,DefaultActions.lua,default startEvent,event 203,,203,203,YES,Default CS when no mission/quest override
+DefaultActions,Cid,DefaultActions.lua,default startEvent,event 500,,500,500,YES,Default CS when no mission/quest override
+DefaultActions,Darha,DefaultActions.lua,default startEvent,event 551,,551,551,YES,Default CS when no mission/quest override
+DefaultActions,Dark_Clouds,DefaultActions.lua,default startEvent,event 100,,100,100,YES,Default CS when no mission/quest override
+DefaultActions,Dietrich,DefaultActions.lua,default startEvent,event 301,,301,301,YES,Default CS when no mission/quest override
+DefaultActions,Elayne,DefaultActions.lua,default startEvent,event 704,,704,704,YES,Default CS when no mission/quest override
+DefaultActions,Fariel,DefaultActions.lua,default startEvent,event 706,,706,706,YES,Default CS when no mission/quest override
+DefaultActions,Folzen,DefaultActions.lua,default startEvent,event 411,,411,411,YES,Default CS when no mission/quest override
+DefaultActions,Franziska,DefaultActions.lua,default startEvent,event 620,,620,620,YES,Default CS when no mission/quest override
+DefaultActions,Galina,DefaultActions.lua,default startEvent,event 600,,600,600,YES,Default CS when no mission/quest override
+DefaultActions,Grohm,DefaultActions.lua,default startEvent,event 422,,422,422,YES,Default CS when no mission/quest override
+DefaultActions,Hadelind,DefaultActions.lua,default startEvent,event 302,,302,302,YES,Default CS when no mission/quest override
+DefaultActions,Hans,DefaultActions.lua,default startEvent,event 321,,321,321,YES,Default CS when no mission/quest override
+DefaultActions,Helga,DefaultActions.lua,default startEvent,event 937,,937,937,YES,Default CS when no mission/quest override
+DefaultActions,Helmut,DefaultActions.lua,default startEvent,event 410,,410,410,YES,Default CS when no mission/quest override
+DefaultActions,High_Bear,DefaultActions.lua,default startEvent,event 730,,730,730,YES,Default CS when no mission/quest override
+DefaultActions,Hungry_Wolf,DefaultActions.lua,default startEvent,event 421,,421,421,YES,Default CS when no mission/quest override
+DefaultActions,Indiran,DefaultActions.lua,default startEvent,event 740,,740,740,YES,Default CS when no mission/quest override
+DefaultActions,Invincible_Shield,DefaultActions.lua,default startEvent,event 810,,810,810,YES,Default CS when no mission/quest override
+DefaultActions,Iron_Eater,DefaultActions.lua,default startEvent,event 604,,604,604,YES,Default CS when no mission/quest override
+DefaultActions,Izabele,DefaultActions.lua,default startEvent,event 745,,745,745,YES,Default CS when no mission/quest override
+DefaultActions,Kachina,DefaultActions.lua,default startEvent,event 351,,351,351,YES,Default CS when no mission/quest override
+DefaultActions,Kaela,DefaultActions.lua,default startEvent,event 741,,741,741,YES,Default CS when no mission/quest override
+DefaultActions,Karst,DefaultActions.lua,default startEvent,event 601,,601,601,YES,Default CS when no mission/quest override
+DefaultActions,Krieger,DefaultActions.lua,default startEvent,event 563,,563,563,YES,Default CS when no mission/quest override
+DefaultActions,Lucius,DefaultActions.lua,default startEvent,event 320,,320,320,YES,Default CS when no mission/quest override
+DefaultActions,Lutia,DefaultActions.lua,default startEvent,event 202,,202,202,YES,Default CS when no mission/quest override
+DefaultActions,Manilam,DefaultActions.lua,default startEvent,event 401,,401,401,YES,Default CS when no mission/quest override
+DefaultActions,Mih_Ketto,DefaultActions.lua,default startEvent,event 253,,253,253,YES,Default CS when no mission/quest override
+DefaultActions,Moyoyo,DefaultActions.lua,default startEvent,event 252,,252,252,YES,Default CS when no mission/quest override
+DefaultActions,Mukunda,DefaultActions.lua,default startEvent,event 371,,371,371,YES,Default CS when no mission/quest override
+DefaultActions,Naji,DefaultActions.lua,default startEvent,event 700,,700,700,YES,Default CS when no mission/quest override
+DefaultActions,Patricius,DefaultActions.lua,default startEvent,event 735,,735,735,YES,Default CS when no mission/quest override
+DefaultActions,Patt-Pott,DefaultActions.lua,default startEvent,event 250,,250,250,YES,Default CS when no mission/quest override
+DefaultActions,Pius,DefaultActions.lua,default startEvent,event 350,,350,350,YES,Default CS when no mission/quest override
+DefaultActions,Quasim,DefaultActions.lua,default startEvent,event 742,,742,742,YES,Default CS when no mission/quest override
+DefaultActions,Raibaht,DefaultActions.lua,default startEvent,event 501,,501,501,YES,Default CS when no mission/quest override
+DefaultActions,Remus,DefaultActions.lua,default startEvent,event 402,,402,402,YES,Default CS when no mission/quest override
+DefaultActions,Riault,DefaultActions.lua,default startEvent,event 201,,201,201,YES,Default CS when no mission/quest override
+DefaultActions,Romualdo,DefaultActions.lua,default startEvent,event 705,,705,705,YES,Default CS when no mission/quest override
+DefaultActions,Salim,DefaultActions.lua,default startEvent,event 400,,400,400,YES,Default CS when no mission/quest override
+DefaultActions,Striking_Snake,DefaultActions.lua,default startEvent,event 153,,153,153,YES,Default CS when no mission/quest override
+DefaultActions,Taulluque,DefaultActions.lua,default startEvent,event -,,,771,LSB_ONLY,Default CS when no mission/quest override
+DefaultActions,Topuru-Kuperu,DefaultActions.lua,default startEvent,event 251,,251,251,YES,Default CS when no mission/quest override
+DefaultActions,Unlucky_Rat,DefaultActions.lua,default startEvent,event 550,,550,550,YES,Default CS when no mission/quest override
+DefaultActions,Veit,DefaultActions.lua,default startEvent,event 152,,152,152,YES,Default CS when no mission/quest override
+DefaultActions,Vladinek,DefaultActions.lua,default startEvent,event 889,,889,889,YES,Default CS when no mission/quest override
+DefaultActions,Zenobia,DefaultActions.lua,default startEvent,event 300,,300,300,YES,Default CS when no mission/quest override
+DefaultActions,_6ld,DefaultActions.lua,default startEvent,event 604,,604,604,YES,Default CS when no mission/quest override
+DefaultActions,_6le,DefaultActions.lua,default messageSpecial,ITS_LOCKED,It's locked.,8005,8005,YES,
+DefaultActions,_6lg,DefaultActions.lua,default messageSpecial,ITS_LOCKED,It's locked.,8005,8005,YES,
+DefaultActions,(file),DefaultActions.lua,(file summary),(entire file),,,,SCRIPT_DIFF,DefaultActions.lua differs from LSB (e.g. Taulluque removed on Pegasus)
