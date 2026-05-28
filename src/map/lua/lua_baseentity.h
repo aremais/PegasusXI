@@ -270,7 +270,7 @@ public:
     auto   getItems(const sol::object& location) -> sol::table;
 
     void createShop(uint8 size, const sol::object& arg1);
-    void addShopItem(uint16 itemID, double rawPrice, sol::optional<sol::table> requirements) const;
+    void addShopItem(uint16 itemID, double rawPrice, const sol::object& arg2, const sol::object& arg3);
     auto getCurrentGPItem(uint8 guildId) const -> std::tuple<uint16, uint16>;
     bool breakLinkshell(const std::string& lsname);
     bool addLinkpearl(const std::string& lsname, bool equip);
@@ -825,6 +825,7 @@ public:
     void delPetMod(uint16 modID, int16 amount);
 
     auto hasAttachment(uint16 itemID) const -> bool;
+    auto hasAttachmentSet(uint16 itemID) const -> bool;
     auto getAutomatonName() const -> std::string;
     auto getAutomatonFrame() const -> Maybe<AutomatonFrame>;
     void setAutomatonFrame(AutomatonFrame frame) const;

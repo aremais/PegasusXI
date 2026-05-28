@@ -87,11 +87,6 @@ function xi.htbf.onWin(battlefield, params)
     battlefield:setStatus(xi.battlefield.status.WON)
 end
 
--- Returns true if this player has ever won this fight.
-function xi.htbf.hardModeUnlocked(player, battlefieldId)
-    return player:getCharVar('HTBF_Win_' .. battlefieldId) >= 1
-end
-
 -- Returns true if the player holds the required phantom gem (may register).
 function xi.htbf.canRegister(player, phantomGemKi)
     return player:hasKeyItem(phantomGemKi)

@@ -110,3 +110,6 @@ content.groups =
 
 return content:register()
 --]] -- END DISABLED
+
+-- Disabled placeholder; do not register until zone/NPC setup is complete.
+return nil

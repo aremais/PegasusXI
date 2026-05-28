@@ -896,6 +896,14 @@ void init(IPP mapIPP, bool isRunningInCI)
             return;
         }
 
+        // Completely ignore specs, they're for the linter, not for runtime.
+        // (BAD THINGS HAPPEN IF YOU RELOAD SPEC FILES AT RUNTIME!)
+        if (parts.size() >= 2 && parts[0] == "scripts" && parts[1] == "specs")
+        {
+            ShowInfo("[FileWatcher] Skipping reload of spec file: %s", filename);
+            return;
+        }
+
         auto it = std::find(parts.begin(), parts.end(), "scripts");
         if (it == parts.end())
         {
@@ -999,13 +1007,14 @@ void init(IPP mapIPP, bool isRunningInCI)
                     if package.loaded["{0}"] then
                         local old = package.loaded["{0}"]
                         package.loaded["{0}"] = nil
-                        if InteractionGlobal and old then
+                        if InteractionGlobal and type(old) == 'table' then
                             InteractionGlobal.lookup:removeContainer(old)
                         end
                     end
 
                     local res = utils.prequire("{0}")
-                    if InteractionGlobal and res then
+                    if InteractionGlobal and type(res) == 'table' then
+                        res.filename = "{0}"
                         InteractionGlobal.lookup:addContainer(res)
                     end
                 )",

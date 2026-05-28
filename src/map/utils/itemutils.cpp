@@ -302,8 +302,6 @@ void LoadItemList()
                 // TODO
             }
 
-            // item_basic.type can include ITEM_USABLE without a matching item_usable row (LEFT JOIN).
-            // Only load usable columns when that row exists (validTargets is the join sentinel).
             if (PItem->isType(ITEM_USABLE) && !rset->isNull("validTargets"))
             {
                 static_cast<CItemUsable*>(PItem)->setValidTarget(rset->get<uint16>("validTargets"));
@@ -315,6 +313,11 @@ void LoadItemList()
                 static_cast<CItemUsable*>(PItem)->setUseDelay(std::chrono::seconds(rset->get<uint32>("useDelay")));
                 static_cast<CItemUsable*>(PItem)->setReuseDelay(std::chrono::seconds(rset->get<uint32>("reuseDelay")));
                 static_cast<CItemUsable*>(PItem)->setAoE(rset->get<uint16>("aoe"));
+            }
+            else if (rset->get<ItemType>("type") == ItemType::Usable && rset->isNull("validTargets"))
+            {
+                ShowWarningFmt("LoadItemList({}): item_basic type is Usable but item_usable row is missing; apply sql/patches/item_usable_missing_rows.sql",
+                               PItem->getID());
             }
 
             if (PItem->isType(ITEM_PUPPET) && !rset->isNull("pup_slot"))

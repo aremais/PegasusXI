@@ -153,5 +153,28 @@ function SKCNMBattlefield.onEntryTrade(player, npc, trade, onUpdate)
         return
     end
 
-    return Battlefield:event(32000, 0, 0, 0, options, 0, 0, 0, 0)
+    player:startEvent(32000, 0, 0, 0, options, 0, 0, 0, 0)
+end
+
+-----------------------------------
+-- battlefieldEntry: orb wear messages
+-----------------------------------
+-- Fires at the end of onBattlefieldEnter (base class calls self:battlefieldEntry).
+-- Wear/worn messages are handled here instead of per-fight requiredItems fields
+-- so we can avoid messageSpecial calls that render as "bureau" for item 4063.
+
+function SKCNMBattlefield:battlefieldEntry(player, battlefield)
+    local initiatorId = select(1, battlefield:getInitiator())
+
+    if player:getID() ~= initiatorId then
+        return
+    end
+
+    local players = battlefield:getPlayers()
+
+    player:printToPlayer('A crack forms on the Macrocosmic Orb. The beast within has been unleashed!', xi.msg.channel.NS_SAY)
+
+    for _, member in ipairs(players) do
+        member:printToPlayer('Difficulty: Normal.', xi.msg.channel.NS_SAY)
+    end
 end

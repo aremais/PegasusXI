@@ -2,6 +2,7 @@
 local entity = {}
 
 entity.onMobInitialize = function(mob)
+    mob:setMobMod(xi.mobMod.ALWAYS_AGGRO, 1)
     mob:setMobMod(xi.mobMod.MAGIC_COOL, 20)
     mob:setMod(xi.mod.LIGHT_SLEEP_RES_RANK, 6)
     mob:setMod(xi.mod.DARK_SLEEP_RES_RANK, 7)

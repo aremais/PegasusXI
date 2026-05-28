@@ -8,9 +8,10 @@ zones[xi.zone.VELUGANNON_PALACE] =
     text =
     {
         ITEM_CANNOT_BE_OBTAINED       = 6385,  -- You cannot obtain the <item>. Come back after sorting your inventory.
-        ITEM_OBTAINED                 = 6391,  -- Obtained: <item>.
-        GIL_OBTAINED                  = 6392,  -- Obtained <number> gil.
-        KEYITEM_OBTAINED              = 6394,  -- Obtained key item: <keyitem>.
+        ITEM_CANNOT_BE_OBTAINED_TRADE  = 6389,  -- You cannot obtain the <item>. Try trading again after sorting your inventory.
+        ITEM_OBTAINED                 = 6393,  -- Obtained: <item>.
+        GIL_OBTAINED                  = 6394,  -- Obtained <number> gil.
+        KEYITEM_OBTAINED              = 6396,  -- Obtained key item: <keyitem>.
         NOTHING_OUT_OF_ORDINARY       = 6407,  -- There is nothing out of the ordinary here.
         CARRIED_OVER_POINTS           = 7004,  -- You have carried over <number> login point[/s].
         LOGIN_CAMPAIGN_UNDERWAY       = 7005,  -- The [/January/February/March/April/May/June/July/August/September/October/November/December] <number> Login Campaign is currently underway!
@@ -50,23 +51,23 @@ zones[xi.zone.VELUGANNON_PALACE] =
     {
         curtana =
         {
-            [1]  = { -434.320, 16.016, -230.060 },
-            [2]  = { -434,     16,     -210 },
-            [3]  = { -389.990, 16.016, -274.531 },
-            [4]  = { -370.050, 16.014, -194.259 },
-            [5]  = { -370.039, 16.014, -274.378 },
-            [6]  = { -389.050, 16.014, -274.259 },
-            [7]  = { -325.667, 16.013, -209.940 },
-            [8]  = { -325.611, 16.013, -229.970 },
-            [9]  = {  325.670, 16.016, -209.973 },
-            [10] = {  325.368, 16.013, -230.056 },
+            [1] =  { -434.320, 16.016, -230.060 },
+            [2] =  {     -434,     16,     -210 }, -- Need better cap
+            [3] =  { -389.990, 16.016, -274.531 },
+            [4] =  { -370.050, 16.014, -194.259 },
+            [5] =  { -370.039, 16.014, -274.378 },
+            [6] =  { -389.050, 16.014, -274.259 }, -- Guessed based off of the southern duplicate. Needs cap.
+            [7] =  { -325.667, 16.013, -209.940 },
+            [8] =  { -325.611, 16.013, -229.970 },
+            [9] =  {  325.670, 16.016, -209.973 },
+            [10] = {  325.368, 16.013, -230.056 }, -- Guessed based off of western duplicate. Needs cap.
             [11] = {  370.070, 16.010, -274.472 },
             [12] = {  370.070, 15.998, -194.742 },
             [13] = {  390.016, 16.014, -274.371 },
-            [14] = {  390,     16,     -194 },
+            [14] = {      390,     16,     -194 }, -- need better cap
             [15] = {  434.269, 16.018, -209.917 },
             [16] = {  434.368, 16.013, -230.056 },
-        },
+        }
     },
 }
 
