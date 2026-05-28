@@ -3,7 +3,7 @@
 -- HTBF: ★Waking the Beast (Carbuncle Prime)
 -- Entry KI: Waking the Beast Phantom Gem (10 merits)
 -- Direct drop: Rem's Tale Ch.7 per player
--- Title (Very Difficult): Ruby Repulser
+-- Title: Ruby Repulser
 -----------------------------------
 require('scripts/globals/htbf_rewards')
 -----------------------------------
@@ -50,14 +50,10 @@ content.groups =
     {
         mobs = { 'Carbuncle_Prime_HTBF' },
         allDeath = function(battlefield, mob)
-            local diff = battlefield:getLocalVar('HTBF_Difficulty')
+            local players = battlefield:getPlayers()
 
-            if diff == xi.htbf.difficulty.VERY_DIFFICULT then
-                local players = battlefield:getPlayers()
-
-                for _, player in ipairs(players) do
-                    player:addTitle(xi.title.RUBY_REPULSER)
-                end
+            for _, player in ipairs(players) do
+                player:addTitle(xi.title.RUBY_REPULSER)
             end
 
             xi.htbf.onWin(battlefield, {

@@ -3,7 +3,7 @@
 -- HTBF: ★Trial by Lightning (Ramuh Prime)
 -- Entry KI: Avatar Phantom Gem (10 merits)
 -- Direct drop: Rem's Tale Ch.7 per player
--- Title (Very Difficult): Fulmination Disruptor
+-- Title: Fulmination Disruptor
 -----------------------------------
 require('scripts/globals/htbf_rewards')
 -----------------------------------
@@ -50,14 +50,10 @@ content.groups =
     {
         mobs = { 'Ramuh_Prime_HTBF' },
         allDeath = function(battlefield, mob)
-            local diff = battlefield:getLocalVar('HTBF_Difficulty')
+            local players = battlefield:getPlayers()
 
-            if diff == xi.htbf.difficulty.VERY_DIFFICULT then
-                local players = battlefield:getPlayers()
-
-                for _, player in ipairs(players) do
-                    player:addTitle(xi.title.FULMINATION_DISRUPTOR)
-                end
+            for _, player in ipairs(players) do
+                player:addTitle(xi.title.FULMINATION_DISRUPTOR)
             end
 
             xi.htbf.onWin(battlefield, {

@@ -14,6 +14,7 @@ mixins =
 local entity = {}
 
 entity.onMobInitialize = function(mob)
+    mob:setMobMod(xi.mobMod.ALWAYS_AGGRO, 1)
     xi.pet.setMobPet(mob, 2, 'Tonberrys_Elemental')
     mob:setMobMod(xi.mobMod.ASTRAL_PET_OFFSET, 3)
     mob:setMod(xi.mod.LIGHT_SLEEP_RES_RANK, 8)
