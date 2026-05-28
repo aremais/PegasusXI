@@ -1454,55 +1454,55 @@ end
 -- Ordered job abbreviations and per-type support lists
 local menuTypeJobs =
 {
-    AF109  = { 'WAR','MNK','WHM','BLM','RDM','THF','PLD','DRK','BST','BRD','RNG','SAM','NIN','DRG','SMN','BLU','COR','PUP','DNC','SCH' },
-    AF119  = { 'WAR','MNK','WHM','BLM','RDM','THF','PLD','DRK','BST','BRD','RNG','SAM','NIN','DRG','SMN','BLU','COR','PUP','DNC','SCH','GEO','RUN' },
-    REL109 = { 'WAR','MNK','WHM','BLM','RDM','THF','PLD','DRK','BST','BRD','RNG','SAM','NIN','DRG','SMN','BLU','COR','PUP','DNC','SCH' },
-    REL119 = { 'WAR','MNK','WHM','BLM','RDM','THF','PLD','DRK','BST','BRD','RNG','SAM','NIN','DRG','SMN','BLU','COR','PUP','DNC','SCH','GEO','RUN' },
-    EMP109 = { 'WAR','MNK','WHM','BLM','RDM','THF','PLD','DRK','BST','BRD','RNG','SAM','NIN','DRG','SMN','BLU','COR','PUP','DNC','SCH' },
-    EMP119 = { 'WAR','MNK','WHM','BLM','RDM','THF','PLD','DRK','BST','BRD','RNG','SAM','NIN','DRG','SMN','BLU','COR','PUP','DNC','SCH' },
+    AF109  = { 'WAR', 'MNK', 'WHM', 'BLM', 'RDM', 'THF', 'PLD', 'DRK', 'BST', 'BRD', 'RNG', 'SAM', 'NIN', 'DRG', 'SMN', 'BLU', 'COR', 'PUP', 'DNC', 'SCH' },
+    AF119  = { 'WAR', 'MNK', 'WHM', 'BLM', 'RDM', 'THF', 'PLD', 'DRK', 'BST', 'BRD', 'RNG', 'SAM', 'NIN', 'DRG', 'SMN', 'BLU', 'COR', 'PUP', 'DNC', 'SCH', 'GEO', 'RUN' },
+    REL109 = { 'WAR', 'MNK', 'WHM', 'BLM', 'RDM', 'THF', 'PLD', 'DRK', 'BST', 'BRD', 'RNG', 'SAM', 'NIN', 'DRG', 'SMN', 'BLU', 'COR', 'PUP', 'DNC', 'SCH' },
+    REL119 = { 'WAR', 'MNK', 'WHM', 'BLM', 'RDM', 'THF', 'PLD', 'DRK', 'BST', 'BRD', 'RNG', 'SAM', 'NIN', 'DRG', 'SMN', 'BLU', 'COR', 'PUP', 'DNC', 'SCH', 'GEO', 'RUN' },
+    EMP109 = { 'WAR', 'MNK', 'WHM', 'BLM', 'RDM', 'THF', 'PLD', 'DRK', 'BST', 'BRD', 'RNG', 'SAM', 'NIN', 'DRG', 'SMN', 'BLU', 'COR', 'PUP', 'DNC', 'SCH' },
+    EMP119 = { 'WAR', 'MNK', 'WHM', 'BLM', 'RDM', 'THF', 'PLD', 'DRK', 'BST', 'BRD', 'RNG', 'SAM', 'NIN', 'DRG', 'SMN', 'BLU', 'COR', 'PUP', 'DNC', 'SCH' },
 }
 
 -- Job-specific upgrade material per type (index = position in menuTypeJobs list above)
 local menuJobMats =
 {
-    AF109  = { 'Black Tiger Lth.', 'Gold Thread',         'Imp. Silk Cloth',    'Karakul Cloth',
-               'Scarlet Linen',    'Gold Thread',         'Gold Sheet',         'Darksteel Sheet',
-               'Black Tiger Lth.', 'Imp. Silk Cloth',     'Karakul Cloth',      'Tama-Hagane',
-               'Tama-Hagane',      'Gold Sheet',          'Scarlet Linen',      'Imp. Silk Cloth',
-               'Karakul Cloth',    'Karakul Cloth',       'Gold Thread',        'Scarlet Linen' },
+    AF109  = { 'Black Tiger Lth.', 'Gold Thread', 'Imp. Silk Cloth', 'Karakul Cloth',
+        'Scarlet Linen', 'Gold Thread', 'Gold Sheet', 'Darksteel Sheet',
+        'Black Tiger Lth.', 'Imp. Silk Cloth', 'Karakul Cloth', 'Tama-Hagane',
+        'Tama-Hagane', 'Gold Sheet', 'Scarlet Linen', 'Imp. Silk Cloth',
+        'Karakul Cloth', 'Karakul Cloth', 'Gold Thread', 'Scarlet Linen' },
 
-    AF119  = { 'Behemoth Leather', 'Plat. Silk Thread',   'Raxa',               'Twill Damask',
-               "Siren's Hair",     'Plat. Silk Thread',   'Orichalcum Sheet',   'Durium Sheet',
-               'Behemoth Leather', 'Raxa',                'Twill Damask',       'Damascus Ingot',
-               'Damascus Ingot',   'Orichalcum Sheet',    "Siren's Hair",       'Raxa',
-               'Twill Damask',     'Twill Damask',        'Plat. Silk Thread',  "Siren's Hair",
-               'Raxa',             'Damascus Ingot' },
+    AF119  = { 'Behemoth Leather', 'Plat. Silk Thread', 'Raxa', 'Twill Damask',
+        'Siren\'s Hair', 'Plat. Silk Thread', 'Orichalcum Sheet', 'Durium Sheet',
+        'Behemoth Leather', 'Raxa', 'Twill Damask', 'Damascus Ingot',
+        'Damascus Ingot', 'Orichalcum Sheet', 'Siren\'s Hair', 'Raxa',
+        'Twill Damask', 'Twill Damask', 'Plat. Silk Thread', 'Siren\'s Hair',
+        'Raxa', 'Damascus Ingot' },
 
-    REL109 = { 'Wootz Ore',        'Griffon Hide',        'Sparkling Stone',    'Sparkling Stone',
-               'Griffon Hide',     'Griffon Hide',        'Wootz Ore',          'Wootz Ore',
-               'Mammoth Tusk',     'Griffon Hide',        'Griffon Hide',       'Relic Iron',
-               'Relic Iron',       'Griffon Hide',        'Lancewood Log',      'Griffon Hide',
-               'Sparkling Stone',  'Lancewood Log',       'Mammoth Tusk',       'Lancewood Log' },
+    REL109 = { 'Wootz Ore', 'Griffon Hide', 'Sparkling Stone', 'Sparkling Stone',
+        'Griffon Hide', 'Griffon Hide', 'Wootz Ore', 'Wootz Ore',
+        'Mammoth Tusk', 'Griffon Hide', 'Griffon Hide', 'Relic Iron',
+        'Relic Iron', 'Griffon Hide', 'Lancewood Log', 'Griffon Hide',
+        'Sparkling Stone', 'Lancewood Log', 'Mammoth Tusk', 'Lancewood Log' },
 
-    REL119 = { 'Voidwrought Plate', "Kaggen's Cuticle",   "Akvan's Pennon",     "Akvan's Pennon",
-               "Pil's Tuille",     "Kaggen's Cuticle",    "Pil's Tuille",       "Pil's Tuille",
-               "Hahava's Mail",    "Kaggen's Cuticle",    "Celaeno's Cloth",    "Pil's Tuille",
-               'Voidwrought Plate','Voidwrought Plate',   "Hahava's Mail",      "Pil's Tuille",
-               "Kaggen's Cuticle", "Hahava's Mail",       "Celaeno's Cloth",    "Akvan's Pennon",
-               "Akvan's Pennon",   "Celaeno's Cloth" },
+    REL119 = { 'Voidwrought Plate', 'Kaggen\'s Cuticle', 'Akvan\'s Pennon', 'Akvan\'s Pennon',
+        'Pil\'s Tuille', 'Kaggen\'s Cuticle', 'Pil\'s Tuille', 'Pil\'s Tuille',
+        'Hahava\'s Mail', 'Kaggen\'s Cuticle', 'Celaeno\'s Cloth', 'Pil\'s Tuille',
+        'Voidwrought Plate', 'Voidwrought Plate', 'Hahava\'s Mail', 'Pil\'s Tuille',
+        'Kaggen\'s Cuticle', 'Hahava\'s Mail', 'Celaeno\'s Cloth', 'Akvan\'s Pennon',
+        'Akvan\'s Pennon', 'Celaeno\'s Cloth' },
 
-    EMP109 = { 'Helm of Briareus',  "Itzpapalotl's Scale", "Orthrus's Claw",    'Glavoid Shell',
-               "Cirein-croin's Lantern", "Alfard's Fang", "Kulkulkan's Fang",   'Helm of Briareus',
-               "Carabosse's Gem",  "Dragua's Scale",      "Ulhuadshi's Fang",   "Apademak's Horn",
-               "Bukhis's Wing",    "Azdaja's Horn",       "Carabosse's Gem",    "Isgebind's Heart",
-               "Sobek's Skin",     "Carabosse's Gem",     'Two-Leaf Chloris Bud', "Sedna's Tusk" },
+    EMP109 = { 'Helm of Briareus', 'Itzpapalotl\'s Scale', 'Orthrus\'s Claw', 'Glavoid Shell',
+        'Cirein-croin\'s Lantern', 'Alfard\'s Fang', 'Kulkulkan\'s Fang', 'Helm of Briareus',
+        'Carabosse\'s Gem', 'Dragua\'s Scale', 'Ulhuadshi\'s Fang', 'Apademak\'s Horn',
+        'Bukhis\'s Wing', 'Azdaja\'s Horn', 'Carabosse\'s Gem', 'Isgebind\'s Heart',
+        'Sobek\'s Skin', 'Carabosse\'s Gem', 'Two-Leaf Chloris Bud', 'Sedna\'s Tusk' },
 }
 
 -- Slot-specific upgrade material per type (index 1-5 = Head/Body/Hands/Legs/Feet)
 local menuSlotMats =
 {
     AF109  = { 'Phoenix Feather',     'Malboro Fiber',        'Black Beetle Blood',  'Damascene Cloth',     'Oxblood'              },
-    AF119  = { 'Maliyakaleya Coral',  'Hepatizon Ore',        'Beryllium Ore',       'Exalted Log',         "Sif's Lock"           },
+    AF119  = { 'Maliyakaleya Coral',  'Hepatizon Ore',        'Beryllium Ore',       'Exalted Log',         'Sif\'s Lock'          },
     REL109 = { 'Phoenix Feather',     'Malboro Fiber',        'Black Beetle Blood',  'Damascene Cloth',     'Oxblood'              },
     REL119 = { 'Gabbrath Horn',       'Yggdreant Bole',       'Bztavian Stinger',    'Waktza Rostrum',      'Rockfin Tooth'        },
     EMP109 = { 'Phoenix Feather',     'Malboro Fiber',        'Black Beetle Blood',  'Damascene Cloth',     'Oxblood'              },
@@ -1514,16 +1514,14 @@ local menuEtchedQty = { 15, 25, 15, 20, 15 }
 
 local menuSlotNames = { 'Head', 'Body', 'Hands', 'Legs', 'Feet' }
 
-local menuTypeLabel = { AF109='AF i109', AF119='AF i119', REL109='Rel i109', REL119='Rel i119', EMP109='Emp i109', EMP119='Emp i119' }
-
-local menuTypeList =
+local menuTypeLabel =
 {
-    { key = 'AF109',  label = 'AF i109'  },
-    { key = 'AF119',  label = 'AF i119'  },
-    { key = 'REL109', label = 'Rel i109' },
-    { key = 'REL119', label = 'Rel i119' },
-    { key = 'EMP109', label = 'Emp i109' },
-    { key = 'EMP119', label = 'Emp i119' },
+    AF109  = 'AF i109',
+    AF119  = 'AF i119',
+    REL109 = 'Rel i109',
+    REL119 = 'Rel i119',
+    EMP109 = 'Emp i109',
+    EMP119 = 'Emp i119',
 }
 
 -- Map numeric FFXI job ID → abbreviation
@@ -1554,13 +1552,13 @@ local menuJobFullName =
 local menuJobSetList =
 {
     WAR = {
-        { label = "Pummeler's", key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Pummeler\'s', key109 = 'AF109',  key119 = 'AF119'  },
         { label = 'Agoge',      key109 = 'REL109', key119 = 'REL119' },
         { label = 'Boii',       key109 = 'EMP109', key119 = 'EMP119' },
     },
     MNK = {
-        { label = "Anchorite's", key109 = 'AF109',  key119 = 'AF119'  },
-        { label = "Hesychast's", key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Anchorite\'s', key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Hesychast\'s', key109 = 'REL109', key119 = 'REL119' },
         { label = 'Bhikku',      key109 = 'EMP109', key119 = 'EMP119' },
     },
     WHM = {
@@ -1569,8 +1567,8 @@ local menuJobSetList =
         { label = 'Ebers',     key109 = 'EMP109', key119 = 'EMP119' },
     },
     BLM = {
-        { label = "Spaekona's", key109 = 'AF109',  key119 = 'AF119'  },
-        { label = "Archmage's", key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Spaekona\'s', key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Archmage\'s', key109 = 'REL109', key119 = 'REL119' },
         { label = 'Wicce',      key109 = 'EMP109', key119 = 'EMP119' },
     },
     RDM = {
@@ -1579,19 +1577,19 @@ local menuJobSetList =
         { label = 'Lethargy',  key109 = 'EMP109', key119 = 'EMP119' },
     },
     THF = {
-        { label = "Pillager's",  key109 = 'AF109',  key119 = 'AF119'  },
-        { label = "Plunderer's", key109 = 'REL109', key119 = 'REL119' },
-        { label = "Skulker's",   key109 = 'EMP109', key119 = 'EMP119' },
+        { label = 'Pillager\'s',  key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Plunderer\'s', key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Skulker\'s',   key109 = 'EMP109', key119 = 'EMP119' },
     },
     PLD = {
         { label = 'Reverence',   key109 = 'AF109',  key119 = 'AF119'  },
         { label = 'Caballarius', key109 = 'REL109', key119 = 'REL119' },
-        { label = "Chevalier's", key109 = 'EMP109', key119 = 'EMP119' },
+        { label = 'Chevalier\'s', key109 = 'EMP109', key119 = 'EMP119' },
     },
     DRK = {
         { label = 'Ignominy',  key109 = 'AF109',  key119 = 'AF119'  },
-        { label = "Fallen's",  key109 = 'REL109', key119 = 'REL119' },
-        { label = "Heathen's", key109 = 'EMP109', key119 = 'EMP119' },
+        { label = 'Fallen\'s',  key109 = 'REL109', key119 = 'REL119' },
+        { label = 'Heathen\'s', key109 = 'EMP109', key119 = 'EMP119' },
     },
     BST = {
         { label = 'Totemic', key109 = 'AF109',  key119 = 'AF119'  },
@@ -1621,22 +1619,22 @@ local menuJobSetList =
     DRG = {
         { label = 'Vishap',      key109 = 'AF109',  key119 = 'AF119'  },
         { label = 'Pteroslaver', key109 = 'REL109', key119 = 'REL119' },
-        { label = "Peltast's",   key109 = 'EMP109', key119 = 'EMP119' },
+        { label = 'Peltast\'s',   key109 = 'EMP109', key119 = 'EMP119' },
     },
     SMN = {
-        { label = "Convoker's", key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Convoker\'s', key109 = 'AF109',  key119 = 'AF119'  },
         { label = 'Glyphic',    key109 = 'REL109', key119 = 'REL119' },
-        { label = "Beckoner's", key109 = 'EMP109', key119 = 'EMP119' },
+        { label = 'Beckoner\'s', key109 = 'EMP109', key119 = 'EMP119' },
     },
     BLU = {
-        { label = "Assimilator's", key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Assimilator\'s', key109 = 'AF109',  key119 = 'AF119'  },
         { label = 'Luhlaza',       key109 = 'REL109', key119 = 'REL119' },
         { label = 'Hashishin',     key109 = 'EMP109', key119 = 'EMP119' },
     },
     COR = {
-        { label = "Laksamana's", key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Laksamana\'s', key109 = 'AF109',  key119 = 'AF119'  },
         { label = 'Lanun',       key109 = 'REL109', key119 = 'REL119' },
-        { label = "Chasseur's",  key109 = 'EMP109', key119 = 'EMP119' },
+        { label = 'Chasseur\'s',  key109 = 'EMP109', key119 = 'EMP119' },
     },
     PUP = {
         { label = 'Foire',   key109 = 'AF109',  key119 = 'AF119'  },
@@ -1649,7 +1647,7 @@ local menuJobSetList =
         { label = 'Maculele', key109 = 'EMP109', key119 = 'EMP119' },
     },
     SCH = {
-        { label = "Academic's", key109 = 'AF109',  key119 = 'AF119'  },
+        { label = 'Academic\'s', key109 = 'AF109',  key119 = 'AF119'  },
         { label = 'Pedagogy',   key109 = 'REL109', key119 = 'REL119' },
         { label = 'Arbatel',    key109 = 'EMP109', key119 = 'EMP119' },
     },
@@ -1670,9 +1668,15 @@ local function menuPrintRecipe(player, npc, typeKey, jobAbbrev, slotIdx)
     local typeJobs = menuTypeJobs[typeKey]
     local jobIdx   = nil
     for i, j in ipairs(typeJobs) do
-        if j == jobAbbrev then jobIdx = i break end
+        if j == jobAbbrev then
+            jobIdx = i
+            break
+        end
     end
-    if not jobIdx then return end
+
+    if not jobIdx then
+        return
+    end
 
     local slot      = menuSlotNames[slotIdx]
     local typeLabel = menuTypeLabel[typeKey]
@@ -1740,7 +1744,9 @@ local function menuShowSlots(player, npc, typeKey, jobAbbrev, pageNum, useTimer)
             table.insert(options, {
                 label    = string.format('Next >> %u/%u', next, totalPages),
                 callback = function(p)
-                    p:timer(50, function(pp) menuShowSlots(pp, npc, typeKey, jobAbbrev, next, false) end)
+                    p:timer(50, function(pp)
+                        menuShowSlots(pp, npc, typeKey, jobAbbrev, next, false)
+                    end)
                 end,
             })
         else
@@ -1748,7 +1754,9 @@ local function menuShowSlots(player, npc, typeKey, jobAbbrev, pageNum, useTimer)
             table.insert(options, {
                 label    = string.format('<< Prev %u/%u', prev, totalPages),
                 callback = function(p)
-                    p:timer(50, function(pp) menuShowSlots(pp, npc, typeKey, jobAbbrev, prev, false) end)
+                    p:timer(50, function(pp)
+                        menuShowSlots(pp, npc, typeKey, jobAbbrev, prev, false)
+                    end)
                 end,
             })
         end
@@ -1762,7 +1770,9 @@ local function menuShowSlots(player, npc, typeKey, jobAbbrev, pageNum, useTimer)
     end
 
     if useTimer then
-        player:timer(50, function(p) draw(p) end)
+        player:timer(50, function(p)
+            draw(p)
+        end)
     else
         draw(player)
     end
@@ -1776,10 +1786,13 @@ local function menuShowTier(player, npc, setEntry, jobAbbrev, useTimer)
     -- Sets with no i109 (GEO/RUN AF and Relic lines) go straight to slots
     if not setEntry.key109 then
         if useTimer then
-            player:timer(50, function(p) menuShowSlots(p, npc, setEntry.key119, jobAbbrev, 1, false) end)
+            player:timer(50, function(p)
+                menuShowSlots(p, npc, setEntry.key119, jobAbbrev, 1, false)
+            end)
         else
             menuShowSlots(player, npc, setEntry.key119, jobAbbrev, 1, false)
         end
+
         return
     end
 
@@ -1792,13 +1805,17 @@ local function menuShowTier(player, npc, setEntry, jobAbbrev, useTimer)
         {
             label    = 'i109',
             callback = function(p)
-                p:timer(50, function(pp) menuShowSlots(pp, npc, key109Capture, jobAbbrev, 1, false) end)
+                p:timer(50, function(pp)
+                    menuShowSlots(pp, npc, key109Capture, jobAbbrev, 1, false)
+                end)
             end,
         },
         {
             label    = 'i119',
             callback = function(p)
-                p:timer(50, function(pp) menuShowSlots(pp, npc, key119Capture, jobAbbrev, 1, false) end)
+                p:timer(50, function(pp)
+                    menuShowSlots(pp, npc, key119Capture, jobAbbrev, 1, false)
+                end)
             end,
         },
     }
@@ -1811,7 +1828,9 @@ local function menuShowTier(player, npc, setEntry, jobAbbrev, useTimer)
     end
 
     if useTimer then
-        player:timer(50, function(p) draw(p) end)
+        player:timer(50, function(p)
+            draw(p)
+        end)
     else
         draw(player)
     end
@@ -1824,9 +1843,19 @@ local function menuShowTalesQty(player, npc, chapter, stored, useTimer)
     -- Build quantity options: 1, 5, 10 (if enough stored), then "Return All"
     -- Only append stored if it is not already the last entry in the list.
     local qtyList = {}
-    if stored >= 1  then table.insert(qtyList, 1)  end
-    if stored >= 5  then table.insert(qtyList, 5)  end
-    if stored >= 10 then table.insert(qtyList, 10) end
+
+    if stored >= 1 then
+        table.insert(qtyList, 1)
+    end
+
+    if stored >= 5 then
+        table.insert(qtyList, 5)
+    end
+
+    if stored >= 10 then
+        table.insert(qtyList, 10)
+    end
+
     if #qtyList == 0 or qtyList[#qtyList] ~= stored then
         table.insert(qtyList, stored)
     end
@@ -1867,7 +1896,9 @@ local function menuShowTalesQty(player, npc, chapter, stored, useTimer)
                 table.insert(options, {
                     label    = string.format('Next >> %u/%u', next, totalPages),
                     callback = function(p)
-                        p:timer(50, function(pp) buildPage(next, false) end)
+                        p:timer(50, function(pp)
+                            buildPage(next, false)
+                        end)
                     end,
                 })
             else
@@ -1875,7 +1906,9 @@ local function menuShowTalesQty(player, npc, chapter, stored, useTimer)
                 table.insert(options, {
                     label    = string.format('<< Prev %u/%u', prev, totalPages),
                     callback = function(p)
-                        p:timer(50, function(pp) buildPage(prev, false) end)
+                        p:timer(50, function(pp)
+                            buildPage(prev, false)
+                        end)
                     end,
                 })
             end
@@ -1889,7 +1922,9 @@ local function menuShowTalesQty(player, npc, chapter, stored, useTimer)
         end
 
         if pgUseTimer then
-            player:timer(50, function(p) draw(p) end)
+            player:timer(50, function(p)
+            draw(p)
+        end)
         else
             draw(player)
         end
@@ -1931,7 +1966,9 @@ local function menuShowChapters(player, npc, pageNum, useTimer)
         table.insert(options, {
             label    = string.format('Ch.%d (%d)', entry.ch, entry.stored),
             callback = function(p)
-                p:timer(50, function(pp) menuShowTalesQty(pp, npc, chCap, storeCap, false) end)
+                p:timer(50, function(pp)
+                    menuShowTalesQty(pp, npc, chCap, storeCap, false)
+                end)
             end,
         })
     end
@@ -1942,7 +1979,9 @@ local function menuShowChapters(player, npc, pageNum, useTimer)
             table.insert(options, {
                 label    = string.format('Next >> %u/%u', next, totalPages),
                 callback = function(p)
-                    p:timer(50, function(pp) menuShowChapters(pp, npc, next, false) end)
+                    p:timer(50, function(pp)
+                        menuShowChapters(pp, npc, next, false)
+                    end)
                 end,
             })
         else
@@ -1950,7 +1989,9 @@ local function menuShowChapters(player, npc, pageNum, useTimer)
             table.insert(options, {
                 label    = string.format('<< Prev %u/%u', prev, totalPages),
                 callback = function(p)
-                    p:timer(50, function(pp) menuShowChapters(pp, npc, prev, false) end)
+                    p:timer(50, function(pp)
+                        menuShowChapters(pp, npc, prev, false)
+                    end)
                 end,
             })
         end
@@ -1964,7 +2005,9 @@ local function menuShowChapters(player, npc, pageNum, useTimer)
     end
 
     if useTimer then
-        player:timer(50, function(p) draw(p) end)
+        player:timer(50, function(p)
+            draw(p)
+        end)
     else
         draw(player)
     end
@@ -1986,20 +2029,29 @@ local function menuShowRoot(player, npc, pageNum, useTimer)
         table.insert(items, {
             label    = setEntry.label,
             callback = function(p)
-                p:timer(50, function(pp) menuShowTier(pp, npc, entryCapture, jobAbbrev, false) end)
+                p:timer(50, function(pp)
+                    menuShowTier(pp, npc, entryCapture, jobAbbrev, false)
+                end)
             end,
         })
     end
 
     local hasTales = false
+
     for chapter = 1, 10 do
-        if getStoredTales(player, chapter) > 0 then hasTales = true break end
+        if getStoredTales(player, chapter) > 0 then
+            hasTales = true
+            break
+        end
     end
+
     if hasTales then
         table.insert(items, {
             label    = 'Get Tales',
             callback = function(p)
-                p:timer(50, function(pp) menuShowChapters(pp, npc, 1, false) end)
+                p:timer(50, function(pp)
+                    menuShowChapters(pp, npc, 1, false)
+                end)
             end,
         })
     end
@@ -2024,7 +2076,9 @@ local function menuShowRoot(player, npc, pageNum, useTimer)
             table.insert(options, {
                 label    = string.format('Next >> %u/%u', next, totalPages),
                 callback = function(p)
-                    p:timer(50, function(pp) menuShowRoot(pp, npc, next, false) end)
+                    p:timer(50, function(pp)
+                        menuShowRoot(pp, npc, next, false)
+                    end)
                 end,
             })
         else
@@ -2032,7 +2086,9 @@ local function menuShowRoot(player, npc, pageNum, useTimer)
             table.insert(options, {
                 label    = string.format('<< Prev %u/%u', prev, totalPages),
                 callback = function(p)
-                    p:timer(50, function(pp) menuShowRoot(pp, npc, prev, false) end)
+                    p:timer(50, function(pp)
+                        menuShowRoot(pp, npc, prev, false)
+                    end)
                 end,
             })
         end
@@ -2046,7 +2102,9 @@ local function menuShowRoot(player, npc, pageNum, useTimer)
     end
 
     if useTimer then
-        player:timer(50, function(p) draw(p) end)
+        player:timer(50, function(p)
+            draw(p)
+        end)
     else
         draw(player)
     end
