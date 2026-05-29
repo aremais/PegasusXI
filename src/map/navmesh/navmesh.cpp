@@ -27,6 +27,8 @@
 #include "common/utils.h"
 #include "common/xirand.h"
 
+#include <array>
+#include <cmath>
 #include <filesystem>
 #include <fstream>
 #include <set>
@@ -69,11 +71,71 @@ static const size_t MAX_QUERY_POLYS   = 16;
 // when looking for a path or point. Since we use detour in a blocking
 // manner, we want to keep these values as low as possible while
 // balancing the need for quality paths.
-constexpr float smallPolyPickExt[3]  = { 0.5f, 1.0f, 0.5f };
-constexpr float polyPickExt[3]       = { 2.5f, 5.0f, 2.5f };
-constexpr float skinnyPolyPickExt[3] = { 0.01f, 10.0f, 0.01f };
-constexpr float largePolyPickExt[3]  = { 30.0f, 60.0f, 30.0f };
-constexpr float verticalLimit        = 5.0f;
+constexpr float smallPolyPickExt[3]     = { 0.5f, 1.0f, 0.5f };
+constexpr float polyPickExt[3]          = { 2.5f, 5.0f, 2.5f };
+constexpr float verticalPolyPickExt[3]  = { 2.5f, 10.0f, 2.5f }; // polyPickExt horizontal extent with a tall vertical column for floor checks
+constexpr float largePolyPickExt[3]     = { 30.0f, 60.0f, 30.0f };
+constexpr float verticalLimit           = 5.0f;
+
+[[nodiscard]] auto roundFloorHeightBucket(const float detourY) -> int16_t
+{
+    return static_cast<int16_t>(std::round(detourY / verticalLimit) * verticalLimit);
+}
+
+// Collect distinct walkable floor heights near a point. Falls back to findNearestPoly so
+// positions slightly off-mesh still match the behavior used by raycast pathing.
+[[nodiscard]] auto collectFloorHeightBuckets(dtNavMeshQuery& query, dtNavMesh* navMesh, const float* pos, dtQueryFilter& filter, std::set<int16_t>& outHeights) -> bool
+{
+    outHeights.clear();
+
+    dtPolyRef polys[MAX_QUERY_POLYS];
+    int       polyCount = 0;
+    dtStatus  status    = query.queryPolygons(pos, verticalPolyPickExt, &filter, polys, &polyCount, MAX_QUERY_POLYS);
+
+    if (!dtStatusFailed(status) && polyCount > 0)
+    {
+        float height = 0.0f;
+        for (int i = 0; i < polyCount; ++i)
+        {
+            status = query.getPolyHeight(polys[i], pos, &height);
+            if (!dtStatusFailed(status))
+            {
+                outHeights.insert(roundFloorHeightBucket(height));
+            }
+        }
+
+        if (!outHeights.empty())
+        {
+            return true;
+        }
+    }
+
+    constexpr std::array<const float*, 2> nearestPolyExts = { polyPickExt, largePolyPickExt };
+
+    for (const float* pickExt : nearestPolyExts)
+    {
+        dtPolyRef nearestRef = 0;
+        float     nearest[3];
+        status = query.findNearestPoly(pos, pickExt, &filter, &nearestRef, nearest);
+
+        if (dtStatusFailed(status) || !navMesh->isValidPolyRef(nearestRef))
+        {
+            continue;
+        }
+
+        float height = 0.0f;
+        status       = query.getPolyHeight(nearestRef, nearest, &height);
+        if (dtStatusFailed(status))
+        {
+            continue;
+        }
+
+        outHeights.insert(roundFloorHeightBucket(height));
+        return true;
+    }
+
+    return false;
+}
 
 struct NavMeshSetHeader
 {
@@ -742,46 +804,38 @@ bool CNavMesh::onSameFloor(const position_t& start, float* spos, const position_
     }
     else if (verticalDistance > verticalLimit)
     {
-        // Far away, but not too far away.
-        // We're going to try and disambiguate any vertical floors.
-        dtPolyRef polys[MAX_QUERY_POLYS];
-        int       polyCount = -1;
-        dtStatus  status    = m_navMeshQuery.queryPolygons(epos, skinnyPolyPickExt, &filter, polys, &polyCount, MAX_QUERY_POLYS);
+        // Far away vertically, but not too far — disambiguate stacked walkable floors.
+        std::set<int16_t> startHeights;
+        std::set<int16_t> endHeights;
 
-        if (dtStatusFailed(status) || polyCount <= 0)
+        if (!collectFloorHeightBuckets(m_navMeshQuery, m_navMesh, spos, filter, startHeights))
         {
-            ShowError("CNavMesh::Bad vertical polygon query (%f, %f, %f) (%u)", epos[0], epos[1], epos[2], m_zoneID);
-            ShowError(detourStatusString(status));
+            ShowError("CNavMesh::onSameFloor: no navmesh near start (%f, %f, %f) (%u)", spos[0], spos[1], spos[2], m_zoneID);
             return false;
         }
 
-        // Collect the heights of queried polygons
-        uint8           verticalLimitTrunc = static_cast<uint8>(verticalLimit);
-        float           height             = 0;
-        std::set<uint8> heights;
-        for (int i = 0; i < polyCount; i++)
+        if (!collectFloorHeightBuckets(m_navMeshQuery, m_navMesh, epos, filter, endHeights))
         {
-            status = m_navMeshQuery.getPolyHeight(polys[i], epos, &height);
-            if (!dtStatusFailed(status))
-            {
-                // Truncate the height and round to nearest multiple of verticalLimitTrunc for easier de-duping
-                uint8 rounded = static_cast<uint8>(height) + abs((static_cast<uint8>(height) % verticalLimitTrunc) - verticalLimitTrunc);
-                heights.insert(rounded);
-            }
+            ShowError("CNavMesh::onSameFloor: no navmesh near end (%f, %f, %f) (%u)", epos[0], epos[1], epos[2], m_zoneID);
+            return false;
         }
 
-        // Multiple floors detected, we need to disambiguate
-        if (heights.size() > 1)
+        if (startHeights.size() > 1 || endHeights.size() > 1)
         {
-            auto startHeight = static_cast<uint8>(spos[1]) + abs((static_cast<uint8>(spos[1]) % verticalLimitTrunc) - verticalLimitTrunc);
-            auto endHeight   = static_cast<uint8>(epos[1]) + abs((static_cast<uint8>(epos[1]) % verticalLimitTrunc) - verticalLimitTrunc);
-
-            // Since we've already truncated and rounded to nearest multiples of verticalLimitTrunc,
-            // if we are within verticalLimitTrunc of a point, that's our closest.
-            if (startHeight != endHeight)
+            for (const auto startHeight : startHeights)
             {
-                return false;
+                if (endHeights.contains(startHeight))
+                {
+                    return true;
+                }
             }
+
+            return false;
+        }
+
+        if (*startHeights.begin() != *endHeights.begin())
+        {
+            return false;
         }
     }
 
