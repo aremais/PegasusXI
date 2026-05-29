@@ -4,16 +4,16 @@
 -- Type: Wyvern Name Changer
 -- !pos -84.066 -6.414 47.826 252
 -----------------------------------
-local ID = zones[xi.zone.NORG]
------------------------------------
 ---@type TNpcEntity
 local entity = {}
 
 entity.onTrigger = function(player, npc)
+    local ID = zones[xi.zone.NORG]
+
     if player:getMainJob() ~= xi.job.DRG then
-        player:showText(npc, ID.text.FOUIVA_DIALOG) -- Oi 'av naw business wi' de likes av you.
+        player:showText(npc, ID.text.FOUIVA_DIALOG) -- 10589: Oi 'av naw business wi' de likes av you.
     elseif player:getGil() < 9800 then
-        player:showText(npc, ID.text.FOUIVA_DIALOG + 9) -- You don't 'av enough gil.  Come back when you do.
+        player:showText(npc, ID.text.FOUIVA_DIALOG_INSUFFICIENT_GIL) -- 10598: You don't 'av enough gil.  Come back when you do.
     else
         player:startEvent(130, 0, 0, 0, 0, 0, 0, player:getCharVar('ChangedWyvernName'))
     end
