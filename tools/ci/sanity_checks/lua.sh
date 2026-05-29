@@ -101,6 +101,7 @@ global_objects=(
     BuildString
 
     GetFirstID
+    GetTableOfIDs
 
     LoadExpDifficultyCurves
     ReloadSynthRecipes

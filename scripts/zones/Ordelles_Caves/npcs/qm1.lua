@@ -3,12 +3,11 @@
 --  NPC: ???
 -- Spawns Aroma Leech - RSE Satchets
 -----------------------------------
-local ID = zones[xi.zone.ORDELLES_CAVES]
------------------------------------
 ---@type TNpcEntity
 local entity = {}
 
 entity.onTrigger = function(player, npc)
+    local ID = zones[xi.zone.ORDELLES_CAVES]
     local playerRace = player:getRace()
     local raceOffset = 0
 
@@ -37,7 +36,7 @@ entity.onTrigger = function(player, npc)
             npcUtil.queueMove(npc, { 15.359, 32.000, -21.885 }) -- TODO: get 100% accurate spawn point from retail
         end
     else
-        player:messageSpecial(ID.text.NOTHING_OUT_OF_ORDINARY)
+        player:messageSpecial(ID.text.NOTHING_OUT_OF_ORDINARY) -- 6564
     end
 end
 
