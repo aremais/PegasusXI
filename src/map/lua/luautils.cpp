@@ -501,6 +501,10 @@ void init(IPP mapIPP, bool isRunningInCI)
 
         PopulateIDLookupsByFilename();
 
+        // Collect globals parts so we can apply overrides after modules are registered
+        std::vector<std::vector<std::string>> globalsParts;
+        globalsParts.reserve(64);
+
         // Then the rest...
         for (auto const& entry : sorted_directory_iterator<std::filesystem::recursive_directory_iterator>("./scripts/globals"))
         {
@@ -516,6 +520,21 @@ void init(IPP mapIPP, bool isRunningInCI)
                     sol::error err = result;
                     ShowError(err.what());
                 }
+
+                std::vector<std::string> parts;
+                for (auto part : entry)
+                {
+                    part.replace_extension("");
+                    parts.emplace_back(part.string());
+                }
+
+                // Strip leading path components up to and including "scripts"
+                // so parts match the format TryApplyLuaModules expects (same as CacheLuaObjectFromFile)
+                if (const auto it = std::ranges::find(parts, std::string("scripts")); it != parts.end())
+                {
+                    parts.erase(parts.begin(), it + 1);
+                }
+                globalsParts.emplace_back(std::move(parts));
             }
         }
 
@@ -559,6 +578,13 @@ void init(IPP mapIPP, bool isRunningInCI)
 
         // Handle settings
         moduleutils::LoadLuaModules(mapIPP);
+
+        for (const auto& parts : globalsParts)
+        {
+            moduleutils::TryApplyLuaModules(parts);
+        }
+
+        moduleutils::TryApplyRemainingLuaModules();
 
         filewatcher = std::make_unique<Filewatcher>(std::vector<std::string>{ "scripts", "modules", "settings" });
 
@@ -1077,7 +1103,7 @@ void init(IPP mapIPP, bool isRunningInCI)
         }
     }
 
-    moduleutils::TryApplyLuaModules();
+    moduleutils::TryApplyLuaModules(parts, overwriteCurrentEntry);
 }
 
 sol::table GetCacheEntryFromFilename(const std::string& filename)
