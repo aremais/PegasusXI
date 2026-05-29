@@ -1824,10 +1824,11 @@ INSERT INTO `mob_droplist` VALUES (194,1,2,@UNCOMMON,3171,250);   -- Tantra Seal
 
 -- ZoneID: 187 - Avatar Icon
 -- ZoneID: 187 - Avatar Icon
-INSERT INTO `mob_droplist` VALUES (195,0,0,1000,1474,161); -- Infinity Core (16.1%)
-INSERT INTO `mob_droplist` VALUES (195,0,0,1000,1470,65);  -- Sparkling Stone (6.5%)
-INSERT INTO `mob_droplist` VALUES (195,0,0,1000,749,32);   -- Mythril Beastcoin (3.2%)
-INSERT INTO `mob_droplist` VALUES (195,0,0,1000,1449,32);  -- Tukuku Whiteshell (3.2%)
+INSERT INTO `mob_droplist` VALUES (195,0,0,1000,1474,@UNCOMMON); -- Infinity Core (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (195,0,0,1000,749,@VRARE);     -- Mythril Beastcoin (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (195,0,0,1000,1470,@VRARE);    -- Sparkling Stone (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (195,0,0,1000,748,@VRARE);     -- Gold Beastcoin (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (195,0,0,1000,1449,@VRARE);    -- Tukuku Whiteshell (Very Rare, 1%)
 
 -- ZoneID: 253 - Awahondo -- TODO: Abyssea NM
 INSERT INTO `mob_droplist` VALUES (196,0,0,1000,19137,@COMMON);   -- Angr Harpe (Common, 15%)
@@ -12424,25 +12425,8 @@ INSERT INTO `mob_droplist` VALUES (1497,0,0,1000,19044,@COMMON); -- Disciple Gri
 
 -- 1498-1501 Available
 
--- ZoneID: 132 - La Theine Liege
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,11562,340); -- Sharpeye Mantle (34.0%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,1633,35);   -- Handful Of Clot Plasma (3.5%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,4377,28);   -- Slice Of Coeurl Meat (2.8%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,1446,27);   -- Lacquer Tree Log (2.7%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,1997,26);   -- Square Of Sailcloth (2.6%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,5152,26);   -- Slice Of Buffalo Meat (2.6%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,4272,25);   -- Slice Of Dragon Meat (2.5%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,887,25);    -- Coral Fragment (2.5%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,2532,23);   -- Teak Log (2.3%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,2315,21);   -- Clump Of Karakul Wool (2.1%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,645,21);    -- Chunk Of Darksteel Ore (2.1%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,702,21);    -- Ebony Log (2.1%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,830,21);    -- Square Of Rainbow Cloth (2.1%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,823,21);    -- Spool Of Gold Thread (2.1%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,1769,20);   -- Square Of Galateia (2.0%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,722,20);    -- Divine Log (2.0%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,1415,19);   -- Pot Of Urushi (1.9%)
-INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,846,4);     -- Insect Wing (0.4%)
+-- ZoneID: 132 - La Theine Liege -- TODO: Abyssea NM, figure out the rest of the drops. Sharpeye Mantle is also guessed.
+INSERT INTO `mob_droplist` VALUES (1502,0,0,1000,11562,@COMMON);  -- Sharpeye Mantle (Common, 15%)
 
 -- ZoneID:  84 - La Velue
 INSERT INTO `mob_droplist` VALUES (1503,0,0,1000,18445,@COMMON); -- Amakura (Common, 15%)
@@ -12466,23 +12450,10 @@ INSERT INTO `mob_droplist` VALUES (1506,4,0,1000,825,0);         -- Square Of Co
 -- ZoneID:  15 - Lentor -- TODO: Abyssea NM
 INSERT INTO `mob_droplist` VALUES (1507,0,0,1000,11421,@COMMON); -- Missile Boots (Common, 15%)
 
--- ZoneID:  15 - Lesser Arimaspi
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1633,30); -- Handful Of Clot Plasma (3.0%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,4377,23); -- Slice Of Coeurl Meat (2.3%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1634,22); -- Rhodonite (2.2%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,887,22);  -- Coral Fragment (2.2%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,4272,22); -- Slice Of Dragon Meat (2.2%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,5152,21); -- Slice Of Buffalo Meat (2.1%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1997,21); -- Square Of Sailcloth (2.1%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1294,19); -- Spool Of Arachne Thread (1.9%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,830,18);  -- Square Of Rainbow Cloth (1.8%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,645,17);  -- Chunk Of Darksteel Ore (1.7%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1740,17); -- Iolite (1.7%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,823,17);  -- Spool Of Gold Thread (1.7%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,942,17);  -- Philosophers Stone (1.7%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1133,16); -- Vial Of Dragon Blood (1.6%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1311,16); -- Piece Of Oxblood (1.6%)
-INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1829,15); -- Square Of Red Grass Cloth (1.5%)
+-- ZoneID:  15 - Lesser Arimaspi -- TODO: Abyssea NM - Yellow proc for drops. Unknown rate or grouping without proc.
+-- INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1740,@SRARE); -- Iolite (Super Rare, 0.5%)
+-- INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1294,@SRARE); -- Spool Of Arachne Thread (Super Rare, 0.5%)
+-- INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1633,@SRARE); -- Handful Of Clot Plasma (Super Rare, 0.5%)
 
 -- ZoneID:  51 - Lesser Colibri
 -- ZoneID:  52 - Lesser Colibri
@@ -28997,42 +28968,6 @@ INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,17745,250); -- Hofud (Group
 INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,18121,250); -- Valkyrie's Fork (Group 5, Very Common, 24% - 25%)
 INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,16117,250); -- Valhalla Helm (Group 5, Very Common, 24% - 25%)
 INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,14577,250); -- Valhalla Breastplate (Group 5, Very Common, 24% - 25%)
-
--- ZoneID: 288 - Escha Zi'Tah upgrade materials
-INSERT INTO `mob_droplist` VALUES (3500,0,0,1000,9084,@RARE);   -- Eschalixir (Rare, 5%)
-INSERT INTO `mob_droplist` VALUES (3500,0,0,1000,9085,@VRARE);  -- Eschalixir +1 (Very Rare, 1%)
-INSERT INTO `mob_droplist` VALUES (3500,0,0,1000,6391,@VRARE);  -- Silt Pouch (Very Rare, 1%)
-
--- ZoneID: 288 - Escha Zi'Tah Geas Fete upgrade materials
-INSERT INTO `mob_droplist` VALUES (3501,0,0,1000,9084,@COMMON); -- Eschalixir (Common, 15%)
-INSERT INTO `mob_droplist` VALUES (3501,0,0,1000,9085,@RARE);   -- Eschalixir +1 (Rare, 5%)
-INSERT INTO `mob_droplist` VALUES (3501,0,0,1000,9086,@VRARE);  -- Eschalixir +2 (Very Rare, 1%)
-INSERT INTO `mob_droplist` VALUES (3501,0,0,1000,6391,@RARE);   -- Silt Pouch (Rare, 5%)
-
--- ZoneID: 289 - Escha Ru'Aun upgrade materials
-INSERT INTO `mob_droplist` VALUES (3502,0,0,1000,9084,@RARE);   -- Eschalixir (Rare, 5%)
-INSERT INTO `mob_droplist` VALUES (3502,0,0,1000,9085,@VRARE);  -- Eschalixir +1 (Very Rare, 1%)
-INSERT INTO `mob_droplist` VALUES (3502,0,0,1000,6391,@VRARE);  -- Silt Pouch (Very Rare, 1%)
-
--- ZoneID: 289 - Escha Ru'Aun Geas Fete upgrade materials
-INSERT INTO `mob_droplist` VALUES (3503,0,0,1000,9084,@COMMON); -- Eschalixir (Common, 15%)
-INSERT INTO `mob_droplist` VALUES (3503,0,0,1000,9085,@RARE);   -- Eschalixir +1 (Rare, 5%)
-INSERT INTO `mob_droplist` VALUES (3503,0,0,1000,9086,@VRARE);  -- Eschalixir +2 (Very Rare, 1%)
-INSERT INTO `mob_droplist` VALUES (3503,0,0,1000,6391,@RARE);   -- Silt Pouch (Rare, 5%)
-
--- ZoneID: 291 - Reisenjima upgrade materials
-INSERT INTO `mob_droplist` VALUES (3504,0,0,1000,9210,@RARE);   -- Pellucid Stone (Rare, 5%)
-INSERT INTO `mob_droplist` VALUES (3504,0,0,1000,9211,@RARE);   -- Fern Stone (Rare, 5%)
-INSERT INTO `mob_droplist` VALUES (3504,0,0,1000,9212,@RARE);   -- Taupe Stone (Rare, 5%)
-INSERT INTO `mob_droplist` VALUES (3504,0,0,1000,6391,@VRARE);  -- Silt Pouch (Very Rare, 1%)
-
--- ZoneID: 291 - Reisenjima Geas Fete upgrade materials
-INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9084,@RARE);   -- Eschalixir (Rare, 5%)
-INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9085,@VRARE);  -- Eschalixir +1 (Very Rare, 1%)
-INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9210,@COMMON); -- Pellucid Stone (Common, 15%)
-INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9211,@COMMON); -- Fern Stone (Common, 15%)
-INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,9212,@COMMON); -- Taupe Stone (Common, 15%)
-INSERT INTO `mob_droplist` VALUES (3505,0,0,1000,6391,@RARE);   -- Silt Pouch (Rare, 5%)
 
 /*!40000 ALTER TABLE `mob_droplist` ENABLE KEYS */;
 UNLOCK TABLES;
