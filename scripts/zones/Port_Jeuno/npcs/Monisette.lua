@@ -2016,7 +2016,6 @@ end
 -----------------------------------
 -- Root menu: shows the player's job-specific armor set names (paginated),
 -- plus a "Get Tales" option at the end if they have any stored.
--- Greeting is printed to chat by onTrigger before this is called.
 -----------------------------------
 local function menuShowRoot(player, npc, pageNum, useTimer)
     local jobAbbrev = menuJobIdToAbbrev[player:getMainJob()] or 'WAR'
@@ -2188,12 +2187,6 @@ end
 -- event data that cannot be bypassed from Lua.  Instead open the custom menu.
 -----------------------------------
 entity.onTrigger = function(player, npc)
-    local jobAbbrev = menuJobIdToAbbrev[player:getMainJob()] or 'WAR'
-    local jobName   = menuJobFullName[jobAbbrev] or jobAbbrev
-    player:printToPlayer(
-        string.format('Ah! I see you are a %s, this is what I can upgrade for you:', jobName),
-        xi.msg.channel.SAY, npc:getName()
-    )
     menuShowRoot(player, npc, 1, false)
 end
 
