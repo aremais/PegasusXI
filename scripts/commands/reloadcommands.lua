@@ -22,4 +22,3 @@ commandObj.onTrigger = function(player)
 end
 
 return commandObj
-
