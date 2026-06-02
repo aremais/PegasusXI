@@ -38,7 +38,11 @@ spellObject.onMobSpawn = function(mob)
     mob:addListener('COMBAT_TICK', 'BALAMOR_RANDOM_TP_MOVE', function(mobArg)
         local target = mobArg:getTarget()
 
-        if target ~= nil and mobArg:getTP() >= 1000 and mobArg:getLocalVar('BalamorRandomTPCooldown') <= os.time() then
+        if
+            target ~= nil and
+            mobArg:getTP() >= 1000 and
+            mobArg:getLocalVar('BalamorRandomTPCooldown') <= GetSystemTime()
+        then
             local moves =
             {
                 3617,
@@ -48,7 +52,7 @@ spellObject.onMobSpawn = function(mob)
             }
 
             mobArg:useMobAbility(moves[math.random(1, #moves)])
-            mobArg:setLocalVar('BalamorRandomTPCooldown', os.time() + 10)
+            mobArg:setLocalVar('BalamorRandomTPCooldown', GetSystemTime() + 10)
         end
     end)
 end
