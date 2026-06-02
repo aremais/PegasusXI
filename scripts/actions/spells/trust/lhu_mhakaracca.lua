@@ -21,11 +21,9 @@ spellObject.onMobSpawn = function(mob)
     if lvl >= 75 then
         mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.FERAL_HOWL })
     end
-
     if lvl >= 15 then
         mob:addGambit(ai.t.SELF,   { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK })
     end
-
     if lvl >= 45 then
         mob:addGambit(ai.t.SELF,   { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.AGGRESSOR })
     end
