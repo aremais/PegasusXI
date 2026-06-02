@@ -1,10 +1,5 @@
 -----------------------------------
 -- Trust: Flaviria UC
--- Job: DRG/WAR
--- Wiki behavior:
--- Uses Jump, High Jump, Super Jump, and Berserk.
--- Uses Skewer, Impulse Drive, and Camlann/Celidon's Torment-style WS at 1000 TP.
--- Does not try to skillchain.
 -----------------------------------
 ---@type TSpellTrust
 local spellObject = {}
@@ -20,24 +15,29 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    -- Retail note: Flaviria UC is an aggressive physical DD.
-    -- Keep this modest so it does not destabilize general Trust balance.
-    mob:addMod(xi.mod.ACC, 25)
-    mob:addMod(xi.mod.ATTP, 15)
+    local lvl = mob:getMainLvl()
 
-    -- DRG/WAR abilities.
-    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.BERSERK }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK })
+    if lvl >= 10 then
+        mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.JUMP })
+    end
 
-    mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.JUMP })
-    mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.HIGH_JUMP })
+    if lvl >= 30 then
+        mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.BERSERK }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK })
+    end
 
-    -- Retail behavior says Super Jump is available. Use it conservatively,
-    -- matching common DRG Trust behavior: shed hate only if she has top enmity.
-    mob:addGambit(ai.t.SELF, { ai.c.HAS_TOP_ENMITY, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SUPER_JUMP })
+    if lvl >= 35 then
+        mob:addGambit(ai.t.TARGET, { ai.c.HAS_TOP_ENMITY, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.HIGH_JUMP })
+    end
 
-    -- Uses WS at 1000 TP and does not try to skillchain.
-    -- Actual available WS are controlled by sql/mob_skill_lists.sql list 1072.
-    mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.HIGHEST, 1000)
+    if lvl >= 50 then
+        mob:addGambit(ai.t.SELF, { ai.c.HAS_TOP_ENMITY, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SUPER_JUMP })
+    end
+
+    if lvl >= 75 then
+        mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.ANGON })
+    end
+    -- Flaviria UC uses retail-close Polearm weapon skills as a DRG/WAR damage dealer.
+    mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.HIGHEST)
 end
 
 spellObject.onMobDespawn = function(mob)

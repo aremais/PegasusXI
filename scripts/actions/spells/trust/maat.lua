@@ -15,8 +15,12 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
+    local lvl = mob:getMainLvl()
+
     -- On cooldown
-    mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.MANTRA })
+    if lvl >= 75 then
+        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.MANTRA })
+    end
 
     mob:addListener('WEAPONSKILL_USE', 'MAAT_WEAPONSKILL_USE', function(mobArg, target, skill, tp, action, damage)
         if skill:getID() == 3263 then -- Bear Killer
@@ -24,6 +28,9 @@ spellObject.onMobSpawn = function(mob)
             xi.trust.message(mobArg, xi.trust.messageOffset.SPECIAL_MOVE_1)
         end
     end)
+
+    -- Uses existing DB skill list 1048: Bear Killer and hand-to-hand weapon skills.
+    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.RANDOM, 1500)
 end
 
 spellObject.onMobDespawn = function(mob)

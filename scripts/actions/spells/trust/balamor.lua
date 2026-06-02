@@ -17,6 +17,8 @@ spellObject.onMobSpawn = function(mob)
 
     mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.MELEE)
     mob:setMobMod(xi.mobMod.SKILL_LIST, 1098)
+    mob:addMod(xi.mod.HPP, 40)
+    mob:addMod(xi.mod.MPP, 100)
 
     -- Dark magic: Balamor spell list 396 contains Absorb spells.
     mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.STR_DOWN }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ABSORB_STR }, 60)
@@ -27,11 +29,28 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.MND_DOWN }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ABSORB_MND }, 60)
     mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.CHR_DOWN }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ABSORB_CHR }, 60)
 
-    -- Balamor special mob skills.
-    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 2000 }, { ai.r.MS, ai.s.SPECIFIC, 3620 }, 60) -- Last Laugh
-    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1750 }, { ai.r.MS, ai.s.SPECIFIC, 3619 }, 50) -- Setting the Stage
-    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1250 }, { ai.r.MS, ai.s.SPECIFIC, 3618 }, 40) -- Regurgitated Swarm
-    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.MS, ai.s.SPECIFIC, 3617 }, 35) -- Feast of Arrows
+    -- Balamor uses TP moves randomly and does not attempt to skillchain.
+    -- Trust-specific single-target versions:
+    -- 3617 Feast of Arrows
+    -- 3618 Regurgitated Swarm
+    -- 3619 Setting the Stage
+    -- 3620 Last Laugh
+    mob:addListener('COMBAT_TICK', 'BALAMOR_RANDOM_TP_MOVE', function(mobArg)
+        local target = mobArg:getTarget()
+
+        if target ~= nil and mobArg:getTP() >= 1000 and mobArg:getLocalVar('BalamorRandomTPCooldown') <= os.time() then
+            local moves =
+            {
+                3617,
+                3618,
+                3619,
+                3620,
+            }
+
+            mobArg:useMobAbility(moves[math.random(1, #moves)])
+            mobArg:setLocalVar('BalamorRandomTPCooldown', os.time() + 10)
+        end
+    end)
 end
 
 spellObject.onMobDespawn = function(mob)
