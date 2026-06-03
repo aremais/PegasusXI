@@ -13,6 +13,10 @@ spellObject.onSpellCast = function(caster, target, spell)
 end
 
 local isWearingMandragoraGear = function(player)
+    if player == nil then
+        return false
+    end
+
     local wearingHead = player:getEquipID(xi.slot.HEAD) == 26705 or player:getEquipID(xi.slot.HEAD) == 26706 -- Mandragora Masque or Masque + 1
     local wearingBody = player:getEquipID(xi.slot.BODY) == 27854 or player:getEquipID(xi.slot.BODY) == 27855 -- Mandragora Suit or Suit + 1
 

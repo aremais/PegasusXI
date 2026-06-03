@@ -34,9 +34,6 @@ spellObject.onMobSpawn = function(mob)
     mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.MELEE)
     mob:setMobMod(xi.mobMod.SKILL_LIST, 1073)
 
-    -- Self-sustain: Photosynthesis grants Regen.
-    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.REGEN }, { ai.r.MS, ai.s.SPECIFIC, 3352 }, 45)
-
     -- Petal Pirouette resets target TP. Check this before basic TP moves.
     mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1500 }, { ai.r.MS, ai.s.SPECIFIC, 3353 }, 30)
 
