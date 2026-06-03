@@ -22,6 +22,7 @@ spellObject.onMobSpawn = function(mob)
     if lvl >= 40 then
         mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.QUICK_DRAW })
     end
+
     if lvl >= 87 then
         mob:addGambit(ai.t.SELF,   { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.TRIPLE_SHOT })
     end

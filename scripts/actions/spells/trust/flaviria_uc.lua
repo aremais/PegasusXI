@@ -36,6 +36,7 @@ spellObject.onMobSpawn = function(mob)
     if lvl >= 75 then
         mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.ANGON })
     end
+
     -- Flaviria UC uses retail-close Polearm weapon skills as a DRG/WAR damage dealer.
     mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.HIGHEST)
 end
