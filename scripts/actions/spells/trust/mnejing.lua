@@ -21,7 +21,7 @@ spellObject.onMobSpawn = function(mob)
     mob:setMod(xi.mod.SHIELD_MASTERY_TP, 40)
     mob:setMod(xi.mod.SHIELDBLOCKRATE, 45)
     mob:addMod(xi.mod.ENMITY, 15)
-    mob:addMod(xi.mod.DMG, -375) -- Passive -37.5% Damage Taken Reduction.
+    mob:addMod(xi.mod.DMG, -3750) -- Passive -37.5% Damage Taken Reduction.
     mob:addMod(xi.mod.HPP, 20)
 
     local lastSynergyBonus = 0
