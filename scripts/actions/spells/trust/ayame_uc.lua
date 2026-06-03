@@ -14,6 +14,31 @@ end
 
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
+
+    local lvl = mob:getMainLvl()
+
+    if lvl >= 15 then
+        mob:addGambit(ai.t.SELF, { ai.c.HAS_TOP_ENMITY, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.THIRD_EYE })
+    end
+
+    if lvl >= 25 then
+        mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.HASSO }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.HASSO })
+    end
+
+    if lvl >= 30 then
+        mob:addGambit(ai.t.SELF, { ai.c.TP_LT, 1000 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.MEDITATE })
+    end
+
+    if lvl >= 75 then
+        mob:addGambit(ai.t.TARGET, { ai.c.READYING_WS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BLADE_BASH })
+        mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SHIKIKOYO })
+    end
+
+    if lvl >= 77 then
+        mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SENGIKORI })
+    end
+
+    mob:setTrustTPSkillSettings(ai.tp.OPENER, ai.s.RANDOM, 2000)
 end
 
 spellObject.onMobDespawn = function(mob)

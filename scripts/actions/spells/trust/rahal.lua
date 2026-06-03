@@ -4,7 +4,7 @@
 -- Rahal is an aggressive tank who uses Berserk.
 -- Prioritizes Flash over Provoke.
 -- Will only cast Cure when a party member is below 33% health and will use the highest tier available.
--- Will only use Sentinel when he is below 35% health.
+-- Uses Sentinel when below 35% HP and Rampart when below 75% HP.
 -- He tries to interrupt TP-abilities and high-tier spells with Shield Bash.
 -- Holds up to 2500 TP to close skillchains.
 -----------------------------------
@@ -47,8 +47,12 @@ spellObject.onMobSpawn = function(mob)
     end
 
     if lvl >= 30 then
-        mob:addGambit(ai.t.MASTER, { ai.c.NOT_STATUS, xi.effect.BERSERK }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK  })
+        mob:addGambit(ai.t.SELF,   { ai.c.NOT_STATUS, xi.effect.BERSERK }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK  })
         mob:addGambit(ai.t.SELF,   { ai.c.HPP_LT,     35                }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SENTINEL })
+    end
+
+    if lvl >= 62 then
+        mob:addGambit(ai.t.SELF, { ai.c.HPP_LT, 75 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.RAMPART })
     end
 
     mob:addGambit(ai.t.PARTY,  { ai.c.HPP_LT,     33                }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.CURE    })

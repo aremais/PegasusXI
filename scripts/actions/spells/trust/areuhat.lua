@@ -15,12 +15,22 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.AGGRESSOR }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.AGGRESSOR })
-    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.BERSERK }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK })
-    mob:addGambit(ai.t.PARTY, { ai.l.OR(
-                        { ai.c.NOT_STATUS, xi.effect.WARCRY },
-                        { ai.c.NOT_STATUS, xi.effect.BLOOD_RAGE })
-                            }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BLOOD_RAGE })
+    local lvl = mob:getMainLvl()
+
+    if lvl >= 15 then
+        mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.BERSERK }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK })
+    end
+
+    if lvl >= 45 then
+        mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.AGGRESSOR }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.AGGRESSOR })
+    end
+
+    if lvl >= 87 then
+        mob:addGambit(ai.t.PARTY, { ai.l.OR(
+                            { ai.c.NOT_STATUS, xi.effect.WARCRY },
+                            { ai.c.NOT_STATUS, xi.effect.BLOOD_RAGE })
+                                }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BLOOD_RAGE })
+    end
 
     mob:addListener('WEAPONSKILL_USE', 'AREUHAT_WEAPONSKILL_USE', function(mobArg, target, skill, tp, action, damage)
         if skill:getID() == xi.mobSkill.DRAGON_BREATH_3 then
