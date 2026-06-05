@@ -966,6 +966,7 @@ void init(IPP mapIPP, bool isRunningInCI)
             }
 
             ShowInfo("[FileWatcher] GLOBAL %s -> \"%s\"", filename, requireName);
+            moduleutils::TryApplyLuaModules(parts, overwriteCurrentEntry);
             return;
         }
 
