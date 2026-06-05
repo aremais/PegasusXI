@@ -6,7 +6,7 @@ require('scripts/globals/npc_util')
 xi = xi or {}
 xi.nolanShop = xi.nolanShop or {}
 
-local eventId = 9512
+local eventId = 9501
 
 local eschalixirItems =
 {
@@ -39,7 +39,6 @@ end
 xi.nolanShop.onTrigger = function(player, npc)
     local beads = player:getCurrency('escha_beads') or 0
 
-    player:printToPlayer('Another customer. Joy.', xi.msg.channel.NS_SAY)
     player:startEvent(eventId, beads)
 end
 

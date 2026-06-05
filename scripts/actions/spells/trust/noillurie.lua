@@ -14,6 +14,7 @@ end
 
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
+    mob:addMod(xi.mod.REFRESH, 1)
 end
 
 spellObject.onMobDespawn = function(mob)

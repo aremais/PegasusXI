@@ -5,7 +5,7 @@
 local spellObject = {}
 
 spellObject.onMagicCastingCheck = function(caster, target, spell)
-    return xi.trust.canCast(caster, spell, xi.magic.spell.EXCENMILLE_S)
+    return xi.trust.canCast(caster, spell, xi.magic.spell.EXCENMILLE)
 end
 
 spellObject.onSpellCast = function(caster, target, spell)
@@ -27,13 +27,20 @@ spellObject.onMobSpawn = function(mob)
         [xi.magic.spell.RAHAL] = xi.trust.messageOffset.TEAMWORK_1,
     })
 
-    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.SENTINEL }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SENTINEL })
+    local lvl = mob:getMainLvl()
+
+    if lvl >= 30 then
+        mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.SENTINEL }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SENTINEL })
+    end
 
     mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.FLASH }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLASH })
 
     mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 75 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.CURE })
 
     mob:addMod(xi.mod.STORETP, 25)
+
+    -- Uses existing DB skill list 1014: Double Thrust, Leg Sweep, Penta Thrust.
+    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.RANDOM, 1500)
 end
 
 spellObject.onMobDespawn = function(mob)

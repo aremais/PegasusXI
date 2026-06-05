@@ -9,12 +9,12 @@ zones[xi.zone.PORT_SAN_DORIA] =
     {
         HOMEPOINT_SET                  = 24,    -- Home point set!
         ASSIST_CHANNEL                 = 6424,  -- You will be able to use the Assist Channel until #/#/# at #:# (JST).
-        ITEM_CANNOT_BE_OBTAINED        = 6429,  -- You cannot obtain the <item>. Come back after sorting your inventory.
+        ITEM_CANNOT_BE_OBTAINED        = 6427,  -- You cannot obtain the <item>. Come back after sorting your inventory.
         MYSTIC_RETRIEVER               = 6432,  -- You cannot obtain the <item>. Speak with the mystic retriever after sorting your inventory.
         FULL_INVENTORY_AFTER_TRADE     = 6433,  -- You cannot obtain the <item>. Try trading again after sorting your inventory.
-        ITEM_OBTAINED                  = 6437,  -- Obtained: <item>.
-        GIL_OBTAINED                   = 6438,  -- Obtained <number> gil.
-        KEYITEM_OBTAINED               = 6440,  -- Obtained key item: <keyitem>.
+        ITEM_OBTAINED                  = 6435,  -- Obtained: <item>.
+        GIL_OBTAINED                   = 6437,  -- Obtained <number> gil.
+        KEYITEM_OBTAINED               = 6438,  -- Obtained key item: <keyitem>.
         KEYITEM_LOST                   = 6441,  -- Lost key item: <keyitem>.
         NOT_HAVE_ENOUGH_GIL            = 6442,  -- You do not have enough gil.
         ITEM_RETURNED                  = 6449,  -- The <item> is returned to you.
