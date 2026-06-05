@@ -1,7 +1,7 @@
 /*
 ===========================================================================
 
-  Copyright (c) 2025 LandSandBoat Dev Teams
+  Copyright (c) 2026 LandSandBoat Dev Teams
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,38 +19,28 @@
 ===========================================================================
 */
 
-#include "common/console_pause.h"
-#include "common/lua.h"
-#include "common/tracy.h"
-#include "test_application.h"
+#pragma once
 
 #include <iostream>
 #include <memory>
 
-int main(int argc, char** argv)
+namespace console_pause
 {
-    TracySetThreadName("Test Thread");
 
+auto shouldPause(int argc, char** argv) -> bool;
+auto shouldPauseFromCommandLine() -> bool;
+void pauseIfNeeded(int argc, char** argv);
+void pauseIfNeededFromCommandLine();
+
+} // namespace console_pause
+
+template<typename AppType>
+auto runApplication(int argc, char** argv) -> int
+{
     try
     {
-        auto testApp = std::make_unique<TestApplication>(argc, argv);
-
-        testApp->run();
-
-        // Explicitly destroy TestApplication before the lua state get cleaned up
-        testApp.reset();
-
-        // TODO: This should be in ~Application but it needs more testing for xi_map
-        // TODO: This wouldn't be needed if lua wasn't global
-        lua_cleanup();
-
-#ifdef TRACY_ENABLE
-        // TODO: Tracy profiler exits when program is done
-        // Is there an option to keep it running despite the program exiting?
-        std::cout << "Press Enter to exit..." << std::endl;
-        std::cin.get();
-#endif
-
+        const auto app = std::make_unique<AppType>(argc, argv);
+        app->run();
         return 0;
     }
     catch (const std::exception& e)

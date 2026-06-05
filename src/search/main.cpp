@@ -19,14 +19,11 @@
 ===========================================================================
 */
 
+#include "common/console_pause.h"
 #include "search_application.h"
 #include "search_engine.h"
 
 int main(int argc, char** argv)
 {
-    const auto searchApp = std::make_unique<SearchApplication>(argc, argv);
-
-    searchApp->run();
-
-    return 0;
+    return runApplication<SearchApplication>(argc, argv);
 }

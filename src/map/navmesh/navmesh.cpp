@@ -88,16 +88,28 @@ constexpr float verticalLimit           = 5.0f;
 {
     outHeights.clear();
 
+    // Entity origins are often slightly off the baked mesh; sample from the nearest poly first.
+    float     samplePos[3] = { pos[0], pos[1], pos[2] };
+    dtPolyRef snapRef      = 0;
+    float     snapNearest[3];
+    dtStatus  snapStatus = query.findNearestPoly(pos, largePolyPickExt, &filter, &snapRef, snapNearest);
+    if (!dtStatusFailed(snapStatus) && navMesh->isValidPolyRef(snapRef))
+    {
+        samplePos[0] = snapNearest[0];
+        samplePos[1] = snapNearest[1];
+        samplePos[2] = snapNearest[2];
+    }
+
     dtPolyRef polys[MAX_QUERY_POLYS];
     int       polyCount = 0;
-    dtStatus  status    = query.queryPolygons(pos, verticalPolyPickExt, &filter, polys, &polyCount, MAX_QUERY_POLYS);
+    dtStatus  status    = query.queryPolygons(samplePos, verticalPolyPickExt, &filter, polys, &polyCount, MAX_QUERY_POLYS);
 
     if (!dtStatusFailed(status) && polyCount > 0)
     {
         float height = 0.0f;
         for (int i = 0; i < polyCount; ++i)
         {
-            status = query.getPolyHeight(polys[i], pos, &height);
+            status = query.getPolyHeight(polys[i], samplePos, &height);
             if (!dtStatusFailed(status))
             {
                 outHeights.insert(roundFloorHeightBucket(height));
@@ -794,6 +806,11 @@ bool CNavMesh::onSameFloor(const position_t& start, float* spos, const position_
 {
     TracyZoneScoped;
 
+    if (!m_navMesh)
+    {
+        return true;
+    }
+
     DebugNavmesh("CNavMesh::onSameFloor (%f, %f, %f) -> (%f, %f, %f) (%u)", start.x, start.y, start.z, end.x, end.y, end.z, m_zoneID);
 
     float verticalDistance = abs(start.y - end.y);
@@ -810,13 +827,15 @@ bool CNavMesh::onSameFloor(const position_t& start, float* spos, const position_
 
         if (!collectFloorHeightBuckets(m_navMeshQuery, m_navMesh, spos, filter, startHeights))
         {
-            ShowError("CNavMesh::onSameFloor: no navmesh near start (%f, %f, %f) (%u)", spos[0], spos[1], spos[2], m_zoneID);
+            // Off-mesh positions are common during aggro LOS checks (slopes, gaps, pets).
+            // Treat as different floors rather than spamming the log every tick.
+            DebugNavmesh("CNavMesh::onSameFloor: no navmesh near start (%f, %f, %f) (%u)", spos[0], spos[1], spos[2], m_zoneID);
             return false;
         }
 
         if (!collectFloorHeightBuckets(m_navMeshQuery, m_navMesh, epos, filter, endHeights))
         {
-            ShowError("CNavMesh::onSameFloor: no navmesh near end (%f, %f, %f) (%u)", epos[0], epos[1], epos[2], m_zoneID);
+            DebugNavmesh("CNavMesh::onSameFloor: no navmesh near end (%f, %f, %f) (%u)", epos[0], epos[1], epos[2], m_zoneID);
             return false;
         }
 
