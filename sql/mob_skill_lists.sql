@@ -3462,7 +3462,7 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Naja_Salaheem',1027,3215); -- Peace
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Prishe',1028,3234); -- Nullifying Dropkick
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Prishe',1028,3235); -- Auroral Uppercut
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Prishe',1028,3236); -- Knuckle Sandwich
--- TRUST_Ulmia: BRD trust uses gambit songs only (no weapon skills)
+-- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Ulmia',1029,0);
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Shikaree_Z',1030,114); -- Raiden Thrust
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Shikaree_Z',1030,118); -- Skewer
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Shikaree_Z',1030,119); -- Wheeling Thrust
@@ -3537,7 +3537,7 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rahal', 1066, 32); -- Fast Blade
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rahal', 1066, 37); -- Seraph Blade
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rahal', 1066, 42); -- Savage Blade
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_Rahal', 1066, 41); -- Swift Blade
--- TRUST_Koru-Moru: RDM trust uses gambit magic only (no weapon skills)
+-- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Koru-Moru',1067,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Pieuje_UC',1068,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Invincible_Shield_UC',1069,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Apururu_UC',1070,0);
@@ -3619,37 +3619,37 @@ INSERT INTO `mob_skill_lists` VALUES ('TRUST_AAGK',1111,3725); -- Tachi: Kasha
 INSERT INTO `mob_skill_lists` VALUES ('TRUST_AAGK',1111,3726); -- Tachi: Fudo
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Iroha',1112,0);
 -- INSERT INTO `mob_skill_lists` VALUES ('TRUST_Ygnas',1113,0);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4231);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4232);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4233);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4234);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4235);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4236);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4237);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4238);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4239);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4240);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4241);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4242);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4243);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4244);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4245);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4246);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4247);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4248);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4249);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4250);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4251);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4252);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4253);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4254);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4255);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4256);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4257);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4258);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4259);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4260);
-INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4261);
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4231); -- mix_final_elixir
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4232); -- potion
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4233); -- hi_potion
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4234); -- x-potion
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4235); -- hyper-potion
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4236); -- max_potion
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4237); -- mix_max_potion
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4238); -- mix_antidote
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4239); -- mix_para-b-gone
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4240); -- mix_eye_drops
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4241); -- mix_echo_drops
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4242); -- mix_holy_water
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4243); -- mix_vaccine
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4244); -- mix_gold_needle
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4245); -- mix_panacea-1
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4246); -- mix_antidote
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4247); -- mix_para-b-gone
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4248); -- mix_eye_drops
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4249); -- mix_echo_drops
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4250); -- mix_holy_water
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4251); -- mix_vaccine
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4252); -- mix_gold_needle
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4253); -- mix_panacea-1
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4254); -- mix_dry_ether_concoction
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4255); -- mix_guard_drink
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4256); -- mix_insomniant
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4257); -- mix_life_water
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4258); -- mix_elemental_power
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4259); -- mix_dragon_shield
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4260); -- mix_dark_potion
+INSERT INTO `mob_skill_lists` VALUES ('TRUST_Monberaux',1114,4261); -- mix_samsons_strength
 -- Reserved for future Trust 6000 (ID: 1115)
 -- Reserved for future Trust 6001 (ID: 1116)
 -- Reserved for future Trust 6002 (ID: 1117)

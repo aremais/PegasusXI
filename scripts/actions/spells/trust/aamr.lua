@@ -12,35 +12,35 @@ spellObject.onSpellCast = function(caster, target, spell)
     return xi.trust.spawn(caster, spell)
 end
 
-local function safeAddGambit(mob, t, cond, react, cooldown)
-    if not (mob and t and cond and react) then
-        return
-    end
-
-    local c1, c2 = cond[1], cond[2]
-    local r1, r2, r3 = react[1], react[2], react[3]
-
-    if c1 == nil or c2 == nil or r1 == nil or r2 == nil or r3 == nil then
-        return
-    end
-
-    if cooldown ~= nil then
-        mob:addGambit(t, cond, react, cooldown)
-    else
-        mob:addGambit(t, cond, react)
-    end
-end
-
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.MELEE)
+    local lvl = mob:getMainLvl()
+    mob:addMod(xi.mod.HPP, 20)
 
-    -- THF JAs
-    safeAddGambit(mob, ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SNEAK_ATTACK }, 60)
-    safeAddGambit(mob, ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.TRICK_ATTACK }, 60)
+    if lvl >= 1 then
+        mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.CHARM })
+    end
 
-    -- WS are DB-driven through mob_skill_lists skill_list_id 1109.
+    if lvl >= 23 then
+        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.CALL_BEAST })
+    end
+
+    if lvl >= 25 then
+        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.READY })
+        mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SIC })
+    end
+
+    if lvl >= 30 then
+        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SNEAK_ATTACK })
+    end
+
+    if lvl >= 60 then
+        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.TRICK_ATTACK })
+    end
+
+    -- Uses existing DB skill list 1109: Rampage, Calamity, Havoc Spiral, Cloudsplitter.
+    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.RANDOM, 1500)
 end
 
 spellObject.onMobDespawn = function(mob)

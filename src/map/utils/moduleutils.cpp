@@ -326,6 +326,10 @@ void LoadLuaModules(IPP mapIPP)
         // TODO: Differentiate invalid table vs data-only table in modules directory
         // ShowError("Failed to find valid table fields in module: %s", filename);
     }
+
+    // Globals (e.g. scripts/globals/player.lua) are loaded via safe_script_file and do not
+    // go through CacheLuaObjectFromFile, so their overrides are not applied on that path.
+    TryApplyRemainingLuaModules();
 }
 
 void CleanupLuaModules()

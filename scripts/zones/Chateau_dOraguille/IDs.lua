@@ -7,10 +7,10 @@ zones[xi.zone.CHATEAU_DORAGUILLE] =
 {
     text =
     {
-        ITEM_CANNOT_BE_OBTAINED       = 6593, -- You cannot obtain the <item>. Come back after sorting your inventory.
-        ITEM_OBTAINED                 = 6601, -- Obtained: <item>.
-        GIL_OBTAINED                  = 6602, -- Obtained <number> gil.
-        KEYITEM_OBTAINED              = 6604, -- Obtained key item: <keyitem>.
+        ITEM_CANNOT_BE_OBTAINED       = 6427, -- You cannot obtain the <item>. Come back after sorting your inventory.
+        ITEM_OBTAINED                 = 6435, -- Obtained: <item>.
+        GIL_OBTAINED                  = 6437, -- Obtained <number> gil.
+        KEYITEM_OBTAINED              = 6438, -- Obtained key item: <keyitem>.
         KEYITEM_LOST                  = 6605, -- Lost key item: <keyitem>.
         NOT_HAVE_ENOUGH_GIL           = 6606, -- You do not have enough gil.
         CARRIED_OVER_POINTS           = 6640, -- You have carried over <number> login point[/s].

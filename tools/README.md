@@ -22,6 +22,8 @@ Stop all `xi_*` processes, then from repo root:
 
 `.\tools\recover_server.ps1 -WithIndexes` — also apply search indexes (can be slow)
 
+`.\tools\import_lsb_mob_tables.ps1 -CloneFromGit` — import only LandSandBoat `base` mob SQL into xidb (stop `xi_*` first; prompts unless `-Force`)
+
 This tool creates or connects to the database defined in `../settings/network.lua`. It 
 allows the user to backup or restore the database, import any `custom.sql` 
 stored in `../sql/backups/`, and import the latest SQL files provided by LandSandBoat 
