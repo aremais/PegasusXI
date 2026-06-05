@@ -19,6 +19,7 @@
 ===========================================================================
 */
 
+#include "common/console_pause.h"
 #include "connect_application.h"
 
 // openssl applink.c prevents issues with debug vs release vs threaded/single threaded .dlls at runtime
@@ -29,9 +30,5 @@
 
 int main(int argc, char** argv)
 {
-    const auto connectApp = std::make_unique<ConnectApplication>(argc, argv);
-
-    connectApp->run();
-
-    return 0;
+    return runApplication<ConnectApplication>(argc, argv);
 }

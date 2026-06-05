@@ -19,13 +19,10 @@
 ===========================================================================
 */
 
+#include "common/console_pause.h"
 #include "world_application.h"
 
 int main(int argc, char** argv)
 {
-    const auto worldApp = std::make_unique<WorldApplication>(argc, argv);
-
-    worldApp->run();
-
-    return 0;
+    return runApplication<WorldApplication>(argc, argv);
 }

@@ -6,6 +6,8 @@
 //==========================================
 #include "WheatyExceptionReport.h"
 
+#include "console_pause.h"
+
 // clang-format off
 
 #include <algorithm>
@@ -402,6 +404,8 @@ LONG WINAPI WheatyExceptionReport::WheatyUnhandledExceptionFilter(
 
     // Pause for a moment to give spdlog a chance to flush
     std::this_thread::sleep_for(200ms);
+
+    console_pause::pauseIfNeededFromCommandLine();
 
     TerminateProcess(GetCurrentProcess(), 1);
     return EXCEPTION_EXECUTE_HANDLER; // Unreacheable code

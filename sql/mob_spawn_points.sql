@@ -51332,9 +51332,9 @@ INSERT INTO `mob_spawn_points` VALUES (17326302,0,'Vanguard_Visionary','Vanguard
 INSERT INTO `mob_spawn_points` VALUES (17326303,0,'Vanguard_Visionary','Vanguard Visionary',95,75,77,235.758,-20.072,-137.026,162);
 INSERT INTO `mob_spawn_points` VALUES (17326304,0,'Caa_Xaza_the_Madpiercer','Caa Xaza the Madpiercer',107,80,81,268.450,-19.610,-111.020,180);
 INSERT INTO `mob_spawn_points` VALUES (17326305,0,'Vanguard_Partisan','Vanguard Partisan',108,75,77,230.417,-20.700,-133.049,207);
-INSERT INTO `mob_spawn_points` VALUES (17326306,0,'Vanguards_Wyvern','Vanguard\'s Wyvern',27,75,77,1.000,1.000,1.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17326306,0,'Vanguards_Wyvern','Vanguard\'s Wyvern',27,75,77,240.630,-20.460,-115.650,174);
 INSERT INTO `mob_spawn_points` VALUES (17326307,0,'Maa_Zaua_the_Wyrmkeeper','Maa Zaua the Wyrmkeeper',109,80,81,240.630,-20.460,-115.650,174);
-INSERT INTO `mob_spawn_points` VALUES (17326308,0,'Vanguards_Wyvern','Vanguard\'s Wyvern',27,80,81,1.000,1.000,1.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17326308,0,'Vanguards_Wyvern','Vanguard\'s Wyvern',27,80,81,205.464,-20.500,-82.518,31);
 INSERT INTO `mob_spawn_points` VALUES (17326309,0,'Vanguard_Skirmisher','Vanguard Skirmisher',93,75,77,267.207,-19.875,-159.389,146);
 INSERT INTO `mob_spawn_points` VALUES (17326310,0,'Vanguard_Priest','Vanguard Priest',101,75,77,261.428,-20.329,-152.536,159);
 INSERT INTO `mob_spawn_points` VALUES (17326311,0,'Vanguard_Liberator','Vanguard Liberator',96,75,77,284.242,-20.488,-153.927,100);
@@ -51374,7 +51374,7 @@ INSERT INTO `mob_spawn_points` VALUES (17326344,0,'Knii_Hoqo_the_Bisector','Knii
 INSERT INTO `mob_spawn_points` VALUES (17326345,0,'Vanguard_Oracle','Vanguard Oracle',112,75,77,169.799,-20.006,33.687,15);
 INSERT INTO `mob_spawn_points` VALUES (17326346,0,'Vanguards_Avatar','Vanguard\'s Avatar',36,75,77,167.011,-20.188,37.615,33);
 INSERT INTO `mob_spawn_points` VALUES (17326347,0,'Puu_Timu_the_Phantasmal','Puu Timu the Phantasmal',122,80,81,187.217,-20.032,41.023,1);
-INSERT INTO `mob_spawn_points` VALUES (17326348,0,'Vanguards_Avatar','Vanguard\'s Avatar',36,80,81,1.000,1.000,1.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17326348,0,'Vanguards_Avatar','Vanguard\'s Avatar',36,80,81,187.217,-20.032,41.023,1);
 INSERT INTO `mob_spawn_points` VALUES (17326349,0,'Avatar_Icon','Avatar Icon',123,70,70,183.052,-19.783,37.516,13);
 INSERT INTO `mob_spawn_points` VALUES (17326350,0,'Avatar_Icon','Avatar Icon',123,70,70,177.414,-19.629,-0.673,88);
 INSERT INTO `mob_spawn_points` VALUES (17326351,0,'Avatar_Icon','Avatar Icon',123,70,70,197.272,-19.732,-104.563,176);
@@ -51446,7 +51446,7 @@ INSERT INTO `mob_spawn_points` VALUES (17326416,0,'Vanguard_Maestro','Vanguard M
 INSERT INTO `mob_spawn_points` VALUES (17326417,0,'Vanguard_Pathfinder','Vanguard Pathfinder',129,75,77,18.858,-40.373,-156.272,118);
 INSERT INTO `mob_spawn_points` VALUES (17326418,0,'Vanguards_Slime','Vanguard\'s Slime',130,75,77,20.182,-40.368,-155.297,1);
 INSERT INTO `mob_spawn_points` VALUES (17326419,0,'Vanguard_Dragontamer','Vanguard Dragontamer',140,75,77,23.068,-40.038,-155.608,254);
-INSERT INTO `mob_spawn_points` VALUES (17326420,0,'Vanguards_Wyvern','Vanguard\'s Wyvern',27,75,77,1.000,1.000,1.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17326420,0,'Vanguards_Wyvern','Vanguard\'s Wyvern',27,75,77,29.551,-38.299,-167.984,30);
 INSERT INTO `mob_spawn_points` VALUES (17326421,0,'Draklix_Scalecrust','Draklix Scalecrust',149,80,81,29.043,-38.987,-169.157,245);
 INSERT INTO `mob_spawn_points` VALUES (17326422,0,'Vanguards_Wyvern','Vanguard\'s Wyvern',27,80,81,29.551,-38.299,-167.984,30);
 INSERT INTO `mob_spawn_points` VALUES (17326423,0,'Vanguard_Smithy','Vanguard Smithy',125,75,77,60.145,-40.750,-113.075,203);
@@ -51630,7 +51630,7 @@ INSERT INTO `mob_spawn_points` VALUES (17326600,0,'Vanguard_Eye','Vanguard Eye',
 INSERT INTO `mob_spawn_points` VALUES (17326601,0,'Hydra_Beastmaster','Hydra Beastmaster',178,92,95,-128.285,-60.090,-178.586,211);
 INSERT INTO `mob_spawn_points` VALUES (17326602,0,'Hydras_Hound','Hydra\'s Hound',169,92,92,-129.290,-60.212,-180.609,208);
 INSERT INTO `mob_spawn_points` VALUES (17326603,0,'Hydra_Beastmaster','Hydra Beastmaster',178,92,95,-124.218,-60.032,-184.972,246);
-INSERT INTO `mob_spawn_points` VALUES (17326604,0,'Hydras_Hound','Hydra\'s Hound',169,92,92,1.000,1.000,1.000,0);
+INSERT INTO `mob_spawn_points` VALUES (17326604,0,'Hydras_Hound','Hydra\'s Hound',169,92,92,-129.290,-60.212,-180.609,208);
 INSERT INTO `mob_spawn_points` VALUES (17326605,0,'Hydra_Thief','Hydra Thief',180,92,95,-122.040,-59.943,-182.889,75);
 INSERT INTO `mob_spawn_points` VALUES (17326606,0,'Hydra_Dark_Knight','Hydra Dark Knight',181,92,95,-98.220,-60.129,-198.740,209);
 INSERT INTO `mob_spawn_points` VALUES (17326607,0,'Vanguard_Eye','Vanguard Eye',163,82,82,-99.630,-59.840,-192.410,233);
@@ -80214,7 +80214,7 @@ INSERT INTO `mob_spawn_points` VALUES (17818077,0,'Dark_Elemental','Dark Element
 INSERT INTO `mob_spawn_points` VALUES (17821697,0,'Shinryu','Shinryu',1,90,92,-477.491,-0.500,515.330,43);
 INSERT INTO `mob_spawn_points` VALUES (17821698,0,'Shinryu','Shinryu',1,90,92,519.000,-500.000,519.000,249);
 INSERT INTO `mob_spawn_points` VALUES (17821699,0,'Shinryu','Shinryu',1,90,92,-479.000,-1000.000,-471.000,65);
--- The Wyrm God ★
+-- The Wyrm God Γÿà
 INSERT INTO `mob_spawn_points` VALUES (17821700,0,'Shinryu','Shinryu',2,139,139,-477.341,-0.500,510.673,63);
 INSERT INTO `mob_spawn_points` VALUES (17821701,0,'Shinryu','Shinryu',2,139,139,520.000,-500.500,520.000,64);
 INSERT INTO `mob_spawn_points` VALUES (17821702,0,'Shinryu','Shinryu',2,139,139,-477.922,-1000.500,-484.836,60);
@@ -88942,7 +88942,7 @@ INSERT INTO `mob_spawn_points` VALUES (17911880,0,'Plouton','Plouton',8,0,0,0.00
 INSERT INTO `mob_spawn_points` VALUES (17911881,0,'Plouton','Plouton',8,0,0,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17911882,0,'Plouton','Plouton',8,0,0,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17911883,0,'Plouton','Plouton',8,0,0,0.000,0.000,0.000,0);
--- ★Oathsworn Blade★
+-- ΓÿàOathsworn BladeΓÿà
 INSERT INTO `mob_spawn_points` VALUES (17911884,0,'August_OB','August',9,0,0,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17911885,0,'Bztavian_OB','Bztavian',10,0,0,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17911886,0,'Rockfin_OB','Rockfin',11,0,0,0.000,0.000,0.000,0);

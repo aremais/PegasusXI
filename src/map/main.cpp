@@ -19,13 +19,10 @@
 ===========================================================================
 */
 
+#include "common/console_pause.h"
 #include "map_application.h"
 
 int main(int argc, char** argv)
 {
-    const auto mapApp = std::make_unique<MapApplication>(argc, argv);
-
-    mapApp->run();
-
-    return 0;
+    return runApplication<MapApplication>(argc, argv);
 }

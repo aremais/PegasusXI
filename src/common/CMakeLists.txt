@@ -6,6 +6,8 @@ set(COMMON_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/blowfish.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/blowfish.h
     ${CMAKE_CURRENT_SOURCE_DIR}/cbasetypes.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/console_pause.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/console_pause.h
     ${CMAKE_CURRENT_SOURCE_DIR}/console_service.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/console_service.h
     ${CMAKE_CURRENT_SOURCE_DIR}/database.cpp
