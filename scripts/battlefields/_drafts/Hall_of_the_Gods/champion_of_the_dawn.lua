@@ -102,5 +102,5 @@ content.groups =
 return content:register()
 --]] -- END DISABLED
 
--- Disabled placeholder; do not register until zone/NPC setup is complete.
-return nil
+-- Draft only: lives under scripts/battlefields/_drafts/ so the server does not auto-load it.
+-- Move back to scripts/battlefields/Hall_of_the_Gods/ after zone/NPC setup is complete.
