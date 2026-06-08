@@ -367,6 +367,24 @@ void RefreshGiftMods(CCharEntity* PChar)
 
                 sendUpdate = true;
             }
+
+            if (totalJpSpent >= 100 && !charutils::hasSpell(PChar, (uint16)SpellID::Firestorm_II))
+            {
+                for (const SpellID stormSpell : { SpellID::Firestorm_II,
+                                                  SpellID::Hailstorm_II,
+                                                  SpellID::Windstorm_II,
+                                                  SpellID::Sandstorm_II,
+                                                  SpellID::Thunderstorm_II,
+                                                  SpellID::Rainstorm_II,
+                                                  SpellID::Voidstorm_II,
+                                                  SpellID::Aurorastorm_II })
+                {
+                    charutils::addSpell(PChar, (uint16)stormSpell);
+                    charutils::SaveSpell(PChar, (uint16)stormSpell);
+                }
+
+                sendUpdate = true;
+            }
             break;
 
         case JOB_DRK:
