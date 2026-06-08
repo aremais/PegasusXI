@@ -16,21 +16,16 @@ local function error(player, msg)
     player:printToPlayer('!additem <itemId> (quantity) (aug1) (v1) (aug2) (v2) (aug3) (v3) (aug4) (v4) (trial)')
 end
 
--- Retail obtain line when C++ messageItemObtained is available (rebuilt xi_map).
--- Otherwise print item name directly — never messageSpecial (prevents "Obtained <id> gil.").
-local function showItemObtained(player, itemProto, itemId, quantity)
-    if type(player.messageItemObtained) == 'function' then
-        if player:messageItemObtained(itemId, quantity) then
-            return
-        end
+-- Always use zone ITEM_OBTAINED (6556 in Middle Delkfutt's Tower on PegasusXI).
+-- Do not use ITEMS_OBTAINED or ITEM_OBTAINED+9; Pegasus offsets differ from LSB.
+local function showItemObtained(player, itemId)
+    local ID = zones[player:getZoneID()]
+    if not ID or not ID.text or not ID.text.ITEM_OBTAINED then
+        return false
     end
 
-    local name = itemProto:getName()
-    if quantity > 1 then
-        player:printToPlayer(string.format('You obtain %u x %s!', quantity, name), xi.msg.channel.SYSTEM_3)
-    else
-        player:printToPlayer(string.format('Obtained: %s.', name), xi.msg.channel.SYSTEM_3)
-    end
+    player:messageSpecial(ID.text.ITEM_OBTAINED, itemId)
+    return true
 end
 
 commandObj.onTrigger = function(player, item, quantity, aug0, aug0val, aug1, aug1val, aug2, aug2val, aug3, aug3val, trialId)
@@ -148,7 +143,13 @@ commandObj.onTrigger = function(player, item, quantity, aug0, aug0val, aug1, aug
         return
     end
 
-    showItemObtained(player, itemProto, itemToGet, quantity)
+    if not showItemObtained(player, itemToGet) then
+        if quantity > 1 then
+            player:printToPlayer(string.format('You obtain %u x %s!', quantity, itemProto:getName()), xi.msg.channel.SYSTEM_3)
+        else
+            player:printToPlayer(string.format('Obtained: %s.', itemProto:getName()), xi.msg.channel.SYSTEM_3)
+        end
+    end
 end
 
 return commandObj

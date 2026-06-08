@@ -45,8 +45,7 @@ commandObj.onTrigger = function(player, keyId, target)
     if targ:hasKeyItem(keyId) then
         player:printToPlayer(string.format('%s already has key item %i.', targ:getName(), keyId))
     else
-        targ:addKeyItem(keyId)
-        targ:messageSpecial(6394, keyId)
+        npcUtil.giveKeyItem(targ, keyId)
         player:printToPlayer(string.format('Key item %i was given to %s.', keyId, targ:getName()))
     end
 end
