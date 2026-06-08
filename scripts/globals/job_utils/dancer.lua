@@ -120,7 +120,7 @@ end
 
 local function setFinishingMoves(player, numMoves)
     local finishingEffect = player:getStatusEffect(xi.effect.FINISHING_MOVE_1)
-    numMoves              = math.min(numMoves, getMaxFinishingMoves(player))
+    numMoves              = utils.clamp(numMoves, 0, getMaxFinishingMoves(player))
 
     if finishingEffect then
         if numMoves == 0 then
@@ -130,8 +130,30 @@ local function setFinishingMoves(player, numMoves)
             finishingEffect:setIcon(getFinishingMoveIcon(numMoves))
             finishingEffect:setDuration(2 * 60 * 60 * 1000)
         end
-    else
+    elseif numMoves > 0 then
         player:addStatusEffect(xi.effect.FINISHING_MOVE_1, { power = numMoves, duration = 7200, origin = player, icon = getFinishingMoveIcon(numMoves) })
+    end
+end
+
+local function getFinishingMoveCount(player)
+    local finishingEffect = player:getStatusEffect(xi.effect.FINISHING_MOVE_1)
+
+    if finishingEffect then
+        return finishingEffect:getPower()
+    end
+
+    return 0
+end
+
+local function consumeFinishingMoves(player, cost)
+    if player:hasStatusEffect(xi.effect.GRAND_PAS) then
+        return
+    end
+
+    local finishingEffect = player:getStatusEffect(xi.effect.FINISHING_MOVE_1)
+
+    if finishingEffect then
+        setFinishingMoves(player, finishingEffect:getPower() - cost)
     end
 end
 
@@ -192,13 +214,11 @@ xi.job_utils.dancer.checkFlourishAbility = function(player, target, ability, com
     end
 
     -- Finishing Move check.
-    local numFinishingMoves = 0
-    local flourishEffect = player:getStatusEffect(xi.effect.FINISHING_MOVE_1)
-    if flourishEffect then
-        numFinishingMoves = flourishEffect:getPower()
+    if player:hasStatusEffect(xi.effect.GRAND_PAS) then
+        return 0, 0
     end
 
-    if numFinishingMoves >= minimumCost then
+    if getFinishingMoveCount(player) >= minimumCost then
         return 0, 0
     else
         return xi.msg.basic.NO_FINISHINGMOVES, 0
@@ -355,33 +375,32 @@ xi.job_utils.dancer.useReverseFlourishAbility = function(player, target, ability
     local reverseFlourishBonus = player:getJobPointLevel(xi.jp.FLOURISH_II_EFFECT)
     local numMerits            = player:getMerit(xi.merit.REVERSE_FLOURISH_EFFECT)
     local gearMod              = player:getMod(xi.mod.REVERSE_FLOURISH_EFFECT)
-    local numMoves             = player:getStatusEffect(xi.effect.FINISHING_MOVE_1):getPower()
+    local numMoves             = getFinishingMoveCount(player)
     local tpGained             = 0
 
     local usedMoves = math.min(numMoves, 5)
     tpGained = (95 + reverseFlourishBonus) * usedMoves + (5 + gearMod) * usedMoves ^ 2 + 30 * numMerits
 
     player:addTP(tpGained)
-    setFinishingMoves(player, numMoves - usedMoves)
+    consumeFinishingMoves(player, usedMoves)
 
     return tpGained
 end
 
 xi.job_utils.dancer.useAnimatedFlourishAbility = function(player, target, ability, action)
     local jpBonusVE = player:getJobPointLevel(xi.jp.FLOURISH_I_EFFECT) * 10
-    local numMoves  = player:getStatusEffect(xi.effect.FINISHING_MOVE_1):getPower()
+    local numMoves  = getFinishingMoveCount(player)
     local veGranted = numMoves >= 2 and 1500 or 1000
     local usedMoves = numMoves >= 2 and 2 or 1
 
     target:addEnmity(player, 0, veGranted + jpBonusVE)
-    setFinishingMoves(player, numMoves - usedMoves)
+    consumeFinishingMoves(player, usedMoves)
 end
 
 xi.job_utils.dancer.useDesperateFlourishAbility = function(player, target, ability, action)
-    local numMoves  = player:getStatusEffect(xi.effect.FINISHING_MOVE_1):getPower()
     local infoValue = actionInfo[ability:getID()][1]
 
-    setFinishingMoves(player, numMoves - 1)
+    consumeFinishingMoves(player, 1)
 
     if
         math.random() <= xi.weaponskills.getHitRate(player, target, player:getJobPointLevel(xi.jp.FLOURISH_I_EFFECT), xi.attackAnimation.LEFT_ATTACK) or
@@ -416,10 +435,10 @@ end
 
 -- TODO: This ability needs verification
 xi.job_utils.dancer.useViolentFlourishAbility = function(player, target, ability, action)
-    local numMoves  = player:getStatusEffect(xi.effect.FINISHING_MOVE_1):getPower()
     local hitRate   = xi.combat.physicalHitRate.getPhysicalHitRate(player, target, 100, xi.attackAnimation.RIGHT_ATTACK, false)
     local infoValue = actionInfo[ability:getID()][1]
-    setFinishingMoves(player, numMoves - 1)
+
+    consumeFinishingMoves(player, 1)
 
     if
         math.random() <= hitRate or
@@ -474,15 +493,14 @@ end
 
 xi.job_utils.dancer.useBuildingFlourishAbility = function(player, target, ability)
     local flourishMerits = player:getMerit(xi.merit.BUILDING_FLOURISH_EFFECT)
-    local availableMoves = player:getStatusEffect(xi.effect.FINISHING_MOVE_1):getPower()
+    local availableMoves = getFinishingMoveCount(player)
     local power          = utils.clamp(availableMoves, 0, 3)
 
     player:addStatusEffect(xi.effect.BUILDING_FLOURISH, { power = power, duration = 60, origin = player, subPower = flourishMerits })
-    setFinishingMoves(player, availableMoves - power)
+    consumeFinishingMoves(player, power)
 end
 
 xi.job_utils.dancer.useWildFlourishAbility = function(player, target, ability, action)
-    local numMoves  = player:getStatusEffect(xi.effect.FINISHING_MOVE_1):getPower()
     local infoValue = actionInfo[ability:getID()][1]
 
     -- TODO: Wild Flourish can miss
@@ -498,7 +516,7 @@ xi.job_utils.dancer.useWildFlourishAbility = function(player, target, ability, a
 
     action:setAnimation(target:getID(), getFlourishAnimation(player:getWeaponSkillType(xi.slot.MAIN)))
     action:info(target:getID(), infoValue)
-    setFinishingMoves(player, numMoves - 2)
+    consumeFinishingMoves(player, 2)
 
     return 0
 end

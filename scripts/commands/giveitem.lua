@@ -11,6 +11,18 @@ commandObj.cmdprops =
     parameters = 'siiiiiiiiii'
 }
 
+-- Always use zone ITEM_OBTAINED (6556 in Middle Delkfutt's Tower on PegasusXI).
+-- Do not use ITEMS_OBTAINED or ITEM_OBTAINED+9; Pegasus offsets differ from LSB.
+local function showItemObtained(player, itemId)
+    local ID = zones[player:getZoneID()]
+    if not ID or not ID.text or not ID.text.ITEM_OBTAINED then
+        return false
+    end
+
+    player:messageSpecial(ID.text.ITEM_OBTAINED, itemId)
+    return true
+end
+
 commandObj.onTrigger = function(player, target, itemId, amount, aug0, aug0val, aug1, aug1val, aug2, aug2val, aug3, aug3val)
     if target == nil or itemId == nil then
         player:printToPlayer('You must enter a valid player name and item ID.')
@@ -85,12 +97,12 @@ commandObj.onTrigger = function(player, target, itemId, amount, aug0, aug0val, a
         return
     end
 
-    if type(targ.messageItemObtained) == 'function' and targ:messageItemObtained(itemId, amount) then
-        -- retail obtain packet sent
-    elseif amount > 1 then
-        targ:printToPlayer(string.format('You obtain %u x %s!', amount, itemProto:getName()), xi.msg.channel.SYSTEM_3)
-    else
-        targ:printToPlayer(string.format('Obtained: %s.', itemProto:getName()), xi.msg.channel.SYSTEM_3)
+    if not showItemObtained(targ, itemId) then
+        if amount > 1 then
+            targ:printToPlayer(string.format('You obtain %u x %s!', amount, itemProto:getName()), xi.msg.channel.SYSTEM_3)
+        else
+            targ:printToPlayer(string.format('Obtained: %s.', itemProto:getName()), xi.msg.channel.SYSTEM_3)
+        end
     end
 
     player:printToPlayer(string.format('Gave %u x %s (ID %u) to %s.', added, itemProto:getName(), itemId, target))

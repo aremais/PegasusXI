@@ -730,6 +730,32 @@ local function getArg6(player)
     return milRank + (player:getNation() * 32)
 end
 
+-- Retail signet duration (Earth hours): personal military rank + nation's conquest place + 3, capped at 16.
+local SIGNET_DURATION_MAX = 16 * 3600
+
+local function getSignetDuration(player)
+    local pNation = player:getNation()
+    local milRank = math.max(1, player:getRank(pNation))
+    local hours   = milRank + GetNationRank(pNation) + 3
+
+    return math.min(hours * 3600, SIGNET_DURATION_MAX)
+end
+
+local function canReceiveSignet(player, guardNation)
+    local pNation = player:getNation()
+
+    if guardNation == xi.nation.OTHER then
+        return true
+    end
+
+    if guardNation == pNation then
+        return true
+    end
+
+    -- Allied nations (e.g. tie for second place) may grant signet from their gate guards.
+    return xi.conquest.areAllies(pNation, guardNation)
+end
+
 -----------------------------------
 -- (LOCAL) overseer stock
 -----------------------------------
@@ -1411,7 +1437,11 @@ xi.conquest.overseerOnEventFinish = function(player, csid, option, guardNation, 
 
     -- SIGNET
     if option == 1 then
-        local duration = (pRank + GetNationRank(pNation) + 3) * 3600
+        if not canReceiveSignet(player, guardNation) then
+            return
+        end
+
+        local duration = getSignetDuration(player)
         player:delStatusEffectsByFlag(xi.effectFlag.INFLUENCE, true)
         player:addStatusEffect(xi.effect.SIGNET, { duration = duration, origin = player })
         player:messageSpecial(mOffset + 1) -- 'You've received your nation's Signet!'
