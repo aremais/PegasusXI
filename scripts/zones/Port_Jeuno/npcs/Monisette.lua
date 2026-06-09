@@ -1728,8 +1728,8 @@ local function menuShowSlots(player, npc, typeKey, jobAbbrev, pageNum, useTimer)
     for s = startIdx, endIdx do
         local slotCapture = s
         table.insert(options, {
-            label    = menuSlotNames[s],
-            callback = function(p)
+            menuSlotNames[s],
+            function(p)
                 menuPrintRecipe(p, npc, typeKey, jobAbbrev, slotCapture)
                 p:timer(50, function(pp)
                     menuShowSlots(pp, npc, typeKey, jobAbbrev, pageNum, false)
@@ -1742,8 +1742,8 @@ local function menuShowSlots(player, npc, typeKey, jobAbbrev, pageNum, useTimer)
         if pageNum < totalPages then
             local next = pageNum + 1
             table.insert(options, {
-                label    = string.format('Next >> %u/%u', next, totalPages),
-                callback = function(p)
+                string.format('Next >> %u/%u', next, totalPages),
+                function(p)
                     p:timer(50, function(pp)
                         menuShowSlots(pp, npc, typeKey, jobAbbrev, next, false)
                     end)
@@ -1752,8 +1752,8 @@ local function menuShowSlots(player, npc, typeKey, jobAbbrev, pageNum, useTimer)
         else
             local prev = pageNum - 1
             table.insert(options, {
-                label    = string.format('<< Prev %u/%u', prev, totalPages),
-                callback = function(p)
+                string.format('<< Prev %u/%u', prev, totalPages),
+                function(p)
                     p:timer(50, function(pp)
                         menuShowSlots(pp, npc, typeKey, jobAbbrev, prev, false)
                     end)
@@ -1803,16 +1803,16 @@ local function menuShowTier(player, npc, setEntry, jobAbbrev, useTimer)
     local options =
     {
         {
-            label    = 'i109',
-            callback = function(p)
+            'i109',
+            function(p)
                 p:timer(50, function(pp)
                     menuShowSlots(pp, npc, key109Capture, jobAbbrev, 1, false)
                 end)
             end,
         },
         {
-            label    = 'i119',
-            callback = function(p)
+            'i119',
+            function(p)
                 p:timer(50, function(pp)
                     menuShowSlots(pp, npc, key119Capture, jobAbbrev, 1, false)
                 end)
@@ -1876,8 +1876,8 @@ local function menuShowTalesQty(player, npc, chapter, stored, useTimer)
             local lbl = (qty == stored) and string.format('Return All (%d)', stored) or string.format('Return %d', qty)
             local qtyCapture = qty
             table.insert(options, {
-                label    = lbl,
-                callback = function(p)
+                lbl,
+                function(p)
                     local currentStored = getStoredTales(p, chapter)
                     local give          = math.min(qtyCapture, currentStored)
                     if give > 0 then
@@ -1894,8 +1894,8 @@ local function menuShowTalesQty(player, npc, chapter, stored, useTimer)
             if pageNum < totalPages then
                 local next = pageNum + 1
                 table.insert(options, {
-                    label    = string.format('Next >> %u/%u', next, totalPages),
-                    callback = function(p)
+                    string.format('Next >> %u/%u', next, totalPages),
+                    function(p)
                         p:timer(50, function(pp)
                             buildPage(next, false)
                         end)
@@ -1904,8 +1904,8 @@ local function menuShowTalesQty(player, npc, chapter, stored, useTimer)
             else
                 local prev = pageNum - 1
                 table.insert(options, {
-                    label    = string.format('<< Prev %u/%u', prev, totalPages),
-                    callback = function(p)
+                    string.format('<< Prev %u/%u', prev, totalPages),
+                    function(p)
                         p:timer(50, function(pp)
                             buildPage(prev, false)
                         end)
@@ -1964,8 +1964,8 @@ local function menuShowChapters(player, npc, pageNum, useTimer)
         local chCap    = entry.ch
         local storeCap = entry.stored
         table.insert(options, {
-            label    = string.format('Ch.%d (%d)', entry.ch, entry.stored),
-            callback = function(p)
+            string.format('Ch.%d (%d)', entry.ch, entry.stored),
+            function(p)
                 p:timer(50, function(pp)
                     menuShowTalesQty(pp, npc, chCap, storeCap, false)
                 end)
@@ -1977,8 +1977,8 @@ local function menuShowChapters(player, npc, pageNum, useTimer)
         if pageNum < totalPages then
             local next = pageNum + 1
             table.insert(options, {
-                label    = string.format('Next >> %u/%u', next, totalPages),
-                callback = function(p)
+                string.format('Next >> %u/%u', next, totalPages),
+                function(p)
                     p:timer(50, function(pp)
                         menuShowChapters(pp, npc, next, false)
                     end)
@@ -1987,8 +1987,8 @@ local function menuShowChapters(player, npc, pageNum, useTimer)
         else
             local prev = pageNum - 1
             table.insert(options, {
-                label    = string.format('<< Prev %u/%u', prev, totalPages),
-                callback = function(p)
+                string.format('<< Prev %u/%u', prev, totalPages),
+                function(p)
                     p:timer(50, function(pp)
                         menuShowChapters(pp, npc, prev, false)
                     end)
@@ -2026,8 +2026,8 @@ local function menuShowRoot(player, npc, pageNum, useTimer)
     for _, setEntry in ipairs(setList) do
         local entryCapture = setEntry
         table.insert(items, {
-            label    = setEntry.label,
-            callback = function(p)
+            setEntry.label,
+            function(p)
                 p:timer(50, function(pp)
                     menuShowTier(pp, npc, entryCapture, jobAbbrev, false)
                 end)
@@ -2046,8 +2046,8 @@ local function menuShowRoot(player, npc, pageNum, useTimer)
 
     if hasTales then
         table.insert(items, {
-            label    = 'Get Tales',
-            callback = function(p)
+            'Get Tales',
+            function(p)
                 p:timer(50, function(pp)
                     menuShowChapters(pp, npc, 1, false)
                 end)
@@ -2073,8 +2073,8 @@ local function menuShowRoot(player, npc, pageNum, useTimer)
         if pageNum < totalPages then
             local next = pageNum + 1
             table.insert(options, {
-                label    = string.format('Next >> %u/%u', next, totalPages),
-                callback = function(p)
+                string.format('Next >> %u/%u', next, totalPages),
+                function(p)
                     p:timer(50, function(pp)
                         menuShowRoot(pp, npc, next, false)
                     end)
@@ -2083,8 +2083,8 @@ local function menuShowRoot(player, npc, pageNum, useTimer)
         else
             local prev = pageNum - 1
             table.insert(options, {
-                label    = string.format('<< Prev %u/%u', prev, totalPages),
-                callback = function(p)
+                string.format('<< Prev %u/%u', prev, totalPages),
+                function(p)
                     p:timer(50, function(pp)
                         menuShowRoot(pp, npc, prev, false)
                     end)
