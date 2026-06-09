@@ -16,16 +16,16 @@ local function error(player, msg)
     player:printToPlayer('!additem <itemId> (quantity) (aug1) (v1) (aug2) (v2) (aug3) (v3) (aug4) (v4) (trial)')
 end
 
--- Always use zone ITEM_OBTAINED (6556 in Middle Delkfutt's Tower on PegasusXI).
--- Do not use ITEMS_OBTAINED or ITEM_OBTAINED+9; Pegasus offsets differ from LSB.
-local function showItemObtained(player, itemId)
-    local ID = zones[player:getZoneID()]
-    if not ID or not ID.text or not ID.text.ITEM_OBTAINED then
-        return false
-    end
+-- PegasusXI obtain text IDs (Middle Delkfutt's Tower reference zone).
+local ITEM_OBTAINED_TEXT_ID  = 6556 -- Obtained: <item>.
+local ITEMS_OBTAINED_TEXT_ID = 6559 -- You obtain <number> <item>!
 
-    player:messageSpecial(ID.text.ITEM_OBTAINED, itemId)
-    return true
+local function showItemObtained(player, itemId, quantity)
+    if quantity > 1 then
+        player:messageSpecial(ITEMS_OBTAINED_TEXT_ID, itemId, quantity)
+    else
+        player:messageSpecial(ITEM_OBTAINED_TEXT_ID, itemId)
+    end
 end
 
 commandObj.onTrigger = function(player, item, quantity, aug0, aug0val, aug1, aug1val, aug2, aug2val, aug3, aug3val, trialId)
@@ -143,13 +143,8 @@ commandObj.onTrigger = function(player, item, quantity, aug0, aug0val, aug1, aug
         return
     end
 
-    if not showItemObtained(player, itemToGet) then
-        if quantity > 1 then
-            player:printToPlayer(string.format('You obtain %u x %s!', quantity, itemProto:getName()), xi.msg.channel.SYSTEM_3)
-        else
-            player:printToPlayer(string.format('Obtained: %s.', itemProto:getName()), xi.msg.channel.SYSTEM_3)
-        end
-    end
+    local added = countAfter - countBefore
+    showItemObtained(player, itemToGet, added)
 end
 
 return commandObj
