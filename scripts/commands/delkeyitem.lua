@@ -43,8 +43,10 @@ commandObj.onTrigger = function(player, keyId, target)
 
     -- delete key item from target
     if targ:hasKeyItem(keyId) then
+        local ID = zones[targ:getZoneID()]
+
         targ:delKeyItem(keyId)
-        targ:messageSpecial(6395, keyId)
+        targ:messageSpecial(ID.text.KEYITEM_LOST, keyId)
         player:printToPlayer(string.format('Key item %i deleted from %s.', keyId, targ:getName()))
     else
         player:printToPlayer(string.format('%s does not have key item %i.', targ:getName(), keyId))

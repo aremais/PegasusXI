@@ -694,6 +694,20 @@ def connect():
     return True
 
 
+def ensure_connected():
+    """Reconnect if the MariaDB session was dropped (idle timeout, server restart, etc.)."""
+    global db, cur
+    if db is None or cur is None:
+        connect()
+        return
+    try:
+        cur.execute("SELECT 1")
+    except (mariadb.InterfaceError, mariadb.Error) as err:
+        if not is_connection_lost_error(err):
+            raise
+        connect()
+
+
 def close():
     if db:
         print("Closing connection...")
@@ -846,6 +860,7 @@ def adjust_auto_update_client():
 
 
 def run_all_migrations(silent=False):
+    ensure_connected()
     migrations_needed = []
     print_green("Checking migrations...")
     for migration in migrations:
@@ -863,7 +878,14 @@ def run_all_migrations(silent=False):
             os.remove(from_dbtool_path("migration_errors.log"))
         for migration in migrations_needed:
             print("Running migrations for " + migration.migration_name() + "...")
-            migration.migrate(cur, db)
+            ensure_connected()
+            try:
+                migration.migrate(cur, db)
+            except (mariadb.InterfaceError, mariadb.Error) as err:
+                if not is_connection_lost_error(err):
+                    raise
+                ensure_connected()
+                migration.migrate(cur, db)
         print_green("Finished migrations!")
         if os.path.exists(from_dbtool_path("migration_errors.log")):
             print_red(
@@ -877,8 +899,19 @@ def run_all_migrations(silent=False):
 
 
 def check_migration(migration, migrations_needed, silent=False):
-    migration.check_preconditions(cur)
-    if not migration.needs_to_run(cur):
+    def _needs_to_run():
+        migration.check_preconditions(cur)
+        return migration.needs_to_run(cur)
+
+    try:
+        needs_run = _needs_to_run()
+    except (mariadb.InterfaceError, mariadb.Error) as err:
+        if not is_connection_lost_error(err):
+            raise
+        ensure_connected()
+        needs_run = _needs_to_run()
+
+    if not needs_run:
         if not silent:
             print_red(
                 "["
