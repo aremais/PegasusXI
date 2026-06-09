@@ -6,8 +6,6 @@
 -- Nightflowers                  : !pos -264.775 -3.718 28.767 126
 -----------------------------------
 
-local qufimID = zones[xi.zone.QUFIM_ISLAND]
-
 local quest = Quest:new(xi.questLog.JEUNO, xi.quest.id.jeuno.SAVE_MY_SON)
 
 quest.reward =
@@ -90,12 +88,6 @@ quest.sections =
                 onTrigger = function(player, npc)
                     local vanadielClockTime = utils.vanadielClockTime()
                     local isNight           = vanadielClockTime > 2130 or vanadielClockTime <= 540
-
-                    if isNight then
-                        player:messageSpecial(qufimID.text.NOW_THAT_NIGHT_HAS_FALLEN)
-                    else
-                        player:messageSpecial(qufimID.text.THESE_WITHERED_FLOWERS)
-                    end
 
                     if quest:getVar(player, 'Prog') == 0 and isNight then
                         return quest:progressEvent(0)
