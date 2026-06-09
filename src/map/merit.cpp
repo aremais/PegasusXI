@@ -357,7 +357,14 @@ void CMeritPoints::RaiseMerit(MERIT_TYPE merit)
     {
         m_MeritPoints -= PMerit->next;
 
-        PMerit->next = upgrade[PMerit->upgradeid][PMerit->count + 1];
+        PMerit->count++;
+
+        // Update next cost only if there are more ranks to raise; avoids OOB read at max rank.
+        if (PMerit->count < PMerit->upgrade)
+        {
+            PMerit->next = upgrade[PMerit->upgradeid][PMerit->count];
+        }
+
         if (PMerit->spellid != 0)
         {
             if (charutils::addSpell(m_PChar, PMerit->spellid))
@@ -374,8 +381,6 @@ void CMeritPoints::RaiseMerit(MERIT_TYPE merit)
             charutils::SaveLearnedAbilities(m_PChar);
             m_PChar->pushPacket<GP_SERV_COMMAND_COMMAND_DATA>(m_PChar);
         }
-
-        PMerit->count++;
 
         // Reset traits
         charutils::BuildingCharTraitsTable(m_PChar);
