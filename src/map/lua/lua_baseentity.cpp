@@ -17001,9 +17001,22 @@ void CLuaBaseEntity::petAttack(CLuaBaseEntity* PEntity)
         return;
     }
 
+    if (PEntity == nullptr)
+    {
+        ShowWarning("petAttack called with nil target from %s.", m_PBaseEntity->getName());
+        return;
+    }
+
+    auto* PTarget = PEntity->GetBaseEntity();
+    if (PTarget == nullptr)
+    {
+        ShowWarning("petAttack called with invalid target from %s.", m_PBaseEntity->getName());
+        return;
+    }
+
     if (static_cast<CBattleEntity*>(m_PBaseEntity)->PPet != nullptr)
     {
-        petutils::AttackTarget(static_cast<CBattleEntity*>(m_PBaseEntity), static_cast<CBattleEntity*>(PEntity->GetBaseEntity()));
+        petutils::AttackTarget(static_cast<CBattleEntity*>(m_PBaseEntity), static_cast<CBattleEntity*>(PTarget));
     }
 }
 

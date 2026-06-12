@@ -672,6 +672,12 @@ auto preparedStmt(const std::string& rawQuery, Args&&... args) -> std::unique_pt
         {
             const auto operation = [&]() -> std::unique_ptr<db::detail::ResultSetWrapper>
             {
+                if (!state.connection)
+                {
+                    ShowError("Database connection is null. Query not executed: %s", rawQuery.c_str());
+                    return nullptr;
+                }
+
                 // If we don't have it, lazily make it
                 // cppcheck-suppress stlFindInsert
                 if (state.lazyPreparedStatements.find(rawQuery) == state.lazyPreparedStatements.end())

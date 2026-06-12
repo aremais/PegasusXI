@@ -171,7 +171,12 @@ xi.pets.wyvern.onMobSpawn = function(mob)
 
     master:addListener('ATTACK', 'PET_WYVERN_ENGAGE', function(player, target, action)
         local pet = player:getPet()
-        if pet:getTarget() == nil or target:getID() ~= pet:getTarget():getID() then
+        if not pet or not target then
+            return
+        end
+
+        local petTarget = pet:getTarget()
+        if petTarget == nil or target:getID() ~= petTarget:getID() then
             player:petAttack(target)
         end
     end)
