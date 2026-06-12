@@ -558,7 +558,7 @@ def import_file(file):
     _ = db_query(query)
 
 
-def import_file_verbose(file):
+def import_file_verbose(file, preamble=None):
     """Import a .sql file via the mysql client with live stdout/stderr (no capture)."""
     file = os.path.normpath(file).replace("\\", "/")
     if not os.path.exists(file):
@@ -569,6 +569,9 @@ def import_file_verbose(file):
     print(f"Importing {file} (mysql client output below)...", flush=True)
     started = time.perf_counter()
     with open(file, encoding="utf-8") as sql_file:
+        sql_input = sql_file.read()
+        if preamble:
+            sql_input = preamble + sql_input
         result = subprocess.run(
             [
                 f"{mysql_bin}mysql{exe}",
@@ -578,7 +581,7 @@ def import_file_verbose(file):
                 f"-p{password}",
                 database,
             ],
-            stdin=sql_file,
+            input=sql_input,
             text=True,
         )
     if result.returncode != 0:
@@ -1455,14 +1458,90 @@ def dump_all_tables(silent=False):
         print_green(f"Replaced values in all .sql files with data from the database.")
 
 
+SERVER_PROCESSES = ("xi_connect", "xi_world", "xi_search", "xi_map")
+
+
+def running_server_processes():
+    found = []
+    if os.name == "nt":
+        for name in SERVER_PROCESSES:
+            exe = f"{name}.exe"
+            result = subprocess.run(
+                ["tasklist", "/FI", f"IMAGENAME eq {exe}", "/NH"],
+                capture_output=True,
+                text=True,
+            )
+            if exe.lower() in result.stdout.lower():
+                found.append(name)
+    else:
+        for name in SERVER_PROCESSES:
+            if subprocess.run(["pgrep", "-x", name], capture_output=True).returncode == 0:
+                found.append(name)
+    return found
+
+
+def kill_stuck_ddl_sessions():
+    """Kill long-running sessions that block DROP/CREATE TRIGGER (metadata locks)."""
+    if not cur:
+        connect()
+    cur.execute("SHOW FULL PROCESSLIST")
+    killed = 0
+    for row in cur.fetchall():
+        pid, _user, _host, _db, _cmd, time_s, state, info = row[:8]
+        if pid == cur.connection.thread_id:
+            continue
+        info = info or ""
+        state = state or ""
+        if time_s < 30:
+            continue
+        should_kill = (
+            "Waiting for table metadata lock" in state
+            or "DROP TRIGGER" in info
+            or "CREATE TRIGGER" in info
+            or ("CREATE INDEX" in info and "auction_house" in info)
+        )
+        if should_kill:
+            print(f"  KILL {pid} ({time_s}s): {info[:70]}...", flush=True)
+            try:
+                cur.execute(f"KILL {pid}")
+                killed += 1
+            except Exception as err:
+                print(f"    (skip: {err})", flush=True)
+    db.commit()
+    return killed
+
+
 def install_required_triggers(silent=False):
     path = from_server_path("sql/fix_all_required_triggers.sql")
+    running = running_server_processes()
+    if running:
+        print_red(
+            "These server processes are still running; trigger DDL will hang until they stop:"
+        )
+        print("  " + ", ".join(running), flush=True)
+        print(
+            "Stop them first, e.g. PowerShell:\n"
+            "  Get-Process xi_map,xi_connect,xi_world,xi_search -ErrorAction SilentlyContinue | Stop-Process -Force\n"
+            "Or use: .\\tools\\recover_server.ps1 -KeepAh",
+            flush=True,
+        )
+        if silent or input("Install triggers anyway? [y/N] ").lower() != "y":
+            print("Aborted trigger install.", flush=True)
+            return
+    if not cur:
+        connect()
+    killed = kill_stuck_ddl_sessions()
+    if killed:
+        print(f"Cleared {killed} stuck DB session(s).", flush=True)
     if not silent:
         print(
             "Installing map/search required triggers (fix_all_required_triggers.sql)...",
             flush=True,
         )
-    import_file_verbose(path)
+    import_file_verbose(
+        path,
+        preamble="SET lock_wait_timeout = 120;\n",
+    )
     if not silent:
         print_green("Triggers installed.")
 

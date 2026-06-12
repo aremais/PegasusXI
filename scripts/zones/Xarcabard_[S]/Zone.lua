@@ -7,7 +7,10 @@ local ID = zones[xi.zone.XARCABARD_S]
 local zoneObject = {}
 
 zoneObject.onInitialize = function(zone)
-    GetMobByID(ID.mob.ZIRNITRA):setRespawnTime(math.random(14400, 18000))
+    local zirnitra = GetMobByID(ID.mob.ZIRNITRA)
+    if zirnitra then
+        zirnitra:setRespawnTime(math.random(14400, 18000))
+    end
     xi.voidwalker.zoneOnInit(zone)
 end
 

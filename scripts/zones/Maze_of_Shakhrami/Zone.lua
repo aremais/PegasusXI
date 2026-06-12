@@ -11,12 +11,18 @@ zoneObject.onInitialize = function(zone)
         DisallowRespawn(ID.mob.LEECH_KING, true)
         DisallowRespawn(ID.mob.ARGUS, false)
         xi.mob.updateNMSpawnPoint(ID.mob.ARGUS)
-        GetMobByID(ID.mob.ARGUS):setRespawnTime(math.random(900, 7200))
+        local argus = GetMobByID(ID.mob.ARGUS)
+        if argus then
+            argus:setRespawnTime(math.random(900, 7200))
+        end
     else
         DisallowRespawn(ID.mob.ARGUS, true)
         DisallowRespawn(ID.mob.LEECH_KING, false)
         xi.mob.updateNMSpawnPoint(ID.mob.LEECH_KING)
-        GetMobByID(ID.mob.LEECH_KING):setRespawnTime(math.random(900, 7200))
+        local leechKing = GetMobByID(ID.mob.LEECH_KING)
+        if leechKing then
+            leechKing:setRespawnTime(math.random(900, 7200))
+        end
     end
 
     xi.treasure.initZone(zone)
