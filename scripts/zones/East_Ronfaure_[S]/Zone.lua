@@ -8,7 +8,10 @@ local zoneObject = {}
 
 zoneObject.onInitialize = function(zone)
     xi.mob.updateNMSpawnPoint(ID.mob.MYRADROSH)
-    GetMobByID(ID.mob.MYRADROSH):setRespawnTime(math.random(5400, 7200))
+    local myradrosh = GetMobByID(ID.mob.MYRADROSH)
+    if myradrosh then
+        myradrosh:setRespawnTime(math.random(5400, 7200))
+    end
 
     xi.helm.initZone(zone, xi.helmType.LOGGING)
     xi.voidwalker.zoneOnInit(zone)

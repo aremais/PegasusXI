@@ -6,11 +6,11 @@
 -- missing or have stale copies of those spawn/group rows.
 
 INSERT INTO `mob_groups` VALUES
-    (16,1394,28,'Fomors_Bats',0,128,0,0,0,0,NULL),
-    (10,1394,51,'Fomors_Bats',0,128,0,0,0,0,NULL),
-    (9,1394,52,'Fomors_Bats',0,128,0,0,0,0,NULL),
-    (10,71,29,'Air_Elemental',300,4,38,0,0,0,NULL),
-    (22,4507,29,'Ziryu',0,128,0,2500,15000,0,NULL)
+    (16,1394,28,'Fomors_Bats',0,128,0,0,0,49,51,0),
+    (10,1394,51,'Fomors_Bats',0,128,0,0,0,58,60,0),
+    (9,1394,52,'Fomors_Bats',0,128,0,0,0,58,60,0),
+    (10,71,29,'Air_Elemental',330,4,38,0,0,57,64,0),
+    (22,4507,29,'Ziryu',0,128,0,0,0,75,75,0)
 ON DUPLICATE KEY UPDATE
     `poolid` = VALUES(`poolid`),
     `name` = VALUES(`name`),
@@ -19,8 +19,9 @@ ON DUPLICATE KEY UPDATE
     `dropid` = VALUES(`dropid`),
     `HP` = VALUES(`HP`),
     `MP` = VALUES(`MP`),
-    `allegiance` = VALUES(`allegiance`),
-    `content_tag` = VALUES(`content_tag`);
+    `minLevel` = VALUES(`minLevel`),
+    `maxLevel` = VALUES(`maxLevel`),
+    `allegiance` = VALUES(`allegiance`);
 
 INSERT INTO `mob_spawn_points` VALUES
     (16891960,0,'Fomors_Bats','Fomor''s Bats',16,49,51,1.000,1.000,1.000,117),
@@ -48,7 +49,7 @@ ON DUPLICATE KEY UPDATE
 
 -- Bastok 7-1: ensure group row exists if mob_groups was imported without Ro'Maeve NMs
 INSERT INTO `mob_groups` VALUES
-    (1,2717,122,'Mokkurkalfi',0,128,0,0,0,0,NULL)
+    (1,2717,122,'Mokkurkalfi',0,128,0,0,0,68,70,0)
 ON DUPLICATE KEY UPDATE
     `poolid` = VALUES(`poolid`),
     `name` = VALUES(`name`),
@@ -57,5 +58,6 @@ ON DUPLICATE KEY UPDATE
     `dropid` = VALUES(`dropid`),
     `HP` = VALUES(`HP`),
     `MP` = VALUES(`MP`),
-    `allegiance` = VALUES(`allegiance`),
-    `content_tag` = VALUES(`content_tag`);
+    `minLevel` = VALUES(`minLevel`),
+    `maxLevel` = VALUES(`maxLevel`),
+    `allegiance` = VALUES(`allegiance`);

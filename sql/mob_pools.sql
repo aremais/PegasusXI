@@ -18,7 +18,7 @@ DROP TABLE IF EXISTS `mob_pools`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `mob_pools` (
   `poolid` int(10) unsigned NOT NULL,
-  `name` varchar(24) DEFAULT NULL,
+  `name` varchar(32) DEFAULT NULL,
   `packet_name` varchar(24) DEFAULT NULL,
   `familyid` smallint(4) unsigned NOT NULL DEFAULT 0,
   `modelid` binary(20) NOT NULL,
@@ -7408,7 +7408,7 @@ INSERT INTO `mob_pools` VALUES (30001,'Bozzetto_Breadwinner','Bozzetto Breadwinn
 -- ------------------------------------------------------------
 /*
   `poolid` int(10) unsigned NOT NULL,
-  `name` varchar(24) DEFAULT NULL,
+  `name` varchar(32) DEFAULT NULL,
   `packet_name` varchar(24) DEFAULT NULL,
   `familyid` smallint(4) unsigned NOT NULL DEFAULT '0',
   `modelid` binary(20) NOT NULL,

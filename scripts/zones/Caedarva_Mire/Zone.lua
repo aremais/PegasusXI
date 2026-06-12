@@ -7,7 +7,10 @@ local ID = zones[xi.zone.CAEDARVA_MIRE]
 local zoneObject = {}
 
 zoneObject.onInitialize = function(zone)
-    GetMobByID(ID.mob.KHIMAIRA):setRespawnTime(math.random(12, 36) * 3600) -- 12 to 36 hours after maintenance, in 1-hour increments
+    local khimaira = GetMobByID(ID.mob.KHIMAIRA)
+    if khimaira then
+        khimaira:setRespawnTime(math.random(12, 36) * 3600) -- 12 to 36 hours after maintenance, in 1-hour increments
+    end
 
     xi.helm.initZone(zone, xi.helmType.LOGGING)
     xi.darkRider.addHoofprints(zone)
