@@ -51,7 +51,7 @@ mission.sections =
             {
                 onTrigger = function(player, npc)
                     if not utils.mask.getBit(player:getMissionStatus(mission.areaId), 1) then
-                        return mission:event(20)
+                        return mission:progressEvent(20)
                     end
                 end,
             },
