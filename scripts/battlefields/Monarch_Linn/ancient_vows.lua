@@ -2,8 +2,6 @@
 -- Area: Monarch Linn
 -- Name: Ancient Vows
 -----------------------------------
-local monarchLinnID = zones[xi.zone.MONARCH_LINN]
------------------------------------
 
 local content = BattlefieldMission:new({
     zoneId        = xi.zone.MONARCH_LINN,
@@ -37,26 +35,8 @@ end
 content.groups =
 {
     {
-        mobIds =
-        {
-            {
-                monarchLinnID.mob.MAMMET_19_EPSILON,
-                monarchLinnID.mob.MAMMET_19_EPSILON + 1,
-                monarchLinnID.mob.MAMMET_19_EPSILON + 2,
-            },
-
-            {
-                monarchLinnID.mob.MAMMET_19_EPSILON + 3,
-                monarchLinnID.mob.MAMMET_19_EPSILON + 4,
-                monarchLinnID.mob.MAMMET_19_EPSILON + 5,
-            },
-
-            {
-                monarchLinnID.mob.MAMMET_19_EPSILON + 6,
-                monarchLinnID.mob.MAMMET_19_EPSILON + 7,
-                monarchLinnID.mob.MAMMET_19_EPSILON + 8,
-            },
-        },
+        -- Name-based lookup splits 9 Mammet spawns across the 3 Monarch Linn arenas.
+        mobs = { 'Mammet-19_Epsilon' },
 
         allDeath = function(battlefield, mob)
             battlefield:setStatus(xi.battlefield.status.WON)

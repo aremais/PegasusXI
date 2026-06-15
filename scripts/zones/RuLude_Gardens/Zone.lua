@@ -5,7 +5,7 @@
 local zoneObject = {}
 
 zoneObject.onInitialize = function(zone)
-    zone:registerCuboidTriggerArea(1, -16, 2, 32, 16, 4, 86) -- Palace entrance. Ends at back exit. Needs retail confirmaton for the back entrance.
+    zone:registerCuboidTriggerArea(1, -16, 0, 32, 16, 4, 86) -- Palace entrance. Ends at back exit. Needs retail confirmaton for the back entrance.
 
     -- Ru'Lude survival guide (I-10): runs after NPCs are spawned. Fixes bad npc_list rows where
     -- polutils_name is still "Syndella" (Survival_Guide.lua never loads if internal name is Syndella).

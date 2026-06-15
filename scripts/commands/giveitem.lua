@@ -87,6 +87,15 @@ commandObj.onTrigger = function(player, target, itemId, amount, aug0, aug0val, a
         }
     end
 
+    local itemFlags = GetItemFlagsByID(itemId)
+    if bit.band(itemFlags, xi.itemFlag.RARE) ~= 0 then
+        for i = xi.inv.INVENTORY, xi.inv.WARDROBE8 do
+            while targ:hasItem(itemId, i) do
+                targ:delItem(itemId, 1, i)
+            end
+        end
+    end
+
     local countBefore = targ:getItemCount(itemId)
     local obtained    = targ:addItem(itemData)
     local countAfter  = targ:getItemCount(itemId)

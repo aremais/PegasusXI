@@ -16,17 +16,19 @@ local function error(player, msg)
     player:printToPlayer('!addkeyitem <key item ID> (player)')
 end
 
--- Pegasus outdoor obtain block (ITEM 6415): KEYITEM_OBTAINED is 6416, not 6418.
-local KEYITEM_OBTAINED_TEXT_ID = 6416
-
+-- Pegasus obtain blocks: KEYITEM shares the GIL slot, not GIL+2 (6394 / 6416).
 local function getKeyItemObtainedMsgId(player)
     local ID = zones[player:getZoneID()]
     if not ID or not ID.text then
-        return KEYITEM_OBTAINED_TEXT_ID
+        return 6416
     end
 
     if ID.text.ITEM_OBTAINED == 6415 then
-        return KEYITEM_OBTAINED_TEXT_ID
+        return 6416
+    end
+
+    if ID.text.ITEM_OBTAINED == 6393 then
+        return 6394
     end
 
     return ID.text.KEYITEM_OBTAINED
