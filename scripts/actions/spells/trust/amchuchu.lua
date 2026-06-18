@@ -61,7 +61,7 @@ spellObject.onMobSpawn = function(mob)
     end
 
     if lvl >= 60 then
-        mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.EMBOLDEN }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.EMBOLDEN })
+        mob:addGambit(ai.t.SELF, { { ai.c.NOT_STATUS, xi.effect.EMBOLDEN }, { ai.c.NOT_STATUS, xi.effect.PROTECT }, }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.EMBOLDEN })
     end
 
     if lvl >= 65 then
