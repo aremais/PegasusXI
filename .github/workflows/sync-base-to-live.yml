@@ -53,6 +53,16 @@ jobs:
             exit 0
           }
 
+          git merge-base --is-ancestor $before $target
+          if ($LASTEXITCODE -ne 0) {
+            throw @"
+          Live and base have diverged; fast-forward promotion is not possible.
+          Live: $before
+          base: $target
+          Align the branches (for example reset Live to base or merge base into Live locally) before promoting.
+          "@
+          }
+
           git checkout Live
           git merge origin/base --ff-only
           git push origin Live
@@ -101,10 +111,8 @@ jobs:
               Write-Host "No changes between $before and $after."
               "changed=false" >> $env:GITHUB_OUTPUT
             } else {
-              git merge-base --is-ancestor $before $after
-              if ($LASTEXITCODE -ne 0) {
-                throw "previous_live_commit ($before) is not an ancestor of target commit ($after)."
-              }
+              $mergeBase = (git merge-base $before $after).Trim()
+              Write-Host "Changelog range: $before -> $after (merge-base: $mergeBase)"
               "changed=true" >> $env:GITHUB_OUTPUT
             }
 
