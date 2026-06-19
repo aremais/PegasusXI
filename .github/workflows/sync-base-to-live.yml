@@ -41,6 +41,9 @@ jobs:
         id: sync
         if: ${{ !inputs.changelog_only }}
         run: |
+          $ErrorActionPreference = "Stop"
+          $PSNativeCommandUseErrorActionPreference = $true
+
           $before = (git rev-parse origin/Live).Trim()
           $target = (git rev-parse origin/base).Trim()
 
@@ -53,19 +56,20 @@ jobs:
             exit 0
           }
 
-          git merge-base --is-ancestor $before $target
-          if ($LASTEXITCODE -ne 0) {
-            throw @"
-          Live and base have diverged; fast-forward promotion is not possible.
-          Live: $before
-          base: $target
-          Align the branches (for example reset Live to base or merge base into Live locally) before promoting.
-          "@
-          }
-
           git checkout Live
-          git merge origin/base --ff-only
-          git push origin Live
+
+          git merge-base --is-ancestor $before $target
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Fast-forwarding Live to base."
+            git merge origin/base --ff-only
+            git push origin Live
+          } else {
+            Write-Host "Live and base have diverged; resetting Live to match base."
+            Write-Host "Previous Live: $before"
+            Write-Host "Target base:   $target"
+            git reset --hard origin/base
+            git push origin Live --force-with-lease
+          }
 
           $after = (git rev-parse HEAD).Trim()
           "after=$after" >> $env:GITHUB_OUTPUT
