@@ -4,11 +4,16 @@
 import subprocess
 import sys
 from collections import defaultdict
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 
 
 def git(*args: str) -> str:
-    return subprocess.check_output(["git", *args], text=True).strip()
+    return subprocess.check_output(
+        ["git", *args],
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    ).strip()
 
 
 def categorize(path: str) -> str:
@@ -39,6 +44,20 @@ def main() -> int:
 
     old_sha, new_sha, output_path = sys.argv[1], sys.argv[2], sys.argv[3]
 
+    try:
+        return write_changelog(old_sha, new_sha, output_path)
+    except subprocess.CalledProcessError as exc:
+        print(
+            f"git command failed ({exc.cmd}): {exc.stderr or exc.stdout or exc}",
+            file=sys.stderr,
+        )
+        return exc.returncode or 1
+    except OSError as exc:
+        print(f"Failed to write changelog: {exc}", file=sys.stderr)
+        return 1
+
+
+def write_changelog(old_sha: str, new_sha: str, output_path: str) -> int:
     if old_sha == new_sha:
         with open(output_path, "w", encoding="utf-8") as handle:
             handle.write("No changes were included in this Live promotion.\n")

@@ -50,17 +50,30 @@ jobs:
           "after=$after" >> $env:GITHUB_OUTPUT
           "changed=true" >> $env:GITHUB_OUTPUT
 
+      - name: Set up Python
+        if: steps.sync.outputs.changed == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       - name: Generate changelog
         id: changelog
         if: steps.sync.outputs.changed == 'true'
         run: |
-          $dateTag = Get-Date -Format "yyyy-MM-dd-HHmm"
-          $output = "live-changelog-$dateTag.md"
+          $ErrorActionPreference = "Stop"
+          $PSNativeCommandUseErrorActionPreference = $true
 
-          python tools/ci/generate_live_changelog.py `
-            "${{ steps.sync.outputs.before }}" `
-            "${{ steps.sync.outputs.after }}" `
-            $output
+          $dateTag = Get-Date -Format "yyyy-MM-dd-HHmm"
+          $output = Join-Path $env:GITHUB_WORKSPACE "live-changelog-$dateTag.md"
+          $before = "${{ steps.sync.outputs.before }}"
+          $after = "${{ steps.sync.outputs.after }}"
+
+          Write-Host "Generating changelog from $before to $after"
+          python tools/ci/generate_live_changelog.py $before $after $output
+
+          if (-not (Test-Path $output)) {
+            throw "Changelog was not created at $output"
+          }
 
           Get-Content $output
 
