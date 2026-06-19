@@ -19,7 +19,8 @@ entity.phList =
 
 entity.onMobInitialize = function(mob)
     mob:setMobMod(xi.mobMod.ADD_EFFECT, 1)
-    xi.mob.addSpikesWithDeathFlag(mob, xi.effect.SHOCK_SPIKES, 10)
+    mob:addStatusEffect(xi.effect.SHOCK_SPIKES, { power = 10, origin = mob })
+    mob:getStatusEffect(xi.effect.SHOCK_SPIKES):setEffectFlags(xi.effectFlag.DEATH)
 end
 
 entity.onMobFight = function(mob, target)

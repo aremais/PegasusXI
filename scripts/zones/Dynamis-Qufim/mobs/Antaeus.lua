@@ -3,13 +3,11 @@
 --  Mob: Antaeus
 -- Note: Mega Boss
 -----------------------------------
-require('scripts/globals/dynamis_qufim_antaeus')
------------------------------------
 ---@type TMobEntity
 local entity = {}
 
 entity.onMobSpawn = function(mob)
-    xi.dynamis.qufimAntaeusOnSpawn(mob)
+    xi.dynamis.mobInfo(mob)
 end
 
 entity.onMobDeath = function(mob, player, optParams)

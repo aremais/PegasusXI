@@ -1,19 +1,12 @@
 -----------------------------------
--- Area: Dynamis - Jeuno
---  Mob: Vanguard Ronin
+-- Area: Horlais Peak
+--  Mob: Maat
+-- Genkai 5 Fight
 -----------------------------------
-mixins =
-{
-    require('scripts/mixins/dynamis_beastmen'),
-    require('scripts/mixins/job_special')
-}
+mixins = { require('scripts/mixins/families/maat') }
 -----------------------------------
 ---@type TMobEntity
 local entity = {}
-
-entity.onMobSpawn = function(mob)
-    xi.dynamis.mobInfo(mob)
-end
 
 entity.onMobDeath = function(mob, player, optParams)
 end
