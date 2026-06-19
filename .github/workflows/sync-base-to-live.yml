@@ -8,7 +8,7 @@ on:
         type: boolean
         default: false
       previous_live_commit:
-        description: Previous Live commit SHA (for changelog-only; leave empty to use the latest live-* release tag)
+        description: Previous Live commit SHA (optional; auto-detects Live->base when Live is behind base)
         type: string
         required: false
 
@@ -67,7 +67,8 @@ jobs:
           $ErrorActionPreference = "Stop"
 
           if ('${{ inputs.changelog_only }}' -eq 'true') {
-            $after = (git rev-parse origin/Live).Trim()
+            $live = (git rev-parse origin/Live).Trim()
+            $base = (git rev-parse origin/base).Trim()
             $before = "${{ inputs.previous_live_commit }}".Trim()
 
             if (-not $before) {
@@ -79,10 +80,18 @@ jobs:
             }
 
             if (-not $before) {
-              throw @"
-          changelog_only requires previous_live_commit when no live-* release tag exists.
-          Use the 'before' SHA from the failed Promote base to Live run log.
+              if ($live -ne $base) {
+                $before = $live
+                $after = $base
+                Write-Host "Auto-resolved pending promotion: Live ($before) -> base ($after)"
+              } else {
+                throw @"
+          Live is already up to date with base and no live-* release tag exists.
+          Provide previous_live_commit (the old Live SHA from a prior promotion run).
           "@
+              }
+            } else {
+              $after = if ($live -ne $base) { $base } else { $live }
             }
 
             git rev-parse --verify "$before^{commit}" | Out-Null
@@ -94,7 +103,7 @@ jobs:
             } else {
               git merge-base --is-ancestor $before $after
               if ($LASTEXITCODE -ne 0) {
-                throw "previous_live_commit ($before) is not an ancestor of current Live ($after)."
+                throw "previous_live_commit ($before) is not an ancestor of target commit ($after)."
               }
               "changed=true" >> $env:GITHUB_OUTPUT
             }
