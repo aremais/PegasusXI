@@ -24,7 +24,7 @@ zones[xi.zone.MONARCH_LINN] =
         PARTY_MEMBERS_HAVE_FALLEN     = 7460, -- All party members have fallen in battle. Now leaving the battlefield.
         THE_PARTY_WILL_BE_REMOVED     = 7467, -- If all party members' HP are still zero after # minute[/s], the party will be removed from the battlefield.
         TORN_FROM_YOUR_HANDS          = 7475, -- The <keyitem> is torn from your hands and sucked into the spatial displacement!
-        CONQUEST_BASE                 = 7485, -- Tallying conquest results...
+        CONQUEST_BASE                 = 7484, -- Tallying conquest results...
         ENTERING_THE_BATTLEFIELD_FOR  = 7647, -- Entering the battlefield for [Ancient Vows/The Savage/Fire in the Sky/Bad Seed/Bugard in the Clouds/Beloved of the Atlantes/Uninvited Guests/Nest of Nightmares/★The Savage]!
         KNOCKED_OUT_OF_BATTLEFIELD    = 7654, -- The blast wave from Razon's Self-Destruct knocks you out of the battlefield!
     },
