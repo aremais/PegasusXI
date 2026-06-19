@@ -551,7 +551,71 @@ void CLuaBaseEntity::messageSpecial(uint16 messageID, sol::variadic_args va)
     uint32 param0   = va.get_type(0) == sol::type::number ? va.get<uint32>(0) : 0;
     uint32 param1   = va.get_type(1) == sol::type::number ? va.get<uint32>(1) : 0;
     uint32 param2   = va.get_type(2) == sol::type::number ? va.get<uint32>(2) : 0;
-    uint32 param3   = va.get_type(3) == sol::type::number ? va.get<uint32>(3) :    static_cast<CCharEntity*>(m_PBaseEntity)->pushPacket<GP_SERV_COMMAND_SYSTEMMES>(param0, param1, messageID);
+    uint32 param3   = va.get_type(3) == sol::type::number ? va.get<uint32>(3) : 0;
+    bool   showName = va.get_type(4) == sol::type::boolean ? va.get<bool>(4) : false;
+
+    static_cast<CCharEntity*>(m_PBaseEntity)->pushPacket<GP_SERV_COMMAND_TALKNUMWORK>(m_PBaseEntity, messageID, param0, param1, param2, param3, showName);
+}
+
+/************************************************************************
+ *  Function: messageSystem()
+ *  Purpose : Sends a standard system message
+ *  Example : player:messageSystem("Text")
+ *  Notes   :
+ ************************************************************************/
+
+void CLuaBaseEntity::messageSystem(MsgStd messageID, const sol::object& p0, const sol::object& p1)
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowError("Function called on non-PC entity (%s)", m_PBaseEntity->name.c_str());
+        return;
+    }
+
+    uint32 param0 = (p0 != sol::lua_nil) ? p0.as<uint32>() : 0;
+    uint32 param1 = (p1 != sol::lua_nil) ? p1.as<uint32>() : 0;
+
+    static_cast<CCharEntity*>(m_PBaseEntity)->pushPacket<GP_SERV_COMMAND_SYSTEMMES>(param0, param1, messageID);
+}
+
+/************************************************************************
+ *  Function: messageItemObtained()
+ *  Purpose : Displays item obtained message using zone text IDs
+ *  Example : player:messageItemObtained(itemId, quantity)
+ *  Notes   : Returns false when zone text IDs are unavailable
+ ************************************************************************/
+
+bool CLuaBaseEntity::messageItemObtained(uint16 itemId, const sol::object& quantityObj)
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowError("Function called on non-PC entity (%s)", m_PBaseEntity->name.c_str());
+        return false;
+    }
+
+    const uint32 quantity     = (quantityObj != sol::lua_nil) ? quantityObj.as<uint32>() : 1;
+    const auto   zoneId       = m_PBaseEntity->getZone();
+    const auto   itemObtained = luautils::GetTextIDVariable(zoneId, "ITEM_OBTAINED");
+
+    if (itemObtained <= 0)
+    {
+        return false;
+    }
+
+    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
+
+    if (quantity > 1)
+    {
+        const auto   itemsObtained = luautils::GetTextIDVariable(zoneId, "ITEMS_OBTAINED");
+        const uint16 messageId     = itemsObtained > 0 ? static_cast<uint16>(itemsObtained) : static_cast<uint16>(itemObtained + 9);
+        PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK>(m_PBaseEntity, messageId, itemId, quantity, 0, 0, false);
+    }
+    else
+    {
+        PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK>(m_PBaseEntity, static_cast<uint16>(itemObtained), itemId, 0, 0, 0, false);
+    }
+
+    return true;
 }
 
 /************************************************************************

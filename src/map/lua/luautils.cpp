@@ -640,7 +640,6 @@ void init(IPP mapIPP, bool isRunningInCI)
             {
                 const auto cmdName = entry.stem().generic_string();
                 lua[sol::create_if_nil]["xi"]["commands"][cmdName] = cmdTable;
-                ShowInfo("Loaded command script %s -> !%s", scriptPath.c_str(), cmdName.c_str());
                 ++loaded;
             }
         }
