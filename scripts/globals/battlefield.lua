@@ -392,6 +392,56 @@ xi.battlefield.id =
     GRIMSHELL_SHOCKTROOPERS_II                 = 4008,
 }
 
+-- Display names for BCNM orbs. messageSpecial cannot reliably substitute these
+-- item IDs in client DATs (e.g. item 4063 renders as "bureau").
+local orbDisplayNames =
+{
+    [xi.item.MOON_ORB]        = 'moon orb',
+    [xi.item.STAR_ORB]        = 'star orb',
+    [xi.item.CLOTHO_ORB]      = 'Clotho Orb',
+    [xi.item.COMET_ORB]       = 'Comet Orb',
+    [xi.item.LACHESIS_ORB]    = 'Lachesis Orb',
+    [xi.item.ATROPOS_ORB]     = 'Atropos Orb',
+    [xi.item.CLOUDY_ORB]      = 'Cloudy Orb',
+    [xi.item.SKY_ORB]         = 'Sky Orb',
+    [xi.item.THEMIS_ORB]      = 'Themis Orb',
+    [xi.item.MICROCOSMIC_ORB] = 'Microcosmic Orb',
+    [xi.item.MACROCOSMIC_ORB] = 'Macrocosmic Orb',
+}
+
+local function getOrbDisplayName(itemId)
+    return orbDisplayNames[itemId] or 'orb'
+end
+
+-- Returns true when the orb crack/worn line was handled via printToPlayer.
+function xi.battlefield.printOrbWearMessage(player, zoneId, messageId, itemId)
+    local text = zones[zoneId] and zones[zoneId].text
+
+    if not text then
+        return false
+    end
+
+    local orbName = getOrbDisplayName(itemId)
+
+    if messageId == text.A_CRACK_HAS_FORMED then
+        player:printToPlayer(
+            string.format('A crack has formed on the %s, and the beast inside has been unleashed!', orbName),
+            xi.msg.channel.NS_SAY)
+
+        return true
+    end
+
+    if messageId == text.ORB_IS_CRACKED then
+        player:printToPlayer(
+            string.format('There is a crack in the %s. It no longer contains a monster.', orbName),
+            xi.msg.channel.NS_SAY)
+
+        return true
+    end
+
+    return false
+end
+
 xi.battlefield.itemUses =
 {
     [xi.item.WARRIORS_TESTIMONY]      = 3,
@@ -657,6 +707,13 @@ function Battlefield:checkRequirements(player, npc, isRegistrant, trade)
 end
 
 function Battlefield:checkSkipCutscene(player)
+    -- Mission BCs (Promyvion spires, rank missions, etc.) share event 32000 with
+    -- seal orb BCNMs. Without an orb trade the client still plays the orb-crack
+    -- segment and messageSpecial resolves the item as "bureau".
+    if self.isMission and #self.requiredItems == 0 then
+        return true
+    end
+
     return false
 end
 
@@ -720,10 +777,14 @@ function Battlefield.onEntryTrade(player, npc, trade, onUpdate)
             if player:getWornUses(itemId) >= totalUses then
                 if type(content.requiredItems.wornMessage) == 'table' then
                     player:messageSpecial(unpack(content.requiredItems.wornMessage))
-                elseif totalUses > 1 then
-                    player:messageSpecial(content.requiredItems.wornMessage, itemId)
-                else
-                    player:messageSpecial(content.requiredItems.wornMessage, 0, 0, 0, itemId)
+                elseif
+                    not xi.battlefield.printOrbWearMessage(player, zoneId, content.requiredItems.wornMessage, itemId)
+                then
+                    if totalUses > 1 then
+                        player:messageSpecial(content.requiredItems.wornMessage, itemId)
+                    else
+                        player:messageSpecial(content.requiredItems.wornMessage, 0, 0, 0, itemId)
+                    end
                 end
 
                 return
@@ -1160,11 +1221,13 @@ function Battlefield:onBattlefieldEnter(player, battlefield)
         local uses      = player:incrementItemWear(itemId)
         local totalUses = xi.battlefield.itemUses[itemId] or 1 -- Gets number of item uses. (Tests = 3; Else = 1)
 
-        if totalUses > 1 then
-            local remaining = totalUses - uses
-            player:messageSpecial(self.requiredItems.wearMessage, itemId, remaining + 1, remaining)
-        else
-            player:messageSpecial(self.requiredItems.wearMessage, 0, 0, 0, itemId)
+        if not xi.battlefield.printOrbWearMessage(player, self.zoneId, self.requiredItems.wearMessage, itemId) then
+            if totalUses > 1 then
+                local remaining = totalUses - uses
+                player:messageSpecial(self.requiredItems.wearMessage, itemId, remaining + 1, remaining)
+            else
+                player:messageSpecial(self.requiredItems.wearMessage, 0, 0, 0, itemId)
+            end
         end
     end
 
@@ -1466,6 +1529,10 @@ end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function BattlefieldMission:checkSkipCutscene(player)
+    if #self.requiredItems == 0 then
+        return true
+    end
+
     local missionArea       = self.missionArea or player:getNation()
     local current           = player:getCurrentMission(missionArea)
     local missionStatusArea = self.missionStatusArea or player:getNation()
@@ -1561,6 +1628,10 @@ end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function BattlefieldQuest:checkSkipCutscene(player)
+    if #self.requiredItems == 0 then
+        return true
+    end
+
     return player:getQuestStatus(self.questArea, self.quest) == xi.questStatus.QUEST_COMPLETED
 end
 

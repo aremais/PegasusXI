@@ -118,8 +118,6 @@ function SKCNMBattlefield.onEntryTrade(player, npc, trade, onUpdate)
     local contents = xi.battlefield.contentsByZone[zoneId]
 
     -- Check whether the traded Macrocosmic Orb has already been cracked.
-    -- We use printToPlayer instead of messageSpecial(ORB_IS_CRACKED, itemId)
-    -- because item 4063 resolves to "bureau" in vanilla client DATs.
     for _, content in ipairs(contents) do
         if
             #content.requiredItems > 0 and
@@ -129,7 +127,12 @@ function SKCNMBattlefield.onEntryTrade(player, npc, trade, onUpdate)
             local totalUses = xi.battlefield.itemUses[itemId] or 1
 
             if player:getWornUses(itemId) >= totalUses then
-                player:printToPlayer('The Macrocosmic Orb no longer contains a monster.', xi.msg.channel.NS_SAY)
+                xi.battlefield.printOrbWearMessage(
+                    player,
+                    zoneId,
+                    zones[zoneId].text.ORB_IS_CRACKED,
+                    itemId)
+
                 return
             end
         end
@@ -160,8 +163,7 @@ end
 -- battlefieldEntry: orb wear messages
 -----------------------------------
 -- Fires at the end of onBattlefieldEnter (base class calls self:battlefieldEntry).
--- Wear/worn messages are handled here instead of per-fight requiredItems fields
--- so we can avoid messageSpecial calls that render as "bureau" for item 4063.
+-- Wear/worn messages are handled here instead of per-fight requiredItems fields.
 
 function SKCNMBattlefield:battlefieldEntry(player, battlefield)
     local initiatorId = select(1, battlefield:getInitiator())
@@ -172,7 +174,11 @@ function SKCNMBattlefield:battlefieldEntry(player, battlefield)
 
     local players = battlefield:getPlayers()
 
-    player:printToPlayer('A crack forms on the Macrocosmic Orb. The beast within has been unleashed!', xi.msg.channel.NS_SAY)
+    xi.battlefield.printOrbWearMessage(
+        player,
+        self.zoneId,
+        zones[self.zoneId].text.A_CRACK_HAS_FORMED,
+        xi.item.MACROCOSMIC_ORB)
 
     for _, member in ipairs(players) do
         member:printToPlayer('Difficulty: Normal.', xi.msg.channel.NS_SAY)

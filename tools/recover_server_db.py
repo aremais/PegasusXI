@@ -166,11 +166,34 @@ def main() -> int:
     dbtool.fetch_credentials()
     dbtool.fetch_configs()
 
-    print("\n[1/4] Clearing stuck database queries ...", flush=True)
+    print("\n[1/7] Clearing stuck database queries ...", flush=True)
     killed = kill_stuck_queries()
     print(f"  Killed {killed} connection(s).", flush=True)
 
-    print("\n[2/4] Checking required triggers (xi_map startup) ...", flush=True)
+    print("\n[2/7] Applying mob_pools schema patch (familyid -> speciesid) ...", flush=True)
+    patch_path = dbtool.from_server_path("sql/patches/mob_pools_rename_familyid_to_speciesid.sql")
+    dbtool.import_file_verbose(patch_path)
+    print("  mob_pools.speciesid column verified.", flush=True)
+
+    print("\n[3/7] Applying mob_groups schema patch (content_tag) ...", flush=True)
+    patch_path = dbtool.from_server_path("sql/patches/mob_groups_add_content_tag.sql")
+    dbtool.import_file_verbose(patch_path)
+    print("  mob_groups.content_tag column verified.", flush=True)
+
+    print("\n[4/7] Applying mob data patches (droplists, spell lists, groups) ...", flush=True)
+    mob_data_patches = [
+        "sql/patches/fix_mob_reference_data.sql",
+        "sql/patches/fix_missing_mob_groups_and_spawns.sql",
+        "sql/patches/fix_remaining_mob_groups.sql",
+        "sql/patches/fix_synthetic_mob_groups.sql",
+        "sql/patches/fix_eurytos_zone82.sql",
+    ]
+    for rel_path in mob_data_patches:
+        patch_path = dbtool.from_server_path(rel_path)
+        dbtool.import_file_verbose(patch_path)
+    print("  Mob reference data patches applied.", flush=True)
+
+    print("\n[5/7] Checking required triggers (xi_map startup) ...", flush=True)
     missing = missing_triggers()
     if missing:
         print("  Missing: " + ", ".join(missing), flush=True)
@@ -184,21 +207,21 @@ def main() -> int:
     print("  All required triggers present.", flush=True)
 
     if not args.keep_ah:
-        print("\n[3/4] Resetting auction house (empty AH) ...", flush=True)
+        print("\n[6/7] Resetting auction house (empty AH) ...", flush=True)
         print(
             "  WARNING: Active listings are deleted, not returned to delivery_box.",
             flush=True,
         )
         reset_auction_house()
     else:
-        print("\n[3/4] Skipping auction house reset (--keep-ah).", flush=True)
+        print("\n[6/7] Skipping auction house reset (--keep-ah).", flush=True)
 
     if args.with_indexes:
-        print("\n[4/4] Applying auction house search indexes ...", flush=True)
+        print("\n[7/7] Applying auction house search indexes ...", flush=True)
         dbtool.execute_ah_search_indexes_with_progress(silent=False)
     else:
         print(
-            "\n[4/4] Skipping search indexes (not required for xi_map). "
+            "\n[7/7] Skipping search indexes (not required for xi_map). "
             "Use --with-indexes later if needed.",
             flush=True,
         )

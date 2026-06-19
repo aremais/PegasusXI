@@ -32,11 +32,6 @@ function content:entryRequirement(player, npc, isRegistrant, trade)
     return (not isRegistrant and nonRegistrantReqs) or currentRequirements
 end
 
-function content:checkSkipCutscene(player)
-    return player:hasCompletedMission(xi.mission.log_id.COP, xi.mission.id.cop.THE_MOTHERCRYSTALS) or
-        player:hasKeyItem(xi.ki.LIGHT_OF_MEA)
-end
-
 function content:onBattlefieldWin(player, battlefield)
     local _, clearTime, partySize = battlefield:getRecord()
 

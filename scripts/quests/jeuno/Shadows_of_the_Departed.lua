@@ -20,7 +20,7 @@ quest.sections =
             return status == xi.questStatus.QUEST_AVAILABLE and
                 player:hasCompletedQuest(xi.questLog.JEUNO, xi.quest.id.jeuno.STORMS_OF_FATE) and
                 player:getCurrentMission(xi.mission.log_id.ZILART) == xi.mission.id.zilart.AWAKENING and
-                player:getMissionStatus(xi.mission.log_id.ZILART) == 3 and
+                utils.mask.getBit(player:getMissionStatus(xi.mission.log_id.ZILART), 1) and
                 VanadielUniqueDay() >= vars.Timer
         end,
 

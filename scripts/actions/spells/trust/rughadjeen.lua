@@ -96,6 +96,10 @@ spellObject.onMobSpawn = function(mob)
 
     if lvl >= 78 then
         mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.FLASH }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.DIVINE_EMBLEM })
+        mob:addGambit(ai.t.TRIGGER_SELF_ACTION_TARGET, {
+            { ai.c.NOT_STATUS, xi.effect.FLASH },
+            { ai.c.STATUS,     xi.effect.DIVINE_EMBLEM },
+        }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLASH })
     end
 
     mob:addGambit(ai.t.TARGET,     { ai.c.NOT_STATUS,   xi.effect.FLASH     }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLASH       })
