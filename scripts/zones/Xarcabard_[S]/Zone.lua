@@ -11,6 +11,7 @@ zoneObject.onInitialize = function(zone)
     if zirnitra then
         zirnitra:setRespawnTime(math.random(14400, 18000))
     end
+
     xi.voidwalker.zoneOnInit(zone)
 end
 
