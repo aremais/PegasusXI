@@ -3,7 +3,7 @@ name: Promote Test to base
 on:
   workflow_dispatch: {}
   schedule:
-    # Fridays at 10:00 UTC — once per week
+    # Fridays at 5:00 AM EST (10:00 UTC)
     - cron: "0 10 * * 5"
 
 permissions:
