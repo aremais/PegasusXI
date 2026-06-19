@@ -198,4 +198,3 @@ UPDATE `mob_spawn_points` SET `spawnslotid` = 0 WHERE `mobid` IN (17563670, 1756
 
 -- Adventuring Fellow pet row (enum PETID 73); Chocobo (74) is not a DB pet.
 INSERT INTO `pet_list` VALUES (73,'Adv.Fellow',0,1,99,0,0,0) ON DUPLICATE KEY UPDATE `name`=VALUES(`name`);
-
