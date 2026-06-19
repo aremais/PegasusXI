@@ -546,15 +546,22 @@ xi.voidwalker.onHealing = function(player)
         return
     end
 
-    local zoneId        = player:getZoneID()
-    local zoneTextTable = zones[zoneId].text
-    local abyssites     = getCurrentKIsFromPlayer(player)
+    local zoneId = player:getZoneID()
+    local zone   = zones[zoneId]
 
     if
-        #abyssites == 0 or
-        not zones[zoneId].mob or
-        not zones[zoneId].mob.VOIDWALKER
+        not zone or
+        not zone.text or
+        not zone.mob or
+        not zone.mob.VOIDWALKER
     then
+        return
+    end
+
+    local zoneTextTable = zone.text
+    local abyssites     = getCurrentKIsFromPlayer(player)
+
+    if #abyssites == 0 then
         return
     end
 

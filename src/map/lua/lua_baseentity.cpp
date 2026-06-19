@@ -18379,6 +18379,11 @@ void CLuaBaseEntity::instantiateMob(uint32 groupID)
     }
 
     CMobEntity* newMob = mobutils::InstantiateAlly(groupID, m_PBaseEntity->getZone());
+    if (newMob == nullptr)
+    {
+        ShowError("CLuaBaseEntity::instantiateMob - group ID %u not found in zone %u", groupID, m_PBaseEntity->getZone());
+        return;
+    }
 
     newMob->loc.p        = m_PBaseEntity->loc.p;
     newMob->m_SpawnPoint = newMob->loc.p;

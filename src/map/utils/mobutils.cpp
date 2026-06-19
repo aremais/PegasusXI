@@ -1710,6 +1710,7 @@ auto InstantiateAlly(uint32 groupid, uint16 zoneID, CInstance* instance) -> CMob
 {
     CMobEntity* PMob = nullptr;
 
+    {
     const auto rset = db::preparedStmt("SELECT zoneid, mob_groups.name, packet_name, respawntime, "
                                        "spawntype, dropid, mob_groups.HP, mob_groups.MP, "
                                        "mob_spawn_points.minLevel, mob_spawn_points.maxLevel, modelid, mJob, "
@@ -1849,36 +1850,45 @@ auto InstantiateAlly(uint32 groupid, uint16 zoneID, CInstance* instance) -> CMob
         PMob->m_MobSkillList  = rset->get<uint16>("skill_list_id");
         PMob->m_TrueDetection = rset->get<bool>("true_detection");
         PMob->setMobMod(MOBMOD_DETECTION, rset->get<int16>("detects"));
-
-        if (CZone* PZone = zoneutils::GetZone(zoneID))
-        {
-            PZone->GetZoneEntities()->AssignDynamicTargIDandLongID(PMob);
-            PZone->GetZoneEntities()->InsertMOB(PMob);
-        }
-        else
-        {
-            ShowError("Mobutils::InstantiateAlly failed to get zone from zoneutils::GetZone(zoneID)");
-        }
-
-        // Ensure dynamic targid is released on death
-        PMob->m_bReleaseTargIDOnDisappear = true;
-
-        // must be here first to define mobmods
-        mobutils::InitializeMob(PMob);
-
-        luautils::OnEntityLoad(PMob);
-
-        luautils::OnMobInitialize(PMob);
-        if (CZone* PZone = zoneutils::GetZone(zoneID))
-        {
-            PZone->FindPartyForMob(PMob);
-        }
-        luautils::ApplyMixins(PMob);
-        luautils::ApplyZoneMixins(PMob);
-
-        PMob->saveModifiers();
-        PMob->saveMobModifiers();
     }
+    } // release rset before any nested preparedStmt (e.g. from Lua callbacks)
+
+    if (PMob == nullptr)
+    {
+        ShowError("Mobutils::InstantiateAlly: mob group %u not found in zone %u (missing mob_groups/mob_spawn_points row?)", groupid, zoneID);
+        return nullptr;
+    }
+
+    // Lua and zone registration must run only after the query result set is closed.
+    // Nested preparedStmt calls on the same connection invalidate an open result set.
+    if (CZone* PZone = zoneutils::GetZone(zoneID))
+    {
+        PZone->GetZoneEntities()->AssignDynamicTargIDandLongID(PMob);
+        PZone->GetZoneEntities()->InsertMOB(PMob);
+    }
+    else
+    {
+        ShowError("Mobutils::InstantiateAlly failed to get zone from zoneutils::GetZone(zoneID)");
+    }
+
+    // Ensure dynamic targid is released on death
+    PMob->m_bReleaseTargIDOnDisappear = true;
+
+    // must be here first to define mobmods
+    mobutils::InitializeMob(PMob);
+
+    luautils::OnEntityLoad(PMob);
+
+    luautils::OnMobInitialize(PMob);
+    if (CZone* PZone = zoneutils::GetZone(zoneID))
+    {
+        PZone->FindPartyForMob(PMob);
+    }
+    luautils::ApplyMixins(PMob);
+    luautils::ApplyZoneMixins(PMob);
+
+    PMob->saveModifiers();
+    PMob->saveMobModifiers();
 
     return PMob;
 }

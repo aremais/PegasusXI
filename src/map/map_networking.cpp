@@ -366,10 +366,18 @@ int32 MapNetworking::recv_parse(uint8* buff, size_t* buffsize, MapSession* map_s
             // clearing destination to 0xFFFF and breaking login (GP_CLI_COMMAND_LOGIN).
         }
 
-        map_session_data->client_packet_id = 0;
-        map_session_data->server_packet_id = 0;
-        map_session_data->zone_ipp         = {};
-        map_session_data->zone_type        = GP_GAME_LOGOUT_STATE::NONE;
+        // Only reset packet sync for a fresh login handoff. Duplicate unencrypted 0x00A retries
+        // from an already-logged-in client must preserve sync or the client never accepts our
+        // zone-in response and keeps retrying every ~2 seconds.
+        if (map_session_data->blowfish.status == BLOWFISH_PENDING_ZONE ||
+            map_session_data->blowfish.status == BLOWFISH_WAITING ||
+            map_session_data->PChar == nullptr)
+        {
+            map_session_data->client_packet_id = 0;
+            map_session_data->server_packet_id = 0;
+            map_session_data->zone_ipp         = {};
+            map_session_data->zone_type        = GP_GAME_LOGOUT_STATE::NONE;
+        }
 
         return 0;
     }

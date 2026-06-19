@@ -528,6 +528,11 @@ void bindValue(const std::unique_ptr<sql::PreparedStatement>& stmt, int& counter
 {
     TracyZoneScoped;
 
+    if (!stmt)
+    {
+        return;
+    }
+
     // Enums: convert to underlying type for database storage
     using UnderlyingT = enum_decay_t<T>;
 
@@ -695,6 +700,12 @@ auto preparedStmt(const std::string& rawQuery, Args&&... args) -> std::unique_pt
                 std::vector<std::shared_ptr<BlobWrapper>> blobs;
 
                 const auto& stmt = state.lazyPreparedStatements[rawQuery];
+                if (!stmt)
+                {
+                    ShowError("Prepared statement is null. Query not executed: %s", rawQuery.c_str());
+                    return nullptr;
+                }
+
                 db::detail::binder(stmt, counter, blobs, std::forward<Args>(args)...);
                 const auto queryTimer = detail::timer(rawQuery);
 
@@ -742,8 +753,7 @@ auto preparedStmt(const std::string& rawQuery, Args&&... args) -> std::unique_pt
                             queryRetryCount,
                             lastConnectionError,
                             rawQuery);
-            std::this_thread::sleep_for(1s);
-            std::terminate();
+            return nullptr;
         });
 }
 

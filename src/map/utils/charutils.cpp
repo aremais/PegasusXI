@@ -6047,20 +6047,23 @@ void SaveEminenceData(CCharEntity* PChar)
 {
     TracyZoneScoped;
 
-    if (!settings::get<bool>("main.ENABLE_ROE"))
+    if (!settings::get<bool>("main.ENABLE_ROE") || PChar == nullptr)
     {
         return;
     }
 
-    db::preparedStmt("UPDATE chars "
-                     "SET "
-                     "eminence = ? "
-                     "WHERE charid = ? "
-                     "LIMIT 1",
-                     PChar->m_eminenceLog,
-                     PChar->id);
+    const auto rset = db::preparedStmt("UPDATE chars "
+                                       "SET "
+                                       "eminence = ? "
+                                       "WHERE charid = ? "
+                                       "LIMIT 1",
+                                       PChar->m_eminenceLog,
+                                       PChar->id);
 
-    PChar->m_eminenceCache.lastWriteout = timer::now();
+    if (rset)
+    {
+        PChar->m_eminenceCache.lastWriteout = timer::now();
+    }
 }
 
 void SaveCharInventoryCapacity(CCharEntity* PChar)
