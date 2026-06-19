@@ -1077,17 +1077,16 @@ void LoadSpells(CCharEntity* PChar)
 
     if (hasTrustPermit)
     {
-        static const std::unordered_map<uint8, uint16> trustSpells = {
-            { 1, 1002 }, // Cornelia
-            { 2, 1003 }, // Matsui-P
-        }; // This can be expanded if more trust spells are added as settings options.
-
         uint8 trustSetting = settings::get<uint8>("main.ENABLE_LIMITED_TIME_TRUST");
 
-        auto it = trustSpells.find(trustSetting);
-        if (it != trustSpells.end())
+        if (trustSetting == 1 || trustSetting == 3)
         {
-            PChar->m_SpellList.set(it->second);
+            PChar->m_SpellList.set(1002); // Cornelia
+        }
+
+        if (trustSetting == 2 || trustSetting == 3)
+        {
+            PChar->m_SpellList.set(1003); // Matsui-P
         }
     }
 }
