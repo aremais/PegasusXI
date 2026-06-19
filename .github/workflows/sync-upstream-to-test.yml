@@ -1,9 +1,10 @@
-name: Sync upstream into Test
+name: Weekly sync upstream into Test and promote to base
 
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: "0 10 * * *"
+    # Sundays at 10:00 UTC — once per week
+    - cron: "0 10 * * 0"
 
 permissions:
   contents: write
@@ -142,3 +143,10 @@ jobs:
           git commit -m "Sync upstream/base into Test"
 
           git push origin Test
+
+      - name: Promote Test to base
+        run: |
+          git checkout base
+          git merge Test --ff-only
+          git push origin base
+          git checkout Test
