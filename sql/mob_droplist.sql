@@ -12450,10 +12450,23 @@ INSERT INTO `mob_droplist` VALUES (1506,4,0,1000,825,0);         -- Square Of Co
 -- ZoneID:  15 - Lentor -- TODO: Abyssea NM
 INSERT INTO `mob_droplist` VALUES (1507,0,0,1000,11421,@COMMON); -- Missile Boots (Common, 15%)
 
--- ZoneID:  15 - Lesser Arimaspi -- TODO: Abyssea NM - Yellow proc for drops. Unknown rate or grouping without proc.
--- INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1740,@SRARE); -- Iolite (Super Rare, 0.5%)
--- INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1294,@SRARE); -- Spool Of Arachne Thread (Super Rare, 0.5%)
--- INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1633,@SRARE); -- Handful Of Clot Plasma (Super Rare, 0.5%)
+-- ZoneID:  15 - Lesser Arimaspi (Abyssea NM; FFXIDB-tracked rates)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1633,30); -- Handful Of Clot Plasma (3.0%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,4377,23); -- Slice Of Coeurl Meat (2.3%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1634,22); -- Rhodonite (2.2%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,887,22);  -- Coral Fragment (2.2%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,4272,22); -- Slice Of Dragon Meat (2.2%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,5152,21); -- Slice Of Buffalo Meat (2.1%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1997,21); -- Square Of Sailcloth (2.1%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1294,19); -- Spool Of Arachne Thread (1.9%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,830,18);  -- Square Of Rainbow Cloth (1.8%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,645,17);  -- Chunk Of Darksteel Ore (1.7%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1740,17); -- Iolite (1.7%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,823,17);  -- Spool Of Gold Thread (1.7%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,942,17);  -- Philosophers Stone (1.7%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1133,16); -- Vial Of Dragon Blood (1.6%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1311,16); -- Piece Of Oxblood (1.6%)
+INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1829,15); -- Square Of Red Grass Cloth (1.5%)
 
 -- ZoneID:  51 - Lesser Colibri
 -- ZoneID:  52 - Lesser Colibri

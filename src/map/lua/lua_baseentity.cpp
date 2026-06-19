@@ -551,7 +551,108 @@ void CLuaBaseEntity::messageSpecial(uint16 messageID, sol::variadic_args va)
     uint32 param0   = va.get_type(0) == sol::type::number ? va.get<uint32>(0) : 0;
     uint32 param1   = va.get_type(1) == sol::type::number ? va.get<uint32>(1) : 0;
     uint32 param2   = va.get_type(2) == sol::type::number ? va.get<uint32>(2) : 0;
-    uint32 param3   = va.get_type(3) == sol::type::number ? va.get<uint32>(3) :    static_cast<CCharEntity*>(m_PBaseEntity)->pushPacket<GP_SERV_COMMAND_SYSTEMMES>(param0, param1, messageID);
+    uint32 param3   = va.get_type(3) == sol::type::number ? va.get<uint32>(3) : 0;
+    bool   showName = va.get_type(4) == sol::type::boolean ? va.get<bool>(4) : false;
+
+    static_cast<CCharEntity*>(m_PBaseEntity)->pushPacket<GP_SERV_COMMAND_TALKNUMWORK>(m_PBaseEntity, messageID, param0, param1, param2, param3, showName);
+}
+
+/************************************************************************
+ *  Function: messageItemObtained()
+ *  Purpose : Retail-style item obtain line; never uses GIL_OBTAINED or ID 0
+ *  Example : player:messageItemObtained(14893, 1)
+ *  Notes   : Returns false if zone text IDs are missing or unsafe
+ ************************************************************************/
+
+auto CLuaBaseEntity::messageItemObtained(uint16 itemId, const sol::object& quantityObj) -> bool
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowError("messageItemObtained called on non-PC entity (%s)", m_PBaseEntity->name.c_str());
+        return false;
+    }
+
+    const auto zoneId  = m_PBaseEntity->getZone();
+    const auto itemMsg = luautils::GetTextIDVariable(zoneId, "ITEM_OBTAINED");
+    const auto gilMsg  = luautils::GetTextIDVariable(zoneId, "GIL_OBTAINED");
+
+    if (itemMsg <= 0)
+    {
+        return false;
+    }
+
+    // GIL is normally ITEM_OBTAINED + 1; only reject if ITEM_OBTAINED is mis-set to the gil slot.
+    if (gilMsg > 0 && itemMsg == gilMsg)
+    {
+        ShowWarning("messageItemObtained: zone %u ITEM_OBTAINED (%d) equals GIL_OBTAINED (%d)", zoneId, itemMsg, gilMsg);
+        return false;
+    }
+
+    uint32 quantity = 1;
+    if (quantityObj != sol::lua_nil && quantityObj.is<uint32>())
+    {
+        quantity = quantityObj.as<uint32>();
+    }
+    else if (quantityObj != sol::lua_nil && quantityObj.is<int>())
+    {
+        const auto qty = quantityObj.as<int>();
+        if (qty > 0)
+        {
+            quantity = static_cast<uint32>(qty);
+        }
+    }
+
+    if (quantity == 0)
+    {
+        quantity = 1;
+    }
+
+    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
+
+    if (quantity > 1)
+    {
+        auto pluralMsg = luautils::GetTextIDVariable(zoneId, "ITEMS_OBTAINED");
+        if (pluralMsg <= 0)
+        {
+            pluralMsg = itemMsg + 9;
+        }
+
+        if (gilMsg > 0 && (pluralMsg == gilMsg || pluralMsg == itemMsg + 1))
+        {
+            pluralMsg = 0;
+        }
+
+        if (pluralMsg > 0)
+        {
+            PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK>(m_PBaseEntity, static_cast<uint16>(pluralMsg), itemId, quantity, 0, 0, false);
+            return true;
+        }
+    }
+
+    ShowInfo("messageItemObtained: %s zone %u msg %d item %u qty %u", m_PBaseEntity->name.c_str(), zoneId, itemMsg, itemId, quantity);
+    PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK>(m_PBaseEntity, static_cast<uint16>(itemMsg), itemId, 0, 0, 0, false);
+    return true;
+}
+
+/************************************************************************
+ *  Function: messageSystem()
+ *  Purpose : Sends a standard system message
+ *  Example : player:messageSystem("Text")
+ *  Notes   :
+ ************************************************************************/
+
+void CLuaBaseEntity::messageSystem(MsgStd messageID, const sol::object& p0, const sol::object& p1)
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowError("Function called on non-PC entity (%s)", m_PBaseEntity->name.c_str());
+        return;
+    }
+
+    uint32 param0 = (p0 != sol::lua_nil) ? p0.as<uint32>() : 0;
+    uint32 param1 = (p1 != sol::lua_nil) ? p1.as<uint32>() : 0;
+
+    static_cast<CCharEntity*>(m_PBaseEntity)->pushPacket<GP_SERV_COMMAND_SYSTEMMES>(param0, param1, messageID);
 }
 
 /************************************************************************

@@ -21,6 +21,10 @@ INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1133,16); -- Vial Of Dragon Blo
 INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1311,16); -- Piece Of Oxblood (1.6%)
 INSERT INTO `mob_droplist` VALUES (1508,0,0,1000,1829,15); -- Square Of Red Grass Cloth (1.5%)
 
+-- Inner Horutoto Ruins: spawn-slot mobs must not use SPAWNTYPE_SCRIPTED (0x80).
+UPDATE `mob_groups` SET `respawntime` = 330, `spawntype` = 1
+WHERE `zoneid` = 192 AND `name` IN ('Magicked_Bones_club', 'Magicked_Bones_dagger');
+
 UPDATE `mob_groups` SET `dropid` = 2930 WHERE `zoneid` = 4 AND `name` = 'Locus_Ghost_Crab'; -- was 2931
 UPDATE `mob_groups` SET `dropid` = 181 WHERE `zoneid` = 77 AND `name` = 'Smothered_Schmidt'; -- was 2277
 UPDATE `mob_groups` SET `dropid` = 1881 WHERE `zoneid` = 84 AND `name` = 'Orcish_Brawler'; -- was 1878

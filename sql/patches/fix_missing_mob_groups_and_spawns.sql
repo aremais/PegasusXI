@@ -193,8 +193,9 @@ UPDATE `mob_spawn_points` SET `groupid` = 4640 WHERE ((mobid >> 12) & 0xFFF) = 9
 UPDATE `mob_spawn_points` SET `groupid` = 4642 WHERE ((mobid >> 12) & 0xFFF) = 93 AND `groupid` = 0 AND `mobname` = 'Iron_Quadav';
 UPDATE `mob_spawn_points` SET `groupid` = 4645 WHERE ((mobid >> 12) & 0xFFF) = 93 AND `groupid` = 0 AND `mobname` = 'Magnes_Quadav';
 
--- Scripted Inner Horutoto Ruins mobs must not occupy spawn slots.
-UPDATE `mob_spawn_points` SET `spawnslotid` = 0 WHERE `mobid` IN (17563670, 17563671);
+-- Inner Horutoto Ruins Magicked Bones use spawn slots (club/dagger); match Outer Horutoto spawntype.
+UPDATE `mob_groups` SET `respawntime` = 330, `spawntype` = 1
+WHERE `zoneid` = 192 AND `name` IN ('Magicked_Bones_club', 'Magicked_Bones_dagger');
 
 -- Adventuring Fellow pet row (enum PETID 73); Chocobo (74) is not a DB pet.
 INSERT INTO `pet_list` VALUES (73,'Adv.Fellow',0,1,99,0,0,0) ON DUPLICATE KEY UPDATE `name`=VALUES(`name`);

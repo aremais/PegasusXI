@@ -5,6 +5,23 @@
 -- Riverne-Site_B01 rows are included here to repair existing databases that are
 -- missing or have stale copies of those spawn/group rows.
 
+-- Older databases may predate mob_groups.minLevel/maxLevel (added upstream Nov 2025).
+SET @db := DATABASE();
+SET @has_min_level := (
+  SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+  WHERE TABLE_SCHEMA = @db
+    AND TABLE_NAME = 'mob_groups'
+    AND COLUMN_NAME = 'minLevel'
+);
+SET @sql := IF(
+  @has_min_level = 0,
+  'ALTER TABLE `mob_groups` ADD COLUMN `minLevel` tinyint(2) unsigned NOT NULL DEFAULT 0 AFTER `MP`, ADD COLUMN `maxLevel` tinyint(2) unsigned NOT NULL DEFAULT 0 AFTER `minLevel`',
+  'SELECT ''mob_groups.minLevel/maxLevel already present; skipping add'' AS `fix_missing_mob_warning_data`'
+);
+PREPARE `stmt_fix_missing_mob_warning_min_max_level` FROM @sql;
+EXECUTE `stmt_fix_missing_mob_warning_min_max_level`;
+DEALLOCATE PREPARE `stmt_fix_missing_mob_warning_min_max_level`;
+
 INSERT INTO `mob_groups` (
     `groupid`, `poolid`, `zoneid`, `name`, `respawntime`, `spawntype`, `dropid`,
     `HP`, `MP`, `minLevel`, `maxLevel`, `allegiance`, `content_tag`
