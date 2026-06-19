@@ -61,6 +61,28 @@ std::vector<Pet_t*> g_PPetList;
 namespace petutils
 {
 
+namespace
+{
+Pet_t* LookupPetData(uint32 petID)
+{
+    auto maybePetData = std::find_if(
+        g_PPetList.begin(),
+        g_PPetList.end(),
+        [petID](Pet_t* t)
+        {
+            return t->PetID == petID;
+        });
+
+    if (maybePetData == g_PPetList.end())
+    {
+        ShowError(fmt::format("Could not look up pet data for id: {}", petID));
+        return nullptr;
+    }
+
+    return *maybePetData;
+}
+} // namespace
+
 void LoadPetList()
 {
     FreePetList();
@@ -1088,7 +1110,11 @@ void CalculateAutomatonStats(CBattleEntity* PMaster, CBattleEntity* PPet)
             }
         }
 
-        LoadAutomatonStats(PChar, PAutomaton, g_PPetList.at(petID), mainLevel, mjob, sjob); // temp
+        auto* PPetData = LookupPetData(petID);
+        if (PPetData)
+        {
+            LoadAutomatonStats(PChar, PAutomaton, PPetData, mainLevel, mjob, sjob); // temp
+        }
 
         if (PAutomaton)
         {
@@ -1268,9 +1294,9 @@ void SpawnMobPet(CBattleEntity* PMaster, uint32 PetID)
     */
 
     // grab pet info
-    Pet_t*      petData = g_PPetList.at(PetID);
+    Pet_t*      petData = LookupPetData(PetID);
     CMobEntity* PPet    = dynamic_cast<CMobEntity*>(PMaster->PPet);
-    if (PPet)
+    if (PPet && petData)
     {
         PPet->look = petData->look;
         PPet->name = petData->name;

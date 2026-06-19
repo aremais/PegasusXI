@@ -116,9 +116,10 @@ spellObject.onMobSpawn = function(mob)
     end
 
     mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.FLASH    }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLASH      })
+    -- Retail/wiki behavior: AAEV follows Divine Emblem with Flash, not Holy.
     mob:addGambit(ai.t.TRIGGER_SELF_ACTION_TARGET, {
         { ai.c.NOT_STATUS, xi.effect.FLASH },
-        { ai.c.STATUS,     xi.effect.DIVINE_EMBLEM }, }, { ai.r.MA, ai.s.HIGHEST,  xi.magic.spellFamily.HOLY })
+        { ai.c.STATUS,     xi.effect.DIVINE_EMBLEM }, }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLASH })
     mob:addGambit(ai.t.SELF,   { ai.c.HPP_LT,     75                 }, { ai.r.MA, ai.s.HIGHEST,  xi.magic.spellFamily.CURE })
     mob:addGambit(ai.t.PARTY,  { ai.c.HPP_LT,     50                 }, { ai.r.MA, ai.s.HIGHEST,  xi.magic.spellFamily.CURE })
     mob:addGambit(ai.t.SELF,   { ai.c.NOT_STATUS, xi.effect.ENLIGHT  }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ENLIGHT    })

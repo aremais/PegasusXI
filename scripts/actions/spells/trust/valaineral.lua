@@ -52,8 +52,8 @@ spellObject.onMobSpawn = function(mob)
         mob:addGambit(ai.t.TARGET, { ai.c.VAL_URIEL_CHECK, 0 }, { ai.r.MS, ai.s.SPECIFIC, xi.mobSkill.URIEL_BLADE_1 })
     end
 
-    if lvl >= 10 then
-        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.PROVOKE })
+    if lvl >= 5 then
+        mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.PROVOKE })
     end
 
     if lvl >= 30 then
@@ -83,7 +83,9 @@ spellObject.onMobSpawn = function(mob)
     end
 
     if lvl >= 78 then
-        mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS,     xi.effect.FLASH }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.DIVINE_EMBLEM })
+        -- Valaineral uses Divine Emblem before Flash when available.
+        mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.FLASH }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.DIVINE_EMBLEM })
+        mob:addGambit(ai.t.TRIGGER_SELF_ACTION_TARGET, { { ai.c.NOT_STATUS, xi.effect.FLASH }, { ai.c.STATUS, xi.effect.DIVINE_EMBLEM } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLASH })
     end
 
     if lvl >= 95 then

@@ -72,7 +72,7 @@ spellObject.onMobSpawn = function(mob)
         end
     end)
 
-    if lvl >= 5 then
+    if lvl >= 10 then
         mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.PROVOKE })
     end
 

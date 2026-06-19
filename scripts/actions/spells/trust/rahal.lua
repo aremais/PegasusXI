@@ -4,7 +4,7 @@
 -- Rahal is an aggressive tank who uses Berserk.
 -- Prioritizes Flash over Provoke.
 -- Will only cast Cure when a party member is below 33% health and will use the highest tier available.
--- Uses Sentinel when below 35% HP and Rampart when below 75% HP.
+-- Will only use Sentinel when he is below 33% health.
 -- He tries to interrupt TP-abilities and high-tier spells with Shield Bash.
 -- Holds up to 2500 TP to close skillchains.
 -----------------------------------
@@ -34,8 +34,11 @@ spellObject.onMobSpawn = function(mob)
 
     local lvl = mob:getMainLvl()
 
+    -- Rahal prioritizes Flash over Provoke.
+    mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.FLASH }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLASH })
+
     if lvl >= 10 then
-        mob:addGambit(ai.t.SELF, { ai.c.NOT_HAS_TOP_ENMITY, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.PROVOKE })
+        mob:addGambit(ai.t.TARGET, { ai.c.NOT_HAS_TOP_ENMITY, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.PROVOKE })
     end
 
     if lvl >= 15 then
@@ -47,18 +50,13 @@ spellObject.onMobSpawn = function(mob)
     end
 
     if lvl >= 30 then
-        mob:addGambit(ai.t.SELF,   { ai.c.NOT_STATUS, xi.effect.BERSERK }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK  })
-        mob:addGambit(ai.t.SELF,   { ai.c.HPP_LT,     35                }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SENTINEL })
-    end
-
-    if lvl >= 62 then
-        mob:addGambit(ai.t.SELF, { ai.c.HPP_LT, 75 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.RAMPART })
+        mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.BERSERK }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK  })
+        mob:addGambit(ai.t.SELF, { ai.c.HPP_LT,     33                }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SENTINEL })
     end
 
     mob:addGambit(ai.t.PARTY,  { ai.c.HPP_LT,     33                }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.CURE    })
     mob:addGambit(ai.t.SELF,   { ai.c.NOT_STATUS, xi.effect.ENLIGHT }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.ENLIGHT })
     mob:addGambit(ai.t.SELF,   { ai.c.NOT_STATUS, xi.effect.PHALANX }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.PHALANX })
-    mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS,     xi.effect.FLASH   }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLASH        })
     mob:addGambit(ai.t.PARTY,  { ai.c.STATUS,     xi.effect.SLEEP_I }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.CURE         })
 
     mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.HIGHEST, 2500)

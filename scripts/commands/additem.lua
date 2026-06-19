@@ -16,16 +16,22 @@ local function error(player, msg)
     player:printToPlayer('!additem <itemId> (quantity) (aug1) (v1) (aug2) (v2) (aug3) (v3) (aug4) (v4) (trial)')
 end
 
--- Always use zone ITEM_OBTAINED (6556 in Middle Delkfutt's Tower on PegasusXI).
--- Do not use ITEMS_OBTAINED or ITEM_OBTAINED+9; Pegasus offsets differ from LSB.
-local function showItemObtained(player, itemId)
-    local ID = zones[player:getZoneID()]
-    if not ID or not ID.text or not ID.text.ITEM_OBTAINED then
-        return false
+local function showItemObtained(player, itemId, quantity)
+    if player:messageItemObtained(itemId, quantity) then
+        return
     end
 
-    player:messageSpecial(ID.text.ITEM_OBTAINED, itemId)
-    return true
+    local ID = zones[player:getZoneID()]
+    if not ID or not ID.text or not ID.text.ITEM_OBTAINED then
+        return
+    end
+
+    if quantity > 1 then
+        local pluralMsg = ID.text.ITEMS_OBTAINED or (ID.text.ITEM_OBTAINED + 9)
+        player:messageSpecial(pluralMsg, itemId, quantity)
+    else
+        player:messageSpecial(ID.text.ITEM_OBTAINED, itemId)
+    end
 end
 
 commandObj.onTrigger = function(player, item, quantity, aug0, aug0val, aug1, aug1val, aug2, aug2val, aug3, aug3val, trialId)
@@ -80,11 +86,7 @@ commandObj.onTrigger = function(player, item, quantity, aug0, aug0val, aug1, aug
     end
 
     if player:getFreeSlotsCount() == 0 then
-        if quantity > 1 then
-            player:messageSpecial(ID.text.ITEM_CANNOT_BE_OBTAINED + 1, itemToGet)
-        else
-            player:messageSpecial(ID.text.ITEM_CANNOT_BE_OBTAINED, itemToGet)
-        end
+        player:messageSpecial(ID.text.ITEM_CANNOT_BE_OBTAINED, itemToGet)
         return
     end
 
@@ -134,22 +136,40 @@ commandObj.onTrigger = function(player, item, quantity, aug0, aug0val, aug1, aug
         end
     end
 
+    local itemFlags = GetItemFlagsByID(itemToGet)
+    if bit.band(itemFlags, xi.itemFlag.RARE) ~= 0 then
+        -- Rare items cannot be duplicated; remove any existing copy from all bags first.
+        for i = xi.inv.INVENTORY, xi.inv.WARDROBE8 do
+            while player:hasItem(itemToGet, i) do
+                player:delItem(itemToGet, 1, i)
+            end
+        end
+    end
+
     local countBefore = player:getItemCount(itemToGet)
     local obtained    = player:addItem(itemData)
     local countAfter  = player:getItemCount(itemToGet)
 
     if not obtained or countAfter <= countBefore then
-        player:printToPlayer(string.format('Failed to add item %u (%s). Check inventory space.', itemToGet, itemProto:getName()))
+        if player:getFreeSlotsCount() == 0 then
+            player:printToPlayer(string.format(
+                'Failed to add item %u (%s): main inventory has no free slots.',
+                itemToGet,
+                itemProto:getName()
+            ))
+        else
+            player:printToPlayer(string.format(
+                'Failed to add item %u (%s). Check server logs for database errors.',
+                itemToGet,
+                itemProto:getName()
+            ))
+        end
+
         return
     end
 
-    if not showItemObtained(player, itemToGet) then
-        if quantity > 1 then
-            player:printToPlayer(string.format('You obtain %u x %s!', quantity, itemProto:getName()), xi.msg.channel.SYSTEM_3)
-        else
-            player:printToPlayer(string.format('Obtained: %s.', itemProto:getName()), xi.msg.channel.SYSTEM_3)
-        end
-    end
+    local added = countAfter - countBefore
+    showItemObtained(player, itemToGet, added)
 end
 
 return commandObj

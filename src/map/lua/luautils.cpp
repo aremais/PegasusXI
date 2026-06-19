@@ -308,6 +308,8 @@ void init(IPP mapIPP, bool isRunningInCI)
 
         return sol::lua_nil;
     });
+    lua.set_function("GetItemFlagsByID", &luautils::GetItemFlagsByID);
+    lua.set_function("GetItemLevelRequirementsByID", &luautils::GetItemLevelRequirementsByID);
     lua.set_function("GetNPCByID", &luautils::GetNPCByID);
     lua.set_function("FindNPCsByName", &luautils::FindNPCsByName);
     lua.set_function("GetMobByID", &luautils::GetMobByID);
@@ -1457,6 +1459,33 @@ auto GetItemByID(uint32 itemId) -> const CItem*
     TracyZoneScoped;
 
     return xi::items::lookup(itemId);
+}
+
+auto GetItemFlagsByID(uint32 itemId) -> ItemFlag
+{
+    TracyZoneScoped;
+
+    if (const CItem* PItem = GetItemByID(itemId))
+    {
+        return PItem->getFlag();
+    }
+
+    return ItemFlag::None;
+}
+
+auto GetItemLevelRequirementsByID(uint32 itemId) -> uint8
+{
+    TracyZoneScoped;
+
+    if (const CItem* PItem = GetItemByID(itemId))
+    {
+        if (const auto* PEquip = dynamic_cast<const CItemEquipment*>(PItem))
+        {
+            return PEquip->getReqLvl();
+        }
+    }
+
+    return 0;
 }
 
 CBaseEntity* GetNPCByID(uint32 npcid, const sol::object& instanceObj)
