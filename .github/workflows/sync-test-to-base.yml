@@ -1,0 +1,37 @@
+name: Promote Test to base
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # Fridays at 10:00 UTC — once per week
+    - cron: "0 10 * * 5"
+
+permissions:
+  contents: write
+
+jobs:
+  promote:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fast-forward base to Test
+        run: |
+          git fetch origin Test base
+
+          git checkout base
+          git merge origin/Test --ff-only
+          git push origin base
