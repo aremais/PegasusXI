@@ -8,7 +8,6 @@
 -- qm2 (Konschtat) : !pos -709 2 102 108
 -- qm2 (Zi'Tah)    : !pos 639 -1 -151 121
 -----------------------------------
-local konschtatID = zones[xi.zone.KONSCHTAT_HIGHLANDS]
 local norgID      = zones[xi.zone.NORG]
 local zitahID     = zones[xi.zone.THE_SANCTUARY_OF_ZITAH]
 -----------------------------------
@@ -49,54 +48,6 @@ quest.sections =
         check = function(player, status, vars)
             return status == xi.questStatus.QUEST_ACCEPTED
         end,
-
-        [xi.zone.KONSCHTAT_HIGHLANDS] =
-        {
-            ['qm2'] =
-            {
-                onTrade = function(player, npc, trade)
-                    if npcUtil.tradeHasExactly(trade, xi.item.LUMP_OF_ORIENTAL_STEEL) then
-                        if player:checkDistance(npc) > 1.6 then
-                            return quest:messageSpecial(konschtatID.text.BLACKENED_MUST_BE_CLOSER)
-                        elseif
-                            GetMobByID(konschtatID.mob.FORGER):isSpawned() or
-                            npc:getLocalVar('forgerNextPopAllowedTime') > GetSystemTime()
-                        then
-                            return quest:messageSpecial(konschtatID.text.BLACKENED_NOTHING_HAPPENS, xi.item.LUMP_OF_ORIENTAL_STEEL)
-                        else
-                            local forgerMob = SpawnMob(konschtatID.mob.FORGER)
-                            if not forgerMob then
-                                return quest:noAction()
-                            end
-
-                            forgerMob:updateClaim(player)
-                            player:confirmTrade()
-
-                            -- QM is visible, but cannot be used to spawn Forger again until two minutes have elapsed
-                            -- since the NM despawns.
-                            forgerMob:setLocalVar('QMID', npc:getID())
-                            forgerMob:addListener('DESPAWN', 'DESPAWN_' .. konschtatID.mob.FORGER, function(mobArg)
-                                local qmID = mobArg:getLocalVar('QMID')
-
-                                mobArg:removeListener('DESPAWN_' .. konschtatID.mob.FORGER)
-                                GetNPCByID(qmID):setLocalVar('forgerNextPopAllowedTime', GetSystemTime() + 120)
-                            end)
-
-                            return quest:messageSpecial(konschtatID.text.PLACE_BLACKENED_SPOT, xi.item.LUMP_OF_ORIENTAL_STEEL)
-                        end
-                    end
-                end,
-
-                onTrigger = function(player, npc)
-                    if GetMobByID(konschtatID.mob.FORGER):isSpawned() then
-                        return quest:messageSpecial(konschtatID.text.NOT_THE_TIME_FOR_THAT)
-                    elseif npc:getLocalVar('forgerNextPopAllowedTime') <= GetSystemTime() then
-                        -- This message persists even after kill, while the QM is active and quest is accepted.
-                        return quest:messageSpecial(konschtatID.text.BLACKENED_SHOULD_PLACE, xi.item.LUMP_OF_ORIENTAL_STEEL)
-                    end
-                end,
-            },
-        },
 
         [xi.zone.NORG] =
         {
