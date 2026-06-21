@@ -173,4 +173,3 @@ commandObj.onTrigger = function(player, item, quantity, aug0, aug0val, aug1, aug
 end
 
 return commandObj
-

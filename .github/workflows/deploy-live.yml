@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - live
+      - Live
 
 permissions:
   contents: read
@@ -44,8 +44,8 @@ jobs:
           $RepoPath = 'D:\server'
 
           git -C $RepoPath fetch origin
-          git -C $RepoPath checkout live
-          git -C $RepoPath reset --hard origin/live
+          git -C $RepoPath checkout Live
+          git -C $RepoPath reset --hard origin/Live
           git -C $RepoPath submodule update --init --recursive
 
       - name: Build live branch

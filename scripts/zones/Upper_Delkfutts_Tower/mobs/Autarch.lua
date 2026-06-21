@@ -8,7 +8,8 @@ local entity = {}
 entity.onMobInitialize = function(mob)
     mob:setMobMod(xi.mobMod.AUTO_SPIKES, 1)
     mob:setMobMod(xi.mobMod.DETECTION, bit.bor(xi.detects.MAGIC, xi.detects.SCENT)) -- TODO: Verify scent tracking on retail.
-    xi.mob.addSpikesWithDeathFlag(mob, xi.effect.SHOCK_SPIKES, 40)
+    mob:addStatusEffect(xi.effect.SHOCK_SPIKES, { power = 40, origin = mob })
+    mob:getStatusEffect(xi.effect.SHOCK_SPIKES):setEffectFlags(xi.effectFlag.DEATH)
 end
 
 entity.onMobSpawn = function(mob)

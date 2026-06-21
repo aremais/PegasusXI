@@ -9,7 +9,8 @@ local entity = {}
 
 entity.onMobInitialize = function(mob)
     mob:setMobMod(xi.mobMod.AUTO_SPIKES, 1)
-    xi.mob.addSpikesWithDeathFlag(mob, xi.effect.BLAZE_SPIKES, 200) -- Wiki says "180-230" and we have NO DATA! We don't know what the players conditions/gear was.
+    mob:addStatusEffect(xi.effect.BLAZE_SPIKES, { power = 200, origin = mob }) -- Wiki says "180-230" and we have NO DATA! We don't know what the players conditions/gear was.
+    mob:getStatusEffect(xi.effect.BLAZE_SPIKES):setEffectFlags(xi.effectFlag.DEATH)
     mob:setMobMod(xi.mobMod.IDLE_DESPAWN, 300)
 end
 

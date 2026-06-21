@@ -1,0 +1,174 @@
+name: Promote base to Live
+
+on:
+  workflow_dispatch:
+    inputs:
+      changelog_only:
+        description: Generate changelog and release only (skip branch promotion)
+        type: boolean
+        default: false
+      previous_live_commit:
+        description: Previous Live commit SHA (optional; auto-detects Live->base when Live is behind base)
+        type: string
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  promote:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch branches and tags
+        run: git fetch origin base Live --tags
+
+      - name: Promote base to Live
+        id: sync
+        if: ${{ !inputs.changelog_only }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          $PSNativeCommandUseErrorActionPreference = $true
+
+          $before = (git rev-parse origin/Live).Trim()
+          $target = (git rev-parse origin/base).Trim()
+
+          "before=$before" >> $env:GITHUB_OUTPUT
+          "target=$target" >> $env:GITHUB_OUTPUT
+
+          if ($before -eq $target) {
+            Write-Host "Live is already up to date with base."
+            "changed=false" >> $env:GITHUB_OUTPUT
+            exit 0
+          }
+
+          git checkout Live
+
+          git merge-base --is-ancestor $before $target
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Fast-forwarding Live to base."
+            git merge origin/base --ff-only
+            git push origin Live
+          } else {
+            Write-Host "Live and base have diverged; resetting Live to match base."
+            Write-Host "Previous Live: $before"
+            Write-Host "Target base:   $target"
+            git reset --hard origin/base
+            git push origin Live --force-with-lease
+          }
+
+          $after = (git rev-parse HEAD).Trim()
+          "after=$after" >> $env:GITHUB_OUTPUT
+          "changed=true" >> $env:GITHUB_OUTPUT
+
+      - name: Resolve changelog range
+        id: range
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          if ('${{ inputs.changelog_only }}' -eq 'true') {
+            $live = (git rev-parse origin/Live).Trim()
+            $base = (git rev-parse origin/base).Trim()
+            $before = "${{ inputs.previous_live_commit }}".Trim()
+
+            if (-not $before) {
+              $tag = git tag -l "live-*" --sort=-creatordate | Select-Object -First 1
+              if ($tag) {
+                $before = (git rev-parse "$tag").Trim()
+                Write-Host "Resolved previous Live commit from tag ${tag}: $before"
+              }
+            }
+
+            if (-not $before) {
+              if ($live -ne $base) {
+                $before = $live
+                $after = $base
+                Write-Host "Auto-resolved pending promotion: Live ($before) -> base ($after)"
+              } else {
+                throw @"
+          Live is already up to date with base and no live-* release tag exists.
+          Provide previous_live_commit (the old Live SHA from a prior promotion run).
+          "@
+              }
+            } else {
+              $after = if ($live -ne $base) { $base } else { $live }
+            }
+
+            git rev-parse --verify "$before^{commit}" | Out-Null
+            git rev-parse --verify "$after^{commit}" | Out-Null
+
+            if ($before -eq $after) {
+              Write-Host "No changes between $before and $after."
+              "changed=false" >> $env:GITHUB_OUTPUT
+            } else {
+              $mergeBase = (git merge-base $before $after).Trim()
+              Write-Host "Changelog range: $before -> $after (merge-base: $mergeBase)"
+              "changed=true" >> $env:GITHUB_OUTPUT
+            }
+
+            "before=$before" >> $env:GITHUB_OUTPUT
+            "after=$after" >> $env:GITHUB_OUTPUT
+          } else {
+            "before=${{ steps.sync.outputs.before }}" >> $env:GITHUB_OUTPUT
+            "after=${{ steps.sync.outputs.after }}" >> $env:GITHUB_OUTPUT
+            "changed=${{ steps.sync.outputs.changed }}" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Set up Python
+        if: steps.range.outputs.changed == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate changelog
+        id: changelog
+        if: steps.range.outputs.changed == 'true'
+        run: |
+          $ErrorActionPreference = "Stop"
+          $PSNativeCommandUseErrorActionPreference = $true
+
+          $dateTag = Get-Date -Format "yyyy-MM-dd-HHmm"
+          $output = Join-Path $env:GITHUB_WORKSPACE "live-changelog-$dateTag.md"
+          $before = "${{ steps.range.outputs.before }}"
+          $after = "${{ steps.range.outputs.after }}"
+
+          Write-Host "Generating changelog from $before to $after"
+          python tools/ci/generate_live_changelog.py $before $after $output
+
+          if (-not (Test-Path $output)) {
+            throw "Changelog was not created at $output"
+          }
+
+          Get-Content $output
+
+          "date_tag=$dateTag" >> $env:GITHUB_OUTPUT
+          "changelog_path=$output" >> $env:GITHUB_OUTPUT
+
+      - name: Add changelog to job summary
+        if: steps.range.outputs.changed == 'true'
+        run: |
+          Get-Content "${{ steps.changelog.outputs.changelog_path }}" >> $env:GITHUB_STEP_SUMMARY
+
+      - name: Publish Live release notes
+        if: steps.range.outputs.changed == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: live-${{ steps.changelog.outputs.date_tag }}
+          name: Live update ${{ steps.changelog.outputs.date_tag }}
+          body_path: ${{ steps.changelog.outputs.changelog_path }}
+          target_commitish: Live
+          make_latest: true

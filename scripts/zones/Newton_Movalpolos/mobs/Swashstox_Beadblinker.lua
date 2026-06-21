@@ -33,10 +33,7 @@ entity.onMobSpawn = function(mob)
         local pos = mob:getPos()
 
         SpawnMob(guardID)
-        local guard = GetMobByID(guardID)
-        if guard then
-            guard:setSpawn(pos.x + i, pos.y - 0.5, pos.z - i, pos.rot)
-        end
+        GetMobByID(guardID):setSpawn(pos.x + i, pos.y - 0.5, pos.z - i, pos.rot)
 
         mob:setMobMod(xi.mobMod.BASE_DAMAGE_MULTIPLIER, 150)
     end

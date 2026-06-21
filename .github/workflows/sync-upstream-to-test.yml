@@ -3,7 +3,8 @@ name: Sync upstream into Test
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: "0 10 * * *"
+    # Sundays at 10:00 UTC — once per week
+    - cron: "0 10 * * 0"
 
 permissions:
   contents: write

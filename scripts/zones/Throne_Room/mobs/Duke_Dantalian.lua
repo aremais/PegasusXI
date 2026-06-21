@@ -10,7 +10,6 @@ mixins = { require('scripts/mixins/job_special') }
 local entity = {}
 
 entity.onMobInitialize = function(mob)
-    mob:setMobMod(xi.mobMod.ALWAYS_AGGRO, 1)
     xi.pet.setMobPet(mob, 2, 'Demons_Elemental')
     mob:setMobMod(xi.mobMod.ASTRAL_PET_OFFSET, 3)
     mob:setMod(xi.mod.DARK_SLEEP_RES_RANK, 6)
@@ -22,8 +21,7 @@ end
 
 entity.onMobDeath = function(mob, player, optParams)
     local elementalId = mob:getID() + 2
-    local elemental   = GetEntityByID(elementalId, nil, true)
-    if elemental and elemental:isSpawned() then
+    if GetMobByID(elementalId):isSpawned() then
         DespawnMob(elementalId)
     end
 end
