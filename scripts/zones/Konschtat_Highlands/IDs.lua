@@ -64,7 +64,7 @@ zones[xi.zone.KONSCHTAT_HIGHLANDS] =
         RAMPAGING_RAM  = GetFirstID('Rampaging_Ram'),
         STEELFLEECE    = GetFirstID('Steelfleece_Baldarich'),
         TREMOR_RAM     = GetTableOfIDs('Tremor_Ram'),
-        FORGER         = GetFirstID('Forger'),
+        FORGER         = GetFirstID('Forger') or 17219999, -- qm2 Forge Your Destiny pop
         HATY           = GetFirstID('Haty'),
         BENDIGEIT_VRAN = GetFirstID('Bendigeit_Vran'),
 

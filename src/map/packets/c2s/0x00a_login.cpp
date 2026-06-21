@@ -37,8 +37,7 @@
 auto GP_CLI_COMMAND_LOGIN::validate(MapSession* PSession, const CCharEntity* PChar) const -> PacketValidationResult
 {
     return PacketValidator(PChar)
-        .mustEqual(PChar->id, this->UniqueNo, "Player ID mismatch")
-        .mustNotEqual(PSession->blowfish.status == BLOWFISH_ACCEPTED && PChar->status == STATUS_TYPE::NORMAL, true, "Player already logged in.");
+        .mustEqual(PChar->id, this->UniqueNo, "Player ID mismatch");
 }
 
 void GP_CLI_COMMAND_LOGIN::process(MapSession* PSession, CCharEntity* PChar) const
@@ -132,6 +131,9 @@ void GP_CLI_COMMAND_LOGIN::process(MapSession* PSession, CCharEntity* PChar) con
     // TODO: Need further research into the relationship between 0x00D and 0x00A, if any.
     if (PChar->loc.zone != nullptr)
     {
+        // Duplicate 0x00A after login can happen when the client retries after missing zone-in packets.
+        const bool firstZoneIn = PChar->status != STATUS_TYPE::NORMAL;
+
         PChar->pushPacket<GP_SERV_COMMAND_EQUIP_CLEAR>();
         PChar->pushPacket<GP_SERV_COMMAND_GRAP_LIST>(PChar);
         PChar->pushPacket<GP_SERV_COMMAND_ITEM_MAX>(PChar);
@@ -145,6 +147,10 @@ void GP_CLI_COMMAND_LOGIN::process(MapSession* PSession, CCharEntity* PChar) con
             }
         }
         PChar->status = STATUS_TYPE::NORMAL;
-        PChar->PAI->QueueAction(queueAction_t(4000ms, false, zoneutils::AfterZoneIn));
+
+        if (firstZoneIn)
+        {
+            PChar->PAI->QueueAction(queueAction_t(4000ms, false, zoneutils::AfterZoneIn));
+        }
     }
 }

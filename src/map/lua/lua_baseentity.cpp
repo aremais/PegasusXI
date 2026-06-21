@@ -558,6 +558,83 @@ void CLuaBaseEntity::messageSpecial(uint16 messageID, sol::variadic_args va)
 }
 
 /************************************************************************
+ *  Function: messageItemObtained()
+ *  Purpose : Retail-style item obtain line; never uses GIL_OBTAINED or ID 0
+ *  Example : player:messageItemObtained(14893, 1)
+ *  Notes   : Returns false if zone text IDs are missing or unsafe
+ ************************************************************************/
+
+auto CLuaBaseEntity::messageItemObtained(uint16 itemId, const sol::object& quantityObj) -> bool
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowError("messageItemObtained called on non-PC entity (%s)", m_PBaseEntity->name.c_str());
+        return false;
+    }
+
+    const auto zoneId  = m_PBaseEntity->getZone();
+    const auto itemMsg = luautils::GetTextIDVariable(zoneId, "ITEM_OBTAINED");
+    const auto gilMsg  = luautils::GetTextIDVariable(zoneId, "GIL_OBTAINED");
+
+    if (itemMsg <= 0)
+    {
+        return false;
+    }
+
+    // GIL is normally ITEM_OBTAINED + 1; only reject if ITEM_OBTAINED is mis-set to the gil slot.
+    if (gilMsg > 0 && itemMsg == gilMsg)
+    {
+        ShowWarning("messageItemObtained: zone %u ITEM_OBTAINED (%d) equals GIL_OBTAINED (%d)", zoneId, itemMsg, gilMsg);
+        return false;
+    }
+
+    uint32 quantity = 1;
+    if (quantityObj != sol::lua_nil && quantityObj.is<uint32>())
+    {
+        quantity = quantityObj.as<uint32>();
+    }
+    else if (quantityObj != sol::lua_nil && quantityObj.is<int>())
+    {
+        const auto qty = quantityObj.as<int>();
+        if (qty > 0)
+        {
+            quantity = static_cast<uint32>(qty);
+        }
+    }
+
+    if (quantity == 0)
+    {
+        quantity = 1;
+    }
+
+    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
+
+    if (quantity > 1)
+    {
+        auto pluralMsg = luautils::GetTextIDVariable(zoneId, "ITEMS_OBTAINED");
+        if (pluralMsg <= 0)
+        {
+            pluralMsg = itemMsg + 9;
+        }
+
+        if (gilMsg > 0 && (pluralMsg == gilMsg || pluralMsg == itemMsg + 1))
+        {
+            pluralMsg = 0;
+        }
+
+        if (pluralMsg > 0)
+        {
+            PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK>(m_PBaseEntity, static_cast<uint16>(pluralMsg), itemId, quantity, 0, 0, false);
+            return true;
+        }
+    }
+
+    ShowInfo("messageItemObtained: %s zone %u msg %d item %u qty %u", m_PBaseEntity->name.c_str(), zoneId, itemMsg, itemId, quantity);
+    PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK>(m_PBaseEntity, static_cast<uint16>(itemMsg), itemId, 0, 0, 0, false);
+    return true;
+}
+
+/************************************************************************
  *  Function: messageSystem()
  *  Purpose : Sends a standard system message
  *  Example : player:messageSystem("Text")
@@ -576,46 +653,6 @@ void CLuaBaseEntity::messageSystem(MsgStd messageID, const sol::object& p0, cons
     uint32 param1 = (p1 != sol::lua_nil) ? p1.as<uint32>() : 0;
 
     static_cast<CCharEntity*>(m_PBaseEntity)->pushPacket<GP_SERV_COMMAND_SYSTEMMES>(param0, param1, messageID);
-}
-
-/************************************************************************
- *  Function: messageItemObtained()
- *  Purpose : Displays item obtained message using zone text IDs
- *  Example : player:messageItemObtained(itemId, quantity)
- *  Notes   : Returns false when zone text IDs are unavailable
- ************************************************************************/
-
-bool CLuaBaseEntity::messageItemObtained(uint16 itemId, const sol::object& quantityObj)
-{
-    if (m_PBaseEntity->objtype != TYPE_PC)
-    {
-        ShowError("Function called on non-PC entity (%s)", m_PBaseEntity->name.c_str());
-        return false;
-    }
-
-    const uint32 quantity     = (quantityObj != sol::lua_nil) ? quantityObj.as<uint32>() : 1;
-    const auto   zoneId       = m_PBaseEntity->getZone();
-    const auto   itemObtained = luautils::GetTextIDVariable(zoneId, "ITEM_OBTAINED");
-
-    if (itemObtained <= 0)
-    {
-        return false;
-    }
-
-    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
-
-    if (quantity > 1)
-    {
-        const auto   itemsObtained = luautils::GetTextIDVariable(zoneId, "ITEMS_OBTAINED");
-        const uint16 messageId     = itemsObtained > 0 ? static_cast<uint16>(itemsObtained) : static_cast<uint16>(itemObtained + 9);
-        PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK>(m_PBaseEntity, messageId, itemId, quantity, 0, 0, false);
-    }
-    else
-    {
-        PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK>(m_PBaseEntity, static_cast<uint16>(itemObtained), itemId, 0, 0, 0, false);
-    }
-
-    return true;
 }
 
 /************************************************************************
@@ -18342,6 +18379,11 @@ void CLuaBaseEntity::instantiateMob(uint32 groupID)
     }
 
     CMobEntity* newMob = mobutils::InstantiateAlly(groupID, m_PBaseEntity->getZone());
+    if (newMob == nullptr)
+    {
+        ShowError("CLuaBaseEntity::instantiateMob - group ID %u not found in zone %u", groupID, m_PBaseEntity->getZone());
+        return;
+    }
 
     newMob->loc.p        = m_PBaseEntity->loc.p;
     newMob->m_SpawnPoint = newMob->loc.p;

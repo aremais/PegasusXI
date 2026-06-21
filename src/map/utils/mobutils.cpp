@@ -41,6 +41,8 @@
 #include "trait.h"
 #include "zone_entities.h"
 #include "zoneutils.h"
+#include <cstring>
+#include <optional>
 #include <vector>
 
 namespace mobutils
@@ -1706,179 +1708,382 @@ void AddSqlModifiers(CMobEntity* PMob)
     }
 }
 
+namespace
+{
+struct AllyMobSqlRow
+{
+    std::string     name;
+    std::string     packet_name;
+    uint32          respawntime{};
+    SPAWNTYPE       spawntype{};
+    uint32          dropid{};
+    uint32          HPmodifier{};
+    uint32          MPmodifier{};
+    uint8           minLevel{};
+    uint8           maxLevel{};
+    uint16          modelid[10]{};
+    uint8           mJob{};
+    uint8           sJob{};
+    uint8           cmbSkill{};
+    uint16          cmbDmgMult{};
+    uint16          cmbDelay{};
+    uint16          behavior{};
+    uint8           links{};
+    uint8           mobType{};
+    IMMUNITY        immunity{};
+    ECOSYSTEM       ecosystemID{};
+    uint8           speed{};
+    uint8           strRank{};
+    uint8           dexRank{};
+    uint8           vitRank{};
+    uint8           agiRank{};
+    uint8           intRank{};
+    uint8           mndRank{};
+    uint8           chrRank{};
+    uint8           evaRank{};
+    uint8           defRank{};
+    uint8           attRank{};
+    uint8           accRank{};
+    int16           slash_sdt{};
+    int16           pierce_sdt{};
+    int16           h2h_sdt{};
+    int16           impact_sdt{};
+    int16           magical_sdt{};
+    int16           fire_sdt{};
+    int16           ice_sdt{};
+    int16           wind_sdt{};
+    int16           earth_sdt{};
+    int16           lightning_sdt{};
+    int16           water_sdt{};
+    int16           light_sdt{};
+    int16           dark_sdt{};
+    int8            fire_res_rank{};
+    int8            ice_res_rank{};
+    int8            wind_res_rank{};
+    int8            earth_res_rank{};
+    int8            lightning_res_rank{};
+    int8            water_res_rank{};
+    int8            light_res_rank{};
+    int8            dark_res_rank{};
+    int8            paralyze_res_rank{};
+    int8            bind_res_rank{};
+    int8            silence_res_rank{};
+    int8            slow_res_rank{};
+    int8            poison_res_rank{};
+    int8            light_sleep_res_rank{};
+    int8            dark_sleep_res_rank{};
+    int8            blind_res_rank{};
+    uint8           element{};
+    uint16          speciesid{};
+    uint8           name_prefix{};
+    uint32          entityFlags{};
+    uint32          animationsub{};
+    float           hp_scale{};
+    float           mp_scale{};
+    uint16          spellList{};
+    uint32          poolid{};
+    ALLEGIANCE_TYPE allegiance{};
+    uint8           namevis{};
+    bool            aggro{};
+    uint16          skill_list_id{};
+    bool            true_detection{};
+    int16           detects{};
+    uint8           modelSize{};
+    float           modelHitboxSize{};
+};
+
+constexpr const char* kInstantiateAllyQuery = "SELECT zoneid, mob_groups.name, packet_name, respawntime, "
+                                              "spawntype, dropid, mob_groups.HP, mob_groups.MP, "
+                                              "mob_spawn_points.minLevel, mob_spawn_points.maxLevel, modelid, mJob, "
+                                              "sJob, cmbSkill, cmbDmgMult, cmbDelay, "
+                                              "behavior, links, mobType, immunity, "
+                                              "ecosystemID, speed, STR, "
+                                              "DEX, VIT, AGI, `INT`, "
+                                              "MND, CHR, EVA, DEF, "
+                                              "ATT, ACC, slash_sdt, pierce_sdt, "
+                                              "h2h_sdt, impact_sdt, magical_sdt, "
+                                              "fire_sdt, ice_sdt, wind_sdt, earth_sdt, lightning_sdt, water_sdt, light_sdt, dark_sdt, "
+                                              "fire_res_rank, ice_res_rank, wind_res_rank, earth_res_rank, lightning_res_rank, water_res_rank, light_res_rank, dark_res_rank, "
+                                              "paralyze_res_rank, bind_res_rank, silence_res_rank, slow_res_rank, poison_res_rank, light_sleep_res_rank, dark_sleep_res_rank, blind_res_rank, "
+                                              "Element, "
+                                              "mob_pools.speciesid, name_prefix, entityFlags, animationsub, "
+                                              "(mob_species_system.HP / 100) AS hp_scale, (mob_species_system.MP / 100) AS mp_scale, hasSpellScript, spellList, "
+                                              "mob_groups.poolid, allegiance, namevis, aggro, "
+                                              "mob_pools.skill_list_id, mob_pools.true_detection, mob_species_system.detects, "
+                                              "mob_pools.modelSize, mob_pools.modelHitboxSize "
+                                              "FROM mob_groups INNER JOIN mob_spawn_points ON mob_groups.groupid = mob_spawn_points.groupid "
+                                              "INNER JOIN mob_pools ON mob_groups.poolid = mob_pools.poolid "
+                                              "INNER JOIN mob_resistances ON mob_pools.resist_id = mob_resistances.resist_id "
+                                              "INNER JOIN mob_species_system ON mob_pools.speciesid = mob_species_system.speciesID "
+                                              "WHERE mob_groups.groupid = ? AND mob_groups.zoneid = ?";
+
+auto fetchAllyMobSqlRow(uint32 groupid, uint16 zoneID) -> std::optional<AllyMobSqlRow>
+{
+    return db::withPreparedStmt(
+        kInstantiateAllyQuery,
+        [](db::detail::ResultSetWrapper& rset) -> std::optional<AllyMobSqlRow>
+        {
+            if (!rset.rowsCount() || !rset.next())
+            {
+                return std::nullopt;
+            }
+
+            AllyMobSqlRow row;
+
+            row.name        = rset.get<std::string>("name");
+            row.packet_name = rset.get<std::string>("packet_name");
+
+            row.respawntime = rset.get<uint32>("respawntime");
+            row.spawntype   = rset.get<SPAWNTYPE>("spawntype");
+            row.dropid      = rset.get<uint32>("dropid");
+
+            row.HPmodifier = rset.get<uint32>("HP");
+            row.MPmodifier = rset.get<uint32>("MP");
+
+            row.minLevel = rset.get<uint8>("minLevel");
+            row.maxLevel = rset.get<uint8>("maxLevel");
+
+            db::extractFromBlob(&rset, "modelid", row.modelid);
+
+            row.mJob = rset.get<uint8>("mJob");
+            row.sJob = rset.get<uint8>("sJob");
+
+            row.cmbSkill   = rset.get<uint8>("cmbSkill");
+            row.cmbDmgMult = rset.get<uint16>("cmbDmgMult");
+            row.cmbDelay   = rset.get<uint16>("cmbDelay");
+
+            row.behavior  = rset.get<uint16>("behavior");
+            row.links     = rset.get<uint8>("links");
+            row.mobType   = rset.get<uint8>("mobType");
+            row.immunity  = rset.get<IMMUNITY>("immunity");
+            row.ecosystemID = rset.get<ECOSYSTEM>("ecosystemID");
+
+            row.speed = rset.get<uint8>("speed");
+
+            row.strRank = rset.get<uint8>("STR");
+            row.dexRank = rset.get<uint8>("DEX");
+            row.vitRank = rset.get<uint8>("VIT");
+            row.agiRank = rset.get<uint8>("AGI");
+            row.intRank = rset.get<uint8>("INT");
+            row.mndRank = rset.get<uint8>("MND");
+            row.chrRank = rset.get<uint8>("CHR");
+            row.evaRank = rset.get<uint8>("EVA");
+            row.defRank = rset.get<uint8>("DEF");
+            row.attRank = rset.get<uint8>("ATT");
+            row.accRank = rset.get<uint8>("ACC");
+
+            row.slash_sdt  = rset.get<int16>("slash_sdt");
+            row.pierce_sdt = rset.get<int16>("pierce_sdt");
+            row.h2h_sdt    = rset.get<int16>("h2h_sdt");
+            row.impact_sdt = rset.get<int16>("impact_sdt");
+
+            row.magical_sdt = rset.get<int16>("magical_sdt");
+
+            row.fire_sdt    = rset.get<int16>("fire_sdt");
+            row.ice_sdt     = rset.get<int16>("ice_sdt");
+            row.wind_sdt    = rset.get<int16>("wind_sdt");
+            row.earth_sdt   = rset.get<int16>("earth_sdt");
+            row.lightning_sdt = rset.get<int16>("lightning_sdt");
+            row.water_sdt   = rset.get<int16>("water_sdt");
+            row.light_sdt   = rset.get<int16>("light_sdt");
+            row.dark_sdt    = rset.get<int16>("dark_sdt");
+
+            row.fire_res_rank    = rset.get<int8>("fire_res_rank");
+            row.ice_res_rank     = rset.get<int8>("ice_res_rank");
+            row.wind_res_rank    = rset.get<int8>("wind_res_rank");
+            row.earth_res_rank   = rset.get<int8>("earth_res_rank");
+            row.lightning_res_rank = rset.get<int8>("lightning_res_rank");
+            row.water_res_rank   = rset.get<int8>("water_res_rank");
+            row.light_res_rank   = rset.get<int8>("light_res_rank");
+            row.dark_res_rank    = rset.get<int8>("dark_res_rank");
+
+            row.paralyze_res_rank    = rset.get<int8>("paralyze_res_rank");
+            row.bind_res_rank        = rset.get<int8>("bind_res_rank");
+            row.silence_res_rank     = rset.get<int8>("silence_res_rank");
+            row.slow_res_rank        = rset.get<int8>("slow_res_rank");
+            row.poison_res_rank      = rset.get<int8>("poison_res_rank");
+            row.light_sleep_res_rank = rset.get<int8>("light_sleep_res_rank");
+            row.dark_sleep_res_rank  = rset.get<int8>("dark_sleep_res_rank");
+            row.blind_res_rank       = rset.get<int8>("blind_res_rank");
+
+            row.element      = rset.get<uint8>("Element");
+            row.speciesid    = rset.get<uint16>("speciesid");
+            row.name_prefix  = rset.get<uint8>("name_prefix");
+            row.entityFlags  = rset.get<uint32>("entityFlags");
+            row.animationsub = rset.get<uint32>("animationsub");
+
+            row.hp_scale = rset.get<float>("hp_scale");
+            row.mp_scale = rset.get<float>("mp_scale");
+
+            row.spellList = rset.get<uint16>("spellList");
+            row.poolid    = rset.get<uint32>("poolid");
+
+            row.allegiance = rset.get<ALLEGIANCE_TYPE>("allegiance");
+            row.namevis    = rset.get<uint8>("namevis");
+            row.aggro      = rset.get<bool>("aggro");
+
+            row.skill_list_id  = rset.get<uint16>("skill_list_id");
+            row.true_detection = rset.get<bool>("true_detection");
+            row.detects        = rset.get<int16>("detects");
+
+            row.modelSize       = rset.getOrDefault<uint8>("modelSize", 0);
+            row.modelHitboxSize = rset.getOrDefault<float>("modelHitboxSize", 0);
+
+            return row;
+        },
+        groupid,
+        zoneID);
+}
+
+void applyAllyMobSqlRow(CMobEntity* PMob, const AllyMobSqlRow& row, CInstance* instance)
+{
+    PMob->PInstance = instance;
+
+    PMob->name.insert(0, row.name);
+    PMob->packetName.insert(0, row.packet_name);
+
+    PMob->m_RespawnTime = std::chrono::seconds(row.respawntime);
+    PMob->m_SpawnType   = row.spawntype;
+    PMob->m_DropID      = row.dropid;
+
+    PMob->HPmodifier = row.HPmodifier;
+    PMob->MPmodifier = row.MPmodifier;
+
+    PMob->m_minLevel = row.minLevel;
+    PMob->m_maxLevel = row.maxLevel;
+
+    uint16 modelid[10];
+    std::memcpy(modelid, row.modelid, sizeof(modelid));
+    PMob->look = look_t(modelid);
+
+    PMob->SetMJob(row.mJob);
+    PMob->SetSJob(row.sJob);
+
+    static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setMaxHit(1);
+    static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setSkillType(row.cmbSkill);
+    PMob->m_dmgMult = row.cmbDmgMult;
+    static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setDelay(row.cmbDelay);
+    static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setBaseDelay(row.cmbDelay);
+
+    PMob->m_Behavior  = row.behavior;
+    PMob->m_Link      = row.links;
+    PMob->m_Type      = row.mobType;
+    PMob->m_Immunity  = row.immunity;
+    PMob->m_EcoSystem = row.ecosystemID;
+
+    PMob->baseSpeed      = row.speed;
+    PMob->animationSpeed = row.speed;
+    PMob->UpdateSpeed();
+
+    PMob->strRank = row.strRank;
+    PMob->dexRank = row.dexRank;
+    PMob->vitRank = row.vitRank;
+    PMob->agiRank = row.agiRank;
+    PMob->intRank = row.intRank;
+    PMob->mndRank = row.mndRank;
+    PMob->chrRank = row.chrRank;
+    PMob->evaRank = row.evaRank;
+    PMob->defRank = row.defRank;
+    PMob->attRank = row.attRank;
+    PMob->accRank = row.accRank;
+
+    PMob->setModifier(Mod::SLASH_SDT, row.slash_sdt);
+    PMob->setModifier(Mod::PIERCE_SDT, row.pierce_sdt);
+    PMob->setModifier(Mod::HTH_SDT, row.h2h_sdt);
+    PMob->setModifier(Mod::IMPACT_SDT, row.impact_sdt);
+    PMob->setModifier(Mod::UDMGMAGIC, row.magical_sdt);
+
+    PMob->setModifier(Mod::FIRE_SDT, row.fire_sdt);
+    PMob->setModifier(Mod::ICE_SDT, row.ice_sdt);
+    PMob->setModifier(Mod::WIND_SDT, row.wind_sdt);
+    PMob->setModifier(Mod::EARTH_SDT, row.earth_sdt);
+    PMob->setModifier(Mod::THUNDER_SDT, row.lightning_sdt);
+    PMob->setModifier(Mod::WATER_SDT, row.water_sdt);
+    PMob->setModifier(Mod::LIGHT_SDT, row.light_sdt);
+    PMob->setModifier(Mod::DARK_SDT, row.dark_sdt);
+
+    PMob->setModifier(Mod::FIRE_RES_RANK, row.fire_res_rank);
+    PMob->setModifier(Mod::ICE_RES_RANK, row.ice_res_rank);
+    PMob->setModifier(Mod::WIND_RES_RANK, row.wind_res_rank);
+    PMob->setModifier(Mod::EARTH_RES_RANK, row.earth_res_rank);
+    PMob->setModifier(Mod::THUNDER_RES_RANK, row.lightning_res_rank);
+    PMob->setModifier(Mod::WATER_RES_RANK, row.water_res_rank);
+    PMob->setModifier(Mod::LIGHT_RES_RANK, row.light_res_rank);
+    PMob->setModifier(Mod::DARK_RES_RANK, row.dark_res_rank);
+
+    PMob->setModifier(Mod::PARALYZE_RES_RANK, row.paralyze_res_rank);
+    PMob->setModifier(Mod::BIND_RES_RANK, row.bind_res_rank);
+    PMob->setModifier(Mod::SILENCE_RES_RANK, row.silence_res_rank);
+    PMob->setModifier(Mod::SLOW_RES_RANK, row.slow_res_rank);
+    PMob->setModifier(Mod::POISON_RES_RANK, row.poison_res_rank);
+    PMob->setModifier(Mod::LIGHT_SLEEP_RES_RANK, row.light_sleep_res_rank);
+    PMob->setModifier(Mod::DARK_SLEEP_RES_RANK, row.dark_sleep_res_rank);
+    PMob->setModifier(Mod::BLIND_RES_RANK, row.blind_res_rank);
+
+    PMob->m_Element     = row.element;
+    PMob->m_Species     = row.speciesid;
+    PMob->m_name_prefix = row.name_prefix;
+    PMob->m_flags       = row.entityFlags;
+    PMob->animationsub  = row.animationsub;
+
+    PMob->HPscale = row.hp_scale;
+    PMob->MPscale = row.mp_scale;
+
+    PMob->m_SpellListContainer = mobSpellList::GetMobSpellList(row.spellList);
+    PMob->m_Pool               = row.poolid;
+
+    PMob->allegiance      = row.allegiance;
+    PMob->namevis         = row.namevis;
+    PMob->modelHitboxSize = std::max<float>(0.0f, row.modelHitboxSize / 10.f);
+    PMob->modelSize       = row.modelSize;
+    PMob->m_Aggro         = row.aggro;
+    PMob->m_MobSkillList  = row.skill_list_id;
+    PMob->m_TrueDetection = row.true_detection;
+    PMob->setMobMod(MOBMOD_DETECTION, row.detects);
+}
+
+} // namespace
+
 auto InstantiateAlly(uint32 groupid, uint16 zoneID, CInstance* instance) -> CMobEntity*
 {
-    CMobEntity* PMob = nullptr;
-
-    const auto rset = db::preparedStmt("SELECT zoneid, mob_groups.name, packet_name, respawntime, "
-                                       "spawntype, dropid, mob_groups.HP, mob_groups.MP, "
-                                       "mob_spawn_points.minLevel, mob_spawn_points.maxLevel, modelid, mJob, "
-                                       "sJob, cmbSkill, cmbDmgMult, cmbDelay, "
-                                       "behavior, links, mobType, immunity, "
-                                       "ecosystemID, speed, STR, "
-                                       "DEX, VIT, AGI, `INT`, "
-                                       "MND, CHR, EVA, DEF, "
-                                       "ATT, ACC, slash_sdt, pierce_sdt, "
-                                       "h2h_sdt, impact_sdt, magical_sdt, "
-                                       "fire_sdt, ice_sdt, wind_sdt, earth_sdt, lightning_sdt, water_sdt, light_sdt, dark_sdt, "
-                                       "fire_res_rank, ice_res_rank, wind_res_rank, earth_res_rank, lightning_res_rank, water_res_rank, light_res_rank, dark_res_rank, "
-                                       "paralyze_res_rank, bind_res_rank, silence_res_rank, slow_res_rank, poison_res_rank, light_sleep_res_rank, dark_sleep_res_rank, blind_res_rank, "
-                                       "Element, "
-                                       "mob_pools.speciesid, name_prefix, entityFlags, animationsub, "
-                                       "(mob_species_system.HP / 100) AS hp_scale, (mob_species_system.MP / 100) AS mp_scale, hasSpellScript, spellList, "
-                                       "mob_groups.poolid, allegiance, namevis, aggro, "
-                                       "mob_pools.skill_list_id, mob_pools.true_detection, mob_species_system.detects, "
-                                       "mob_pools.modelSize, mob_pools.modelHitboxSize "
-                                       "FROM mob_groups INNER JOIN mob_spawn_points ON mob_groups.groupid = mob_spawn_points.groupid "
-                                       "INNER JOIN mob_pools ON mob_groups.poolid = mob_pools.poolid "
-                                       "INNER JOIN mob_resistances ON mob_pools.resist_id = mob_resistances.resist_id "
-                                       "INNER JOIN mob_species_system ON mob_pools.speciesid = mob_species_system.speciesID "
-                                       "WHERE mob_groups.groupid = ? AND mob_groups.zoneid = ?",
-                                       groupid,
-                                       zoneID);
-    FOR_DB_SINGLE_RESULT(rset)
+    const auto row = fetchAllyMobSqlRow(groupid, zoneID);
+    if (!row)
     {
-        PMob            = new CMobEntity();
-        PMob->PInstance = instance;
-
-        PMob->name.insert(0, rset->get<std::string>("name"));
-        PMob->packetName.insert(0, rset->get<std::string>("packet_name"));
-
-        PMob->m_RespawnTime = std::chrono::seconds(rset->get<uint32>("respawntime"));
-        PMob->m_SpawnType   = rset->get<SPAWNTYPE>("spawntype");
-        PMob->m_DropID      = rset->get<uint32>("dropid");
-
-        PMob->HPmodifier = rset->get<uint32>("HP");
-        PMob->MPmodifier = rset->get<uint32>("MP");
-
-        PMob->m_minLevel = rset->get<uint8>("minLevel");
-        PMob->m_maxLevel = rset->get<uint8>("maxLevel");
-
-        uint16 sqlModelID[10];
-        db::extractFromBlob(rset, "modelid", sqlModelID);
-        PMob->look = look_t(sqlModelID);
-
-        PMob->SetMJob(rset->get<uint8>("mJob"));
-        PMob->SetSJob(rset->get<uint8>("sJob"));
-
-        static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setMaxHit(1);
-        static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setSkillType(rset->get<uint8>("cmbSkill"));
-        PMob->m_dmgMult = rset->get<uint16>("cmbDmgMult");
-        static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setDelay(rset->get<uint16>("cmbDelay"));
-        static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setBaseDelay(rset->get<uint16>("cmbDelay"));
-
-        PMob->m_Behavior  = rset->get<uint16>("behavior");
-        PMob->m_Link      = rset->get<uint8>("links");
-        PMob->m_Type      = rset->get<uint8>("mobType");
-        PMob->m_Immunity  = rset->get<IMMUNITY>("immunity");
-        PMob->m_EcoSystem = rset->get<ECOSYSTEM>("ecosystemID");
-
-        PMob->baseSpeed      = rset->get<uint8>("speed"); // Overwrites baseentity.cpp's defined baseSpeed
-        PMob->animationSpeed = rset->get<uint8>("speed"); // Overwrites baseentity.cpp's defined animationSpeed
-        PMob->UpdateSpeed();
-
-        PMob->strRank = rset->get<uint8>("STR");
-        PMob->dexRank = rset->get<uint8>("DEX");
-        PMob->vitRank = rset->get<uint8>("VIT");
-        PMob->agiRank = rset->get<uint8>("AGI");
-        PMob->intRank = rset->get<uint8>("INT");
-        PMob->mndRank = rset->get<uint8>("MND");
-        PMob->chrRank = rset->get<uint8>("CHR");
-        PMob->evaRank = rset->get<uint8>("EVA");
-        PMob->defRank = rset->get<uint8>("DEF");
-        PMob->attRank = rset->get<uint8>("ATT");
-        PMob->accRank = rset->get<uint8>("ACC");
-
-        PMob->setModifier(Mod::SLASH_SDT, rset->get<int16>("slash_sdt"));
-        PMob->setModifier(Mod::PIERCE_SDT, rset->get<int16>("pierce_sdt"));
-        PMob->setModifier(Mod::HTH_SDT, rset->get<int16>("h2h_sdt"));
-        PMob->setModifier(Mod::IMPACT_SDT, rset->get<int16>("impact_sdt"));
-
-        PMob->setModifier(Mod::UDMGMAGIC, rset->get<int16>("magical_sdt")); // Modifier 389, base 10000 stored as signed integer. Positives signify less damage.
-
-        PMob->setModifier(Mod::FIRE_SDT, rset->get<int16>("fire_sdt"));         // Modifier 54, base 10000 stored as signed integer. Positives signify less damage.
-        PMob->setModifier(Mod::ICE_SDT, rset->get<int16>("ice_sdt"));           // Modifier 55, base 10000 stored as signed integer. Positives signify less damage.
-        PMob->setModifier(Mod::WIND_SDT, rset->get<int16>("wind_sdt"));         // Modifier 56, base 10000 stored as signed integer. Positives signify less damage.
-        PMob->setModifier(Mod::EARTH_SDT, rset->get<int16>("earth_sdt"));       // Modifier 57, base 10000 stored as signed integer. Positives signify less damage.
-        PMob->setModifier(Mod::THUNDER_SDT, rset->get<int16>("lightning_sdt")); // Modifier 58, base 10000 stored as signed integer. Positives signify less damage.
-        PMob->setModifier(Mod::WATER_SDT, rset->get<int16>("water_sdt"));       // Modifier 59, base 10000 stored as signed integer. Positives signify less damage.
-        PMob->setModifier(Mod::LIGHT_SDT, rset->get<int16>("light_sdt"));       // Modifier 60, base 10000 stored as signed integer. Positives signify less damage.
-        PMob->setModifier(Mod::DARK_SDT, rset->get<int16>("dark_sdt"));         // Modifier 61, base 10000 stored as signed integer. Positives signify less damage.
-
-        PMob->setModifier(Mod::FIRE_RES_RANK, rset->get<int8>("fire_res_rank"));
-        PMob->setModifier(Mod::ICE_RES_RANK, rset->get<int8>("ice_res_rank"));
-        PMob->setModifier(Mod::WIND_RES_RANK, rset->get<int8>("wind_res_rank"));
-        PMob->setModifier(Mod::EARTH_RES_RANK, rset->get<int8>("earth_res_rank"));
-        PMob->setModifier(Mod::THUNDER_RES_RANK, rset->get<int8>("lightning_res_rank"));
-        PMob->setModifier(Mod::WATER_RES_RANK, rset->get<int8>("water_res_rank"));
-        PMob->setModifier(Mod::LIGHT_RES_RANK, rset->get<int8>("light_res_rank"));
-        PMob->setModifier(Mod::DARK_RES_RANK, rset->get<int8>("dark_res_rank"));
-
-        PMob->setModifier(Mod::PARALYZE_RES_RANK, rset->get<int8>("paralyze_res_rank"));
-        PMob->setModifier(Mod::BIND_RES_RANK, rset->get<int8>("bind_res_rank"));
-        PMob->setModifier(Mod::SILENCE_RES_RANK, rset->get<int8>("silence_res_rank"));
-        PMob->setModifier(Mod::SLOW_RES_RANK, rset->get<int8>("slow_res_rank"));
-        PMob->setModifier(Mod::POISON_RES_RANK, rset->get<int8>("poison_res_rank"));
-        PMob->setModifier(Mod::LIGHT_SLEEP_RES_RANK, rset->get<int8>("light_sleep_res_rank"));
-        PMob->setModifier(Mod::DARK_SLEEP_RES_RANK, rset->get<int8>("dark_sleep_res_rank"));
-        PMob->setModifier(Mod::BLIND_RES_RANK, rset->get<int8>("blind_res_rank"));
-
-        PMob->m_Element     = rset->get<uint8>("Element");
-        PMob->m_Species     = rset->get<uint16>("speciesid");
-        PMob->m_name_prefix = rset->get<uint8>("name_prefix");
-        PMob->m_flags       = rset->get<uint32>("entityFlags");
-
-        // Special sub animation for Mob (yovra, jailer of love, phuabo)
-        // yovra 1: On top/in the sky, 2: , 3: On top/in the sky
-        // phuabo 1: Underwater, 2: Out of the water, 3: Goes back underwater
-        PMob->animationsub = rset->get<uint32>("animationsub");
-
-        // Setup HP / MP Stat Percentage Boost
-        PMob->HPscale = rset->get<float>("hp_scale");
-        PMob->MPscale = rset->get<float>("mp_scale");
-
-        PMob->m_SpellListContainer = mobSpellList::GetMobSpellList(rset->get<uint16>("spellList"));
-
-        PMob->m_Pool = rset->get<uint32>("poolid");
-
-        PMob->allegiance      = rset->get<ALLEGIANCE_TYPE>("allegiance");
-        PMob->namevis         = rset->get<uint8>("namevis");
-        PMob->modelHitboxSize = std::max<float>(0.0f, rset->getOrDefault<float>("modelHitboxSize", 0) / 10.f);
-        PMob->modelSize       = rset->getOrDefault<uint8>("modelSize", 0);
-        PMob->m_Aggro         = rset->get<bool>("aggro");
-        PMob->m_MobSkillList  = rset->get<uint16>("skill_list_id");
-        PMob->m_TrueDetection = rset->get<bool>("true_detection");
-        PMob->setMobMod(MOBMOD_DETECTION, rset->get<int16>("detects"));
-
-        if (CZone* PZone = zoneutils::GetZone(zoneID))
-        {
-            PZone->GetZoneEntities()->AssignDynamicTargIDandLongID(PMob);
-            PZone->GetZoneEntities()->InsertMOB(PMob);
-        }
-        else
-        {
-            ShowError("Mobutils::InstantiateAlly failed to get zone from zoneutils::GetZone(zoneID)");
-        }
-
-        // Ensure dynamic targid is released on death
-        PMob->m_bReleaseTargIDOnDisappear = true;
-
-        // must be here first to define mobmods
-        mobutils::InitializeMob(PMob);
-
-        luautils::OnEntityLoad(PMob);
-
-        luautils::OnMobInitialize(PMob);
-        if (CZone* PZone = zoneutils::GetZone(zoneID))
-        {
-            PZone->FindPartyForMob(PMob);
-        }
-        luautils::ApplyMixins(PMob);
-        luautils::ApplyZoneMixins(PMob);
-
-        PMob->saveModifiers();
-        PMob->saveMobModifiers();
+        ShowError("Mobutils::InstantiateAlly: mob group %u not found in zone %u (missing mob_groups/mob_spawn_points row?)", groupid, zoneID);
+        return nullptr;
     }
+
+    auto* PMob = new CMobEntity();
+    applyAllyMobSqlRow(PMob, *row, instance);
+
+    if (CZone* PZone = zoneutils::GetZone(zoneID))
+    {
+        PZone->GetZoneEntities()->AssignDynamicTargIDandLongID(PMob);
+        PZone->GetZoneEntities()->InsertMOB(PMob);
+    }
+    else
+    {
+        ShowError("Mobutils::InstantiateAlly failed to get zone from zoneutils::GetZone(zoneID)");
+    }
+
+    // Ensure dynamic targid is released on death
+    PMob->m_bReleaseTargIDOnDisappear = true;
+
+    // must be here first to define mobmods
+    mobutils::InitializeMob(PMob);
+
+    luautils::OnEntityLoad(PMob);
+
+    luautils::OnMobInitialize(PMob);
+    if (CZone* PZone = zoneutils::GetZone(zoneID))
+    {
+        PZone->FindPartyForMob(PMob);
+    }
+    luautils::ApplyMixins(PMob);
+    luautils::ApplyZoneMixins(PMob);
+
+    PMob->saveModifiers();
+    PMob->saveMobModifiers();
 
     return PMob;
 }
