@@ -262,14 +262,8 @@ void ValidatedPacketHandler(MapSession* const PSession, CCharEntity* const PChar
         const uint16 packetType = data.ref<uint16>(0) & 0x1FF;
         const auto   error      = result.errorString();
 
-        // Duplicate 0x00A after successful zone/login can happen on client retry.
-        // Keep validation strict, but avoid warning spam for this known benign case.
-        if (packetType == 0x00A && error == "Player already logged in.")
-        {
-            ShowDebugFmt("Invalid 0x{:03X} packet from {}: {}", packetType, PChar->name, error);
-        }
         // Client can resend 0x050 (equip) frequently during events/cutscenes; we still reject it.
-        else if (packetType == 0x050 && error == "Invalid state: InEvent")
+        if (packetType == 0x050 && error == "Invalid state: InEvent")
         {
             ShowDebugFmt("Invalid 0x{:03X} packet from {}: {}", packetType, PChar->name, error);
         }

@@ -528,6 +528,11 @@ void bindValue(const std::unique_ptr<sql::PreparedStatement>& stmt, int& counter
 {
     TracyZoneScoped;
 
+    if (!stmt)
+    {
+        return;
+    }
+
     // Enums: convert to underlying type for database storage
     using UnderlyingT = enum_decay_t<T>;
 
@@ -695,6 +700,12 @@ auto preparedStmt(const std::string& rawQuery, Args&&... args) -> std::unique_pt
                 std::vector<std::shared_ptr<BlobWrapper>> blobs;
 
                 const auto& stmt = state.lazyPreparedStatements[rawQuery];
+                if (!stmt)
+                {
+                    ShowError("Prepared statement is null. Query not executed: %s", rawQuery.c_str());
+                    return nullptr;
+                }
+
                 db::detail::binder(stmt, counter, blobs, std::forward<Args>(args)...);
                 const auto queryTimer = detail::timer(rawQuery);
 
@@ -742,8 +753,116 @@ auto preparedStmt(const std::string& rawQuery, Args&&... args) -> std::unique_pt
                             queryRetryCount,
                             lastConnectionError,
                             rawQuery);
-            std::this_thread::sleep_for(1s);
-            std::terminate();
+            return nullptr;
+        });
+}
+
+// @brief Execute a prepared SELECT and invoke a callback while the database mutex is held.
+// Use this when reading many columns from a result set. A second query on the same thread
+// (for example from Lua or character save logic) invalidates an open result set on the
+// shared connection if the mutex has already been released.
+template <typename Fn, typename... Args>
+auto withPreparedStmt(const std::string& rawQuery, Fn&& fn, Args&&... args) -> std::invoke_result_t<Fn, detail::ResultSetWrapper&>
+{
+    using ReturnT = std::invoke_result_t<Fn, detail::ResultSetWrapper&>;
+
+    TracyZoneScoped;
+    TracyZoneString(rawQuery);
+
+    const auto queryType = detail::validateQueryLeadingKeyword(rawQuery);
+    if (queryType == detail::ResultSetType::Invalid)
+    {
+        ShowErrorFmt("Invalid query: {}", rawQuery);
+        return ReturnT{};
+    }
+
+    if (!detail::validateQueryContent(rawQuery))
+    {
+        ShowErrorFmt("Invalid query content: {}", rawQuery);
+        return ReturnT{};
+    }
+
+    if (queryType != detail::ResultSetType::Select)
+    {
+        ShowErrorFmt("withPreparedStmt requires a SELECT query: {}", rawQuery);
+        return ReturnT{};
+    }
+
+    return detail::getState().write(
+        [&](detail::State& state) -> ReturnT
+        {
+            const auto operation = [&]() -> std::unique_ptr<db::detail::ResultSetWrapper>
+            {
+                if (!state.connection)
+                {
+                    ShowError("Database connection is null. Query not executed: %s", rawQuery.c_str());
+                    return nullptr;
+                }
+
+                if (state.lazyPreparedStatements.find(rawQuery) == state.lazyPreparedStatements.end())
+                {
+                    state.lazyPreparedStatements[rawQuery] = std::unique_ptr<sql::PreparedStatement>(state.connection->prepareStatement(rawQuery.c_str()));
+                }
+
+                DebugSQLFmt("withPreparedStmt: {}", rawQuery);
+
+                auto counter = 0;
+
+                std::vector<std::shared_ptr<BlobWrapper>> blobs;
+
+                const auto& stmt = state.lazyPreparedStatements[rawQuery];
+                if (!stmt)
+                {
+                    ShowError("Prepared statement is null. Query not executed: %s", rawQuery.c_str());
+                    return nullptr;
+                }
+
+                db::detail::binder(stmt, counter, blobs, std::forward<Args>(args)...);
+                const auto queryTimer = detail::timer(rawQuery);
+
+                auto rset = std::unique_ptr<sql::ResultSet>(stmt->executeQuery());
+                return std::make_unique<db::detail::ResultSetWrapper>(std::move(rset), rawQuery);
+            };
+
+            const auto queryRetryCount = 1U + settings::get<uint32>("network.SQL_QUERY_RETRY_COUNT");
+            std::string lastConnectionError;
+            for (auto i = 0U; i < queryRetryCount; ++i)
+            {
+                try
+                {
+                    if (i > 0)
+                    {
+                        std::this_thread::sleep_for(std::chrono::milliseconds(100 * static_cast<int>(i)));
+                        ShowInfo("Connection lost, re-establishing connection and retrying query (attempt %u of %u)", i + 1, queryRetryCount);
+                        state.reset();
+                    }
+
+                    auto rsetWrapper = operation();
+                    if (!rsetWrapper)
+                    {
+                        return ReturnT{};
+                    }
+
+                    return fn(*rsetWrapper);
+                }
+                catch (const std::exception& e)
+                {
+                    if (!detail::isConnectionIssue(e))
+                    {
+                        ShowErrorFmt("Query Failed: {}", rawQuery.c_str());
+                        ShowErrorFmt("{}", e.what());
+                        return ReturnT{};
+                    }
+                    lastConnectionError = e.what();
+                    ShowWarningFmt("SQL connection-level error (attempt {}/{}): {}", i + 1, queryRetryCount, lastConnectionError);
+                }
+            }
+
+            ShowCriticalFmt("Query failed after {} attempts (each failed with a connection-level error). Last driver error: {} | Query: {}",
+                            queryRetryCount,
+                            lastConnectionError,
+                            rawQuery);
+            return ReturnT{};
         });
 }
 
