@@ -157,7 +157,9 @@ local function checkForStrays(mob)
 
     -- Check for alive/dead strays.
     for i = mobId + 1, mobId + receptacleInfoTable[zoneId][mobId][2] do
-        if not GetMobByID(i):isSpawned() then
+        local stray = GetMobByID(i)
+
+        if not stray or not stray:isSpawned() then
             strayId = i
             break
         end
@@ -279,7 +281,11 @@ xi.promyvion.receptacleOnMobRoam = function(mob)
         -- Spawn stray.
         if strayId > 0 then
             spawnStray(mob, strayId)
-            GetMobByID(strayId):setLocalVar('[Stray]RangedEnmity', 1)
+
+            local stray = GetMobByID(strayId)
+            if stray then
+                stray:setLocalVar('[Stray]RangedEnmity', 1)
+            end
         end
 
         -- Handle cooldown.
