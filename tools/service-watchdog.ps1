@@ -30,10 +30,57 @@ function Write-Log {
     }
 }
 
+function Start-ServerProcess {
+    param(
+        [string]$Name,
+        [string]$Exe,
+        [string]$LogFile
+    )
+
+    $exePath = Join-Path $ServerPath $Exe
+    if (-not (Test-Path -LiteralPath $exePath)) {
+        Write-Log "ERROR: Missing executable $exePath"
+        return $false
+    }
+
+    $args = @()
+    if ($LogFile) {
+        $args = @("--log", $LogFile)
+    }
+
+    try {
+        Start-Process -FilePath $exePath -WorkingDirectory $ServerPath -ArgumentList $args | Out-Null
+        Write-Log "RESTARTED: $Exe was not running; started successfully."
+        return $true
+    } catch {
+        Write-Log "ERROR: Failed to start $Exe. $($_.Exception.Message)"
+        return $false
+    }
+}
+
+function Restart-IpcStack {
+    Write-Log "RESTARTING: xi_map died; restarting connect/world/search/map for ZMQ IPC recovery."
+
+    foreach ($svc in $services) {
+        Get-Process -Name $svc.Name -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+    }
+
+    Start-Sleep -Seconds 3
+
+    Start-ServerProcess -Name "xi_connect" -Exe "xi_connect.exe" -LogFile "log/connect-server.log" | Out-Null
+    Start-Sleep -Seconds 2
+    Start-ServerProcess -Name "xi_search" -Exe "xi_search.exe" -LogFile "log/search-server.log" | Out-Null
+    Start-Sleep -Seconds 2
+    Start-ServerProcess -Name "xi_world" -Exe "xi_world.exe" -LogFile "log/world-server.log" | Out-Null
+    Start-Sleep -Seconds 3
+    Start-ServerProcess -Name "xi_map" -Exe "xi_map.exe" -LogFile "log/map-server.log" | Out-Null
+}
+
 function Ensure-ServiceRunning {
     param(
         [string]$Name,
-        [string]$Exe
+        [string]$Exe,
+        [string]$LogFile
     )
 
     $proc = Get-Process -Name $Name -ErrorAction SilentlyContinue
@@ -42,24 +89,23 @@ function Ensure-ServiceRunning {
         return
     }
 
-    $exePath = Join-Path $ServerPath $Exe
-    if (-not (Test-Path -LiteralPath $exePath)) {
-        Write-Log "ERROR: Missing executable $exePath"
+    if ($Name -eq "xi_map") {
+        Restart-IpcStack
         return
     }
 
-    try {
-        # Start in the interactive desktop session so the service window/icon is visible.
-        Start-Process -FilePath $exePath -WorkingDirectory $ServerPath | Out-Null
-        Write-Log "RESTARTED: $Exe was not running; started successfully."
-    } catch {
-        Write-Log "ERROR: Failed to start $Exe. $($_.Exception.Message)"
-    }
+    Start-ServerProcess -Name $Name -Exe $Exe -LogFile $LogFile | Out-Null
 }
 
 function Run-HealthCheck {
+    $mapRunning = Get-Process -Name "xi_map" -ErrorAction SilentlyContinue
+    if (-not $mapRunning) {
+        Restart-IpcStack
+        return
+    }
+
     foreach ($svc in $services) {
-        Ensure-ServiceRunning -Name $svc.Name -Exe $svc.Exe
+        Ensure-ServiceRunning -Name $svc.Name -Exe $svc.Exe -LogFile ("log/{0}" -f ($svc.Exe -replace '\.exe$', '-server.log'))
     }
 }
 
