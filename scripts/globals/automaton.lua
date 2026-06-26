@@ -318,6 +318,8 @@ xi.automaton.onAttachmentUnequip = function(pet, attachment)
     pet:clearLocalVarsWithPrefix(attachment:getName())
 end
 
+local isUpdatingAttachments = false
+
 xi.automaton.onManeuverGain = function(pet, attachment, maneuvers)
     xi.automaton.updateAttachmentModifier(pet, attachment, maneuvers)
 end
@@ -329,6 +331,12 @@ end
 xi.automaton.updateAttachmentModifier = function(pet, attachment, maneuvers)
     local attachmentName = attachment:getName()
     local modTable       = attachmentModifiers[attachmentName]
+
+    if not modTable then
+        return
+    end
+
+    local needsAttachmentRefresh = false
 
     for attachmentModPos, modList in ipairs(modTable) do
         local previousMod = pet:getLocalVar(attachmentName .. attachmentModPos)
@@ -366,16 +374,18 @@ xi.automaton.updateAttachmentModifier = function(pet, attachment, maneuvers)
 
             pet:setLocalVar(attachmentName .. attachmentModPos, math.abs(modValue))
 
-            -- If this is an Optic Fiber, there may be other maneuvers and attachments that need to be
-            -- updated.
-            local master = pet:getMaster()
-            if
-                master and
-                isOpticFiber(attachmentName)
-            then
-                master:updateAttachments()
+            if isOpticFiber(attachmentName) then
+                needsAttachmentRefresh = true
             end
         end
+    end
+
+    -- Refresh all attachments once after optic fiber changes (never from inside the mod loop).
+    local master = pet:getMaster()
+    if needsAttachmentRefresh and master and not isUpdatingAttachments then
+        isUpdatingAttachments = true
+        master:updateAttachments()
+        isUpdatingAttachments = false
     end
 end
 

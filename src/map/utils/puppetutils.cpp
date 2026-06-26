@@ -33,6 +33,8 @@
 #include "status_effect_container.h"
 #include "zoneutils.h"
 
+#include <common/xi.h>
+
 namespace puppetutils
 {
 
@@ -708,6 +710,26 @@ void TrySkillUP(CAutomatonEntity* PAutomaton, SKILLTYPE SkillID, uint8 lvl)
 
 void CheckAttachmentsForManeuver(const CCharEntity* PChar, const EFFECT maneuver, const bool gain)
 {
+    if (!PChar || !PChar->StatusEffectContainer)
+    {
+        return;
+    }
+
+    if (maneuver < EFFECT_FIRE_MANEUVER || maneuver > EFFECT_DARK_MANEUVER)
+    {
+        return;
+    }
+
+    // Maneuver attachment scripts can add/remove mods and status effects; guard against
+    // reentrant calls that have caused stack corruption in production.
+    static thread_local bool inCheckAttachmentsForManeuver = false;
+    if (inCheckAttachmentsForManeuver)
+    {
+        return;
+    }
+    inCheckAttachmentsForManeuver = true;
+    const auto resetGuard = xi::finally([]() { inCheckAttachmentsForManeuver = false; });
+
     auto* PAutomaton = dynamic_cast<CAutomatonEntity*>(PChar->PPet);
     if (PAutomaton)
     {
@@ -754,31 +776,53 @@ void EquipAttachments(CAutomatonEntity* PAutomaton)
 
 void UpdateAttachments(const CCharEntity* PChar)
 {
-    auto* PAutomaton = dynamic_cast<CAutomatonEntity*>(PChar->PPet);
-    if (PAutomaton)
+    if (!PChar || !PChar->StatusEffectContainer)
     {
-        for (uint8 i = 0; i < 12; i++)
-        {
-            if (PAutomaton->getAttachment(i) != 0)
-            {
-                auto* PAttachment = xi::items::lookup<CItemPuppet>(0x2100 + PAutomaton->getAttachment(i));
+        return;
+    }
 
-                if (PAttachment)
+    static thread_local int  updateAttachmentsDepth = 0;
+    static thread_local bool updateAttachmentsPending = false;
+
+    if (updateAttachmentsDepth > 0)
+    {
+        updateAttachmentsPending = true;
+        return;
+    }
+
+    do
+    {
+        updateAttachmentsPending = false;
+        ++updateAttachmentsDepth;
+
+        auto* PAutomaton = dynamic_cast<CAutomatonEntity*>(PChar->PPet);
+        if (PAutomaton)
+        {
+            for (uint8 i = 0; i < 12; i++)
+            {
+                if (PAutomaton->getAttachment(i) != 0)
                 {
-                    int32 maneuver = EFFECT_FIRE_MANEUVER;
-                    for (int j = 0; j < 8; j++)
+                    auto* PAttachment = xi::items::lookup<CItemPuppet>(0x2100 + PAutomaton->getAttachment(i));
+
+                    if (PAttachment)
                     {
-                        if (PAttachment->getElementSlots() >> (j * 4) & 0xF)
+                        int32 maneuver = EFFECT_FIRE_MANEUVER;
+                        for (int j = 0; j < 8; j++)
                         {
-                            maneuver += j;
-                            break;
+                            if (PAttachment->getElementSlots() >> (j * 4) & 0xF)
+                            {
+                                maneuver += j;
+                                break;
+                            }
                         }
+                        luautils::OnUpdateAttachment(PAutomaton, PAttachment, PChar->StatusEffectContainer->GetEffectsCount(static_cast<EFFECT>(maneuver)));
                     }
-                    luautils::OnUpdateAttachment(PAutomaton, PAttachment, PChar->StatusEffectContainer->GetEffectsCount(static_cast<EFFECT>(maneuver)));
                 }
             }
         }
-    }
+
+        --updateAttachmentsDepth;
+    } while (updateAttachmentsPending);
 }
 
 void PreLevelRestriction(const CCharEntity* PChar)
