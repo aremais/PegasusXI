@@ -18,7 +18,7 @@ commandObj.onTrigger = function(player)
     end
 
     ReloadCommandScripts()
-    player:printToPlayer('Reloaded GM commands from scripts/commands/. Check map log for Loaded command script lines.')
+    player:printToPlayer('Reloaded GM commands from scripts/commands/. Check map log for the reload summary.')
 end
 
 return commandObj

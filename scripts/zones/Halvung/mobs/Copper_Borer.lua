@@ -8,7 +8,8 @@ local entity = {}
 entity.onMobInitialize = function(mob)
     mob:setMobMod(xi.mobMod.ADD_EFFECT, 1)
     mob:setMobMod(xi.mobMod.AUTO_SPIKES, 1)
-    xi.mob.addSpikesWithDeathFlag(mob, xi.effect.BLAZE_SPIKES, 36)
+    mob:addStatusEffect(xi.effect.BLAZE_SPIKES, { power = 36, origin = mob })
+    mob:getStatusEffect(xi.effect.BLAZE_SPIKES):setEffectFlags(xi.effectFlag.DEATH)
 end
 
 entity.onAdditionalEffect = function(mob, target, damage)

@@ -13,7 +13,6 @@ entity.onMobInitialize = function(mob)
 end
 
 entity.onMobSpawn = function(mob)
-    mob:setMobMod(xi.mobMod.ALWAYS_AGGRO, 1)
     mob:setMod(xi.mod.DOUBLE_ATTACK, 20)
     mob:setMod(xi.mod.STORETP, 62)
     mob:setMobMod(xi.mobMod.NO_LINK, 1)

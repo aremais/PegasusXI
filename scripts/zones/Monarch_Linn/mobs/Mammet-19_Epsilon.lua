@@ -47,8 +47,6 @@ entity.onMobInitialize = function(mob)
 end
 
 entity.onMobSpawn = function(mob)
-    -- Retail: Mammets in Ancient Vows do not aggro until a player attacks (yellow liquid can be used first).
-    mob:setAggressive(false)
     mob:setMagicCastingEnabled(false)
 end
 

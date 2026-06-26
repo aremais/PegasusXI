@@ -61,7 +61,8 @@ entity.spawnPoints =
 
 entity.onMobInitialize = function(mob)
     mob:setMobMod(xi.mobMod.AUTO_SPIKES, 1)
-    xi.mob.addSpikesWithDeathFlag(mob, xi.effect.ICE_SPIKES, 50)
+    mob:addStatusEffect(xi.effect.ICE_SPIKES, { power = 50, origin = mob })
+    mob:getStatusEffect(xi.effect.ICE_SPIKES):setEffectFlags(xi.effectFlag.DEATH)
 end
 
 entity.onSpikesDamage = function(mob, target, damage)
