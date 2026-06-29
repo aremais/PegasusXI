@@ -8,7 +8,7 @@ zones[xi.zone.FORT_GHELSBA] =
     text =
     {
         CONQUEST_BASE                 = 0,    -- Tallying conquest results...
-        ITEM_CANNOT_BE_OBTAINED       = 6544, -- You cannot obtain the <item>. Come back after sorting your inventory.
+        ITEM_CANNOT_BE_OBTAINED       = 6385, -- You cannot obtain the <item>. Come back after sorting your inventory.
         ITEM_OBTAINED                 = 6552, -- Obtained: <item>.
         GIL_OBTAINED                  = 6553, -- Obtained <number> gil.
         KEYITEM_OBTAINED              = 6555, -- Obtained key item: <keyitem>.

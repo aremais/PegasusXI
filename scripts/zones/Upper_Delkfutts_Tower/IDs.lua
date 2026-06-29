@@ -8,7 +8,7 @@ zones[xi.zone.UPPER_DELKFUTTS_TOWER] =
     text =
     {
         THIS_ELEVATOR_GOES_DOWN       = 25,    -- This elevator goes down, but it is locked. Perhaps a key is needed to activate it.
-        ITEM_CANNOT_BE_OBTAINED       = 6420,  -- You cannot obtain the <item>. Come back after sorting your inventory.
+        ITEM_CANNOT_BE_OBTAINED       = 6385,  -- You cannot obtain the <item>. Come back after sorting your inventory.
         ITEM_OBTAINED                 = 6426,  -- Obtained: <item>.
         GIL_OBTAINED                  = 6427,  -- Obtained <number> gil.
         KEYITEM_OBTAINED              = 6429,  -- Obtained key item: <keyitem>.

@@ -7,7 +7,7 @@ zones[xi.zone.PHOMIUNA_AQUEDUCTS] =
 {
     text =
     {
-        ITEM_CANNOT_BE_OBTAINED       = 6383, -- You cannot obtain the <item>. Come back after sorting your inventory. [PegasusXI: CANNOT+4 trade-full = 6387]
+        ITEM_CANNOT_BE_OBTAINED       = 6385, -- You cannot obtain the <item>. Come back after sorting your inventory. [PegasusXI: CANNOT+4 trade-full = 6387]
         ITEM_OBTAINED                 = 6391, -- Obtained: <item>. [PegasusXI: -3 offset from LSB base 6394]
         GIL_OBTAINED                  = 6392, -- Obtained <number> gil. [PegasusXI: -3 offset from LSB base 6395]
         KEYITEM_OBTAINED              = 6394, -- Obtained key item: <keyitem>. [PegasusXI: -3 offset from LSB base 6397]

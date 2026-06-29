@@ -9,7 +9,7 @@ zones[xi.zone.PORT_SAN_DORIA] =
     {
         HOMEPOINT_SET                  = 24,    -- Home point set!
         ASSIST_CHANNEL                 = 6424,  -- You will be able to use the Assist Channel until #/#/# at #:# (JST).
-        ITEM_CANNOT_BE_OBTAINED        = 6427,  -- You cannot obtain the <item>. Come back after sorting your inventory.
+        ITEM_CANNOT_BE_OBTAINED        = 6385,  -- You cannot obtain the <item>. Come back after sorting your inventory.
         MYSTIC_RETRIEVER               = 6432,  -- You cannot obtain the <item>. Speak with the mystic retriever after sorting your inventory.
         FULL_INVENTORY_AFTER_TRADE     = 6433,  -- You cannot obtain the <item>. Try trading again after sorting your inventory.
         ITEM_OBTAINED                  = 6435,  -- Obtained: <item>.

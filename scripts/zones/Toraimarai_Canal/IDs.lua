@@ -8,7 +8,7 @@ zones[xi.zone.TORAIMARAI_CANAL] =
     text =
     {
         SEALED_SHUT                   = 3,     -- It's sealed shut with incredibly strong magic.
-        ITEM_CANNOT_BE_OBTAINED       = 6431,  -- You cannot obtain the <item>. Come back after sorting your inventory.
+        ITEM_CANNOT_BE_OBTAINED       = 6385,  -- You cannot obtain the <item>. Come back after sorting your inventory.
         ITEM_OBTAINED                 = 6439,  -- Obtained: <item>.
         GIL_OBTAINED                  = 6440,  -- Obtained <number> gil.
         KEYITEM_OBTAINED              = 6442,  -- Obtained key item: <keyitem>.

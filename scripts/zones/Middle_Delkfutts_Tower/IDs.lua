@@ -8,7 +8,7 @@ zones[xi.zone.MIDDLE_DELKFUTTS_TOWER] =
     text =
     {
         CONQUEST_BASE                 = 4,    -- Tallying conquest results...
-        ITEM_CANNOT_BE_OBTAINED       = 6548, -- You cannot obtain the <item>. Come back after sorting your inventory.
+        ITEM_CANNOT_BE_OBTAINED       = 6385, -- You cannot obtain the <item>. Come back after sorting your inventory.
         ITEM_OBTAINED                 = 6554, -- Obtained: <item>.
         GIL_OBTAINED                  = 6555, -- Obtained <number> gil.
         KEYITEM_OBTAINED              = 6557, -- Obtained key item: <keyitem>.

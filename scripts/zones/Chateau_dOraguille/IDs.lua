@@ -7,7 +7,7 @@ zones[xi.zone.CHATEAU_DORAGUILLE] =
 {
     text =
     {
-        ITEM_CANNOT_BE_OBTAINED       = 6591, -- You cannot obtain the <item>. Come back after sorting your inventory.
+        ITEM_CANNOT_BE_OBTAINED       = 6385, -- You cannot obtain the <item>. Come back after sorting your inventory.
         ITEM_OBTAINED                 = 6599, -- Obtained: <item>.
         GIL_OBTAINED                  = 6600, -- Obtained <number> gil.
         KEYITEM_OBTAINED              = 6602, -- Obtained key item: <keyitem>.

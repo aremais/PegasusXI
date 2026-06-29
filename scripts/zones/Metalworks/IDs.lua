@@ -9,7 +9,7 @@ zones[xi.zone.METALWORKS] =
     {
         YOU_ACCEPT_THE_MISSION        = 9,     -- You have accepted the mission.
         ORIGINAL_MISSION_OFFSET       = 14,    -- You can consult the Mission section of the main menu to review your objectives. Speed and efficiency are your priorities. Dismissed.
-        ITEM_CANNOT_BE_OBTAINED       = 6438,  -- You cannot obtain the <item>. Come back after sorting your inventory.
+        ITEM_CANNOT_BE_OBTAINED       = 6385,  -- You cannot obtain the <item>. Come back after sorting your inventory.
         FULL_INVENTORY_AFTER_TRADE    = 6442,  -- You cannot obtain the <item>. Try trading again after sorting your inventory.
         ITEM_OBTAINED                 = 6446,  -- Obtained: <item>.
         GIL_OBTAINED                  = 6447,  -- Obtained <number> gil.

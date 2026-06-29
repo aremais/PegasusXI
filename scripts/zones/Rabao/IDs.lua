@@ -9,7 +9,7 @@ zones[xi.zone.RABAO] =
     {
         HOMEPOINT_SET                 = 2,     -- Home point set!
         ASSIST_CHANNEL                = 6402,  -- You will be able to use the Assist Channel until #/#/# at #:# (JST).
-        ITEM_CANNOT_BE_OBTAINED       = 6407,  -- You cannot obtain the <item>. Come back after sorting your inventory.
+        ITEM_CANNOT_BE_OBTAINED       = 6385,  -- You cannot obtain the <item>. Come back after sorting your inventory.
         ITEM_OBTAINED                 = 6413,  -- Obtained: <item>.
         GIL_OBTAINED                  = 6414,  -- Obtained <number> gil.
         KEYITEM_OBTAINED              = 6416,  -- Obtained key item: <keyitem>.

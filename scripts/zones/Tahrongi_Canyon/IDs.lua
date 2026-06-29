@@ -8,7 +8,7 @@ zones[xi.zone.TAHRONGI_CANYON] =
     text =
     {
         CONQUEST_BASE                 = 0,     -- Tallying conquest results...
-        ITEM_CANNOT_BE_OBTAINED       = 6566,  -- You cannot obtain the <item>. Come back after sorting your inventory.
+        ITEM_CANNOT_BE_OBTAINED       = 6385,  -- You cannot obtain the <item>. Come back after sorting your inventory.
         ITEM_OBTAINED                 = 6572,  -- Obtained: <item>.
         GIL_OBTAINED                  = 6573,  -- Obtained <number> gil.
         KEYITEM_OBTAINED              = 6575,  -- Obtained key item: <keyitem>.

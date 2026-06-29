@@ -8,7 +8,7 @@ zones[xi.zone.XARCABARD] =
     text =
     {
         NOTHING_HAPPENS                = 119,   -- Nothing happens...
-        ITEM_CANNOT_BE_OBTAINED        = 6398,  -- You cannot obtain the <item>. Come back after sorting your inventory.
+        ITEM_CANNOT_BE_OBTAINED        = 6385,  -- You cannot obtain the <item>. Come back after sorting your inventory.
         ITEM_OBTAINED                  = 6404,  -- Obtained: <item>.
         GIL_OBTAINED                   = 6405,  -- Obtained <number> gil.
         KEYITEM_OBTAINED               = 6407,  -- Obtained key item: <keyitem>.
