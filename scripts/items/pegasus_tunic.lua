@@ -1,6 +1,6 @@
 -----------------------------------
 -- ID: 10293
--- Chocobo Shirt
+-- Pegasus Tunic
 -- Dispense: Crystals
 -----------------------------------
 ---@type TItem

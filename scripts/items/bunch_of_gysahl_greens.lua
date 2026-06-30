@@ -5,7 +5,7 @@
 -----------------------------------
 -- Agility +3
 -- Vitality -5
--- Additional Effect with Chocobo Shirt
+-- Additional Effect with Pegasus Tunic
 -- Agility +10
 -----------------------------------
 ---@type TItemFood

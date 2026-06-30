@@ -92,7 +92,7 @@ INSERT INTO `item_equipment` VALUES (10289,'sublime_breastplate',99,0,4,97,0,0,3
 INSERT INTO `item_equipment` VALUES (10290,'laudan_cuirass',99,0,10689,202,0,0,32,0,0,0);
 INSERT INTO `item_equipment` VALUES (10291,'febro_kaftan',99,0,2462754,234,0,0,32,0,0,0);
 INSERT INTO `item_equipment` VALUES (10292,'wikyo_cloak',99,0,1720860,47,0,0,32,16,0,0);
-INSERT INTO `item_equipment` VALUES (10293,'chocobo_shirt',1,0,4194303,309,0,0,32,0,0,0);
+INSERT INTO `item_equipment` VALUES (10293,'pegasus_tunic',1,0,4194303,309,0,0,32,0,0,0);
 INSERT INTO `item_equipment` VALUES (10295,'kokous_earring',99,0,8641,0,0,0,6144,0,0,0);
 INSERT INTO `item_equipment` VALUES (10296,'charivari_earring',99,0,131072,0,0,0,6144,0,0,0);
 INSERT INTO `item_equipment` VALUES (10297,'sortiarius_earring',99,0,4194303,0,0,0,6144,0,0,0);
@@ -4951,7 +4951,7 @@ INSERT INTO `item_equipment` VALUES (15194,'maats_cap',70,0,4194303,152,0,0,16,0
 INSERT INTO `item_equipment` VALUES (15195,'faerie_hairpin',70,0,4194303,0,0,0,16,0,0,0);
 INSERT INTO `item_equipment` VALUES (15196,'elegant_ribbon',51,0,4194303,32,0,0,16,0,0,0);
 INSERT INTO `item_equipment` VALUES (15197,'vampire_mask',51,0,3662710,60,0,0,16,0,0,0);
-INSERT INTO `item_equipment` VALUES (15198,'sprout_beret',1,0,4194303,153,0,0,16,0,0,0);
+INSERT INTO `item_equipment` VALUES (15198,'pegasus_beret',1,0,4194303,153,0,0,16,0,0,0);
 INSERT INTO `item_equipment` VALUES (15199,'guide_beret',1,0,4194303,154,0,0,16,0,0,0);
 INSERT INTO `item_equipment` VALUES (15200,'orc_helm',61,0,4194303,144,0,0,16,0,0,0);
 INSERT INTO `item_equipment` VALUES (15201,'quadav_barbut',61,0,4194303,147,0,0,16,0,0,0);
