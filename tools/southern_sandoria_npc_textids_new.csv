@@ -1,0 +1,695 @@
+display_name,script_name,npc_id,primary_text_id,primary_text_key,primary_event_id,alt_text_ids,alt_text_keys,alt_event_ids,trade_text_ids,trade_text_keys,event_finish_text_ids,event_finish_text_keys,notes
+01,01,17719374,,,,,,,,,,,no default text/event
+02,02,17719375,,,,,,,,,,,no default text/event
+03,03,17719376,,,,,,,,,,,no default text/event
+04,04,17719377,,,,,,,,,,,no default text/event
+05,05,17719378,,,,,,,,,,,no default text/event
+0x1A,0x1A,17719745,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719729,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719730,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719731,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719732,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719733,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719734,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719735,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719736,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719737,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719738,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719739,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719740,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719741,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719742,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719743,,,,,,,,,,,no default text/event
+0x6801,0x6801,17719744,,,,,,,,,,,no default text/event
+0x8A01,0x8A01,17719746,,,,,,,,,,,no default text/event
+???,qm,17719439,,,,,,,,,,,no default text/event
+???,qm2,17719506,6445,NOTHING_OUT_OF_ORDINARY,,,,,,,,,default
+???,qm3,17719507,6445,NOTHING_OUT_OF_ORDINARY,,,,41,,,,,script onTrigger
+???,qm4,17719508,6445,NOTHING_OUT_OF_ORDINARY,,,,,,,,,default
+???,qm5,17719544,,,,,,,,,,,no default text/event
+???,qm6,17719617,,,,,,,,,,,no default text/event
+???,qm7,17719621,,,,,,,,,,,no default text/event
+???,qm8,17719622,,,,,,,,,,,no default text/event
+???,qm9,17719639,,,,,,,,,,,no default text/event
+???,qm10,17719644,,,,,,,,,,,no default text/event
+???,qm11,17719645,,,,,,,,,,,no default text/event
+???,qm12,17720014,,,,,,,,,,,no default text/event
+_6fa,_6fa,17719502,,,,,,,,,,,no default text/event
+A,A,17719671,,,,,,,,,,,no default text/event
+A.M.A.N. Liaison,AMAN_Liaison,17720033,,,3617,,,3618; 3619,,,,,script onTrigger event
+A.M.A.N. Reclaimer,AMAN_Reclaimer,17719640,,,,,,,,,,,no default text/event
+A.M.A.N. Validator,AMAN_Validator,17720032,,,,,,,,,,,no default text/event
+Achieve Master,Achieve_Master,17720002,,,,,,,,,,,no default text/event
+Adaunel,Adaunel,17719486,,,656,,,,,,,,default event
+Ailbeche,Ailbeche,17719504,,,,,,,,,,,no default text/event
+Ailevia,Ailevia,17719422,,,,,,,,,,,printToPlayer only
+Alaune,Alaune,17719618,,,,,,,,,,,no default text/event
+Alivatand,Alivatand,17719548,,,690,,,,,,6843,GP_OBTAINED,script onTrigger event
+Amaura,Amaura,17719327,,,645,,,646,,,,,script onTrigger event
+Ambrotien,Ambrotien,17719394,,,2011,,,2001; 2009,,,,,script onTrigger event
+Amutiyaal,Amutiyaal,17719569,,,812,,,813; 815; 814,,,6439,KEYITEM_LOST,script onTrigger event
+Ancolain,Ancolain,17719361,,,,,,,,,,,no default text/event
+Andecia,Andecia,17719308,,,,,,,,,,,no default text/event
+Antreneau,Antreneau,17719511,,,,,,,,,,,no default text/event
+Anxaberoute,Anxaberoute,17719396,,,886,,,,,,,,default event
+Apairemant,Apairemant,17719306,8256,APAIREMANT_OPEN_DIALOG,,8262,APAIREMANT_CLOSED_DIALOG,,,,,,regional shop
+Aramaviont,Aramaviont,17719512,,,,,,,,,,,no default text/event
+"Aravoge, T.K.",Aravoge_TK,17719397,,,,,,,,,,,no default text/event
+Arpetion,Arpetion,17719409,,,660,,,,,,,,default event
+"Arpevion, T.K.",Arpevion_TK,17719398,,,,,,,,,,,no default text/event
+Artisan Moogle,Artisan_Moogle,17719633,,,,,,,,,,,no default text/event
+Arvilauge,Arvilauge,17719599,,,,,,,,,,,no default text/event
+Ashene,Ashene,17719354,8011,ASH_THADI_ENE_SHOP_DIALOG,,,,,,,,,script onTrigger
+Atelloune,Atelloune,17719610,,,884,,,,,,,,default event
+Atmacite Refiner,Atmacite_Refiner,17719634,,,,,,,,,,,no default text/event
+Aubejart,Aubejart,17719298,,,582,,,,,,,,default event
+Auction Counter,Auction_Counter,17719411,,,,,,,,,,,no default text/event
+Auction Counter,Auction_Counter,17719412,,,,,,,,,,,no default text/event
+Auction Counter,Auction_Counter,17719413,,,,,,,,,,,no default text/event
+Auction Counter,Auction_Counter,17719414,,,,,,,,,,,no default text/event
+Authere,Authere,17719357,,,809,,,597; 605,,,,,script onTrigger event
+Avandale,Avandale,17719371,,,,,,,,,,,no default text/event
+Aveline,Aveline,17719318,8257,RAIMBROYS_SHOP_DIALOG,,,,,,,,,script onTrigger
+B,B,17719682,,,,,,,,,,,no default text/event
+Babban Ny Mheillea,Babban_Ny_Mheillea,17719850,,,,,,,,,,,no default text/event
+Balamor,Balamor,17720013,,,,,,,,,,,no default text/event
+Balasiel,Balasiel,17719359,,,63,,,,,,,,script onTrigger event
+Balasiel,Balasiel,17719360,,,63,,,,,,,,script onTrigger event
+Bashraf,Bashraf,17719595,,,,,,,,,,,no default text/event
+Baunise,Baunise,17719301,8015,NOTHING_TO_REPORT,,,,,,,,,default
+Benaige,Benaige,17719317,8258,RAIMBROYS_SHOP_DIALOG+1,,,,,,,,,script onTrigger
+blank,blank,17719400,,,,,,,,,,,no default text/event
+blank,blank,17719401,,,,,,,,,,,no default text/event
+blank,blank,17719402,,,,,,,,,,,no default text/event
+blank,blank,17719403,,,,,,,,,,,no default text/event
+blank,blank,17719404,,,,,,,,,,,no default text/event
+blank,blank,17719405,,,,,,,,,,,no default text/event
+blank,blank,17719406,,,,,,,,,,,no default text/event
+blank,blank,17719407,,,,,,,,,,,no default text/event
+blank,blank,17719438,,,,,,,,,,,no default text/event
+blank,blank,17719440,,,,,,,,,,,no default text/event
+blank,blank,17719542,,,,,,,,,,,no default text/event
+blank,blank,17719555,,,,,,,,,,,no default text/event
+blank,blank,17719565,,,,,,,,,,,no default text/event
+blank,blank,17719566,,,,,,,,,,,no default text/event
+blank,blank,17719567,,,,,,,,,,,no default text/event
+blank,blank,17719568,,,,,,,,,,,no default text/event
+blank,blank,17719584,,,,,,,,,,,no default text/event
+blank,blank,17719600,,,,,,,,,,,no default text/event
+blank,blank,17719602,,,,,,,,,,,no default text/event
+blank,blank,17719604,,,,,,,,,,,no default text/event
+blank,blank,17719619,,,,,,,,,,,no default text/event
+blank,blank,17719623,,,,,,,,,,,no default text/event
+blank,blank,17719624,,,,,,,,,,,no default text/event
+blank,blank,17719648,,,,,,,,,,,no default text/event
+blank,blank,17719649,,,,,,,,,,,no default text/event
+blank,blank,17719650,,,,,,,,,,,no default text/event
+blank,blank,17719651,,,,,,,,,,,no default text/event
+blank,blank,17719652,,,,,,,,,,,no default text/event
+blank,blank,17719653,,,,,,,,,,,no default text/event
+blank,blank,17719664,,,,,,,,,,,no default text/event
+blank,blank,17719665,,,,,,,,,,,no default text/event
+blank,blank,17719685,,,,,,,,,,,no default text/event
+blank,blank,17719686,,,,,,,,,,,no default text/event
+blank,blank,17719688,,,,,,,,,,,no default text/event
+blank,blank,17719689,,,,,,,,,,,no default text/event
+blank,blank,17719690,,,,,,,,,,,no default text/event
+blank,blank,17719698,,,,,,,,,,,no default text/event
+blank,blank,17719699,,,,,,,,,,,no default text/event
+blank,blank,17719700,,,,,,,,,,,no default text/event
+blank,blank,17719701,,,,,,,,,,,no default text/event
+blank,blank,17719702,,,,,,,,,,,no default text/event
+blank,blank,17719705,,,,,,,,,,,no default text/event
+blank,blank,17719706,,,,,,,,,,,no default text/event
+blank,blank,17719707,,,,,,,,,,,no default text/event
+blank,blank,17719708,,,,,,,,,,,no default text/event
+blank,blank,17719709,,,,,,,,,,,no default text/event
+blank,blank,17719710,,,,,,,,,,,no default text/event
+blank,blank,17719711,,,,,,,,,,,no default text/event
+blank,blank,17719720,,,,,,,,,,,no default text/event
+blank,blank,17719723,,,,,,,,,,,no default text/event
+blank,blank,17719725,,,,,,,,,,,no default text/event
+blank,blank,17719726,,,,,,,,,,,no default text/event
+blank,blank,17719727,,,,,,,,,,,no default text/event
+blank,blank,17719728,,,,,,,,,,,no default text/event
+blank,blank,17719747,,,,,,,,,,,no default text/event
+blank,blank,17719748,,,,,,,,,,,no default text/event
+blank,blank,17719749,,,,,,,,,,,no default text/event
+blank,blank,17719750,,,,,,,,,,,no default text/event
+blank,blank,17719751,,,,,,,,,,,no default text/event
+blank,blank,17719752,,,,,,,,,,,no default text/event
+blank,blank,17719753,,,,,,,,,,,no default text/event
+blank,blank,17719754,,,,,,,,,,,no default text/event
+blank,blank,17719755,,,,,,,,,,,no default text/event
+blank,blank,17719756,,,,,,,,,,,no default text/event
+blank,blank,17719757,,,,,,,,,,,no default text/event
+blank,blank,17719758,,,,,,,,,,,no default text/event
+blank,blank,17719759,,,,,,,,,,,no default text/event
+blank,blank,17719760,,,,,,,,,,,no default text/event
+blank,blank,17719761,,,,,,,,,,,no default text/event
+blank,blank,17719762,,,,,,,,,,,no default text/event
+blank,blank,17719763,,,,,,,,,,,no default text/event
+blank,blank,17719764,,,,,,,,,,,no default text/event
+blank,blank,17719765,,,,,,,,,,,no default text/event
+blank,blank,17719766,,,,,,,,,,,no default text/event
+blank,blank,17719767,,,,,,,,,,,no default text/event
+blank,blank,17719768,,,,,,,,,,,no default text/event
+blank,blank,17719769,,,,,,,,,,,no default text/event
+blank,blank,17719770,,,,,,,,,,,no default text/event
+blank,blank,17719771,,,,,,,,,,,no default text/event
+blank,blank,17719772,,,,,,,,,,,no default text/event
+blank,blank,17719773,,,,,,,,,,,no default text/event
+blank,blank,17719774,,,,,,,,,,,no default text/event
+blank,blank,17719775,,,,,,,,,,,no default text/event
+blank,blank,17719776,,,,,,,,,,,no default text/event
+blank,blank,17719777,,,,,,,,,,,no default text/event
+blank,blank,17719778,,,,,,,,,,,no default text/event
+blank,blank,17719780,,,,,,,,,,,no default text/event
+blank,blank,17719781,,,,,,,,,,,no default text/event
+blank,blank,17719782,,,,,,,,,,,no default text/event
+blank,blank,17719783,,,,,,,,,,,no default text/event
+blank,blank,17719784,,,,,,,,,,,no default text/event
+blank,blank,17719785,,,,,,,,,,,no default text/event
+blank,blank,17719786,,,,,,,,,,,no default text/event
+blank,blank,17719787,,,,,,,,,,,no default text/event
+blank,blank,17719788,,,,,,,,,,,no default text/event
+blank,blank,17719789,,,,,,,,,,,no default text/event
+blank,blank,17719790,,,,,,,,,,,no default text/event
+blank,blank,17719791,,,,,,,,,,,no default text/event
+blank,blank,17719792,,,,,,,,,,,no default text/event
+blank,blank,17719793,,,,,,,,,,,no default text/event
+blank,blank,17719794,,,,,,,,,,,no default text/event
+blank,blank,17719795,,,,,,,,,,,no default text/event
+blank,blank,17719796,,,,,,,,,,,no default text/event
+blank,blank,17719797,,,,,,,,,,,no default text/event
+blank,blank,17719798,,,,,,,,,,,no default text/event
+blank,blank,17719799,,,,,,,,,,,no default text/event
+blank,blank,17719800,,,,,,,,,,,no default text/event
+blank,blank,17719801,,,,,,,,,,,no default text/event
+blank,blank,17719802,,,,,,,,,,,no default text/event
+blank,blank,17719803,,,,,,,,,,,no default text/event
+blank,blank,17719804,,,,,,,,,,,no default text/event
+blank,blank,17719805,,,,,,,,,,,no default text/event
+blank,blank,17719806,,,,,,,,,,,no default text/event
+blank,blank,17719807,,,,,,,,,,,no default text/event
+blank,blank,17719808,,,,,,,,,,,no default text/event
+blank,blank,17719809,,,,,,,,,,,no default text/event
+blank,blank,17719810,,,,,,,,,,,no default text/event
+blank,blank,17719811,,,,,,,,,,,no default text/event
+blank,blank,17719812,,,,,,,,,,,no default text/event
+blank,blank,17719813,,,,,,,,,,,no default text/event
+blank,blank,17719814,,,,,,,,,,,no default text/event
+blank,blank,17719815,,,,,,,,,,,no default text/event
+blank,blank,17719816,,,,,,,,,,,no default text/event
+blank,blank,17719818,,,,,,,,,,,no default text/event
+blank,blank,17719819,,,,,,,,,,,no default text/event
+blank,blank,17719820,,,,,,,,,,,no default text/event
+blank,blank,17719839,,,,,,,,,,,no default text/event
+blank,blank,17719840,,,,,,,,,,,no default text/event
+blank,blank,17719841,,,,,,,,,,,no default text/event
+blank,blank,17719842,,,,,,,,,,,no default text/event
+blank,blank,17719843,,,,,,,,,,,no default text/event
+blank,blank,17719845,,,,,,,,,,,no default text/event
+blank,blank,17719849,,,,,,,,,,,no default text/event
+blank,blank,17719851,,,,,,,,,,,no default text/event
+blank,blank,17719853,,,,,,,,,,,no default text/event
+blank,blank,17719896,,,,,,,,,,,no default text/event
+blank,blank,17719897,,,,,,,,,,,no default text/event
+blank,blank,17719898,,,,,,,,,,,no default text/event
+blank,blank,17719899,,,,,,,,,,,no default text/event
+blank,blank,17719900,,,,,,,,,,,no default text/event
+blank,blank,17719901,,,,,,,,,,,no default text/event
+blank,blank,17719902,,,,,,,,,,,no default text/event
+blank,blank,17719903,,,,,,,,,,,no default text/event
+blank,blank,17719904,,,,,,,,,,,no default text/event
+blank,blank,17719905,,,,,,,,,,,no default text/event
+blank,blank,17719906,,,,,,,,,,,no default text/event
+blank,blank,17719907,,,,,,,,,,,no default text/event
+blank,blank,17719908,,,,,,,,,,,no default text/event
+blank,blank,17719909,,,,,,,,,,,no default text/event
+blank,blank,17719910,,,,,,,,,,,no default text/event
+blank,blank,17719911,,,,,,,,,,,no default text/event
+blank,blank,17719912,,,,,,,,,,,no default text/event
+blank,blank,17719913,,,,,,,,,,,no default text/event
+blank,blank,17719914,,,,,,,,,,,no default text/event
+blank,blank,17719915,,,,,,,,,,,no default text/event
+blank,blank,17719916,,,,,,,,,,,no default text/event
+blank,blank,17719917,,,,,,,,,,,no default text/event
+blank,blank,17719918,,,,,,,,,,,no default text/event
+blank,blank,17719919,,,,,,,,,,,no default text/event
+blank,blank,17719920,,,,,,,,,,,no default text/event
+blank,blank,17719921,,,,,,,,,,,no default text/event
+blank,blank,17719922,,,,,,,,,,,no default text/event
+blank,blank,17719923,,,,,,,,,,,no default text/event
+blank,blank,17719924,,,,,,,,,,,no default text/event
+blank,blank,17719925,,,,,,,,,,,no default text/event
+blank,blank,17719926,,,,,,,,,,,no default text/event
+blank,blank,17719940,,,,,,,,,,,no default text/event
+blank,blank,17719941,,,,,,,,,,,no default text/event
+blank,blank,17719942,,,,,,,,,,,no default text/event
+blank,blank,17719943,,,,,,,,,,,no default text/event
+blank,blank,17719944,,,,,,,,,,,no default text/event
+blank,blank,17719945,,,,,,,,,,,no default text/event
+blank,blank,17719946,,,,,,,,,,,no default text/event
+blank,blank,17719947,,,,,,,,,,,no default text/event
+blank,blank,17719948,,,,,,,,,,,no default text/event
+blank,blank,17719949,,,,,,,,,,,no default text/event
+blank,blank,17719950,,,,,,,,,,,no default text/event
+blank,blank,17719951,,,,,,,,,,,no default text/event
+blank,blank,17719952,,,,,,,,,,,no default text/event
+blank,blank,17719953,,,,,,,,,,,no default text/event
+blank,blank,17719954,,,,,,,,,,,no default text/event
+blank,blank,17719955,,,,,,,,,,,no default text/event
+blank,blank,17719956,,,,,,,,,,,no default text/event
+blank,blank,17719958,,,,,,,,,,,no default text/event
+blank,blank,17719960,,,,,,,,,,,no default text/event
+blank,blank,17719961,,,,,,,,,,,no default text/event
+blank,blank,17719962,,,,,,,,,,,no default text/event
+blank,blank,17719963,,,,,,,,,,,no default text/event
+blank,blank,17719964,,,,,,,,,,,no default text/event
+blank,blank,17719965,,,,,,,,,,,no default text/event
+blank,blank,17719970,,,,,,,,,,,no default text/event
+blank,blank,17719971,,,,,,,,,,,no default text/event
+blank,blank,17719973,,,,,,,,,,,no default text/event
+blank,blank,17719974,,,,,,,,,,,no default text/event
+blank,blank,17719975,,,,,,,,,,,no default text/event
+blank,blank,17719976,,,,,,,,,,,no default text/event
+blank,blank,17719977,,,,,,,,,,,no default text/event
+blank,blank,17719978,,,,,,,,,,,no default text/event
+blank,blank,17719979,,,,,,,,,,,no default text/event
+blank,blank,17719980,,,,,,,,,,,no default text/event
+blank,blank,17719981,,,,,,,,,,,no default text/event
+blank,blank,17719982,,,,,,,,,,,no default text/event
+blank,blank,17719983,,,,,,,,,,,no default text/event
+blank,blank,17719984,,,,,,,,,,,no default text/event
+blank,blank,17719985,,,,,,,,,,,no default text/event
+blank,blank,17719986,,,,,,,,,,,no default text/event
+blank,blank,17719987,,,,,,,,,,,no default text/event
+blank,blank,17719988,,,,,,,,,,,no default text/event
+blank,blank,17719989,,,,,,,,,,,no default text/event
+blank,blank,17719990,,,,,,,,,,,no default text/event
+blank,blank,17719991,,,,,,,,,,,no default text/event
+blank,blank,17719992,,,,,,,,,,,no default text/event
+blank,blank,17719993,,,,,,,,,,,no default text/event
+blank,blank,17719994,,,,,,,,,,,no default text/event
+blank,blank,17719995,,,,,,,,,,,no default text/event
+blank,blank,17719996,,,,,,,,,,,no default text/event
+blank,blank,17719997,,,,,,,,,,,no default text/event
+blank,blank,17719998,,,,,,,,,,,no default text/event
+blank,blank,17719999,,,,,,,,,,,no default text/event
+blank,blank,17720005,,,,,,,,,,,no default text/event
+blank,blank,17720009,,,,,,,,,,,no default text/event
+blank,blank,17720015,,,,,,,,,,,no default text/event
+blank,blank,17720016,,,,,,,,,,,no default text/event
+blank,blank,17720025,,,,,,,,,,,no default text/event
+blank,blank,17720026,,,,,,,,,,,no default text/event
+Blendare,Blendare,17719358,,,606,,,,,,,,script onTrigger event
+Brutus,Brutus,17719588,,,,,,,,,,,no default text/event
+C,C,17719681,,,,,,,,,,,no default text/event
+C,C,17719687,,,,,,,,,,,no default text/event
+Cahaurme,Cahaurme,17719300,8015,NOTHING_TO_REPORT,,,,,,,,,default
+Camereine,Camereine,17719343,,,,,,,,,,,no default text/event
+Capucine,Capucine,17719352,10251,CAPUCINE_SHOP_DIALOG,,,,,,,,,script onTrigger
+Carautia,Carautia,17719388,8258,CARAUTIA_SHOP_DIALOG,,,,,,,,,script onTrigger
+Celyddon,Celyddon,17719372,,,618,,,619; 620,,,,,script onTrigger event
+Ceraule,Ceraule,17719297,,,509,,,,,,,,default event
+Chacharoon,Chacharoon,17719722,,,,,,,,,,,no default text/event
+Chanpau,Chanpau,17719362,,,567,,,505,,,,,script onTrigger event
+Cheh Raihah,Cheh_Raihah,17719427,8177,CHEH_WINDY_CIT,,8176,CHEH_NOT_WINDY_CIT,,,,,,script onTrigger
+Chepelle,Chepelle,17719557,,,,,,,,,,,no default text/event
+Chocobo,Chocobo_1,17719338,,,818,,,,,,,,default event
+Chocobo,Chocobo_2,17719339,,,818,,,,,,,,default event
+Chocobo,Chocobo_3,17719340,,,818,,,,,,,,default event
+Chocobo,Chocobo,17719342,,,818,,,,,,,,default event
+Chocobo,Chocobo,17719346,,,818,,,,,,,,default event
+Chocobo,Chocobo,17719347,,,818,,,,,,,,default event
+Chocobo,Chocobo,17719348,,,818,,,,,,,,default event
+Chocobo,Chocobo,17719585,,,818,,,,,,,,default event
+Chocobo,Chocobo_1,17719586,,,818,,,,,,,,default event
+Chocobo,Chocobo,17719661,,,818,,,,,,,,default event
+Chocobo,Chocobo,17719662,,,818,,,,,,,,default event
+Chocobo,Chocobo,17719663,,,818,,,,,,,,default event
+Claiborne,Claiborne,17719607,,,,,,,,,,,no default text/event
+Claidie,Claidie,17719369,,,,,,,,,,,no default text/event
+Claidie,Claidie,17719370,,,,,,,,,,,no default text/event
+Clainomille,Clainomille,17719419,,,613,,,,,,,,default event
+Cletae,Cletae,17719383,8209,CLETAE_DIALOG,,,,,,,,,script onTrigger
+Coderiant,Coderiant,17719302,,,583,,,,,,,,default event
+Collione,Collione,17719603,,,859,,,,,,,,default event
+Cornelia,Cornelia,17719541,,,,,,,,,,,no default text/event
+Corua,Corua,17719304,8254,CORUA_OPEN_DIALOG,,8260,CORUA_CLOSED_DIALOG,,,,,,regional shop
+csnpc,csnpc,17719522,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719523,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719550,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719551,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719571,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719572,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719573,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719574,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719575,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719576,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719577,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719578,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719579,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719580,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719581,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719582,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719583,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719590,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719591,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719592,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719593,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719594,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719724,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719821,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719822,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719823,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719824,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719825,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719826,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719827,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719828,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719829,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719830,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719831,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719832,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719833,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719834,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719835,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719836,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719837,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719930,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719931,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719932,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719933,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719934,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719935,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719936,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719937,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719938,,,,,,,,,,,no default text/event
+csnpc,csnpc,17719939,,,,,,,,,,,no default text/event
+Curilla,Curilla,17719509,,,,,,,,,,,no default text/event
+D,D,17719673,,,,,,,,,,,no default text/event
+Daggao,Daggao,17719503,,,810,,,72; 73; 60,,,,,script onTrigger event
+Dahjal,Dahjal,17719425,8173,DAHJAL_BASTOK_CIT,,8172,DAHJAL_NOT_BASTOK_CIT,,,,,,script onTrigger
+Deraquien,Deraquien,17719330,,,811,,,18,,,,,script onTrigger event
+Destin,Destin,17719363,,,,,,,,,,,no default text/event
+Destin,Destin,17719521,,,,,,,,,,,no default text/event
+Diabolos,Diabolos,17719545,,,,,,,,,,,no default text/event
+Diabolos,Diabolos,17719546,,,,,,,,,,,no default text/event
+Diabolos,Diabolos,17719547,,,,,,,,,,,no default text/event
+Diary,Diary,17719430,,,639,,,640; 641,,,,,script onTrigger event
+Dietmund,Dietmund,17719598,,,,,,,,,,,no default text/event
+Disjoined One,Disjoined_One,17720017,,,,,,,,,,,no default text/event
+Disjoined One,Disjoined_One,17720018,,,,,,,,,,,no default text/event
+Disjoined One,Disjoined_One,17720019,,,,,,,,,,,no default text/event
+Disjoined One,Disjoined_One,17720020,,,,,,,,,,,no default text/event
+Disjoined One,Disjoined_One,17720021,,,,,,,,,,,no default text/event
+Disjoined One,Disjoined_One,17720022,,,,,,,,,,,no default text/event
+Disjoined One,Disjoined_One,17720023,,,,,,,,,,,no default text/event
+Disjoined One,Disjoined_One,17720024,,,,,,,,,,,no default text/event
+"Door:""Lion Springs""",_6ek,17719463,,,,,,,,,,,no default text/event
+"Door:""Lion Springs""",_6en,17719464,,,,,,,,,,,no default text/event
+Door:Chocobo Stables,_6ey,17719475,,,,,,,,,,,no default text/event
+Door:Count's Manor,_6e0,17719443,,,,,,,,,,,no default text/event
+Door:Count's Manor,_6e1,17719444,,,,,,,,,,,no default text/event
+Door:Count's Manor,_6ez,17719476,,,,,,,,,,,no default text/event
+Door:Helbort's Blades,_6eo,17719465,,,,,,,,,,,no default text/event
+Door:Helbort's Blades,_6ep,17719466,,,,,,,,,,,no default text/event
+Door:House,_6e2,17719445,,,,,,,,,,,no default text/event
+Door:House,_6e3,17719446,,,,,,,,,,,no default text/event
+Door:House,_6e4,17719447,,,,,,,,,,,no default text/event
+Door:House,_6e5,17719448,,,,,,,,,,,no default text/event
+Door:House,_6ec,17719455,,,,,,,,,,,no default text/event
+Door:House,_6ed,17719456,,,,,,,,,,,no default text/event
+Door:House,_6ee,17719457,,,,,,,,,,,no default text/event
+Door:House,_6ef,17719458,,,,,,,,,,,no default text/event
+Door:House,_6eg,17719459,,,,,,,,,,,no default text/event
+Door:House,_6eh,17719460,,,,,,,,,,,no default text/event
+Door:House,_6ei,17719461,,,,,,,,,,,no default text/event
+Door:House,_6ej,17719462,,,,,,,,,,,no default text/event
+Door:House,_6es,17719469,,,,,,,,,,,no default text/event
+Door:House,_6et,17719470,,,,,,,,,,,no default text/event
+Door:House,_6eu,17719471,,,,,,,,,,,no default text/event
+Door:House,_6ev,17719472,,,,,,,,,,,no default text/event
+Door:House,_6ew,17719473,,,,,,,,,,,no default text/event
+Door:House,_6ex,17719474,,,,,,,,,,,no default text/event
+Door:Raimbroy's Grocery,_6e8,17719451,,,,,,,,,,,no default text/event
+Door:Raimbroy's Grocery,_6e9,17719452,,,,,,,,,,,no default text/event
+Door:Rosel's Armour,_6eq,17719467,,,,,,,,,,,no default text/event
+Door:Rosel's Armour,_6er,17719468,,,,,,,,,,,no default text/event
+Door:Tanners' Guild,_6e7,17719449,,,,,,,,,,,no default text/event
+Door:Tanners' Guild,_6e6,17719450,,,,,,,,,,,no default text/event
+Door:Taumila's Sundries,_6ea,17719453,,,,,,,,,,,no default text/event
+Door:Taumila's Sundries,_6eb,17719454,,,,,,,,,,,no default text/event
+E,E,17719695,,,,,,,,,,,no default text/event
+Eggsperiment A,Eggsperiment_A,17719713,,,,,,,,,,,no default text/event
+Eggsperiment B,Eggsperiment_B,17719714,,,,,,,,,,,no default text/event
+Eggsperiment B,Eggsperiment_B,17719715,,,,,,,,,,,no default text/event
+Eggsperiment I,Eggsperiment_I,17719716,,,,,,,,,,,no default text/event
+Eggsperiment R,Eggsperiment_R,17719712,,,,,,,,,,,no default text/event
+Eggsperiment T,Eggsperiment_T,17719717,,,,,,,,,,,no default text/event
+Elmemague,Elmemague,17719332,,,,,,,,,,,no default text/event
+Emoussine,Emoussine,17719344,,,,,,,,,,,no default text/event
+Endracion,Endracion,17719393,,,1011,,,1001; 1009,,,,,script onTrigger event
+Enigmatic Footprints,Enigmatic_Footprints,17720029,16531,TEAR_IN_FABRIC_OF_SPACE,,,,,,,,,default
+Ensemble Maven,Ensemble_Maven,17719844,,,,,,,,,,,no default text/event
+Ephauge,Ephauge,17719299,,,581,,,,,,,,default event
+Ephemeral Moogle,Ephemeral_Moogle_Leather,17720027,,,,,,,,,,,no default text/event
+Epuliphont,Epuliphont,17719530,,,,,,,,,,,no default text/event
+Esmallegue,Esmallegue,17719611,,,885,,,,,,,,default event
+Estiliphire,Estiliphire,17719817,,,897,,,,,,,,default event
+Estiliphire,Estiliphire,17719929,,,897,,,,,,,,default event
+EVENTER,EVENTER,17719519,,,,,,,,,,,no default text/event
+Exoroche,Exoroche,17719356,,,79,,,51; 19; 77; 50; 32,,,,,script onTrigger event
+F,F,17719674,,,,,,,,,,,no default text/event
+Fashionista,Fashionista,17719846,,,,,,,,,,,no default text/event
+Fashionista,Fashionista,17719847,,,,,,,,,,,no default text/event
+Fashionista,Fashionista,17719848,,,,,,,,,,,no default text/event
+Faulpie,Faulpie,17719379,,,,,,,,,,,no default text/event
+Femitte,Femitte,17719491,,,807,,,,,,,,script onTrigger event
+FencingMaster,FencingMaster,17719373,,,,,,,,,,,no default text/event
+Ferdoulemiont,Ferdoulemiont,17719337,8182,FERDOULEMIONT_SHOP_DIALOG,,,,,,,,,script onTrigger
+Foletta,Foletta,17719490,,,666,,,,,,,,default event
+Fonteloube,Fonteloube,17719601,,,,,,,,,,,no default text/event
+Foudeel,Foudeel,17719596,,,,,,,,,,,no default text/event
+Francmage,Francmage,17719538,,,,,,,,,,,no default text/event
+Fulchia,Fulchia,17719323,,,587,,,,,,,,default event
+G,G,17719675,,,,,,,,,,,no default text/event
+Game Table,Game_Table,17719608,,,,,,,,,,,no default text/event
+Gate: Chocobo Circuit,Gate_Chocobo_Circuit,17719609,,,,,,,,,,,no default text/event
+Gizel,Gizel,17719549,,,676,,,,,,,,default event
+Glenne,Glenne,17719328,,,,,,,,,,,no default text/event
+Gondebaud,Gondebaud,17720000,7806,ROSEL_GREETINGS,,6445,NOTHING_OUT_OF_ORDINARY,,,,6490,YOU_LEARNED_TRUST,script onTrigger
+Grilau,Grilau,17719515,,,,,,,,,,,no default text/event
+Guilboire,Guilboire,17719487,,,657,,,,,,,,default event
+H,H,17719676,,,,,,,,,,,no default text/event
+Hae Jakhya,Hae_Jakhya,17719436,,,610,,,,,,,,default event
+Halver,Halver,17719335,,,,,,,,,,,no default text/event
+Hampu-Kampu,Hampu-Kampu,17719614,,,,,,,,,,,no default text/event
+Hanaa Punaa,Hanaa_Punaa,17719385,,,,,,,,,,,no default text/event
+Hantileon,Hantileon,17719570,,,,,,,,,,,no default text/event
+Helbort,Helbort,17719353,8009,HELBORT_DIALOG,,,,,,,,,default
+Hinaree,Hinaree,17719391,,,507,,,,,,,,default event
+Home Point #1,HomePoint#1,17719431,,,,,,,,,,,no default text/event
+Home Point #2,HomePoint#2,17719432,,,,,,,,,,,no default text/event
+Home Point #3,HomePoint#3,17719433,,,,,,,,,,,no default text/event
+Home Point #4,HomePoint#4,17719434,,,,,,,,,,,no default text/event
+Home Point #5,HomePoint#5,17719435,,,,,,,,,,,no default text/event
+Horro,Horro,17719959,,,,,,,,,,,no default text/event
+I,I,17719691,,,,,,,,,,,no default text/event
+Invincible Shield,Invincible_Shield,17719646,,,,,,,,,,,no default text/event
+Iroha,Iroha,17720006,,,,,,,,,,,no default text/event
+Iru-Kuiru,Iru-Kuiru,17719539,,,,,,,,,,,no default text/event
+J,J,17719677,,,,,,,,,,,no default text/event
+Jakoh Wahcondalo,Jakoh_Wahcondalo,17719647,,,,,,,,,,,no default text/event
+K,K,17719678,,,,,,,,,,,no default text/event
+Kanika,Kanika,17719561,,,,,,,,,,,no default text/event
+Katharina,Katharina,17719315,,,887,,,,,,,,default event
+Katharina,Katharina,17719320,,,887,,,,,,,,default event
+Kipopo,Kipopo,17719381,,,914,,,913; 911; 912,,,,,script onTrigger event
+Kipopo,Kipopo,17719612,,,914,,,913; 911; 912,,,,,script onTrigger event
+Kipopo,Kipopo,17719615,,,914,,,913; 911; 912,,,,,script onTrigger event
+Kueh Igunahmori,Kueh_Igunahmori,17719384,8248,KUEH_IGUNAHMORI_DIALOG,,,,,,,,,script onTrigger
+L,L,17719692,,,,,,,,,,,no default text/event
+Lanqueron,Lanqueron,17719408,8251,ITEM_DELIVERY_DIALOG,,,,,,,,,script onTrigger
+Layer Reserve,Layer_Reserve,17720031,,,,,,,,,,,no default text/event
+Legata,Legata,17719496,,,,,,,,,,,no default text/event
+Leservieus,Leservieus,17719529,,,,,,,,,,,no default text/event
+Leuveret,Leuveret,17719316,,,621,,,,,,,,script onTrigger event
+Lilisette,Lilisette,17719620,,,,,,,,,,,no default text/event
+Linzaza,Linzaza,17719558,,,,,,,,,,,no default text/event
+Lion,Lion,17720007,,,,,,,,,,,no default text/event
+Lotte,Lotte,17719319,,,564,,,,,,,,default event
+Louverance,Louverance,17719553,,,,,,,,,,,no default text/event
+Lusiane,Lusiane,17719350,8007,LUSIANE_SHOP_DIALOG,,,,,,,,,script onTrigger
+Luthiaque,Luthiaque,17719329,,,658,,,,,,,,default event
+M,M,17719684,,,,,,,,,,,no default text/event
+Machielle,Machielle,17719303,8253,MACHIELLE_OPEN_DIALOG,,8259,MACHIELLE_CLOSED_DIALOG,,,,,,regional shop
+Malecharisant,Malecharisant,17719395,8208,WEST_GATE,,,,,,,,,default
+Maleme,Maleme,17719429,,,632,,,,,,,,script onTrigger event
+Mandragora Assistant,Mandragora_Assistant,17719852,,,,,,,,,,,no default text/event
+Maugie,Maugie,17719489,,,46,,,,,,,,default event
+Maunadolace,Maunadolace,17719514,,,,,,,,,,,no default text/event
+Melledanne,Melledanne,17719625,,,,,,,,,,,no default text/event
+Meransarget,Meransarget,17719554,,,,,,,,,,,no default text/event
+Meuneille,Meuneille,17719345,,,,,,,,,,,no default text/event
+Michilca,Michilca,17719390,,,,,,,,,,,no default text/event
+Milchupain,Milchupain,17719513,,,,,,,,,,,no default text/event
+Millechairale,Millechairale,17719336,,,,,,,,,,,no default text/event
+Miogique,Miogique,17719387,8258,RAIMBROYS_SHOP_DIALOG+1,,,,,,,,,script onTrigger
+Mokop-Sankop,Mokop-Sankop,17719426,8175,MOKOP_SANDY_CIT,,8174,MOKOP_NOT_SANDY_CIT,,,,,,script onTrigger
+Moogle,Moogle,17719437,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719441,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719478,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719479,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719480,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719481,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719482,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719483,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719484,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719485,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719654,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719655,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719703,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719704,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719718,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719719,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719721,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719838,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719927,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719928,,,,,,,,,,,no default text/event
+Moogle,Moogle,17719966,,,,,,,,,,,no default text/event
+Moozo-Koozo,Moozo-Koozo,17719498,,,,,,,,,,,no default text/event
+Mystic Retriever,Mystic_Retriever,17720001,6445,NOTHING_OUT_OF_ORDINARY,,,,,,,,,script onTrigger
+Mystrix,Mystrix,17719641,,,,,,,,,,,no default text/event
+N,N,17719683,,,,,,,,,,,no default text/event
+Najjar,Najjar,17719518,,,16,,,17,,,,,script onTrigger event
+Nalta,Nalta,17719428,8179,NALTA_SANDY_CIT,,8178,NALTA_NOT_SANDY_CIT,,,,,,script onTrigger
+Namonutice,Namonutice,17719499,,,31,,,,,,,,script onTrigger event
+Nenne,Nenne,17719324,,,538,,,647; 584,,,,,script onTrigger event
+Niscoliette,Niscoliette,17719660,,,,,,,,,,,no default text/event
+Nokkhi Jinjahl,Nokkhi_Jinjahl,17719534,,,683,,,,7416,NOKKHI_BAD_COUNT,,,script onTrigger event
+Nonterene,Nonterene,17719516,,,,,,,,,,,no default text/event
+Norejaie,Norejaie,17719532,,,677,,,679; 681; 682; 680,,,,,script onTrigger event
+NPC,NPC[2a4],17719972,,,,,,,,,,,no default text/event
+NPC[b5],NPC[b5],17719477,,,,,,,,,,,no default text/event
+O,O,17719693,,,,,,,,,,,no default text/event
+Officer,Officer,17719399,,,,,,,,,,,no default text/event
+Ominous Cloud,Ominous_Cloud,17719535,,,759,,,,10148,CLOUD_BAD_COUNT,,,script onTrigger event
+Ondieumais,Ondieumais,17719531,,,,,,,,,,,no default text/event
+Open1,Open1,17719416,,,,,,,,,,,no default text/event
+Open2,Open2,17719417,,,,,,,,,,,no default text/event
+Open3,Open3,17719418,,,,,,,,,,,no default text/event
+Open5,Open5,17719420,,,,,,,,,,,no default text/event
+Open6,Open6,17719421,,,,,,,,,,,no default text/event
+Open8,Open8,17719423,,,,,,,,,,,no default text/event
+Ophelia,Ophelia,17719552,,,751,,,,,,,,default event
+Orechiniel,Orechiniel,17719380,,,,,,,,,,,no default text/event
+Ostalie,Ostalie,17719351,,,,,,,,,,,no default text/event
+Otomo01,Otomo01,17719525,,,,,,,,,,,no default text/event
+Otomo02,Otomo02,17719526,,,,,,,,,,,no default text/event
+Otomo03,Otomo03,17719527,,,,,,,,,,,no default text/event
+Otomo04,Otomo04,17719528,,,,,,,,,,,no default text/event
+P,P,17719670,,,,,,,,,,,no default text/event
+Palabelle,Palabelle,17719606,,,,,,,,,,,no default text/event
+Paouala,Paouala,17719497,,,82,,,,,,,,default event
+Parvipon,Parvipon,17719495,,,,,,,,,,,no default text/event
+Pauluart,Pauluart,17719560,,,,,,,,,,,no default text/event
+Paunelie,Paunelie,17719488,,,,,,,,,,,no default text/event
+Phamelise,Phamelise,17719305,8255,PHAMELISE_OPEN_DIALOG,,8261,PHAMELISE_CLOSED_DIALOG,,,,,,regional shop
+Phillone,Phillone,17719331,,,29,,,,,,,,default event
+Pieuje,Pieuje,17719367,,,,,,,,,,,no default text/event
+Pieuje,Pieuje,17719368,,,,,,,,,,,no default text/event
+Poudoruchant,Poudoruchant,17719564,,,779,,,,,,,,script onTrigger event
+Pourette,Pourette,17719493,8286,POURETTE_OPEN_DIALOG,,8287,POURETTE_CLOSED_DIALOG,,,,,,regional shop
+Pulonono,Pulonono,17719587,,,,,,,,,,,no default text/event
+Q,Q,17719666,,,,,,,,,,,no default text/event
+R,R,17719668,,,,,,,,,,,no default text/event
+Rahal,Rahal,17719510,,,,,,,,,,,no default text/event
+Raimbroy,Raimbroy,17719314,,,,,,,,,,,no default text/event
+Raminel,csnpc,17719325,,,,,,,,,,,no default text/event
+Raminel,Raminel,17719326,,,614,,,,,,,,script onTrigger event
+Raogrimm,Raogrimm,17719543,,,,,,,,,,,no default text/event
+Repairer Moogle,RepairerMoogle,17720034,,,,,,,,,,,no default text/event
+Rochefogne,Rochefogne,17719520,,,,,,,,,,,no default text/event
+Rohemolipaud,Rohemolipaud,17719563,,,,,,,,,,,no default text/event
+Roido,Roido,17719333,,,,,,,,,,,no default text/event
+Rolandienne,Rolandienne,17719638,15510,YOU_WISH_TO_EXCHANGE_SPARKS,,,,993; 994,,,,,script onTrigger
+Rosel,Rosel,17719386,7806,ROSEL_GREETINGS,,,,,,,,,default
+Rouva,Rouva,17719492,,,808,,,,,,,,script onTrigger event
+Rumoie,Rumoie,17719605,,,863,,,,,,,,default event
+S,S,17719672,,,,,,,,,,,no default text/event
+Selh'teus,Selhteus,17720010,,,,,,,,,,,no default text/event
+Selh'teus,Selhteus,17720011,,,,,,,,,,,no default text/event
+Selh'teus,Selhteus,17720012,,,,,,,,,,,no default text/event
+Sharzalion,Sharzalion,17719500,,,69,,,64; 65; 66; 15,,,,,script onTrigger event
+Shilah,Shilah,17719321,8140,SHILAH_SHOP_DIALOG,,,,,,,,,script onTrigger
+Simmie,Simmie,17719415,,,673,,,,,,,,default event
+Slarin,Slarin,17719957,,,,,,,,,,,no default text/event
+Sneaking Tiger,Sneaking_Tiger,17719559,,,,,,,,,,,no default text/event
+Sobane,Sobane,17719322,8249,SOBANE_DIALOG,,,,,,,,,default
+Spriggan Crier,Spriggan_Crier,17719968,,,,,,,,,,,no default text/event
+Spriggan Graverobber,Spriggan_Graverobber,17719969,,,,,,,,,,,no default text/event
+Spriggan Sifter,Spriggan_Sifter,17719967,,,,,,,,,,,no default text/event
+Symphonic Curator,Symphonic_Curator,17719442,,,,,,,,,,,no default text/event
+Synergy Engineer,Synergy_Engineer,17719626,,,,,,,,,,,no default text/event
+Synergy Engineer,Synergy_Engineer,17719627,,,,,,,,,,,no default text/event
+Synergy Enthusiast,Synergy_Enthusiast,17719632,,,,,,,,,,,no default text/event
+Synergy Furnace,Synergy_Furnace,17719628,,,,,,,,,,,no default text/event
+Synergy Furnace,Synergy_Furnace,17719629,,,,,,,,,,,no default text/event
+Synergy Furnace,Synergy_Furnace,17719630,,,,,,,,,,,no default text/event
+Synergy Furnace,Synergy_Furnace,17719631,,,,,,,,,,,no default text/event
+T,T,17719669,,,,,,,,,,,no default text/event
+Tarotta,Tarotta,17719341,,,,,,,,,,,no default text/event
+Taumila,Taumila,17719349,7984,TAUMILA_DIALOG,,,,,,,,,default
+Tek Lengyon,Tek_Lengyon,17719382,,,,,,,,,,,no default text/event
+Tek Lengyon,Tek_Lengyon,17719613,,,,,,,,,,,no default text/event
+Tek Lengyon,Tek_Lengyon,17719616,,,,,,,,,,,no default text/event
+Thadiene,Thadiene,17719355,8011,ASH_THADI_ENE_SHOP_DIALOG,,,,,,,,,script onTrigger
+Trail Markings,Trail_Markings,17719536,,,,,,,,,,,no default text/event
+Treasure Coffer,Treasure_Coffer,17719642,,,,,,,,,,,no default text/event
+Treasure Coffer,Treasure_Coffer,17719779,,,,,,,,,,,no default text/event
+Trion,Trion,17719365,,,,,,,,,,,no default text/event
+Trion,Trion,17719366,,,,,,,,,,,no default text/event
+U,U,17719697,,,,,,,,,,,no default text/event
+Ullasa,Ullasa,17719517,,,40,,,39,,,,,script onTrigger event
+Ulmia,Ulmia,17719533,,,,,,,,,,,no default text/event
+Ulrich,Ulrich,17719537,,,,,,,,,,,no default text/event
+Ulzana,Ulzana,17719562,,,,,,,,,,,no default text/event
+Unity Master,Unity_Master,17720004,,,,,,,,,,,no default text/event
+Urbiolaine,Urbiolaine,17719643,,,,,,,,,,,no default text/event
+V,V,17719694,,,,,,,,,,,no default text/event
+Valderotaux,Valderotaux,17719501,,,58,,,,,,,,default event
+Valentione Single,Valentione_Single,17719656,,,,,,,,,,,no default text/event
+Valentione Single,Valentione_Single,17719657,,,,,,,,,,,no default text/event
+Valentione Single,Valentione_Single,17719658,,,,,,,,,,,no default text/event
+Valentione Single,Valentione_Single,17719659,,,,,,,,,,,no default text/event
+Valeriano,Valeriano,17719424,8141,VALERIANO_SHOP_DIALOG,,,,,,,,,valeriano shop
+Vaquelage,Vaquelage,17719410,8251,ITEM_DELIVERY_DIALOG,,,,,,,,,script onTrigger
+Varchet,Varchet,17719392,,,525,,,,,,7795,VARCHET_KEEP_PROMISE,default event
+Varonbiriaux,Varonbiriaux,17719524,,,,,,,,,,,no default text/event
+Vauderame,Vauderame,17719364,,,,,,,,,,,no default text/event
+Vauderame,Vauderame,17719556,,,,,,,,,,,no default text/event
+Vemalpeau,Vemalpeau,17719505,,,7,,,5; 3; 2; 1,,,,,script onTrigger event
+Verena,Verena,17719494,,,,,,,,,,,no default text/event
+Victoire,Victoire,17719389,8258,CARAUTIA_SHOP_DIALOG,,,,,,,,,script onTrigger
+Vijartal,Vijartal,17719334,,,,,,,,,,,no default text/event
+Violitte,Violitte,17719307,,,,,,,,,,,no default text/event
+Voidwatch Officer,Voidwatch_Officer,17719635,,,,,,,,,,,no default text/event
+Voidwatch Purveyor,Voidwatch_Purveyor,17719636,,,,,,,,,,,no default text/event
+Voidwatch Purveyor,Voidwatch_Purveyor,17719637,,,,,,,,,,,no default text/event
+W,W,17719667,,,,,,,,,,,no default text/event
+Wahboud,Wahboud,17719597,,,,,,,,,,,no default text/event
+Well,Well,17719309,7819,YOU_FIND_A_WELL,,,,,,,,,default
+Well,Well,17719310,7819,YOU_FIND_A_WELL,,,,,,,,,default
+Well,Well,17719311,7819,YOU_FIND_A_WELL,,,,,,,,,default
+Well,Well,17719312,7819,YOU_FIND_A_WELL,,,,,,,,,default
+Well,Well,17719313,7819,YOU_FIND_A_WELL,,,,,,,,,default
+Wolden-Bolden,Wolden-Bolden,17720028,,,,,,,,,,,no default text/event
+X,X,17719680,,,,,,,,,,,no default text/event
+Y,Y,17719696,,,,,,,,,,,no default text/event
+Yow Rabntah,Yow_Rabntah,17719540,,,,,,,,,,,no default text/event
+Z,Z,17719679,,,,,,,,,,,no default text/event
+Zeid,Zeid,17720008,,,,,,,,,,,no default text/event
+Zopago,Zopago,17719589,,,,,,,,,,,no default text/event

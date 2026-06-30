@@ -541,6 +541,17 @@ uint16 GetPetSkillIdByMobSkillId(uint16 mobSkillId)
     return 0;
 }
 
+uint16 ResolvePetSkillIdFromSkillListEntry(uint16 skillListEntry)
+{
+    // Merit-era jug lists may store mob_skill_id; classic Jug_* lists store pet_skill_id directly.
+    uint16 petSkillId = GetPetSkillIdByMobSkillId(skillListEntry);
+    if (petSkillId == 0 && GetPetSkill(skillListEntry))
+    {
+        petSkillId = skillListEntry;
+    }
+    return petSkillId;
+}
+
 // TODO: Apply fire in generous quantities. Replace with existing lua functions.
 int32 CalculateEnspellDamage(CBattleEntity* PAttacker, CBattleEntity* PDefender, uint8 Tier, uint8 element, CItemWeapon* pWeaponHit)
 {

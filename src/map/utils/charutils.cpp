@@ -3670,11 +3670,10 @@ void BuildingCharPetAbilityTable(CCharEntity* PChar, CPetEntity* PPet, uint32 Pe
     if (PPet->getPetType() == PET_TYPE::JUG_PET)
     {
         auto skillList{ battleutils::GetMobSkillList(PPet->m_MobSkillList) };
-        for (auto&& mobSkillId : skillList)
+        for (auto&& skillListEntry : skillList)
         {
-            // Translate mob_skill_id (new-style 3840+) -> pet_skill_id (BST ability ID 672-796)
-            // so the ability packet offset calculation (petSkillId - ABILITY_HEALING_RUBY) is correct.
-            uint16 petSkillId = battleutils::GetPetSkillIdByMobSkillId(mobSkillId);
+            // Resolve to pet_skill_id / BST ability ID for the command menu packet.
+            uint16 petSkillId = battleutils::ResolvePetSkillIdFromSkillListEntry(skillListEntry);
             if (petSkillId >= ABILITY_HEALING_RUBY)
             {
                 addPetAbility(PChar, petSkillId - ABILITY_HEALING_RUBY);

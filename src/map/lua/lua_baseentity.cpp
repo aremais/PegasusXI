@@ -19449,6 +19449,15 @@ bool CLuaBaseEntity::hasTPMoves()
         return false;
     }
 
+    if (m_PBaseEntity->objtype & TYPE_PET)
+    {
+        auto* PPet = static_cast<CPetEntity*>(m_PBaseEntity);
+        if (PPet->getPetType() == PET_TYPE::JUG_PET && PPet->m_MobSkillList > 0)
+        {
+            return !battleutils::GetMobSkillList(PPet->m_MobSkillList).empty();
+        }
+    }
+
     uint16 speciesID = 0;
 
     if (m_PBaseEntity->objtype & TYPE_PET)
