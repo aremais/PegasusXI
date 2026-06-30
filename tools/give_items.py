@@ -76,7 +76,7 @@ def all_characters(cur):
     \n5) Stuffed Chocobo\
     \n6) Tidal Talisman\
     \n7) Destrier Beret\
-    \n8) Chocobo Shirt\
+    \n8) Pegasus Tunic\
     \n"
     )
     while True:
@@ -122,7 +122,7 @@ def single_character(cur):
             \n5) Stuffed Chocobo\
             \n6) Tidal Talisman\
             \n7) Destrier Beret\
-            \n8) Chocobo Shirt\
+            \n8) Pegasus Tunic\
             \n"
         )
         while True:

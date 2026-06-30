@@ -1,6 +1,9 @@
 -----------------------------------
--- func: setbag
--- desc: Sets the players bag size
+-- func: setbag <size> (player)
+-- desc: Sets the Gobbiebag size for the target player (or self) and marks the
+--       matching Gobbiebag Part I-X quests complete/incomplete to match -- the
+--       same logic as the stock command, but able to target a player by name.
+--       Place in: scripts/commands/setbag.lua  (replaces the self-only version)
 -----------------------------------
 ---@type TCommand
 local commandObj = {}
@@ -23,37 +26,53 @@ local bagparam =
 commandObj.cmdprops =
 {
     permission = 1,
-    parameters = 'i'
+    parameters = 'is'
 }
 
 local function error(player, msg)
     player:printToPlayer(msg)
-    player:printToPlayer('!bagsize <30-80 and multiple of 5>')
+    player:printToPlayer('!setbag <30-80, multiple of 5> (player)')
 end
 
-commandObj.onTrigger = function(player, bagsize)
-    -- Validate bag amount
-    if bagsize < 30 or bagsize > 80 or (bagsize % 5 ~= 0) then
+commandObj.onTrigger = function(player, bagsize, target)
+    -- validate size
+    if bagsize == nil or bagsize < 30 or bagsize > 80 or (bagsize % 5 ~= 0) then
         error(player, 'Invalid bag size.')
         return
     end
 
-    local currentBagSize = player:getContainerSize(xi.inv.INVENTORY)
-    local adjustment = bagsize - currentBagSize
-
-    for i = 1, 10 do
-        if bagsize > bagparam[i].bagsize then
-            player:completeQuest(xi.questLog.JEUNO, bagparam[i].questid)
-        else
-            player:delQuest(xi.questLog.JEUNO, bagparam[i].questid)
+    -- target defaults to self
+    local targ
+    if target == nil then
+        targ = player
+    else
+        targ = GetPlayerByName(target)
+        if targ == nil then
+            error(player, string.format('Player named "%s" not found!', target))
+            return
         end
     end
 
-    -- Inform player and set bag size
-    player:printToPlayer(string.format('Old Bag Size: %u', currentBagSize))
-    player:printToPlayer(string.format('New Bag Size: %u', bagsize))
-    player:changeContainerSize(xi.inv.INVENTORY, adjustment)
-    player:changeContainerSize(xi.inv.MOGSATCHEL, adjustment)
+    local currentBagSize = targ:getContainerSize(xi.inv.INVENTORY)
+    local adjustment = bagsize - currentBagSize
+
+    -- mark Gobbiebag quests complete/incomplete to match the chosen size
+    for i = 1, 10 do
+        if bagsize > bagparam[i].bagsize then
+            targ:completeQuest(xi.questLog.JEUNO, bagparam[i].questid)
+        else
+            targ:delQuest(xi.questLog.JEUNO, bagparam[i].questid)
+        end
+    end
+
+    -- resize inventory + mog satchel
+    targ:changeContainerSize(xi.inv.INVENTORY, adjustment)
+    targ:changeContainerSize(xi.inv.MOGSATCHEL, adjustment)
+
+    player:printToPlayer(string.format('%s bag size: %u -> %u', targ:getName(), currentBagSize, bagsize))
+    if targ ~= player then
+        targ:printToPlayer(string.format('Your bag size has been set to %u (zone or relog to refresh).', bagsize))
+    end
 end
 
 return commandObj

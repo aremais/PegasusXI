@@ -45,7 +45,7 @@ This tool is used to distribute the following items:
 - Stuffed Chocobo  
 - Tidal Talisman  
 - Destrier Beret  
-- Chocobo Shirt  
+- Pegasus Tunic  
 
 ## Announce
 `python announce.py "<your message>"`

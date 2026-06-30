@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `item_latents` (
 -- Item name
 -- INSERT INTO `item_latents` VALUES (itemID,modId,modValue,latentId,latentParam); -- Human readable latent & mod
 
--- Chocobo Shirt
+-- Pegasus Tunic
 INSERT INTO `item_latents` VALUES (10293,25,50,50,31);   -- Under Lv.31 : Acc.+50
 INSERT INTO `item_latents` VALUES (10293,26,50,50,31);   -- Under Lv.31 : Rng. Acc.+50
 INSERT INTO `item_latents` VALUES (10293,30,50,50,31);   -- Under Lv.31 : Mag. Acc.+50

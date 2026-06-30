@@ -305,7 +305,7 @@ INSERT INTO `item_mods` VALUES (10292,13,16);  -- MND: 16
 INSERT INTO `item_mods` VALUES (10292,30,10);  -- MACC: 10
 INSERT INTO `item_mods` VALUES (10292,114,18); -- ENFEEBLE: 18
 
--- Chocobo Shirt
+-- Pegasus Tunic
 INSERT INTO `item_mods` VALUES (10293,1,2);   -- DEF: 2
 INSERT INTO `item_mods` VALUES (10293,156,1); -- APPRECIATE_GYSAHL_GREENS: 1
 
@@ -26288,7 +26288,7 @@ INSERT INTO `item_mods` VALUES (15196,958,2); -- STATUSRES: 2
 -- Vampire Mask
 INSERT INTO `item_mods` VALUES (15197,1,17); -- DEF: 17
 
--- Sprout Beret
+-- Pegasus Beret
 INSERT INTO `item_mods` VALUES (15198,64,3); -- COMBAT_SKILLUP_RATE: 3
 INSERT INTO `item_mods` VALUES (15198,65,3); -- MAGIC_SKILLUP_RATE: 3
 
