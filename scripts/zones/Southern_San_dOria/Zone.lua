@@ -2,11 +2,17 @@
 -- Zone: Southern_San_dOria (230)
 -----------------------------------
 require('scripts/quests/flyers_for_regine')
+local ID = zones[xi.zone.SOUTHERN_SAN_DORIA]
 -----------------------------------
 ---@type TZone
 local zoneObject = {}
 
 zoneObject.onInitialize = function(zone)
+    local repairer = GetNPCByID(ID.npc.REPAIRER_MOOGLE)
+    if repairer then
+        repairer:renameEntity('Repairer Moogle', true)
+    end
+
     zone:registerCuboidTriggerArea(1, -292, -10, 90 , -258, 10, 105)
     quests.ffr.initZone(zone) -- register trigger areas 2 through 6
     xi.events.harvestFestival.applyHalloweenNpcCostumes(zone:getID())
