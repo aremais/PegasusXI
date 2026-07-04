@@ -30,8 +30,9 @@ local function getArcielaPartyTargets(mob)
     table.insert(fallback, mob)
 
     return fallback
-end
-mobskillObject.onMobSkillCheck = function(target, mob, skill)
+ param($m)
+            if ($m.Value -eq "end)`n") { "end)`n`n" } else { "end`n`n" }
+        mobskillObject.onMobSkillCheck = function(target, mob, skill)
     return 0
 end
 

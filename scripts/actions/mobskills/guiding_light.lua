@@ -86,7 +86,11 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
         end
 
         for _, member in pairs(party) do
-            if member ~= nil and member:isAlive() and member:checkDistance(mobArg) <= 10 then
+            if
+            member ~= nil and
+            member:isAlive() and
+            member:checkDistance(mobArg) <= 10
+        then
                 applyGuidingLightBuff(member)
             end
         end

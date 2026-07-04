@@ -12,7 +12,6 @@ mobskillObject.onMobSkillCheck = function(target, mob, skill)
 end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
-
     local params = {}
 
     params.baseDamage     = mob:getWeaponDmg()

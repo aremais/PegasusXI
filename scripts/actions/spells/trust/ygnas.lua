@@ -65,7 +65,11 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.PARTY, { ai.c.STATUS, xi.effect.CURSE_I }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.CURSNA })
 
     -- Some LSB builds do not expose STATUS_FLAG/effectFlag. Guard it so Ygnas cannot crash on spawn.
-    if ai.c.STATUS_FLAG ~= nil and xi.effectFlag ~= nil and xi.effectFlag.ERASABLE ~= nil then
+    if
+        ai.c.STATUS_FLAG ~= nil and
+        xi.effectFlag ~= nil and
+        xi.effectFlag.ERASABLE ~= nil
+    then
         mob:addGambit(ai.t.SELF, { ai.c.STATUS_FLAG, xi.effectFlag.ERASABLE }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ERASE })
         mob:addGambit(ai.t.PARTY, { ai.c.STATUS_FLAG, xi.effectFlag.ERASABLE }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ERASE })
     end

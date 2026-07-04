@@ -77,10 +77,10 @@ spellObject.onMobSpawn = function(mob)
     local lastAjidoCurePotencyBonus = 0
     mob:addListener('COMBAT_TICK', 'APURURU_UC_AJIDO_SYNERGY_CTICK', function(mobArg)
         local targetBonus = 0
-        local master = mobArg:getMaster()
+        local synergyMaster = mobArg:getMaster()
 
-        if master ~= nil then
-            local party = master:getPartyWithTrusts()
+        if synergyMaster ~= nil then
+            local party = synergyMaster:getPartyWithTrusts()
             for _, member in pairs(party) do
                 if
                     member:getObjType() == xi.objType.TRUST and
