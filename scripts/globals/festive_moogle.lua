@@ -23,7 +23,7 @@ local grantedItems =
     [xi.item.STUFFED_CHOCOBO] = 'festiveMooglestuffedChocobo',
     [xi.item.TIDAL_TALISMAN ] = 'festiveMoogleTidalTalisman',
     [xi.item.DESTRIER_BERET ] = 'festiveMoogleDestrierBeret',
-    [xi.item.CHOCOBO_SHIRT  ] = 'festiveMoogleChocoboShirt',
+    [xi.item.PEGASUS_TUNIC  ] = 'festiveMoogleChocoboShirt',
 }
 
 local tradeItems =
@@ -316,7 +316,7 @@ local rewardItems =
             [13] = { xi.item.GOBBIE_GAVEL,          1 },
             [14] = { xi.item.MELOMANE_MALLET,       1 },
             [15] = { xi.item.MANDRAGUARD,           1 },
-            [16] = { xi.item.CHOCOBO_SHIRT,         1 },
+            [16] = { xi.item.PEGASUS_TUNIC,         1 },
             [17] = { xi.item.KORRIGAN_BERET,        1 },
             [18] = { xi.item.DECAZOOM_MK_XI,        1 },
             [19] = { xi.item.ESCRITORIO,            1 },

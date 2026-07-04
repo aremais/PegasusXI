@@ -22,6 +22,7 @@
 #include "trustutils.h"
 
 #include "common/utils.h"
+#include "common/xi.h"
 
 #include <algorithm>
 #include <cstring>
@@ -166,6 +167,20 @@ void trustutils::LoadTrustList()
 
 auto trustutils::SpawnTrust(CCharEntity* PMaster, uint32 TrustID) -> CTrustEntity*
 {
+    if (!PMaster)
+    {
+        return nullptr;
+    }
+
+    static thread_local bool inSpawnTrust = false;
+    if (inSpawnTrust)
+    {
+        ShowWarning("trustutils::SpawnTrust: reentrant call skipped (trustId=%u)", TrustID);
+        return nullptr;
+    }
+    inSpawnTrust = true;
+    const auto resetGuard = xi::finally([]() { inSpawnTrust = false; });
+
     CTrustEntity* PTrust = LoadTrust(PMaster, TrustID);
     if (PTrust == nullptr)
     {
@@ -480,6 +495,20 @@ auto LoadTrust(CCharEntity* PMaster, uint32 TrustID) -> CTrustEntity*
 
 void LoadTrustStatsAndSkills(CTrustEntity* PTrust)
 {
+    if (!PTrust)
+    {
+        return;
+    }
+
+    static thread_local bool inLoadTrustStatsAndSkills = false;
+    if (inLoadTrustStatsAndSkills)
+    {
+        ShowWarning("trustutils::LoadTrustStatsAndSkills: reentrant call skipped for trust '%s'", PTrust->name.c_str());
+        return;
+    }
+    inLoadTrustStatsAndSkills = true;
+    const auto resetGuard = xi::finally([]() { inLoadTrustStatsAndSkills = false; });
+
     if (settings::get<uint8>("main.ENABLE_TRUST_ALTER_EGO_EXPO") > 0) // Alter Ego Expo HPP/MPP +50%, All Status Resistance +25%
     {
         PTrust->addModifier(Mod::HPP, 50);

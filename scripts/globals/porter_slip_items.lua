@@ -1450,7 +1450,7 @@ local slipItems =
         xi.item.ARK_SCYTHE,
         xi.item.ARK_SABER,
         xi.item.ARK_SWORD,
-        xi.item.CHOCOBO_SHIRT,
+        xi.item.PEGASUS_TUNIC,
         xi.item.MOOGLE_GUARD,
         xi.item.MOOGLE_GUARD_P1,
         xi.item.CHOCOBO_SHIELD,
