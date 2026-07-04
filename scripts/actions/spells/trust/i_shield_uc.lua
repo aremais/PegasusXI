@@ -1,7 +1,7 @@
 -----------------------------------
 -- Trust: Invincible Shield (UC)
 -----------------------------------
-require("scripts/globals/trust")
+require('scripts/globals/trust')
 -----------------------------------
 local spellObject = {}
 

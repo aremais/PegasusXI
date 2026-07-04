@@ -29,7 +29,6 @@ spellObject.onMobSpawn = function(mob)
         mob:addGambit(targetType, { ai.c.NOT_STATUS, xi.effect.SHELL }, { ai.r.MA, ai.s.SPECIFIC, 52 }) -- Shell V
     end
 
-
     -- Retail/wiki-oriented Arciela approximation:
     -- RDM/PLD support, MP+20% from mob_pool_mods, Regain +25,
     -- self/summoner Haste/Refresh/Protect/Shell,
@@ -38,8 +37,6 @@ spellObject.onMobSpawn = function(mob)
     mob:addMod(xi.mod.REGAIN, 25)
 
     -- Arciela uses Light-mode enhancing magic only on herself and her summoner.
-
-
 
     -- Enfeebling behavior, corresponding to Bellatrix of Shadows mode.
     -- Arciela I has Addle/Dispel on the wiki spell list, but they must not be spammed blindly.

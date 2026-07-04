@@ -4,7 +4,7 @@
 -- Skillchain: Gravitation / Reverberation.
 -- Conservative physical damage implementation.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

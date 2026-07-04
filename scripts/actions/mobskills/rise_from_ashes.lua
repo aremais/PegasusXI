@@ -3,7 +3,7 @@
 -- Iroha II Trust TP move.
 -- Source behavior: restores HP/MP, grants Stoneskin, and helps sleeping party members.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

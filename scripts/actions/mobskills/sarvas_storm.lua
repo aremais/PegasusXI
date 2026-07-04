@@ -12,7 +12,6 @@ mobskillObject.onMobSkillCheck = function(target, mob, skill)
 end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
-    print(string.format("[JakohUC][SarvasStorm] ENTER mob=%s target=%s tp=%s", mob:getName(), target:getName(), mob:getTP()))
 
     local params = {}
 
@@ -31,8 +30,6 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
 
         xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.WEIGHT, 25, 0, 60)
     end
-
-    print(string.format("[JakohUC][SarvasStorm] EXIT damage=%s attackType=%s damageType=%s", tostring(info.damage), tostring(info.attackType), tostring(info.damageType)))
 
     return info.damage
 end

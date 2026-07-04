@@ -2,7 +2,7 @@
 -- Walk the Plank
 -- Lion Trust TP move. AoE damage + Bind + Dispel.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

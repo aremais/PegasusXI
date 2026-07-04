@@ -1,7 +1,7 @@
 -----------------------------------
 -- Trust: Iron Eater
 -----------------------------------
-require("scripts/globals/trust")
+require('scripts/globals/trust')
 -----------------------------------
 local spellObject = {}
 
@@ -27,7 +27,6 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 1 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 80 }) -- Shield Break
     mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 10 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 83 }) -- Armor Break
     mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 65 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 88 }) -- Steel Cyclone
-
 end
 
 spellObject.onMobDespawn = function(mob)

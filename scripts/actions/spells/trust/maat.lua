@@ -1,7 +1,7 @@
 -----------------------------------
 -- Trust: Maat
 -----------------------------------
-require("scripts/globals/trust")
+require('scripts/globals/trust')
 -----------------------------------
 local spellObject = {}
 
@@ -34,7 +34,7 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 71 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 3417 }, 30) -- Asuran Fists
     mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 75 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 3263 }, 30) -- Bear Killer
 
-    mob:addListener("WEAPONSKILL_USE", "MAAT_BEAR_KILLER_MESSAGE", function(mobArg, targetArg, skill, tp, action, damage)
+    mob:addListener("WEAPONSKILL_USE", 'MAAT_BEAR_KILLER_MESSAGE', function(mobArg, targetArg, skill, tp, action, damage)
         if skill:getID() == 3263 then
             xi.trust.message(mobArg, xi.trust.messageOffset.SPECIAL_MOVE_1)
         end

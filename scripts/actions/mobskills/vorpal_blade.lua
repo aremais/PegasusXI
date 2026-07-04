@@ -7,7 +7,6 @@
 local mobskillObject = {}
 
 mobskillObject.onMobSkillCheck = function(target, mob, skill)
-
     -- Handle Ghrah family humanoid form.
     -- If not in Paladin form, then ignore.
     if

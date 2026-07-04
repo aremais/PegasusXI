@@ -3,7 +3,7 @@
 -- Gilgamesh Trust TP move.
 -- Source notes: AoE Wind damage with Gravitation/Scission skillchain properties.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

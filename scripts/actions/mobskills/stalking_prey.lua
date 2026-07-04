@@ -4,7 +4,7 @@
 -- Skillchain: Light / Fragmentation.
 -- Source notes this is AoE damage; AoE targeting is controlled by mob_skills.sql.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

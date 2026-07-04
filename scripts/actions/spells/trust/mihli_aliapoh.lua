@@ -132,4 +132,3 @@ spellObject.onMobDeath = function(mob)
 end
 
 return spellObject
-

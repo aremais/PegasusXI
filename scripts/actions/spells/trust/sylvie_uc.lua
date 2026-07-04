@@ -22,7 +22,6 @@ spellObject.onMobSpawn = function(mob)
 
     local mJob   = master:getMainJob()
 
-
     -- Has Regain (50/tick) and uses Nott when MP falls below 66%.
     -- cure IV cures 456 HP @99
 

@@ -2,7 +2,7 @@
 -- Bisection
 -- Luzaf Trust TP move.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

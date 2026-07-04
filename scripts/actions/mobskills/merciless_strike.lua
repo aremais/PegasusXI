@@ -3,7 +3,7 @@
 -- Ingrid II Trust TP move.
 -- Source notes this correlates to True Strike.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

@@ -4,7 +4,7 @@
 -- Description: Restores HP in an area of effect.
 -- Notes: Branch-safe Trust approximation based on documented retail behavior.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}

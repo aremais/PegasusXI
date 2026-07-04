@@ -3,7 +3,7 @@
 -- Ingrid II Trust TP move.
 -- Recovers HP and removes sleep from party targets.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

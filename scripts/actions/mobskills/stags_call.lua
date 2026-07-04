@@ -4,7 +4,7 @@
 -- Source notes: AoE party buff with Haste, Attack Boost, and Magic Attack Boost.
 -- AoE/party targeting is controlled by mob_skills.sql.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

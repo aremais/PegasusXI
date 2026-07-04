@@ -1,7 +1,7 @@
 -----------------------------------
 -- Whirling Edge
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

@@ -4,7 +4,7 @@
 -- Skillchain: Fragmentation / Compression.
 -- Source notes this deals Wind damage.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

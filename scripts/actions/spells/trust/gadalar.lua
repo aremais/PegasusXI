@@ -87,7 +87,6 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.WS, ai.s.SPECIFIC, 104 }, 10)  -- Spiral Hell
     mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.WS, ai.s.SPECIFIC, 101 }, 10)  -- Vorpal Scythe
     mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.WS, ai.s.SPECIFIC, 944 }, 10)  -- Spinning Scythe
-
 end
 
 spellObject.onMobDespawn = function(mob)

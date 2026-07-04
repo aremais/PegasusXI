@@ -2,7 +2,7 @@
 -- Grapeshot
 -- Lion Trust TP move. Conal damage + Stun.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

@@ -1,7 +1,7 @@
 -----------------------------------
 -- Trust: Jakoh Wahcondalo (UC)
 -----------------------------------
-require("scripts/globals/trust")
+require('scripts/globals/trust')
 -----------------------------------
 local spellObject = {}
 
@@ -36,7 +36,7 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.SELF, { ai.c.LVL_GTE, 87 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.CONSPIRATOR }, 300)
 
     local tpMode = ai.tp.ASAP
-    if type(ai.tp.CLOSER_UNTIL_TP) == "number" then
+    if type(ai.tp.CLOSER_UNTIL_TP) == 'number' then
         tpMode = ai.tp.CLOSER_UNTIL_TP
     end
 

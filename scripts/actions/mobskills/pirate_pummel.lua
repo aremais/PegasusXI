@@ -2,7 +2,7 @@
 -- Pirate Pummel
 -- Lion Trust TP move. Damage + Burn.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

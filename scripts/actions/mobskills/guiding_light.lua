@@ -30,8 +30,8 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     end
 
     local function applyGuidingLightBuff(member)
-        local previousPower = member:getLocalVar("ArcielaGuidingLightPower")
-        local expireTime = os.time() + duration
+        local previousPower = member:getLocalVar('ArcielaGuidingLightPower')
+        local expireTime = GetSystemTime() + duration
 
         if previousPower > 0 then
             delGuidingLightMod(member, xi.mod.ATT, previousPower)
@@ -45,25 +45,25 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
         addGuidingLightMod(member, xi.mod.MATT, power)
         addGuidingLightMod(member, xi.mod.MDEF, power)
 
-        member:setLocalVar("ArcielaGuidingLightPower", power)
-        member:setLocalVar("ArcielaGuidingLightExpires", expireTime)
+        member:setLocalVar('ArcielaGuidingLightPower', power)
+        member:setLocalVar('ArcielaGuidingLightExpires', expireTime)
 
         member:timer(duration * 1000, function(memberArg)
             if memberArg == nil then
                 return
             end
 
-            local storedPower = memberArg:getLocalVar("ArcielaGuidingLightPower")
-            local storedExpire = memberArg:getLocalVar("ArcielaGuidingLightExpires")
+            local storedPower = memberArg:getLocalVar('ArcielaGuidingLightPower')
+            local storedExpire = memberArg:getLocalVar('ArcielaGuidingLightExpires')
 
-            if storedPower > 0 and storedExpire <= os.time() then
+            if storedPower > 0 and storedExpire <= GetSystemTime() then
                 delGuidingLightMod(memberArg, xi.mod.ATT, storedPower)
                 delGuidingLightMod(memberArg, xi.mod.DEF, storedPower)
                 delGuidingLightMod(memberArg, xi.mod.MATT, storedPower)
                 delGuidingLightMod(memberArg, xi.mod.MDEF, storedPower)
 
-                memberArg:setLocalVar("ArcielaGuidingLightPower", 0)
-                memberArg:setLocalVar("ArcielaGuidingLightExpires", 0)
+                memberArg:setLocalVar('ArcielaGuidingLightPower', 0)
+                memberArg:setLocalVar('ArcielaGuidingLightExpires', 0)
             end
         end)
     end

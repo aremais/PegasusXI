@@ -3,7 +3,7 @@
 -- Invincible Shield UC Trust TP move.
 -- Source behavior: Great Axe physical attack with Slow.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

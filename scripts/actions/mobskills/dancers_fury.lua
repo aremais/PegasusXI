@@ -1,7 +1,7 @@
 -----------------------------------
 -- Dancer's Fury
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

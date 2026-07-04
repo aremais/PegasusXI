@@ -3,7 +3,7 @@
 -- Excenmille (S) Trust TP move.
 -- Source notes: single-target magical damage; BGWiki notes Paralyze.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

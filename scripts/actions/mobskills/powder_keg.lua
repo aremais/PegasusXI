@@ -2,7 +2,7 @@
 -- Powder Keg
 -- Lion Trust TP move. Conal damage + Defense Down + Magic Defense Down.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

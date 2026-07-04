@@ -6206,8 +6206,6 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-
-
 -- Lax custom Trust: Ulmia retail-safe song list.
 -- Includes Minne fallback songs documented by broader wiki coverage.
 DELETE FROM `mob_spell_lists` WHERE `spell_list_id` = 326;

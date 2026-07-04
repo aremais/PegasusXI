@@ -2,7 +2,7 @@
 -- Inexorable Strike
 -- Ingrid II Trust TP move.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

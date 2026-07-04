@@ -3,7 +3,7 @@
 -- Flaviria (UC) Trust TP move.
 -- Unity leader variant of Camlann's Torment; conservative ignores-defense implementation.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

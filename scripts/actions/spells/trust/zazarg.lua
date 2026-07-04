@@ -1,7 +1,7 @@
 -----------------------------------
 -- Trust: Zazarg
 -----------------------------------
-require("scripts/globals/trust")
+require('scripts/globals/trust')
 -----------------------------------
 
 ---@type TSpellTrust

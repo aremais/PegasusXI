@@ -3,7 +3,7 @@
 -- Excenmille (S) Trust TP move.
 -- Conservative physical damage implementation.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

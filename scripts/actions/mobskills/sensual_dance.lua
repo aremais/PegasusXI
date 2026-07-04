@@ -2,7 +2,7 @@
 -- Sensual Dance
 -- Lilisette / Lilisette II support TP move.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

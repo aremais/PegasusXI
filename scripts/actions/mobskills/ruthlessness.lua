@@ -3,7 +3,7 @@
 -- Ingrid II Trust TP move.
 -- Source notes: conal HP Drain.
 -----------------------------------
-require("scripts/globals/mobskills")
+require('scripts/globals/mobskills')
 -----------------------------------
 
 local mobskillObject = {}

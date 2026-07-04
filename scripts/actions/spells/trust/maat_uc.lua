@@ -1,7 +1,7 @@
 -----------------------------------
 -- Trust: Maat (UC)
 -----------------------------------
-require("scripts/globals/trust")
+require('scripts/globals/trust')
 -----------------------------------
 local spellObject = {}
 
