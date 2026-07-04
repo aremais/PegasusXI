@@ -24,6 +24,7 @@
 #include "common/database.h"
 #include "common/logging.h"
 #include "common/utils.h"
+#include "common/xi.h"
 
 #include "action/action.h"
 #include "ai/ai_container.h"
@@ -2042,9 +2043,17 @@ void applyAllyMobSqlRow(CMobEntity* PMob, const AllyMobSqlRow& row, CInstance* i
     PMob->setMobMod(MOBMOD_DETECTION, row.detects);
 }
 
-} // namespace
+struct PendingAllySpawn
+{
+    uint32     groupid{};
+    uint16     zoneID{};
+    CInstance* instance{};
+};
 
-auto InstantiateAlly(uint32 groupid, uint16 zoneID, CInstance* instance) -> CMobEntity*
+static thread_local int                           instantiateAllyDepth = 0;
+static thread_local std::vector<PendingAllySpawn> pendingAllySpawns;
+
+auto instantiateAllyInternal(uint32 groupid, uint16 zoneID, CInstance* instance) -> CMobEntity*
 {
     const auto row = fetchAllyMobSqlRow(groupid, zoneID);
     if (!row)
@@ -2084,6 +2093,33 @@ auto InstantiateAlly(uint32 groupid, uint16 zoneID, CInstance* instance) -> CMob
 
     PMob->saveModifiers();
     PMob->saveMobModifiers();
+
+    return PMob;
+}
+
+} // namespace
+
+auto InstantiateAlly(uint32 groupid, uint16 zoneID, CInstance* instance) -> CMobEntity*
+{
+    // Ally Lua init can spawn trusts or nested allies; queue reentrant requests instead of
+    // nesting SQL/Lua on the main thread (stack corruption in production).
+    if (instantiateAllyDepth > 0)
+    {
+        pendingAllySpawns.push_back({ groupid, zoneID, instance });
+        return nullptr;
+    }
+
+    ++instantiateAllyDepth;
+    const auto depthGuard = xi::finally([]() { --instantiateAllyDepth; });
+
+    CMobEntity* PMob = instantiateAllyInternal(groupid, zoneID, instance);
+
+    while (!pendingAllySpawns.empty())
+    {
+        const PendingAllySpawn pending = pendingAllySpawns.front();
+        pendingAllySpawns.erase(pendingAllySpawns.begin());
+        instantiateAllyInternal(pending.groupid, pending.zoneID, pending.instance);
+    }
 
     return PMob;
 }

@@ -1,6 +1,6 @@
 -----------------------------------
 -- ID: 15198
--- Item: Sprout Beret
+-- Item: Pegasus Beret
 -- Experience point bonus
 -----------------------------------
 -- Bonus: +150%

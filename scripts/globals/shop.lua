@@ -784,77 +784,77 @@ local regionParam =
 
 local regionalVendorTable =
 {
-    ['Antonian'   ] = { xi.region.ARAGONEU, xi.nation.SANDORIA, xi.fameArea.SANDORIA, northSandyID.text.ANTONIAN_OPEN_DIALOG, northSandyID.text.ANTONIAN_CLOSED_DIALOG, 0 },
-    ['Oggodett'   ] = { xi.region.ARAGONEU, xi.nation.BASTOK,   xi.fameArea.BASTOK,   marketsID.text.OGGODETT_OPEN_DIALOG,    marketsID.text.OGGODETT_CLOSED_DIALOG,    0 },
-    ['Maqu_Molpih'] = { xi.region.ARAGONEU, xi.nation.WINDURST, xi.fameArea.WINDURST, watersID.text.MAQUMOLPIH_OPEN_DIALOG,   watersID.text.MAQUMOLPIH_CLOSED_DIALOG,   0 },
+    ['Antonian'   ] = { xi.region.ARAGONEU, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { northSandyID, 'ANTONIAN_OPEN_DIALOG' }, { northSandyID, 'ANTONIAN_CLOSED_DIALOG' }, 0 },
+    ['Oggodett'   ] = { xi.region.ARAGONEU, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { marketsID, 'OGGODETT_OPEN_DIALOG' },    { marketsID, 'OGGODETT_CLOSED_DIALOG' },    0 },
+    ['Maqu_Molpih'] = { xi.region.ARAGONEU, xi.nation.WINDURST, xi.fameArea.WINDURST, { watersID, 'MAQUMOLPIH_OPEN_DIALOG' },   { watersID, 'MAQUMOLPIH_CLOSED_DIALOG' },   0 },
 
-    ['Pourette'       ] = { xi.region.DERFLAND, xi.nation.SANDORIA, xi.fameArea.SANDORIA, southSandyID.text.POURETTE_OPEN_DIALOG,  southSandyID.text.POURETTE_CLOSED_DIALOG,  0 },
-    ['Belka'          ] = { xi.region.DERFLAND, xi.nation.BASTOK,   xi.fameArea.BASTOK,   portBastokID.text.BELKA_OPEN_DIALOG,     portBastokID.text.BELKA_CLOSED_DIALOG,     0 },
-    ['Taraihi-Perunhi'] = { xi.region.DERFLAND, xi.nation.WINDURST, xi.fameArea.WINDURST, woodsID.text.TARAIHIPERUNHI_OPEN_DIALOG, woodsID.text.TARAIHIPERUNHI_CLOSED_DIALOG, 0 },
+    ['Pourette'       ] = { xi.region.DERFLAND, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { southSandyID, 'POURETTE_OPEN_DIALOG' },  { southSandyID, 'POURETTE_CLOSED_DIALOG' },  0 },
+    ['Belka'          ] = { xi.region.DERFLAND, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { portBastokID, 'BELKA_OPEN_DIALOG' },     { portBastokID, 'BELKA_CLOSED_DIALOG' },     0 },
+    ['Taraihi-Perunhi'] = { xi.region.DERFLAND, xi.nation.WINDURST, xi.fameArea.WINDURST, { woodsID, 'TARAIHIPERUNHI_OPEN_DIALOG' }, { woodsID, 'TARAIHIPERUNHI_CLOSED_DIALOG' }, 0 },
 
-    ['Nimia'     ] = { xi.region.ELSHIMO_LOWLANDS, xi.nation.SANDORIA, xi.fameArea.SANDORIA, portSandyID.text.NIMIA_OPEN_DIALOG,      portSandyID.text.NIMIA_CLOSED_DIALOG,      0 },
-    ['Zoby_Quhyo'] = { xi.region.ELSHIMO_LOWLANDS, xi.nation.BASTOK,   xi.fameArea.BASTOK,   portBastokID.text.ZOBYQUHYO_OPEN_DIALOG, portBastokID.text.ZOBYQUHYO_CLOSED_DIALOG, 0 },
-    ['Fomina'    ] = { xi.region.ELSHIMO_LOWLANDS, xi.nation.WINDURST, xi.fameArea.WINDURST, watersID.text.FOMINA_OPEN_DIALOG,        watersID.text.FOMINA_CLOSED_DIALOG,        0 },
+    ['Nimia'     ] = { xi.region.ELSHIMO_LOWLANDS, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { portSandyID, 'NIMIA_OPEN_DIALOG' },      { portSandyID, 'NIMIA_CLOSED_DIALOG' },      0 },
+    ['Zoby_Quhyo'] = { xi.region.ELSHIMO_LOWLANDS, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { portBastokID, 'ZOBYQUHYO_OPEN_DIALOG' }, { portBastokID, 'ZOBYQUHYO_CLOSED_DIALOG' }, 0 },
+    ['Fomina'    ] = { xi.region.ELSHIMO_LOWLANDS, xi.nation.WINDURST, xi.fameArea.WINDURST, { watersID, 'FOMINA_OPEN_DIALOG' },        { watersID, 'FOMINA_CLOSED_DIALOG' },        0 },
 
-    ['Bonmaurieut'      ] = { xi.region.ELSHIMO_UPLANDS, xi.nation.SANDORIA, xi.fameArea.SANDORIA, portSandyID.text.BONMAURIEUT_OPEN_DIALOG,      portSandyID.text.BONMAURIEUT_CLOSED_DIALOG,      0 },
-    ['Dhen_Tevryukoh'   ] = { xi.region.ELSHIMO_UPLANDS, xi.nation.BASTOK,   xi.fameArea.BASTOK,   portBastokID.text.DHENTEVRYUKOH_OPEN_DIALOG,   portBastokID.text.DHENTEVRYUKOH_CLOSED_DIALOG,   0 },
-    ['Sattsuh_Ahkanpari'] = { xi.region.ELSHIMO_UPLANDS, xi.nation.WINDURST, xi.fameArea.WINDURST, portWindyID.text.SATTSUHAHKANPARI_OPEN_DIALOG, portWindyID.text.SATTSUHAHKANPARI_CLOSED_DIALOG, 0 },
+    ['Bonmaurieut'      ] = { xi.region.ELSHIMO_UPLANDS, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { portSandyID, 'BONMAURIEUT_OPEN_DIALOG' },      { portSandyID, 'BONMAURIEUT_CLOSED_DIALOG' },      0 },
+    ['Dhen_Tevryukoh'   ] = { xi.region.ELSHIMO_UPLANDS, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { portBastokID, 'DHENTEVRYUKOH_OPEN_DIALOG' },   { portBastokID, 'DHENTEVRYUKOH_CLOSED_DIALOG' },   0 },
+    ['Sattsuh_Ahkanpari'] = { xi.region.ELSHIMO_UPLANDS, xi.nation.WINDURST, xi.fameArea.WINDURST, { portWindyID, 'SATTSUHAHKANPARI_OPEN_DIALOG' }, { portWindyID, 'SATTSUHAHKANPARI_CLOSED_DIALOG' }, 0 },
 
-    ['Vichuel'           ] = { xi.region.FAUREGANDI, xi.nation.SANDORIA, xi.fameArea.SANDORIA, northSandyID.text.VICHUEL_OPEN_DIALOG,          northSandyID.text.VICHUEL_CLOSED_DIALOG,          0 },
-    ['Rodellieux'        ] = { xi.region.FAUREGANDI, xi.nation.BASTOK,   xi.fameArea.BASTOK,   minesID.text.RODELLIEUX_OPEN_DIALOG,            minesID.text.RODELLIEUX_CLOSED_DIALOG,            0 },
-    ['Sheia_Pohrichamaha'] = { xi.region.FAUREGANDI, xi.nation.WINDURST, xi.fameArea.WINDURST, portWindyID.text.SHEIAPOHRICHAMAHA_OPEN_DIALOG, portWindyID.text.SHEIAPOHRICHAMAHA_CLOSED_DIALOG, 0 },
+    ['Vichuel'           ] = { xi.region.FAUREGANDI, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { northSandyID, 'VICHUEL_OPEN_DIALOG' },          { northSandyID, 'VICHUEL_CLOSED_DIALOG' },          0 },
+    ['Rodellieux'        ] = { xi.region.FAUREGANDI, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { minesID, 'RODELLIEUX_OPEN_DIALOG' },            { minesID, 'RODELLIEUX_CLOSED_DIALOG' },            0 },
+    ['Sheia_Pohrichamaha'] = { xi.region.FAUREGANDI, xi.nation.WINDURST, xi.fameArea.WINDURST, { portWindyID, 'SHEIAPOHRICHAMAHA_OPEN_DIALOG' }, { portWindyID, 'SHEIAPOHRICHAMAHA_CLOSED_DIALOG' }, 0 },
 
-    ['Apairemant'  ] = { xi.region.GUSTABERG, xi.nation.SANDORIA, xi.fameArea.SANDORIA, southSandyID.text.APAIREMANT_OPEN_DIALOG, southSandyID.text.APAIREMANT_CLOSED_DIALOG, 0 },
-    ['Evelyn'      ] = { xi.region.GUSTABERG, xi.nation.BASTOK,   xi.fameArea.BASTOK,   portBastokID.text.EVELYN_OPEN_DIALOG,     portBastokID.text.EVELYN_CLOSED_DIALOG,     0 },
-    ['Nya_Labiccio'] = { xi.region.GUSTABERG, xi.nation.WINDURST, xi.fameArea.WINDURST, woodsID.text.NYALABICCIO_OPEN_DIALOG,     woodsID.text.NYALABICCIO_CLOSED_DIALOG,     0 },
+    ['Apairemant'  ] = { xi.region.GUSTABERG, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { southSandyID, 'APAIREMANT_OPEN_DIALOG' }, { southSandyID, 'APAIREMANT_CLOSED_DIALOG' }, 0 },
+    ['Evelyn'      ] = { xi.region.GUSTABERG, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { portBastokID, 'EVELYN_OPEN_DIALOG' },     { portBastokID, 'EVELYN_CLOSED_DIALOG' },     0 },
+    ['Nya_Labiccio'] = { xi.region.GUSTABERG, xi.nation.WINDURST, xi.fameArea.WINDURST, { woodsID, 'NYALABICCIO_OPEN_DIALOG' },     { woodsID, 'NYALABICCIO_CLOSED_DIALOG' },     0 },
 
-    ['Fiva'    ] = { xi.region.KOLSHUSHU, xi.nation.SANDORIA, xi.fameArea.SANDORIA, portSandyID.text.FIVA_OPEN_DIALOG,  portSandyID.text.FIVA_CLOSED_DIALOG,  0 },
-    ['Yafafa'  ] = { xi.region.KOLSHUSHU, xi.nation.BASTOK,   xi.fameArea.BASTOK,   marketsID.text.YAFAFA_OPEN_DIALOG,  marketsID.text.YAFAFA_CLOSED_DIALOG,  0 },
-    ['Ahyeekih'] = { xi.region.KOLSHUSHU, xi.nation.WINDURST, xi.fameArea.WINDURST, watersID.text.AHYEEKIH_OPEN_DIALOG, watersID.text.AHYEEKIH_CLOSED_DIALOG, 0 },
+    ['Fiva'    ] = { xi.region.KOLSHUSHU, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { portSandyID, 'FIVA_OPEN_DIALOG' },  { portSandyID, 'FIVA_CLOSED_DIALOG' },  0 },
+    ['Yafafa'  ] = { xi.region.KOLSHUSHU, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { marketsID, 'YAFAFA_OPEN_DIALOG' },  { marketsID, 'YAFAFA_CLOSED_DIALOG' },  0 },
+    ['Ahyeekih'] = { xi.region.KOLSHUSHU, xi.nation.WINDURST, xi.fameArea.WINDURST, { watersID, 'AHYEEKIH_OPEN_DIALOG' }, { watersID, 'AHYEEKIH_CLOSED_DIALOG' }, 0 },
 
-    ['Patolle'     ] = { xi.region.KUZOTZ, xi.nation.SANDORIA, xi.fameArea.SANDORIA, portSandyID.text.PATOLLE_OPEN_DIALOG,  portSandyID.text.PATOLLE_CLOSED_DIALOG,  0 },
-    ['Vattian'     ] = { xi.region.KUZOTZ, xi.nation.BASTOK,   xi.fameArea.BASTOK,   portBastokID.text.VATTIAN_OPEN_DIALOG, portBastokID.text.VATTIAN_CLOSED_DIALOG, 0 },
-    ['Nhobi_Zalkia'] = { xi.region.KUZOTZ, xi.nation.WINDURST, xi.fameArea.WINDURST, woodsID.text.NHOBI_ZALKIA_OPEN_DIALOG, woodsID.text.NHOBI_ZALKIA_CLOSED_DIALOG, 0 },
+    ['Patolle'     ] = { xi.region.KUZOTZ, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { portSandyID, 'PATOLLE_OPEN_DIALOG' },  { portSandyID, 'PATOLLE_CLOSED_DIALOG' },  0 },
+    ['Vattian'     ] = { xi.region.KUZOTZ, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { portBastokID, 'VATTIAN_OPEN_DIALOG' }, { portBastokID, 'VATTIAN_CLOSED_DIALOG' }, 0 },
+    ['Nhobi_Zalkia'] = { xi.region.KUZOTZ, xi.nation.WINDURST, xi.fameArea.WINDURST, { woodsID, 'NHOBI_ZALKIA_OPEN_DIALOG' }, { woodsID, 'NHOBI_ZALKIA_CLOSED_DIALOG' }, 0 },
 
-    ['Attarena'] = { xi.region.LITELOR, xi.nation.SANDORIA, xi.fameArea.SANDORIA, northSandyID.text.ATTARENA_OPEN_DIALOG, northSandyID.text.ATTARENA_CLOSED_DIALOG, 0 },
-    ['Galdeo'  ] = { xi.region.LITELOR, xi.nation.BASTOK,   xi.fameArea.BASTOK,   minesID.text.GALDEO_OPEN_DIALOG,        minesID.text.GALDEO_CLOSED_DIALOG,        0 },
-    ['Otete'   ] = { xi.region.LITELOR, xi.nation.WINDURST, xi.fameArea.WINDURST, watersID.text.OTETE_OPEN_DIALOG,        watersID.text.OTETE_CLOSED_DIALOG,        0 },
+    ['Attarena'] = { xi.region.LITELOR, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { northSandyID, 'ATTARENA_OPEN_DIALOG' }, { northSandyID, 'ATTARENA_CLOSED_DIALOG' }, 0 },
+    ['Galdeo'  ] = { xi.region.LITELOR, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { minesID, 'GALDEO_OPEN_DIALOG' },        { minesID, 'GALDEO_CLOSED_DIALOG' },        0 },
+    ['Otete'   ] = { xi.region.LITELOR, xi.nation.WINDURST, xi.fameArea.WINDURST, { watersID, 'OTETE_OPEN_DIALOG' },        { watersID, 'OTETE_CLOSED_DIALOG' },        0 },
 
-    ['Vendavoq' ] = { xi.region.MOVALPOLOS, xi.nation.SANDORIA, xi.fameArea.SANDORIA, portSandyID.text.VENDAVOQ_OPEN_DIALOG,   portSandyID.text.VENDAVOQ_CLOSED_DIALOG,   0 },
-    ['Bagnobrok'] = { xi.region.MOVALPOLOS, xi.nation.BASTOK,   xi.fameArea.BASTOK,   portBastokID.text.BAGNOBROK_OPEN_DIALOG, portBastokID.text.BAGNOBROK_CLOSED_DIALOG, 0 },
-    ['Prestapiq'] = { xi.region.MOVALPOLOS, xi.nation.WINDURST, xi.fameArea.WINDURST, watersID.text.PRESTAPIQ_OPEN_DIALOG,     watersID.text.PRESTAPIQ_CLOSED_DIALOG,     0 },
+    ['Vendavoq' ] = { xi.region.MOVALPOLOS, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { portSandyID, 'VENDAVOQ_OPEN_DIALOG' },   { portSandyID, 'VENDAVOQ_CLOSED_DIALOG' },   0 },
+    ['Bagnobrok'] = { xi.region.MOVALPOLOS, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { portBastokID, 'BAGNOBROK_OPEN_DIALOG' }, { portBastokID, 'BAGNOBROK_CLOSED_DIALOG' }, 0 },
+    ['Prestapiq'] = { xi.region.MOVALPOLOS, xi.nation.WINDURST, xi.fameArea.WINDURST, { watersID, 'PRESTAPIQ_OPEN_DIALOG' },     { watersID, 'PRESTAPIQ_CLOSED_DIALOG' },     0 },
 
-    ['Machielle'    ] = { xi.region.NORVALLEN, xi.nation.SANDORIA, xi.fameArea.SANDORIA, southSandyID.text.MACHIELLE_OPEN_DIALOG,   southSandyID.text.MACHIELLE_CLOSED_DIALOG,   0 },
-    ['Mille'        ] = { xi.region.NORVALLEN, xi.nation.BASTOK,   xi.fameArea.BASTOK,   minesID.text.MILLE_OPEN_DIALOG,            minesID.text.MILLE_CLOSED_DIALOG,            0 },
-    ['Posso_Ruhbini'] = { xi.region.NORVALLEN, xi.nation.WINDURST, xi.fameArea.WINDURST, portWindyID.text.POSSORUHBINI_OPEN_DIALOG, portWindyID.text.POSSORUHBINI_CLOSED_DIALOG, 0 },
+    ['Machielle'    ] = { xi.region.NORVALLEN, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { southSandyID, 'MACHIELLE_OPEN_DIALOG' },   { southSandyID, 'MACHIELLE_CLOSED_DIALOG' },   0 },
+    ['Mille'        ] = { xi.region.NORVALLEN, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { minesID, 'MILLE_OPEN_DIALOG' },            { minesID, 'MILLE_CLOSED_DIALOG' },            0 },
+    ['Posso_Ruhbini'] = { xi.region.NORVALLEN, xi.nation.WINDURST, xi.fameArea.WINDURST, { portWindyID, 'POSSORUHBINI_OPEN_DIALOG' }, { portWindyID, 'POSSORUHBINI_CLOSED_DIALOG' }, 0 },
 
-    ['Eugballion'    ] = { xi.region.QUFIMISLAND, xi.nation.SANDORIA, xi.fameArea.SANDORIA, northSandyID.text.EUGBALLION_OPEN_DIALOG, northSandyID.text.EUGBALLION_CLOSED_DIALOG, 0 },
-    ['Takiyah'       ] = { xi.region.QUFIMISLAND, xi.nation.BASTOK,   xi.fameArea.BASTOK,   metalworksID.text.TAKIYAH_OPEN_DIALOG,    metalworksID.text.TAKIYAH_CLOSED_DIALOG,    0 },
-    ['Millerovieunet'] = { xi.region.QUFIMISLAND, xi.nation.WINDURST, xi.fameArea.WINDURST, woodsID.text.MILLEROVIEUNET_OPEN_DIALOG,  woodsID.text.MILLEROVIEUNET_CLOSED_DIALOG,  0 },
+    ['Eugballion'    ] = { xi.region.QUFIMISLAND, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { northSandyID, 'EUGBALLION_OPEN_DIALOG' }, { northSandyID, 'EUGBALLION_CLOSED_DIALOG' }, 0 },
+    ['Takiyah'       ] = { xi.region.QUFIMISLAND, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { metalworksID, 'TAKIYAH_OPEN_DIALOG' },    { metalworksID, 'TAKIYAH_CLOSED_DIALOG' },    0 },
+    ['Millerovieunet'] = { xi.region.QUFIMISLAND, xi.nation.WINDURST, xi.fameArea.WINDURST, { woodsID, 'MILLEROVIEUNET_OPEN_DIALOG' },  { woodsID, 'MILLEROVIEUNET_CLOSED_DIALOG' },  0 },
 
-    ['Corua'   ] = { xi.region.RONFAURE, xi.nation.SANDORIA, xi.fameArea.SANDORIA, southSandyID.text.CORUA_OPEN_DIALOG, southSandyID.text.CORUA_CLOSED_DIALOG, 0 },
-    ['Faustin' ] = { xi.region.RONFAURE, xi.nation.BASTOK,   xi.fameArea.BASTOK,   minesID.text.FAUSTIN_OPEN_DIALOG,    minesID.text.FAUSTIN_CLOSED_DIALOG,    0 },
-    ['Jourille'] = { xi.region.RONFAURE, xi.nation.WINDURST, xi.fameArea.WINDURST, watersID.text.JOURILLE_OPEN_DIALOG,  watersID.text.JOURILLE_CLOSED_DIALOG,  0 },
+    ['Corua'   ] = { xi.region.RONFAURE, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { southSandyID, 'CORUA_OPEN_DIALOG' }, { southSandyID, 'CORUA_CLOSED_DIALOG' }, 0 },
+    ['Faustin' ] = { xi.region.RONFAURE, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { minesID, 'FAUSTIN_OPEN_DIALOG' },    { minesID, 'FAUSTIN_CLOSED_DIALOG' },    0 },
+    ['Jourille'] = { xi.region.RONFAURE, xi.nation.WINDURST, xi.fameArea.WINDURST, { watersID, 'JOURILLE_OPEN_DIALOG' },  { watersID, 'JOURILLE_CLOSED_DIALOG' },  0 },
 
-    ['Milva'      ] = { xi.region.SARUTABARUTA, xi.nation.SANDORIA, xi.fameArea.SANDORIA, portSandyID.text.MILVA_OPEN_DIALOG,   portSandyID.text.MILVA_CLOSED_DIALOG,   0 },
-    ['Somn-Paemn' ] = { xi.region.SARUTABARUTA, xi.nation.BASTOK,   xi.fameArea.BASTOK,   marketsID.text.SOMNPAEMN_OPEN_DIALOG, marketsID.text.SOMNPAEMN_CLOSED_DIALOG, 0 },
-    ['Baehu-Faehu'] = { xi.region.SARUTABARUTA, xi.nation.WINDURST, xi.fameArea.WINDURST, watersID.text.BAEHUFAEHU_OPEN_DIALOG, watersID.text.BAEHUFAEHU_CLOSED_DIALOG, 0 },
+    ['Milva'      ] = { xi.region.SARUTABARUTA, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { portSandyID, 'MILVA_OPEN_DIALOG' },   { portSandyID, 'MILVA_CLOSED_DIALOG' },   0 },
+    ['Somn-Paemn' ] = { xi.region.SARUTABARUTA, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { marketsID, 'SOMNPAEMN_OPEN_DIALOG' }, { marketsID, 'SOMNPAEMN_CLOSED_DIALOG' }, 0 },
+    ['Baehu-Faehu'] = { xi.region.SARUTABARUTA, xi.nation.WINDURST, xi.fameArea.WINDURST, { watersID, 'BAEHUFAEHU_OPEN_DIALOG' }, { watersID, 'BAEHUFAEHU_CLOSED_DIALOG' }, 0 },
 
-    ['Deguerendars'] = { xi.region.TAVNAZIANARCH, xi.nation.SANDORIA, xi.fameArea.SANDORIA, portSandyID.text.DEGUERENDARS_OPEN_DIALOG, portSandyID.text.DEGUERENDARS_CLOSED_DIALOG, portSandyID.text.DEGUERENDARS_COP_NOT_COMPLETED },
-    ['Emaliveulaux'] = { xi.region.TAVNAZIANARCH, xi.nation.BASTOK,   xi.fameArea.BASTOK,   minesID.text.EMALIVEULAUX_OPEN_DIALOG,     minesID.text.EMALIVEULAUX_CLOSED_DIALOG,     minesID.text.EMALIVEULAUX_COP_NOT_COMPLETED     },
-    ['Alizabe'     ] = { xi.region.TAVNAZIANARCH, xi.nation.WINDURST, xi.fameArea.WINDURST, portWindyID.text.ALIZABE_OPEN_DIALOG,      portWindyID.text.ALIZABE_CLOSED_DIALOG,      portWindyID.text.ALIZABE_COP_NOT_COMPLETED      },
+    ['Deguerendars'] = { xi.region.TAVNAZIANARCH, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { portSandyID, 'DEGUERENDARS_OPEN_DIALOG' }, { portSandyID, 'DEGUERENDARS_CLOSED_DIALOG' }, { portSandyID, 'DEGUERENDARS_COP_NOT_COMPLETED' } },
+    ['Emaliveulaux'] = { xi.region.TAVNAZIANARCH, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { minesID, 'EMALIVEULAUX_OPEN_DIALOG' },     { minesID, 'EMALIVEULAUX_CLOSED_DIALOG' },     { minesID, 'EMALIVEULAUX_COP_NOT_COMPLETED' }     },
+    ['Alizabe'     ] = { xi.region.TAVNAZIANARCH, xi.nation.WINDURST, xi.fameArea.WINDURST, { portWindyID, 'ALIZABE_OPEN_DIALOG' },      { portWindyID, 'ALIZABE_CLOSED_DIALOG' },      { portWindyID, 'ALIZABE_COP_NOT_COMPLETED' }      },
 
-    ['Palguevion'] = { xi.region.VALDEAUNIA, xi.nation.SANDORIA, xi.fameArea.SANDORIA, northSandyID.text.PALGUEVION_OPEN_DIALOG, northSandyID.text.PALGUEVION_CLOSED_DIALOG, 0 },
-    ['Tibelda'   ] = { xi.region.VALDEAUNIA, xi.nation.BASTOK,   xi.fameArea.BASTOK,   minesID.text.TIBELDA_OPEN_DIALOG,         minesID.text.TIBELDA_CLOSED_DIALOG,         0 },
-    ['Zoreen'    ] = { xi.region.VALDEAUNIA, xi.nation.WINDURST, xi.fameArea.WINDURST, portWindyID.text.ZOREEN_OPEN_DIALOG,      portWindyID.text.ZOREEN_CLOSED_DIALOG,      0 },
+    ['Palguevion'] = { xi.region.VALDEAUNIA, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { northSandyID, 'PALGUEVION_OPEN_DIALOG' }, { northSandyID, 'PALGUEVION_CLOSED_DIALOG' }, 0 },
+    ['Tibelda'   ] = { xi.region.VALDEAUNIA, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { minesID, 'TIBELDA_OPEN_DIALOG' },         { minesID, 'TIBELDA_CLOSED_DIALOG' },         0 },
+    ['Zoreen'    ] = { xi.region.VALDEAUNIA, xi.nation.WINDURST, xi.fameArea.WINDURST, { portWindyID, 'ZOREEN_OPEN_DIALOG' },      { portWindyID, 'ZOREEN_CLOSED_DIALOG' },      0 },
 
-    ['Millechuca'] = { xi.region.VOLLBOW, xi.nation.SANDORIA, xi.fameArea.SANDORIA, northSandyID.text.MILLECHUCA_OPEN_DIALOG, northSandyID.text.MILLECHUCA_CLOSED_DIALOG, 0 },
-    ['Aulavia'   ] = { xi.region.VOLLBOW, xi.nation.BASTOK,   xi.fameArea.BASTOK,   minesID.text.AULAVIA_OPEN_DIALOG,         minesID.text.AULAVIA_CLOSED_DIALOG,         0 },
-    ['Lebondur'  ] = { xi.region.VOLLBOW, xi.nation.WINDURST, xi.fameArea.WINDURST, portWindyID.text.LEBONDUR_OPEN_DIALOG,    portWindyID.text.LEBONDUR_CLOSED_DIALOG,    0 },
+    ['Millechuca'] = { xi.region.VOLLBOW, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { northSandyID, 'MILLECHUCA_OPEN_DIALOG' }, { northSandyID, 'MILLECHUCA_CLOSED_DIALOG' }, 0 },
+    ['Aulavia'   ] = { xi.region.VOLLBOW, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { minesID, 'AULAVIA_OPEN_DIALOG' },         { minesID, 'AULAVIA_CLOSED_DIALOG' },         0 },
+    ['Lebondur'  ] = { xi.region.VOLLBOW, xi.nation.WINDURST, xi.fameArea.WINDURST, { portWindyID, 'LEBONDUR_OPEN_DIALOG' },    { portWindyID, 'LEBONDUR_CLOSED_DIALOG' },    0 },
 
-    ['Phamelise'   ] = { xi.region.ZULKHEIM, xi.nation.SANDORIA, xi.fameArea.SANDORIA, southSandyID.text.PHAMELISE_OPEN_DIALOG, southSandyID.text.PHAMELISE_CLOSED_DIALOG, 0 },
-    ['Rosswald'    ] = { xi.region.ZULKHEIM, xi.nation.BASTOK,   xi.fameArea.BASTOK,   portBastokID.text.ROSSWALD_OPEN_DIALOG,  portBastokID.text.ROSSWALD_CLOSED_DIALOG,  0 },
-    ['Bin_Stejihna'] = { xi.region.ZULKHEIM, xi.nation.WINDURST, xi.fameArea.WINDURST, woodsID.text.BIN_STEJIHNA_OPEN_DIALOG,   woodsID.text.BIN_STEJIHNA_CLOSED_DIALOG,   0 },
+    ['Phamelise'   ] = { xi.region.ZULKHEIM, xi.nation.SANDORIA, xi.fameArea.SANDORIA, { southSandyID, 'PHAMELISE_OPEN_DIALOG' }, { southSandyID, 'PHAMELISE_CLOSED_DIALOG' }, 0 },
+    ['Rosswald'    ] = { xi.region.ZULKHEIM, xi.nation.BASTOK,   xi.fameArea.BASTOK,   { portBastokID, 'ROSSWALD_OPEN_DIALOG' },  { portBastokID, 'ROSSWALD_CLOSED_DIALOG' },  0 },
+    ['Bin_Stejihna'] = { xi.region.ZULKHEIM, xi.nation.WINDURST, xi.fameArea.WINDURST, { woodsID, 'BIN_STEJIHNA_OPEN_DIALOG' },   { woodsID, 'BIN_STEJIHNA_CLOSED_DIALOG' },   0 },
 }
 
 local regionalStockTable =
@@ -991,8 +991,20 @@ local regionalStockTable =
     },
 }
 
+local function resolveRegionalDialogText(textRef)
+    if type(textRef) == 'table' then
+        return textRef[1].text[textRef[2]]
+    end
+
+    return textRef
+end
+
 xi.shop.handleRegionalShop = function(player, npc)
-    local npcData   = regionalVendorTable[npc:getName()]
+    local npcData = regionalVendorTable[npc:getName()]
+    if not npcData then
+        return
+    end
+
     local npcRegion = npcData[regionParam.REGION]
 
     -- CoP Mission check for Tavnazia vendors.
@@ -1000,18 +1012,18 @@ xi.shop.handleRegionalShop = function(player, npc)
         npcRegion == xi.region.TAVNAZIANARCH and
         player:getCurrentMission(xi.mission.log_id.COP) < xi.mission.id.cop.THE_SAVAGE
     then
-        player:showText(npc, npcData[regionParam.TEXT_UNAVAILABLE])
+        player:showText(npc, resolveRegionalDialogText(npcData[regionParam.TEXT_UNAVAILABLE]))
         return
     end
 
     -- Region owner check.
     if GetRegionOwner(npcRegion) ~= npcData[regionParam.NATION] then
-        player:showText(npc, npcData[regionParam.TEXT_CLOSED])
+        player:showText(npc, resolveRegionalDialogText(npcData[regionParam.TEXT_CLOSED]))
         return
     end
 
     -- Build shop.
-    player:showText(npc, npcData[regionParam.TEXT_OPEN])
+    player:showText(npc, resolveRegionalDialogText(npcData[regionParam.TEXT_OPEN]))
     xi.shop.general(player, regionalStockTable[npcRegion], npcData[regionParam.FAME_AREA])
 end
 
