@@ -344,10 +344,8 @@ auto MapEngine::watchdogWatcher() -> Task<void>
 
                 ShowCritical(outputStr);
 
-                // Allow some time for logging to flush
-                std::this_thread::sleep_for(200ms);
-
-                throw std::runtime_error("Watchdog thread time exceeded. Killing process.");
+                spdlog::shutdown();
+                terminateProcess(1);
             }
         }
 

@@ -174,6 +174,9 @@ bool definitelyLessThan(float a, float b);
 
 void crash();
 
+// Hard-terminate the current process (used after fatal crash / watchdog).
+[[noreturn]] void terminateProcess(int exitCode = 1);
+
 template <typename T>
 std::set<std::filesystem::path> sorted_directory_iterator(std::string path_name)
 {
