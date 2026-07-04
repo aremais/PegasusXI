@@ -127,7 +127,7 @@ spellObject.onMobSpawn = function(mob)
     end
 
     if lvl >= 78 then
-        -- Only uses Divine Emblen and Holy when daybreak active (subAnimation 5)
+        -- Only uses Divine Emblem and Holy when daybreak active (subAnimation 5)
         mob:addGambit(ai.t.SELF, { { ai.c.SUB_ANIMATION, 5 }, { ai.c.NOT_STATUS, xi.effect.DIVINE_EMBLEM }, }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.DIVINE_EMBLEM })
     end
 

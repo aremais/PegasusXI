@@ -21,7 +21,19 @@ spellObject.onMobSpawn = function(mob)
         [xi.magic.spell.MILDAURION] = xi.trust.messageOffset.TEAMWORK_5,
     })
 
+    -- Source notes: MNK/WHM fists. Possesses MNK traits such as Kick Attacks
+    -- and Auto-Regen; exact level-scaling trait potency is approximated/held.
+    if mob:getMainLvl() >= 51 then
+        mob:addMod(xi.mod.KICK_ATTACK_RATE, 10)
+    end
+
+    -- Cure spell levels are gated in TRUST_Prishe spell list 325:
+    -- Cure Lv2, Cure II Lv22, Cure III Lv42, Cure IV Lv82.
     mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 25 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.CURE })
+
+    -- Retail behavior: Prishe uses TP as soon as available.
+    -- TRUST_Prishe skill list 1028 contains Nullifying Dropkick, Auroral Uppercut, and Knuckle Sandwich.
+    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.WS, ai.s.HIGHEST })
 end
 
 spellObject.onMobDespawn = function(mob)

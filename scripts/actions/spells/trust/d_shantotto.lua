@@ -1,6 +1,9 @@
 -----------------------------------
--- Trust: D. Shantotto / Domina Shantotto
+-- Trust: Domina Shantotto
 -----------------------------------
+require('scripts/globals/trust')
+require('scripts/globals/gambits')
+
 ---@type TSpellTrust
 local spellObject = {}
 
@@ -15,27 +18,13 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    -- Retail target:
-    -- BLM/DRK scythe attacker.
-    -- Starts fights with high-tier nukes, then melees and casts occasionally.
-    -- Does not try to magic burst.
-    -- Only casts single-target elemental nukes I-V.
+    mob:addGambit(ai.t.TARGET, { ai.c.MB_AVAILABLE, 0 }, { ai.r.MA, ai.s.MB_ELEMENT, xi.magic.spellFamily.NONE })
+    mob:addGambit(ai.t.TARGET, { ai.c.NOT_SC_AVAILABLE, 0 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.NONE }, 60)
 
-    local trustLevel  = mob:getMainLvl()
-    local power       = math.floor(trustLevel / 4)
-    local spellDamage = trustLevel * math.floor((trustLevel + 1) / 12)
+    mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.NO_MOVE)
 
-    mob:addMod(xi.mod.MATT, power)
-    mob:addMod(xi.mod.MACC, power)
-    mob:addMod(xi.mod.MAGIC_DAMAGE, spellDamage)
-
-    -- Highest available single-target elemental nuke from her DB spell list.
-    -- Her DB list contains elemental nukes I-V only, with no -ga or Ancient Magic.
-    mob:addGambit(ai.t.TARGET, { ai.c.NOT_SC_AVAILABLE, 0 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.NONE }, 30)
-
-    -- Retail note: uses weapon skills at 1000 TP.
-    -- DB skill list 1049 contains Shadow of Death, Guillotine, Cross Reaper, Salvation Scythe.
-    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.HIGHEST, 1000)
+    mob:setMobMod(xi.mobMod.SKILL_LIST, 1049)
+    mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.RANDOM)
 end
 
 spellObject.onMobDespawn = function(mob)

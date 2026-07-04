@@ -20,10 +20,16 @@ spellObject.onMobSpawn = function(mob)
     })
 
     mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 55 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.CURE })
-    mob:addGambit(ai.t.PARTY, { ai.c.NOT_STATUS, xi.effect.PROTECT }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.PROTECTRA })
-    mob:addGambit(ai.t.PARTY, { ai.c.NOT_STATUS, xi.effect.SHELL }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.SHELLRA })
-    mob:addGambit(ai.t.PARTY, { ai.c.NOT_STATUS, xi.effect.PROTECT }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.PROTECT })
-    mob:addGambit(ai.t.PARTY, { ai.c.NOT_STATUS, xi.effect.SHELL }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.SHELL })
+    -- Defensive buffs.
+    -- Avoid broad PARTY targeting because passive aura Trusts such as Star Sibyl/Cornelia
+    -- may not receive Protect/Shell and can cause infinite Protectra/Shellra loops.
+    local protectShellTargets = { ai.t.MASTER, ai.t.SELF, ai.t.TANK, ai.t.MELEE, ai.t.RANGED }
+    for _, targetType in ipairs(protectShellTargets) do
+        mob:addGambit(targetType, { ai.c.NOT_STATUS, xi.effect.PROTECT }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.PROTECTRA })
+        mob:addGambit(targetType, { ai.c.NOT_STATUS, xi.effect.SHELL }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.SHELLRA })
+        mob:addGambit(targetType, { ai.c.NOT_STATUS, xi.effect.PROTECT }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.PROTECT })
+        mob:addGambit(targetType, { ai.c.NOT_STATUS, xi.effect.SHELL }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.SHELL })
+    end
     mob:addGambit(ai.t.PARTY, { ai.c.NOT_STATUS, xi.effect.HASTE }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.HASTE })
     -- -na Spells
     mob:addGambit(ai.t.PARTY, { ai.l.OR(
@@ -31,7 +37,7 @@ spellObject.onMobSpawn = function(mob)
                                 { ai.c.STATUS, xi.effect.CURSE_II },
                                 { ai.c.STATUS, xi.effect.BANE },
                                 { ai.c.STATUS, xi.effect.DOOM })
-                                }, { ai.r.MS, ai.s.SPECIFIC, xi.magic.spell.CURSNA })
+                                }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.CURSNA })
     mob:addGambit(ai.t.PARTY, { ai.c.STATUS, xi.effect.PARALYSIS }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.PARALYNA })
     mob:addGambit(ai.t.PARTY, { ai.c.STATUS, xi.effect.BLINDNESS }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.BLINDNA })
     mob:addGambit(ai.t.PARTY, { ai.c.STATUS, xi.effect.SILENCE }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.SILENA })
@@ -59,6 +65,11 @@ spellObject.onMobSpawn = function(mob)
     mob:addListener('WEAPONSKILL_USE', 'KARAHA-BARUHA_WEAPONSKILL_USE', function(mobArg, target, skill, tp, action, damage)
         if skill:getID() == 3336 then -- Howling Moon
         -- The light shall never fade!
+            if math.random(1, 100) <= 25 then
+                xi.trust.message(mobArg, xi.trust.messageOffset.SPECIAL_MOVE_1)
+            end
+        elseif skill:getID() == 3337 then -- Lunar Bay
+            -- The moon shall guide us!
             if math.random(1, 100) <= 25 then
                 xi.trust.message(mobArg, xi.trust.messageOffset.SPECIAL_MOVE_1)
             end

@@ -1,10 +1,12 @@
 -----------------------------------
 -- Trust: Trion
 -- Royal Bash is stronger than a normal Shield Bash.
--- Royal Saviour is a secondary, stronger version of Sentinel. Trion alternates between this and the normal version of Sentinel.
--- Trion tries to interrupt TP-abilities with Royal Bash.
--- Uses TP randomly and does not try to skillchain.
--- With his two defensive TP moves, he's not likely to interrupt skillchains much.
+-- Royal Saviour is a secondary, stronger version of Sentinel.
+-- Trion alternates between Sentinel-style defense and TP moves.
+-- Retail note: Trion tries to interrupt TP abilities with Royal Bash,
+-- but stock LSB Trust gambits do not expose reliable enemy-readying checks
+-- in this branch, so Royal Bash is modeled as a recurring TP move.
+-- Uses TP without skillchain logic.
 -----------------------------------
 ---@type TSpellTrust
 local spellObject = {}
@@ -20,9 +22,15 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.teamworkMessage(mob, {
         [xi.magic.spell.CURILLA] = xi.trust.messageOffset.TEAMWORK_1,
-        [xi.magic.spell.RAHAL] = xi.trust.messageOffset.TEAMWORK_2,
-        [xi.magic.spell.HALVER] = xi.trust.messageOffset.TEAMWORK_3,
+        [xi.magic.spell.RAHAL]   = xi.trust.messageOffset.TEAMWORK_2,
+        [xi.magic.spell.HALVER]  = xi.trust.messageOffset.TEAMWORK_3,
     })
+
+    -- TRUST_Trion skill list 1020 uses Trust-specific Royal Bash/Savior rows.
+    local redLotusBlade = 968
+    local savageBlade   = 970
+    local royalBash     = 3193
+    local royalSavior   = 3194
 
     mob:setMobMod(xi.mobMod.CAN_SHIELD_BLOCK, 1)
     mob:setMobMod(xi.mobMod.CAN_PARRY, 3)
@@ -49,29 +57,41 @@ spellObject.onMobSpawn = function(mob)
     mob:addMod(xi.mod.HPP, 10)
     mob:addMod(xi.mod.MPP, 10)
 
+    -- PLD/WAR core behavior.
     if lvl >= 5 then
         mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.PROVOKE })
-    end
-
-    if lvl >= 15 then
-        mob:addGambit(ai.t.TARGET, { ai.l.OR(
-            { ai.c.CASTING_MA, 0 },
-            { ai.c.READYING_JA, 0 },
-            { ai.c.READYING_MS, 0 },
-            { ai.c.READYING_WS, 0 }) }, { ai.r.MS, ai.s.SPECIFIC, xi.mobSkill.ROYAL_BASH_TRUST }, 60)
     end
 
     if lvl >= 30 then
         mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.SENTINEL }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SENTINEL })
     end
 
-    mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.FLASH }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLASH      })
-    mob:addGambit(ai.t.PARTY,  { ai.c.HPP_LT,     75              }, { ai.r.MA, ai.s.HIGHEST,  xi.magic.spellFamily.CURE })
+    if lvl >= 37 then
+        mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.FLASH }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLASH })
+    end
 
-    mob:setTrustTPSkillSettings(ai.tp.RANDOM, ai.s.RANDOM, 1500)
+    mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 75 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.CURE })
+
+    -- TP behavior: no skillchain logic. Royal moves are prioritized by cooldowns,
+    -- then normal sword WS fill remaining TP usage.
+    if lvl >= 30 then
+        mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1500 }, { ai.r.WS, ai.s.SPECIFIC, royalSavior }, 90)
+    end
+
+    if lvl >= 15 then
+        mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.WS, ai.s.SPECIFIC, royalBash }, 60)
+    end
+
+    if lvl >= 71 then
+        mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.WS, ai.s.SPECIFIC, savageBlade }, 45)
+    end
+
+    if lvl >= 5 then
+        mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.WS, ai.s.SPECIFIC, redLotusBlade }, 30)
+    end
 
     mob:addListener('WEAPONSKILL_USE', 'TRION_WEAPONSKILL_USE', function(mobArg, target, skill, tp, action, damage)
-        if skill:getID() == xi.mobSkill.ROYAL_SAVIOR_TRUST then -- Royal Savior
+        if skill:getID() == royalSavior then
             -- O great kings of the noble line of d'Oraguille, shield me from harm!
             xi.trust.message(mobArg, xi.trust.messageOffset.SPECIAL_MOVE_1)
         end

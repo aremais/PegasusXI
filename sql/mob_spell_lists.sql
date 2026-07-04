@@ -33,87 +33,11 @@ CREATE TABLE `mob_spell_lists` (
 LOCK TABLES `mob_spell_lists` WRITE;
 /*!40000 ALTER TABLE `mob_spell_lists` DISABLE KEYS */;
 
--- DEFAULT (1) Used for mobs with their cast logic defined in lua.
-INSERT INTO `mob_spell_lists` VALUES ('DEFAULT',1,389,0,255);  -- Knight's Minne (0 ~ 255) -- Placeholder entry. Needs to be a buff.
+-- DEFAULT (1) Used for mobs with their cast logic defined in lua and buff out of combat.
+INSERT INTO `mob_spell_lists` VALUES ('DEFAULT_BUFF',1,389,0,255);  -- Knight's Minne (0 ~ 255) -- Placeholder entry. Needs to be a buff.
 
--- Beastmen_BLM (2)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,144,13,22);  -- fire (13~22)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,145,38,47);  -- fire_ii (38~47)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,146,62,67);  -- fire_iii (62~67)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,147,73,85);  -- fire_iv (73~85)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,148,86,255); -- fire_v (86~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,149,17,27);  -- blizzard (17~27)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,150,42,53);  -- blizzard_ii (42~53)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,151,64,68);  -- blizzard_iii (64~68)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,152,74,88);  -- blizzard_iv (74~88)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,153,89,255); -- blizzard_v (89~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,154,9,18);   -- aero (9~18)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,155,34,44);  -- aero_ii (34~44)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,156,59,66);  -- aero_iii (59~66)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,157,72,82);  -- aero_iv (72~82)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,158,83,255); -- aero_v (83~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,159,1,10);   -- stone (1~10)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,160,26,35);  -- stone_ii (26~35)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,161,51,60);  -- stone_iii (51~60)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,162,68,73);  -- stone_iv (68~73)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,163,77,255); -- stone_v (77~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,164,21,46);  -- thunder (21~46)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,165,46,55);  -- thunder_ii (46~55)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,166,66,70);  -- thunder_iii (66~70)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,167,75,92);  -- thunder_iv (75~92)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,168,92,255); -- thunder_v (92~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,169,5,12);   -- water (5~12)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,170,30,40);  -- water_ii (30~40)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,171,55,61);  -- water_iii (55~61)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,172,70,78);  -- water_iv (70~78)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,173,80,255); -- water_v (80~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,174,28,35);  -- firaga (28~35)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,175,53,60);  -- firaga_ii (53~60)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,176,69,90);  -- firaga_iii (69~90)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,179,32,39);  -- blizzaga (32~39)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,180,57,62);  -- blizzaga_ii (57~62)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,181,71,255); -- blizzaga_iii (71~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,184,23,31);  -- aeroga (23~31)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,185,48,56);  -- aeroga_ii (48~56)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,186,67,71);  -- aeroga_iii (67~71)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,189,15,22);  -- stonega (15~22)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,190,40,47);  -- stonega_ii (40~47)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,191,63,67);  -- stonega_iii (63~67)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,194,36,43);  -- thundaga (36~43)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,195,61,65);  -- thundaga_ii (61~65)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,196,73,255); -- thundaga_iii (73~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,199,19,27);  -- waterga (19~27)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,200,44,52);  -- waterga_ii (44~52)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,201,65,255); -- waterga_iii (65~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,204,60,255); -- flare (60~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,206,50,255); -- freeze (50~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,208,52,255); -- tornado (52~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,210,54,255); -- quake (54~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,212,56,255); -- burst (56~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,214,58,255); -- flood (58~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,220,3,17);   -- poison (3~17)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,221,43,64);  -- poison_ii (43~64)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,225,24,71);  -- poisonga (24~71)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,226,72,255); -- poisonga_ii (72~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,230,10,34);  -- bio (10~34)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,231,35,255); -- bio_ii (35~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,235,24,255); -- burn (24~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,236,22,255); -- frost (22~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,237,20,255); -- choke (20~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,238,18,255); -- rasp (18~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,239,16,255); -- shock (16~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,240,27,255); -- drown (27~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,245,12,255); -- drain (12~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,247,25,82);  -- aspir (25~82)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,248,83,255); -- aspir_ii (83~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,249,10,255); -- blaze_spikes (10~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,252,45,255); -- stun (45~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,253,20,40);  -- sleep (20~40)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,254,4,255);  -- blind (4~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,258,7,255);  -- bind (7~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,259,41,255); -- sleep_ii (41~255)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,273,31,55);  -- sleepga (31~55)
-INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',2,274,56,255); -- sleepga_ii (56~255)
+-- DEFAULT (2) Used for mobs with their cast logic defined in lua but do not buff out of combat.
+INSERT INTO `mob_spell_lists` VALUES ('DEFAULT_NO_BUFF',2,463,0,255);  -- Foe Lullaby (0 ~ 255) -- Placeholder entry. Needs to be a debuff.
 
 -- Beastmen_RDM (3)
 INSERT INTO `mob_spell_lists` VALUES ('Beastmen_RDM',3,1,3,13);     -- cure (3~13)
@@ -637,12 +561,84 @@ INSERT INTO `mob_spell_lists` VALUES ('Beastmen_WHM',20,112,45,255); -- flash (4
 INSERT INTO `mob_spell_lists` VALUES ('Beastmen_WHM',20,143,32,255); -- erase (32~255)
 INSERT INTO `mob_spell_lists` VALUES ('Beastmen_WHM',20,477,86,255); -- regen_iv (86~255)
 
--- Kam_Lanaut (21)
-INSERT INTO `mob_spell_lists` VALUES ('Kam_Lanaut',21,356,76,255); -- paralyga (76~255)
-INSERT INTO `mob_spell_lists` VALUES ('Kam_Lanaut',21,357,75,255); -- slowga (75~255)
-INSERT INTO `mob_spell_lists` VALUES ('Kam_Lanaut',21,359,75,255); -- silencega (75~255)
-INSERT INTO `mob_spell_lists` VALUES ('Kam_Lanaut',21,360,75,255); -- dispelga (75~255)
-INSERT INTO `mob_spell_lists` VALUES ('Kam_Lanaut',21,366,75,255); -- graviga (75~255)
+-- Beastmen_BLM (21)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,144,13,22);  -- fire (13~22)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,145,38,47);  -- fire_ii (38~47)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,146,62,67);  -- fire_iii (62~67)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,147,73,85);  -- fire_iv (73~85)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,148,86,255); -- fire_v (86~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,149,17,27);  -- blizzard (17~27)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,150,42,53);  -- blizzard_ii (42~53)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,151,64,68);  -- blizzard_iii (64~68)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,152,74,88);  -- blizzard_iv (74~88)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,153,89,255); -- blizzard_v (89~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,154,9,18);   -- aero (9~18)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,155,34,44);  -- aero_ii (34~44)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,156,59,66);  -- aero_iii (59~66)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,157,72,82);  -- aero_iv (72~82)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,158,83,255); -- aero_v (83~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,159,1,10);   -- stone (1~10)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,160,26,35);  -- stone_ii (26~35)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,161,51,60);  -- stone_iii (51~60)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,162,68,73);  -- stone_iv (68~73)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,163,77,255); -- stone_v (77~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,164,21,46);  -- thunder (21~46)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,165,46,55);  -- thunder_ii (46~55)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,166,66,70);  -- thunder_iii (66~70)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,167,75,92);  -- thunder_iv (75~92)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,168,92,255); -- thunder_v (92~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,169,5,12);   -- water (5~12)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,170,30,40);  -- water_ii (30~40)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,171,55,61);  -- water_iii (55~61)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,172,70,78);  -- water_iv (70~78)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,173,80,255); -- water_v (80~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,174,28,35);  -- firaga (28~35)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,175,53,60);  -- firaga_ii (53~60)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,176,69,90);  -- firaga_iii (69~90)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,179,32,39);  -- blizzaga (32~39)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,180,57,62);  -- blizzaga_ii (57~62)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,181,71,255); -- blizzaga_iii (71~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,184,23,31);  -- aeroga (23~31)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,185,48,56);  -- aeroga_ii (48~56)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,186,67,71);  -- aeroga_iii (67~71)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,189,15,22);  -- stonega (15~22)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,190,40,47);  -- stonega_ii (40~47)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,191,63,67);  -- stonega_iii (63~67)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,194,36,43);  -- thundaga (36~43)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,195,61,65);  -- thundaga_ii (61~65)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,196,73,255); -- thundaga_iii (73~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,199,19,27);  -- waterga (19~27)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,200,44,52);  -- waterga_ii (44~52)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,201,65,255); -- waterga_iii (65~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,204,60,255); -- flare (60~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,206,50,255); -- freeze (50~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,208,52,255); -- tornado (52~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,210,54,255); -- quake (54~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,212,56,255); -- burst (56~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,214,58,255); -- flood (58~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,220,3,17);   -- poison (3~17)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,221,43,64);  -- poison_ii (43~64)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,225,24,71);  -- poisonga (24~71)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,226,72,255); -- poisonga_ii (72~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,230,10,34);  -- bio (10~34)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,231,35,255); -- bio_ii (35~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,235,24,255); -- burn (24~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,236,22,255); -- frost (22~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,237,20,255); -- choke (20~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,238,18,255); -- rasp (18~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,239,16,255); -- shock (16~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,240,27,255); -- drown (27~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,245,12,255); -- drain (12~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,247,25,82);  -- aspir (25~82)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,248,83,255); -- aspir_ii (83~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,249,10,255); -- blaze_spikes (10~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,252,45,255); -- stun (45~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,253,20,40);  -- sleep (20~40)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,254,4,255);  -- blind (4~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,258,7,255);  -- bind (7~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,259,41,255); -- sleep_ii (41~255)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,273,31,55);  -- sleepga (31~55)
+INSERT INTO `mob_spell_lists` VALUES ('Beastmen_BLM',21,274,56,255); -- sleepga_ii (56~255)
 
 -- Eald_Narche (22)
 INSERT INTO `mob_spell_lists` VALUES ('Eald_Narche',22,204,75,255); -- flare (75~255)
@@ -3085,7 +3081,16 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,19,34,255);  -- viruna 
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,20,29,255);  -- cursna (29~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,56,13,255);  -- slow (13~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,58,6,255);   -- paralyze (6~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,112,45,255); -- flash (45~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,43,7,255); -- protect (7~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,44,27,255); -- protect_ii (27~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,45,47,255); -- protect_iii (47~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,46,63,255); -- protect_iv (63~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,47,75,255); -- protect_v (75~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,48,17,255); -- shell (17~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,49,37,255); -- shell_ii (37~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,50,57,255); -- shell_iii (57~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,51,68,255); -- shell_iv (68~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,52,75,255); -- shell_v (75~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,125,7,255);  -- protectra (7~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,126,27,255); -- protectra_ii (27~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kupipi',310,127,47,255); -- protectra_iii (47~255)
@@ -3103,22 +3108,20 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Excenmille',311,1,5,255);    -- cur
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Excenmille',311,2,17,255);   -- cure_ii (17~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Excenmille',311,3,30,255);   -- cure_iii (30~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Excenmille',311,4,55,255);   -- cure_iv (55~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Excenmille',311,112,45,255); -- flash (45~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Excenmille',311,112,37,255); -- flash (37~255)
 
 -- TRUST_Curilla (314)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Curilla',314,1,5,255);    -- cure (5~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Curilla',314,2,17,255);   -- cure_ii (17~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Curilla',314,3,30,255);   -- cure_iii (30~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Curilla',314,4,55,255);   -- cure_iv (55~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Curilla',314,112,45,255); -- flash (45~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Curilla',314,112,37,255); -- flash (37~255)
 
 -- TRUST_Ajido-Marujido (316)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Ajido-Marujido',316,1,1,255);    -- cure (1~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Ajido-Marujido',316,2,11,255);   -- cure_ii (11~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Ajido-Marujido',316,3,21,255);   -- cure_iii (21~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Ajido-Marujido',316,4,41,255);   -- cure_iv (41~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Ajido-Marujido',316,5,61,255);   -- cure_v (61~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Ajido-Marujido',316,6,80,255);   -- cure_vi (80~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Ajido-Marujido',316,56,26,255);  -- slow (26~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Ajido-Marujido',316,58,12,255);  -- paralyze (12~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Ajido-Marujido',316,144,13,255); -- fire (13~255)
@@ -3220,9 +3223,6 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Valaineral',322,1,5,255);    -- cur
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Valaineral',322,2,17,255);   -- cure_ii (17~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Valaineral',322,3,30,255);   -- cure_iii (30~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Valaineral',322,4,55,255);   -- cure_iv (55~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Valaineral',322,43,7,255);   -- protect (7~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Valaineral',322,44,27,255);  -- protect_ii (27~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Valaineral',322,45,47,255);  -- protect_iii (47~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Valaineral',322,46,63,255);  -- protect_iv (63~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Valaineral',322,47,77,255);  -- protect_v (77~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Valaineral',322,97,61,255);  -- reprisal (61~255)
@@ -3232,31 +3232,42 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Valaineral',322,310,85,255); -- enl
 
 -- TRUST_Joachim (323)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,1,2,255);    -- cure (2~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,2,22,255);   -- cure_ii (22~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,3,42,255);   -- cure_iii (42~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,4,82,255);   -- cure_iv (82~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,14,12,255);  -- poisona (12~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,15,18,255);  -- paralyna (18~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,16,28,255);  -- blindna (28~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,17,38,255);  -- silena (38~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,18,78,255);  -- stona (78~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,19,68,255);  -- viruna (68~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,20,58,255);  -- cursna (58~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,394,3,255);  -- valor_minuet (3~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,378,5,255);  -- armys_paeon (5~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,389,5,255);  -- knights_minne (5~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,14,12,255);  -- poisona (12~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,379,15,255); -- armys_paeon_ii (15~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,380,35,255); -- armys_paeon_iii (35~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,381,45,255); -- armys_paeon_iv (45~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,382,65,255); -- armys_paeon_v (65~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,383,78,255); -- armys_paeon_vi (78~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,15,18,255);  -- paralyna (18~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,390,21,255); -- knights_minne_ii (21~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,2,22,255);   -- cure_ii (22~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,395,23,255); -- valor_minuet_ii (23~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,386,25,255); -- mages_ballad (25~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,387,55,255); -- mages_ballad_ii (55~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,388,85,255); -- mages_ballad_iii (85~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,16,28,255);  -- blindna (28~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,419,29,255); -- advancing_march (29~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,380,35,255); -- armys_paeon_iii (35~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,17,38,255);  -- silena (38~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,421,39,255); -- battlefield_elegy (39~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,391,40,255); -- knights_minne_iii (40~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,3,42,255);   -- cure_iii (42~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,396,43,255); -- valor_minuet_iii (43~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,381,45,255); -- armys_paeon_iv (45~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,399,11,255); -- sword_madrigal (11~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,400,51,255); -- blade_madrigal (51~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,419,29,255); -- advancing_march (29~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,420,60,255); -- victory_march (60~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,421,39,255); -- battlefield_elegy (39~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,387,55,255); -- mages_ballad_ii (55~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,20,58,255);  -- cursna (58~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,392,59,255); -- knights_minne_iv (59~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,422,59,255); -- carnage_elegy (59~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,420,60,255); -- victory_march (60~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,397,63,255); -- valor_minuet_iv (63~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,143,64,255); -- erase (64~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,382,65,255); -- armys_paeon_v (65~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,19,68,255);  -- viruna (68~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,18,78,255);  -- stona (78~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,383,78,255); -- armys_paeon_vi (78~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,393,81,255); -- knights_minne_v (81~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,4,82,255);   -- cure_iv (82~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,388,85,255); -- mages_ballad_iii (85~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Joachim',323,398,87,255); -- valor_minuet_v (87~255)
 
 -- TRUST_Prishe (325)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Prishe',325,1,2,255);  -- cure (2~255)
@@ -3307,6 +3318,16 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,3,21,255);   -- cure
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,4,41,255);   -- cure_iv (41~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,5,61,255);   -- cure_v (61~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,6,80,255);   -- cure_vi (80~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,43,7,255);  -- protect (7~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,44,27,255); -- protect_ii (27~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,45,47,255); -- protect_iii (47~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,46,63,255); -- protect_iv (63~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,47,80,255); -- protect_v (80~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,48,17,255); -- shell (17~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,49,37,255); -- shell_ii (37~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,50,57,255); -- shell_iii (57~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,51,68,255); -- shell_iv (68~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,52,80,255); -- shell_v (80~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,56,13,255);  -- slow (13~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,57,40,255);  -- haste (40~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Cherukiki',328,58,4,255);   -- paralyze (4~255)
@@ -3335,10 +3356,17 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gessho',330,347,19,255); -- kurayam
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gessho',330,348,44,255); -- kurayami_ni (44~255)
 
 -- TRUST_Gadalar (331)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gadalar',331,174,28,255); -- firaga (28~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gadalar',331,175,53,255); -- firaga_ii (53~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gadalar',331,176,69,255); -- firaga_iii (69~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gadalar',331,249,10,255); -- blaze_spikes (10~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gadalar',331,144,13,255); -- fire (13~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gadalar',331,174,28,255); -- firaga (28~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gadalar',331,145,38,255); -- fire_ii (38~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gadalar',331,175,53,255); -- firaga_ii (53~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gadalar',331,204,60,255); -- flare (60~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gadalar',331,146,62,255); -- fire_iii (62~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gadalar',331,176,69,255); -- firaga_iii (69~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gadalar',331,147,73,255); -- fire_iv (73~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gadalar',331,205,75,255); -- flare_ii (75~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Gadalar',331,148,86,255); -- fire_v (86~255)
 
 -- TRUST_Rainemard (332)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rainemard',332,43,7,255);   -- protect (7~255)
@@ -3435,7 +3463,7 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Ovjang',337,260,32,255); -- dispel 
 
 -- TRUST_Fablinix (344)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Fablinix',344,1,8,255);    -- cure (8~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Fablinix',344,2,26,255);   -- cure_ii (26~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Fablinix',344,2,28,255);   -- cure_ii (28~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Fablinix',344,3,52,255);   -- cure_iii (52~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Fablinix',344,4,96,255);   -- cure_iv (96~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Fablinix',344,105,27,255); -- enwater (27~255)
@@ -3653,10 +3681,10 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Apururu_UC',367,134,75,255); -- she
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Apururu_UC',367,143,32,255); -- erase (32~255)
 
 -- TRUST_Rughadjeen (373)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,1,1,255);    -- cure (1~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,2,11,255);   -- cure_ii (11~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,3,21,255);   -- cure_iii (21~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,4,41,255);   -- cure_iv (41~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,1,5,255);    -- cure (5~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,2,17,255);   -- cure_ii (17~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,3,30,255);   -- cure_iii (30~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,4,55,255);   -- cure_iv (55~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,12,50,255);  -- raise (50~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,21,55,255);  -- holy (55~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Rughadjeen',373,112,37,255); -- flash (37~255)
@@ -3726,24 +3754,26 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kukki-Chebukki',374,500,87,255); --
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Kukki-Chebukki',374,501,84,255); -- waterja (84~255)
 
 -- TRUST_Arciela (378)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,43,7,255);   -- protect (7~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,44,27,255);  -- protect_ii (27~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,45,47,255);  -- protect_iii (47~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,46,63,255);  -- protect_iv (63~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,47,77,255);  -- protect_v (77~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,48,17,255);  -- shell (17~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,49,37,255);  -- shell_ii (37~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,50,57,255);  -- shell_iii (57~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,51,68,255);  -- shell_iv (68~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,52,87,255);  -- shell_v (87~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,56,13,255);  -- slow (13~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,57,40,255);  -- haste (40~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,58,4,255);   -- paralyze (4~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,79,75,255);  -- slow_ii (75~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,80,75,255);  -- paralyze_ii (75~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,109,41,255); -- refresh (41~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,473,82,255); -- refresh_ii (82~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,511,96,255); -- haste_ii (96~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,43,7,255);    -- protect (7~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,44,27,255);   -- protect_ii (27~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,45,47,255);   -- protect_iii (47~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,46,63,255);   -- protect_iv (63~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,47,77,255);   -- protect_v (77~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,48,17,255);   -- shell (17~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,49,37,255);   -- shell_ii (37~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,50,57,255);   -- shell_iii (57~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,51,68,255);   -- shell_iv (68~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,52,87,255);   -- shell_v (87~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,56,13,255);   -- slow (13~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,79,75,255);   -- slow_ii (75~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,57,40,255);   -- haste (40~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,511,96,255);  -- haste_ii (96~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,58,4,255);    -- paralyze (4~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,80,75,255);   -- paralyze_ii (75~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,109,41,255);  -- refresh (41~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,473,82,255);  -- refresh_ii (82~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,260,64,255);  -- dispel (64~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela',378,286,83,255);  -- addle (83~255)
 
 -- TRUST_Adelheid (381)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Adelheid',381,1,5,255);    -- cure (5~255)
@@ -3986,7 +4016,6 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_August',397,1,5,255);    -- cure (5
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_August',397,2,17,255);   -- cure_ii (17~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_August',397,3,30,255);   -- cure_iii (30~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_August',397,4,55,255);   -- cure_iv (55~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_August',397,21,55,255);  -- holy (55~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_August',397,22,99,255);  -- holy_ii (99~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_August',397,97,61,255);  -- reprisal (61~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_August',397,112,37,255); -- flash (37~255)
@@ -4062,43 +4091,6 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Ullegore',400,219,94,255); -- comet
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Ullegore',400,252,45,255); -- stun (45~255)
 
 -- TRUST_King_of_Hearts (402)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,1,2,255);    -- cure (2~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,2,22,255);   -- cure_ii (22~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,3,42,255);   -- cure_iii (42~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,4,82,255);   -- cure_iv (82~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,14,12,255);  -- poisona (12~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,15,18,255);  -- paralyna (18~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,16,28,255);  -- blindna (28~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,17,38,255);  -- silena (38~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,18,78,255);  -- stona (78~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,19,68,255);  -- viruna (68~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,20,58,255);  -- cursna (58~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,23,1,255);   -- dia (1~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,24,31,255);  -- dia_ii (31~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,25,75,255);  -- dia_iii (75~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,43,7,255);   -- protect (7~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,44,27,255);  -- protect_ii (27~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,45,47,255);  -- protect_iii (47~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,46,63,255);  -- protect_iv (63~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,47,77,255);  -- protect_v (77~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,48,17,255);  -- shell (17~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,49,37,255);  -- shell_ii (37~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,50,57,255);  -- shell_iii (57~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,51,68,255);  -- shell_iv (68~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,52,87,255);  -- shell_v (87~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,57,40,255);  -- haste (40~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,106,33,255); -- phalanx (33~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,107,75,255); -- phalanx_ii (75~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,109,41,255); -- refresh (41~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,143,64,255); -- erase (64~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,174,28,255); -- firaga (28~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,175,53,255); -- firaga_ii (53~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,176,69,255); -- firaga_iii (69~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,177,90,255); -- firaga_iv (90~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,260,32,255); -- dispel (32~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,473,82,255); -- refresh_ii (82~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,493,95,255); -- temper (95~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,511,96,255); -- haste_ii (96~255)
 
 -- TRUST_AAHM (405)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_AAHM',405,338,12,255); -- utsusemi_ichi (12~255)
@@ -4163,15 +4155,7 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_AATT',408,273,31,55);  -- sleepga (
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_AATT',408,274,56,255); -- sleepga_ii (56~255)
 
 -- TRUST_Iroha (410)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha',410,125,7,255);  -- protectra (7~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha',410,126,27,255); -- protectra_ii (27~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha',410,127,47,255); -- protectra_iii (47~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha',410,128,63,255); -- protectra_iv (63~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha',410,129,75,255); -- protectra_v (75~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha',410,130,17,255); -- shellra (17~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha',410,131,37,255); -- shellra_ii (37~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha',410,132,57,255); -- shellra_iii (57~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha',410,133,68,255); -- shellra_iv (68~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha',410,134,75,255); -- shellra_v (75~255)
 
 -- TRUST_Ygnas (411)
@@ -4357,15 +4341,7 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,845,48,255); -- flu
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Arciela_II',426,846,96,255); -- flurry_ii (96~255)
 
 -- TRUST_Iroha_II (427)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,125,7,255);  -- protectra (7~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,126,27,255); -- protectra_ii (27~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,127,47,255); -- protectra_iii (47~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,128,63,255); -- protectra_iv (63~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,129,75,255); -- protectra_v (75~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,130,17,255); -- shellra (17~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,131,37,255); -- shellra_ii (37~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,132,57,255); -- shellra_iii (57~255)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,133,68,255); -- shellra_iv (68~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,134,75,255); -- shellra_v (75~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Iroha_II',427,205,75,255); -- flare_ii (75~255)
 
@@ -4448,7 +4424,45 @@ INSERT INTO `mob_spell_lists` VALUES ('Nepionic_Bladmall',434,46,63,255); -- pro
 INSERT INTO `mob_spell_lists` VALUES ('Nepionic_Bladmall',434,51,68,255); -- shell_iv (68~255)
 
 -- TRUST_Matsui-P (435)
-INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,149,24,255); -- blizzard (24~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,320,15,39);  -- katon_ichi (15~39)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,321,40,72);  -- katon_ni (40~72)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,322,73,255); -- katon_san (73~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,323,15,39);  -- hyoton_ichi (15~39)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,324,40,72);  -- hyoton_ni (40~72)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,325,73,255); -- hyoton_san (73~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,326,15,39);  -- huton_ichi (15~39)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,327,40,72);  -- huton_ni (40~72)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,328,73,255); -- huton_san (73~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,329,15,39);  -- doton_ichi (15~39)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,330,40,72);  -- doton_ni (40~72)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,331,73,255); -- doton_san (73~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,332,15,39);  -- raiton_ichi (15~39)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,333,40,72);  -- raiton_ni (40~72)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,334,73,255); -- raiton_san (73~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,335,15,39);  -- suiton_ichi (15~39)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,336,40,72);  -- suiton_ni (40~72)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,337,73,255); -- suiton_san (73~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,338,12,36);  -- utsusemi_ichi (12~36)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,339,37,72);  -- utsusemi_ni (37~72)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,340,73,255); -- utsusemi_san (73~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,341,30,255); -- jubaku_ichi (30~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,344,23,255); -- hojo_ichi (23~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,347,19,255); -- kurayami_ichi (19~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,350,27,255); -- dokumori_ichi (27~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,507,85,255); -- myoshu_ichi (85~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,508,83,255); -- yurin_ichi (83~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,509,78,255); -- kakka_ichi (78~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,510,88,255); -- migawari_ichi (88~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,319,83,255); -- aisha_ichi (83~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,144,1,255);  -- fire (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,149,1,255);  -- blizzard (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,154,1,255);  -- aero (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,159,1,255);  -- stone (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,164,1,255);  -- thunder (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,169,1,255);  -- water (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,235,24,255); -- burn (24~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,247,25,255); -- aspir (25~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,252,45,255); -- stun (45~255)
 
 -- Ground_Guzzler (436)
 INSERT INTO `mob_spell_lists` VALUES ('Ground_Guzzler',436,54,68,255);  -- stoneskin (68~255)
@@ -5778,9 +5792,409 @@ INSERT INTO `mob_spell_lists` VALUES ('Chemical_Cook_Chemachiq',565,57,1,255);  
 INSERT INTO `mob_spell_lists` VALUES ('Chemical_Cook_Chemachiq',565,59,1,255);  -- Silence (1~255)
 INSERT INTO `mob_spell_lists` VALUES ('Chemical_Cook_Chemachiq',565,112,1,255); -- Flash (1~255)
 
--- Next Available: 566
+-- Stormwalker_Frame (566)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,154,1,255); -- Aero (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,231,1,255); -- Bio II (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,53,1,255);  -- Blink (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,149,1,255); -- Blizzard (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,24,1,255);  -- Dia II (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,33,1,255);  -- Diaga (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,260,1,255); -- Dispel (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,105,1,255); -- Enwater (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,144,1,255); -- Fire (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,216,1,255); -- Gravity (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,44,1,255);  -- Protect II (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,220,1,255); -- Poison (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,108,1,255); -- Regen (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,49,1,255);  -- Shell II (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,160,1,255); -- Stone II (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,54,1,255);  -- Stoneskin (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,164,1,255); -- Thunder (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,169,1,255); -- Water (1~255)
+INSERT INTO `mob_spell_lists` VALUES ('Stormwalker_Frame',566,55,1,255);  -- Aquaveil (1~255)
+
+-- Harlequin_Frame (567)
+INSERT INTO `mob_spell_lists` VALUES ('Harlequin_Frame',567,23,1,255); -- Dia (1~255)
+
+-- Next Available: 568
 
 /*!40000 ALTER TABLE `mob_spell_lists` ENABLE KEYS */;
+-- Custom Aldo UC THF/NIN spell list
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,338,24,255); -- Utsusemi: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,339,74,255); -- Utsusemi: Ni
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,344,46,255); -- Hojo: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,345,96,255); -- Hojo: Ni
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,347,38,255); -- Kurayami: Ichi
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Aldo_UC',1122,348,88,255); -- Kurayami: Ni
+-- Healer Trust spell lists mirrored from live DB audit
+-- Apururu UC, Cherukiki, Ferreous Coffin, Karaha-Baruha, Kupipi, Mihli Aliapoh, Pieuje UC, Yoran-Oran UC, Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 512: INSERT INTO `mob_spell_lists` VALUES (20,1,1,10); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 527: INSERT INTO `mob_spell_lists` VALUES (20,23,3,35); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 555: INSERT INTO `mob_spell_lists` VALUES (20,58,4,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 530: INSERT INTO `mob_spell_lists` VALUES (20,28,5,29); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 518: INSERT INTO `mob_spell_lists` VALUES (20,14,6,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 540: INSERT INTO `mob_spell_lists` VALUES (20,43,7,26); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 519: INSERT INTO `mob_spell_lists` VALUES (20,15,9,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 552: INSERT INTO `mob_spell_lists` VALUES (20,55,10,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 513: INSERT INTO `mob_spell_lists` VALUES (20,2,11,20); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 553: INSERT INTO `mob_spell_lists` VALUES (20,56,13,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 520: INSERT INTO `mob_spell_lists` VALUES (20,16,14,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 537: INSERT INTO `mob_spell_lists` VALUES (20,38,15,39); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 556: INSERT INTO `mob_spell_lists` VALUES (20,59,15,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 545: INSERT INTO `mob_spell_lists` VALUES (20,48,17,36); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 534: INSERT INTO `mob_spell_lists` VALUES (20,33,18,54); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 521: INSERT INTO `mob_spell_lists` VALUES (20,17,19,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 550: INSERT INTO `mob_spell_lists` VALUES (20,53,19,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 514: INSERT INTO `mob_spell_lists` VALUES (20,3,21,40); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 557: INSERT INTO `mob_spell_lists` VALUES (20,108,21,43); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 541: INSERT INTO `mob_spell_lists` VALUES (20,44,27,46); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 551: INSERT INTO `mob_spell_lists` VALUES (20,54,28,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 524: INSERT INTO `mob_spell_lists` VALUES (20,20,29,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 531: INSERT INTO `mob_spell_lists` VALUES (20,29,30,60); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 561: INSERT INTO `mob_spell_lists` VALUES (20,143,32,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 523: INSERT INTO `mob_spell_lists` VALUES (20,19,34,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 528: INSERT INTO `mob_spell_lists` VALUES (20,24,36,64); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 546: INSERT INTO `mob_spell_lists` VALUES (20,49,37,56); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 522: INSERT INTO `mob_spell_lists` VALUES (20,18,39,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 538: INSERT INTO `mob_spell_lists` VALUES (20,39,40,68); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 554: INSERT INTO `mob_spell_lists` VALUES (20,57,40,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 515: INSERT INTO `mob_spell_lists` VALUES (20,4,41,60); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 558: INSERT INTO `mob_spell_lists` VALUES (20,110,44,65); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 560: INSERT INTO `mob_spell_lists` VALUES (20,112,45,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 542: INSERT INTO `mob_spell_lists` VALUES (20,45,47,62); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 525: INSERT INTO `mob_spell_lists` VALUES (20,21,50,94); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 547: INSERT INTO `mob_spell_lists` VALUES (20,50,57,67); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 535: INSERT INTO `mob_spell_lists` VALUES (20,34,60,73); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 516: INSERT INTO `mob_spell_lists` VALUES (20,5,61,79); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 532: INSERT INTO `mob_spell_lists` VALUES (20,30,61,72); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 543: INSERT INTO `mob_spell_lists` VALUES (20,46,63,75); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 529: INSERT INTO `mob_spell_lists` VALUES (20,25,65,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 559: INSERT INTO `mob_spell_lists` VALUES (20,111,66,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 548: INSERT INTO `mob_spell_lists` VALUES (20,51,68,75); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 539: INSERT INTO `mob_spell_lists` VALUES (20,40,69,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 533: INSERT INTO `mob_spell_lists` VALUES (20,31,73,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 536: INSERT INTO `mob_spell_lists` VALUES (20,35,74,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 517: INSERT INTO `mob_spell_lists` VALUES (20,6,80,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 544: INSERT INTO `mob_spell_lists` VALUES (20,47,80,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 549: INSERT INTO `mob_spell_lists` VALUES (20,52,80,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 562: INSERT INTO `mob_spell_lists` VALUES (20,477,86,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 526: INSERT INTO `mob_spell_lists` VALUES (20,22,95,255); -- TRUST_Cherukiki_nontrust_pool
+-- duplicate old 4-column row; valid 5-column row exists at line 3069: INSERT INTO `mob_spell_lists` VALUES (310,1,1,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3075: INSERT INTO `mob_spell_lists` VALUES (310,14,6,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3083: INSERT INTO `mob_spell_lists` VALUES (310,58,6,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3084: INSERT INTO `mob_spell_lists` VALUES (310,43,7,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3085: INSERT INTO `mob_spell_lists` VALUES (310,44,27,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3086: INSERT INTO `mob_spell_lists` VALUES (310,45,47,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3087: INSERT INTO `mob_spell_lists` VALUES (310,46,63,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3088: INSERT INTO `mob_spell_lists` VALUES (310,47,75,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3089: INSERT INTO `mob_spell_lists` VALUES (310,48,17,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3090: INSERT INTO `mob_spell_lists` VALUES (310,49,37,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3091: INSERT INTO `mob_spell_lists` VALUES (310,50,57,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3092: INSERT INTO `mob_spell_lists` VALUES (310,51,68,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3093: INSERT INTO `mob_spell_lists` VALUES (310,52,75,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3094: INSERT INTO `mob_spell_lists` VALUES (310,125,7,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3076: INSERT INTO `mob_spell_lists` VALUES (310,15,9,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3070: INSERT INTO `mob_spell_lists` VALUES (310,2,11,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3082: INSERT INTO `mob_spell_lists` VALUES (310,56,13,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3077: INSERT INTO `mob_spell_lists` VALUES (310,16,14,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3099: INSERT INTO `mob_spell_lists` VALUES (310,130,17,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3078: INSERT INTO `mob_spell_lists` VALUES (310,17,19,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3071: INSERT INTO `mob_spell_lists` VALUES (310,3,21,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3095: INSERT INTO `mob_spell_lists` VALUES (310,126,27,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3081: INSERT INTO `mob_spell_lists` VALUES (310,20,29,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3104: INSERT INTO `mob_spell_lists` VALUES (310,143,32,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3080: INSERT INTO `mob_spell_lists` VALUES (310,19,34,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3100: INSERT INTO `mob_spell_lists` VALUES (310,131,37,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3079: INSERT INTO `mob_spell_lists` VALUES (310,18,39,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3072: INSERT INTO `mob_spell_lists` VALUES (310,4,41,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3096: INSERT INTO `mob_spell_lists` VALUES (310,127,47,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3101: INSERT INTO `mob_spell_lists` VALUES (310,132,57,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3073: INSERT INTO `mob_spell_lists` VALUES (310,5,61,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3097: INSERT INTO `mob_spell_lists` VALUES (310,128,63,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3102: INSERT INTO `mob_spell_lists` VALUES (310,133,68,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3098: INSERT INTO `mob_spell_lists` VALUES (310,129,75,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3103: INSERT INTO `mob_spell_lists` VALUES (310,134,75,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3074: INSERT INTO `mob_spell_lists` VALUES (310,6,80,255); -- TRUST_Kupipi
+-- duplicate old 4-column row; valid 5-column row exists at line 3183: INSERT INTO `mob_spell_lists` VALUES (321,1,1,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3207: INSERT INTO `mob_spell_lists` VALUES (321,58,4,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3189: INSERT INTO `mob_spell_lists` VALUES (321,14,6,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3196: INSERT INTO `mob_spell_lists` VALUES (321,43,7,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3209: INSERT INTO `mob_spell_lists` VALUES (321,125,7,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3190: INSERT INTO `mob_spell_lists` VALUES (321,15,9,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3184: INSERT INTO `mob_spell_lists` VALUES (321,2,11,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3206: INSERT INTO `mob_spell_lists` VALUES (321,56,13,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3191: INSERT INTO `mob_spell_lists` VALUES (321,16,14,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3201: INSERT INTO `mob_spell_lists` VALUES (321,48,17,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3214: INSERT INTO `mob_spell_lists` VALUES (321,130,17,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3192: INSERT INTO `mob_spell_lists` VALUES (321,17,19,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3185: INSERT INTO `mob_spell_lists` VALUES (321,3,21,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3197: INSERT INTO `mob_spell_lists` VALUES (321,44,27,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3210: INSERT INTO `mob_spell_lists` VALUES (321,126,27,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3195: INSERT INTO `mob_spell_lists` VALUES (321,20,29,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3208: INSERT INTO `mob_spell_lists` VALUES (321,95,32,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3219: INSERT INTO `mob_spell_lists` VALUES (321,143,32,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3194: INSERT INTO `mob_spell_lists` VALUES (321,19,34,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3202: INSERT INTO `mob_spell_lists` VALUES (321,49,37,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3215: INSERT INTO `mob_spell_lists` VALUES (321,131,37,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3193: INSERT INTO `mob_spell_lists` VALUES (321,18,39,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3186: INSERT INTO `mob_spell_lists` VALUES (321,4,41,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3198: INSERT INTO `mob_spell_lists` VALUES (321,45,47,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3211: INSERT INTO `mob_spell_lists` VALUES (321,127,47,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3203: INSERT INTO `mob_spell_lists` VALUES (321,50,57,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3216: INSERT INTO `mob_spell_lists` VALUES (321,132,57,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3187: INSERT INTO `mob_spell_lists` VALUES (321,5,61,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3199: INSERT INTO `mob_spell_lists` VALUES (321,46,63,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3212: INSERT INTO `mob_spell_lists` VALUES (321,128,63,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3204: INSERT INTO `mob_spell_lists` VALUES (321,51,68,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3217: INSERT INTO `mob_spell_lists` VALUES (321,133,68,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3213: INSERT INTO `mob_spell_lists` VALUES (321,129,75,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3218: INSERT INTO `mob_spell_lists` VALUES (321,134,75,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3200: INSERT INTO `mob_spell_lists` VALUES (321,47,76,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3205: INSERT INTO `mob_spell_lists` VALUES (321,52,76,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3188: INSERT INTO `mob_spell_lists` VALUES (321,6,80,255); -- TRUST_Mihli_Aliapoh
+-- duplicate old 4-column row; valid 5-column row exists at line 3315: INSERT INTO `mob_spell_lists` VALUES (328,1,1,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3333: INSERT INTO `mob_spell_lists` VALUES (328,58,4,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3334: INSERT INTO `mob_spell_lists` VALUES (328,59,4,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3338: INSERT INTO `mob_spell_lists` VALUES (328,125,7,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3316: INSERT INTO `mob_spell_lists` VALUES (328,2,11,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3331: INSERT INTO `mob_spell_lists` VALUES (328,56,13,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3343: INSERT INTO `mob_spell_lists` VALUES (328,130,17,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3317: INSERT INTO `mob_spell_lists` VALUES (328,3,21,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3335: INSERT INTO `mob_spell_lists` VALUES (328,108,21,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3339: INSERT INTO `mob_spell_lists` VALUES (328,126,27,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3344: INSERT INTO `mob_spell_lists` VALUES (328,131,37,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3332: INSERT INTO `mob_spell_lists` VALUES (328,57,40,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3318: INSERT INTO `mob_spell_lists` VALUES (328,4,41,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3336: INSERT INTO `mob_spell_lists` VALUES (328,110,44,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3340: INSERT INTO `mob_spell_lists` VALUES (328,127,47,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3345: INSERT INTO `mob_spell_lists` VALUES (328,132,57,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3319: INSERT INTO `mob_spell_lists` VALUES (328,5,61,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3341: INSERT INTO `mob_spell_lists` VALUES (328,128,63,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3337: INSERT INTO `mob_spell_lists` VALUES (328,111,66,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3346: INSERT INTO `mob_spell_lists` VALUES (328,133,68,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3342: INSERT INTO `mob_spell_lists` VALUES (328,129,75,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3347: INSERT INTO `mob_spell_lists` VALUES (328,134,75,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3320: INSERT INTO `mob_spell_lists` VALUES (328,6,80,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3321: INSERT INTO `mob_spell_lists` VALUES (328,43,7,255); -- TRUST_Cherukiki protect
+-- duplicate old 4-column row; valid 5-column row exists at line 3322: INSERT INTO `mob_spell_lists` VALUES (328,44,27,255); -- TRUST_Cherukiki protect_ii
+-- duplicate old 4-column row; valid 5-column row exists at line 3323: INSERT INTO `mob_spell_lists` VALUES (328,45,47,255); -- TRUST_Cherukiki protect_iii
+-- duplicate old 4-column row; valid 5-column row exists at line 3324: INSERT INTO `mob_spell_lists` VALUES (328,46,63,255); -- TRUST_Cherukiki protect_iv
+-- duplicate old 4-column row; valid 5-column row exists at line 3325: INSERT INTO `mob_spell_lists` VALUES (328,47,80,255); -- TRUST_Cherukiki protect_v
+-- duplicate old 4-column row; valid 5-column row exists at line 3326: INSERT INTO `mob_spell_lists` VALUES (328,48,17,255); -- TRUST_Cherukiki shell
+-- duplicate old 4-column row; valid 5-column row exists at line 3327: INSERT INTO `mob_spell_lists` VALUES (328,49,37,255); -- TRUST_Cherukiki shell_ii
+-- duplicate old 4-column row; valid 5-column row exists at line 3328: INSERT INTO `mob_spell_lists` VALUES (328,50,57,255); -- TRUST_Cherukiki shell_iii
+-- duplicate old 4-column row; valid 5-column row exists at line 3329: INSERT INTO `mob_spell_lists` VALUES (328,51,68,255); -- TRUST_Cherukiki shell_iv
+-- duplicate old 4-column row; valid 5-column row exists at line 3330: INSERT INTO `mob_spell_lists` VALUES (328,52,80,255); -- TRUST_Cherukiki shell_v
+-- duplicate old 4-column row; valid 5-column row exists at line 3348: INSERT INTO `mob_spell_lists` VALUES (328,477,86,255); -- TRUST_Cherukiki
+-- duplicate old 4-column row; valid 5-column row exists at line 3505: INSERT INTO `mob_spell_lists` VALUES (348,1,1,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3513: INSERT INTO `mob_spell_lists` VALUES (348,65,5,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3517: INSERT INTO `mob_spell_lists` VALUES (348,69,5,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3520: INSERT INTO `mob_spell_lists` VALUES (348,43,7,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3525: INSERT INTO `mob_spell_lists` VALUES (348,125,7,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3519: INSERT INTO `mob_spell_lists` VALUES (348,71,9,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3506: INSERT INTO `mob_spell_lists` VALUES (348,2,11,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3516: INSERT INTO `mob_spell_lists` VALUES (348,68,13,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3530: INSERT INTO `mob_spell_lists` VALUES (348,48,17,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3514: INSERT INTO `mob_spell_lists` VALUES (348,66,17,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3535: INSERT INTO `mob_spell_lists` VALUES (348,130,17,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3507: INSERT INTO `mob_spell_lists` VALUES (348,3,21,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3515: INSERT INTO `mob_spell_lists` VALUES (348,67,21,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3512: INSERT INTO `mob_spell_lists` VALUES (348,64,25,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3518: INSERT INTO `mob_spell_lists` VALUES (348,70,25,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3521: INSERT INTO `mob_spell_lists` VALUES (348,44,27,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3526: INSERT INTO `mob_spell_lists` VALUES (348,126,27,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3531: INSERT INTO `mob_spell_lists` VALUES (348,49,37,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3536: INSERT INTO `mob_spell_lists` VALUES (348,131,37,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3511: INSERT INTO `mob_spell_lists` VALUES (348,57,40,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3508: INSERT INTO `mob_spell_lists` VALUES (348,4,41,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3522: INSERT INTO `mob_spell_lists` VALUES (348,45,47,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3527: INSERT INTO `mob_spell_lists` VALUES (348,127,47,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3532: INSERT INTO `mob_spell_lists` VALUES (348,50,57,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3537: INSERT INTO `mob_spell_lists` VALUES (348,132,57,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3509: INSERT INTO `mob_spell_lists` VALUES (348,5,61,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3523: INSERT INTO `mob_spell_lists` VALUES (348,46,63,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3528: INSERT INTO `mob_spell_lists` VALUES (348,128,63,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3533: INSERT INTO `mob_spell_lists` VALUES (348,51,68,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3538: INSERT INTO `mob_spell_lists` VALUES (348,133,68,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3524: INSERT INTO `mob_spell_lists` VALUES (348,47,75,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3534: INSERT INTO `mob_spell_lists` VALUES (348,52,75,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3529: INSERT INTO `mob_spell_lists` VALUES (348,129,75,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3539: INSERT INTO `mob_spell_lists` VALUES (348,134,75,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3510: INSERT INTO `mob_spell_lists` VALUES (348,6,80,255); -- TRUST_Karaha_Baruha
+-- duplicate old 4-column row; valid 5-column row exists at line 3548: INSERT INTO `mob_spell_lists` VALUES (356,1,1,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3556: INSERT INTO `mob_spell_lists` VALUES (356,15,9,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3549: INSERT INTO `mob_spell_lists` VALUES (356,2,11,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3557: INSERT INTO `mob_spell_lists` VALUES (356,16,14,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3558: INSERT INTO `mob_spell_lists` VALUES (356,17,19,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3550: INSERT INTO `mob_spell_lists` VALUES (356,3,21,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3554: INSERT INTO `mob_spell_lists` VALUES (356,12,25,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3561: INSERT INTO `mob_spell_lists` VALUES (356,20,29,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3564: INSERT INTO `mob_spell_lists` VALUES (356,143,32,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3560: INSERT INTO `mob_spell_lists` VALUES (356,19,34,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3559: INSERT INTO `mob_spell_lists` VALUES (356,18,39,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3562: INSERT INTO `mob_spell_lists` VALUES (356,57,40,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3551: INSERT INTO `mob_spell_lists` VALUES (356,4,41,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3555: INSERT INTO `mob_spell_lists` VALUES (356,13,56,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3552: INSERT INTO `mob_spell_lists` VALUES (356,5,61,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3563: INSERT INTO `mob_spell_lists` VALUES (356,140,70,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3553: INSERT INTO `mob_spell_lists` VALUES (356,6,80,255); -- TRUST_Ferreous_Coffin
+-- duplicate old 4-column row; valid 5-column row exists at line 3607: INSERT INTO `mob_spell_lists` VALUES (365,1,1,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3613: INSERT INTO `mob_spell_lists` VALUES (365,14,6,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3627: INSERT INTO `mob_spell_lists` VALUES (365,125,7,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3614: INSERT INTO `mob_spell_lists` VALUES (365,15,9,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3608: INSERT INTO `mob_spell_lists` VALUES (365,2,11,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3615: INSERT INTO `mob_spell_lists` VALUES (365,16,14,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3632: INSERT INTO `mob_spell_lists` VALUES (365,130,17,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3616: INSERT INTO `mob_spell_lists` VALUES (365,17,19,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3609: INSERT INTO `mob_spell_lists` VALUES (365,3,21,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3623: INSERT INTO `mob_spell_lists` VALUES (365,108,21,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3628: INSERT INTO `mob_spell_lists` VALUES (365,126,27,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3619: INSERT INTO `mob_spell_lists` VALUES (365,20,29,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3621: INSERT INTO `mob_spell_lists` VALUES (365,95,32,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3637: INSERT INTO `mob_spell_lists` VALUES (365,143,32,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3618: INSERT INTO `mob_spell_lists` VALUES (365,19,34,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3633: INSERT INTO `mob_spell_lists` VALUES (365,131,37,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3617: INSERT INTO `mob_spell_lists` VALUES (365,18,39,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3620: INSERT INTO `mob_spell_lists` VALUES (365,57,40,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3610: INSERT INTO `mob_spell_lists` VALUES (365,4,41,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3624: INSERT INTO `mob_spell_lists` VALUES (365,110,44,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3626: INSERT INTO `mob_spell_lists` VALUES (365,112,45,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3629: INSERT INTO `mob_spell_lists` VALUES (365,127,47,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3622: INSERT INTO `mob_spell_lists` VALUES (365,96,55,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3634: INSERT INTO `mob_spell_lists` VALUES (365,132,57,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3611: INSERT INTO `mob_spell_lists` VALUES (365,5,61,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3630: INSERT INTO `mob_spell_lists` VALUES (365,128,63,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3625: INSERT INTO `mob_spell_lists` VALUES (365,111,66,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3635: INSERT INTO `mob_spell_lists` VALUES (365,133,68,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3631: INSERT INTO `mob_spell_lists` VALUES (365,129,75,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3636: INSERT INTO `mob_spell_lists` VALUES (365,134,75,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3612: INSERT INTO `mob_spell_lists` VALUES (365,6,80,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3638: INSERT INTO `mob_spell_lists` VALUES (365,477,86,255); -- TRUST_Pieuje_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3641: INSERT INTO `mob_spell_lists` VALUES (367,1,1,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3652: INSERT INTO `mob_spell_lists` VALUES (367,14,6,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3659: INSERT INTO `mob_spell_lists` VALUES (367,43,7,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3671: INSERT INTO `mob_spell_lists` VALUES (367,125,7,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3653: INSERT INTO `mob_spell_lists` VALUES (367,15,9,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3642: INSERT INTO `mob_spell_lists` VALUES (367,2,11,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3654: INSERT INTO `mob_spell_lists` VALUES (367,16,14,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3647: INSERT INTO `mob_spell_lists` VALUES (367,7,16,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3664: INSERT INTO `mob_spell_lists` VALUES (367,48,17,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3676: INSERT INTO `mob_spell_lists` VALUES (367,130,17,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3655: INSERT INTO `mob_spell_lists` VALUES (367,17,19,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3643: INSERT INTO `mob_spell_lists` VALUES (367,3,21,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3660: INSERT INTO `mob_spell_lists` VALUES (367,44,27,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3672: INSERT INTO `mob_spell_lists` VALUES (367,126,27,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3669: INSERT INTO `mob_spell_lists` VALUES (367,54,28,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3658: INSERT INTO `mob_spell_lists` VALUES (367,20,29,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3648: INSERT INTO `mob_spell_lists` VALUES (367,8,31,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3681: INSERT INTO `mob_spell_lists` VALUES (367,143,32,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3657: INSERT INTO `mob_spell_lists` VALUES (367,19,34,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3665: INSERT INTO `mob_spell_lists` VALUES (367,49,37,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3677: INSERT INTO `mob_spell_lists` VALUES (367,131,37,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3656: INSERT INTO `mob_spell_lists` VALUES (367,18,39,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3670: INSERT INTO `mob_spell_lists` VALUES (367,57,40,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3644: INSERT INTO `mob_spell_lists` VALUES (367,4,41,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3661: INSERT INTO `mob_spell_lists` VALUES (367,45,47,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3673: INSERT INTO `mob_spell_lists` VALUES (367,127,47,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3649: INSERT INTO `mob_spell_lists` VALUES (367,9,51,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3666: INSERT INTO `mob_spell_lists` VALUES (367,50,57,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3678: INSERT INTO `mob_spell_lists` VALUES (367,132,57,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3645: INSERT INTO `mob_spell_lists` VALUES (367,5,61,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3662: INSERT INTO `mob_spell_lists` VALUES (367,46,63,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3674: INSERT INTO `mob_spell_lists` VALUES (367,128,63,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3667: INSERT INTO `mob_spell_lists` VALUES (367,51,68,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3679: INSERT INTO `mob_spell_lists` VALUES (367,133,68,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3650: INSERT INTO `mob_spell_lists` VALUES (367,10,71,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3675: INSERT INTO `mob_spell_lists` VALUES (367,129,75,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3680: INSERT INTO `mob_spell_lists` VALUES (367,134,75,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3663: INSERT INTO `mob_spell_lists` VALUES (367,47,76,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3668: INSERT INTO `mob_spell_lists` VALUES (367,52,76,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3646: INSERT INTO `mob_spell_lists` VALUES (367,6,80,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3651: INSERT INTO `mob_spell_lists` VALUES (367,11,91,255); -- TRUST_Apururu_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3958: INSERT INTO `mob_spell_lists` VALUES (393,1,1,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3964: INSERT INTO `mob_spell_lists` VALUES (393,14,6,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3972: INSERT INTO `mob_spell_lists` VALUES (393,125,7,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3965: INSERT INTO `mob_spell_lists` VALUES (393,15,9,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3959: INSERT INTO `mob_spell_lists` VALUES (393,2,11,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3966: INSERT INTO `mob_spell_lists` VALUES (393,16,14,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3977: INSERT INTO `mob_spell_lists` VALUES (393,130,17,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3967: INSERT INTO `mob_spell_lists` VALUES (393,17,19,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3960: INSERT INTO `mob_spell_lists` VALUES (393,3,21,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3973: INSERT INTO `mob_spell_lists` VALUES (393,126,27,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3970: INSERT INTO `mob_spell_lists` VALUES (393,20,29,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3982: INSERT INTO `mob_spell_lists` VALUES (393,143,32,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3969: INSERT INTO `mob_spell_lists` VALUES (393,19,34,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3978: INSERT INTO `mob_spell_lists` VALUES (393,131,37,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3968: INSERT INTO `mob_spell_lists` VALUES (393,18,39,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3971: INSERT INTO `mob_spell_lists` VALUES (393,57,40,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3961: INSERT INTO `mob_spell_lists` VALUES (393,4,41,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3974: INSERT INTO `mob_spell_lists` VALUES (393,127,47,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3979: INSERT INTO `mob_spell_lists` VALUES (393,132,57,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3962: INSERT INTO `mob_spell_lists` VALUES (393,5,61,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3975: INSERT INTO `mob_spell_lists` VALUES (393,128,63,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3980: INSERT INTO `mob_spell_lists` VALUES (393,133,68,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3976: INSERT INTO `mob_spell_lists` VALUES (393,129,75,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3981: INSERT INTO `mob_spell_lists` VALUES (393,134,75,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 3963: INSERT INTO `mob_spell_lists` VALUES (393,6,80,255); -- TRUST_Yoran_Oran_UC
+-- duplicate old 4-column row; valid 5-column row exists at line 4162: INSERT INTO `mob_spell_lists` VALUES (411,1,1,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4168: INSERT INTO `mob_spell_lists` VALUES (411,14,6,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4175: INSERT INTO `mob_spell_lists` VALUES (411,43,7,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4186: INSERT INTO `mob_spell_lists` VALUES (411,125,7,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4169: INSERT INTO `mob_spell_lists` VALUES (411,15,9,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4163: INSERT INTO `mob_spell_lists` VALUES (411,2,11,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4170: INSERT INTO `mob_spell_lists` VALUES (411,16,14,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4180: INSERT INTO `mob_spell_lists` VALUES (411,48,17,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4191: INSERT INTO `mob_spell_lists` VALUES (411,130,17,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4171: INSERT INTO `mob_spell_lists` VALUES (411,17,19,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4164: INSERT INTO `mob_spell_lists` VALUES (411,3,21,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4176: INSERT INTO `mob_spell_lists` VALUES (411,44,27,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4187: INSERT INTO `mob_spell_lists` VALUES (411,126,27,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4174: INSERT INTO `mob_spell_lists` VALUES (411,20,29,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4196: INSERT INTO `mob_spell_lists` VALUES (411,143,32,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4173: INSERT INTO `mob_spell_lists` VALUES (411,19,34,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4181: INSERT INTO `mob_spell_lists` VALUES (411,49,37,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4192: INSERT INTO `mob_spell_lists` VALUES (411,131,37,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4172: INSERT INTO `mob_spell_lists` VALUES (411,18,39,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4185: INSERT INTO `mob_spell_lists` VALUES (411,57,40,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4165: INSERT INTO `mob_spell_lists` VALUES (411,4,41,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4177: INSERT INTO `mob_spell_lists` VALUES (411,45,47,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4188: INSERT INTO `mob_spell_lists` VALUES (411,127,47,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4182: INSERT INTO `mob_spell_lists` VALUES (411,50,57,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4193: INSERT INTO `mob_spell_lists` VALUES (411,132,57,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4166: INSERT INTO `mob_spell_lists` VALUES (411,5,61,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4178: INSERT INTO `mob_spell_lists` VALUES (411,46,63,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4189: INSERT INTO `mob_spell_lists` VALUES (411,128,63,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4183: INSERT INTO `mob_spell_lists` VALUES (411,51,68,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4194: INSERT INTO `mob_spell_lists` VALUES (411,133,68,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4190: INSERT INTO `mob_spell_lists` VALUES (411,129,75,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4195: INSERT INTO `mob_spell_lists` VALUES (411,134,75,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4179: INSERT INTO `mob_spell_lists` VALUES (411,47,76,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4184: INSERT INTO `mob_spell_lists` VALUES (411,52,76,255); -- TRUST_Ygnas
+-- duplicate old 4-column row; valid 5-column row exists at line 4167: INSERT INTO `mob_spell_lists` VALUES (411,6,80,255); -- TRUST_Ygnas
+
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,1,1,255); -- Cure
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,14,6,255); -- Poisona
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,15,9,255); -- Paralyna
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,2,11,255); -- Cure II
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,16,14,255); -- Blindna
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,17,19,255); -- Silena
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,3,21,255); -- Cure III
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,20,29,255); -- Cursna
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,143,32,255); -- Erase
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,19,34,255); -- Viruna
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,18,39,255); -- Stona
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,4,41,255); -- Cure IV
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,23,1,255); -- Dia
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,24,31,255); -- Dia II
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,25,75,255); -- Dia III
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,57,40,255); -- Haste
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,511,91,255); -- Haste II
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,109,41,255); -- Refresh
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,473,82,255); -- Refresh II
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,106,33,255); -- Phalanx
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,107,75,255); -- Phalanx II
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,493,95,255); -- Temper
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_King_of_Hearts',402,177,92,255); -- Firaga IV
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -5791,3 +6205,30 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+
+
+-- Lax custom Trust: Ulmia retail-safe song list.
+-- Includes Minne fallback songs documented by broader wiki coverage.
+DELETE FROM `mob_spell_lists` WHERE `spell_list_id` = 326;
+INSERT INTO `mob_spell_lists` (`spell_list_name`, `spell_list_id`, `spell_id`, `min_level`, `max_level`) VALUES
+('Ulmia', 326, 389, 1, 255),    -- Knight's Minne
+('Ulmia', 326, 394, 3, 255),    -- Valor Minuet
+('Ulmia', 326, 399, 11, 255),   -- Sword Madrigal
+('Ulmia', 326, 390, 21, 255),   -- Knight's Minne II
+('Ulmia', 326, 395, 23, 255),   -- Valor Minuet II
+('Ulmia', 326, 386, 25, 255),   -- Mage's Ballad
+('Ulmia', 326, 419, 29, 255),   -- Advancing March
+('Ulmia', 326, 391, 41, 255),   -- Knight's Minne III
+('Ulmia', 326, 396, 43, 255),   -- Valor Minuet III
+('Ulmia', 326, 400, 51, 255),   -- Blade Madrigal
+('Ulmia', 326, 387, 55, 255),   -- Mage's Ballad II
+('Ulmia', 326, 420, 60, 255),   -- Victory March
+('Ulmia', 326, 401, 61, 255),   -- Hunter's Prelude
+('Ulmia', 326, 392, 61, 255),   -- Knight's Minne IV
+('Ulmia', 326, 397, 63, 255),   -- Valor Minuet IV
+('Ulmia', 326, 402, 71, 255),   -- Archer's Prelude
+('Ulmia', 326, 393, 80, 255),   -- Knight's Minne V
+('Ulmia', 326, 470, 82, 255),   -- Sentinel's Scherzo
+('Ulmia', 326, 388, 85, 255),   -- Mage's Ballad III
+('Ulmia', 326, 398, 87, 255);   -- Valor Minuet V

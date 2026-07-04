@@ -15,8 +15,6 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
 
     params.baseDamage       = mob:getMainLvl() + 2
     params.fTP              = { 1.0, 1.5, 2.0 }
-    -- params.str_wSC       = 0.3 -- TODO: Capture if mobskill weaponskills have wSC.
-    -- params.int_wSC       = 0.3 -- TODO: Capture if mobskill weaponskills have wSC.
     params.element          = xi.element.DARK
     params.attackType       = xi.attackType.MAGICAL
     params.damageType       = xi.damageType.DARK

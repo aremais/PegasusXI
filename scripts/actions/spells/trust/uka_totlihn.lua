@@ -73,6 +73,9 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.SELF, { ai.c.NO_SAMBA, 0 }, { ai.r.JA, ai.s.BEST_SAMBA, xi.ja.DRAIN_SAMBA })
     mob:addGambit(ai.t.SELF, { ai.c.STATUS_FLAG, xi.effectFlag.WALTZABLE }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.HEALING_WALTZ })
 
+    -- Source notes: Judgment is her only Weapon Skill; uses Quickstep, Reverse Flourish,
+    -- Violent Flourish, Curing/Healing Waltz, Drain/Haste Samba. Exact >2000 TP
+    -- Judgment timing is approximated by the current closer setting.
     -- TP use and return
     mob:addGambit(ai.t.SELF, { ai.c.STATUS, xi.effect.FINISHING_MOVE_5 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.REVERSE_FLOURISH }, 60)
     mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.RANDOM, 2000)

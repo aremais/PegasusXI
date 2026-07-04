@@ -5,7 +5,7 @@
 local spellObject = {}
 
 spellObject.onMagicCastingCheck = function(caster, target, spell)
-    return xi.trust.canCast(caster, spell, xi.magic.spell.AYAME)
+    return xi.trust.canCast(caster, spell, xi.magic.spell.AYAME_UC)
 end
 
 spellObject.onSpellCast = function(caster, target, spell)
@@ -15,30 +15,19 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    local lvl = mob:getMainLvl()
+    -- Ayame UC is a SAM melee Trust. Unlike normal Ayame's dedicated
+    -- SPECIAL_AYAME opener behavior, UC is treated as a more direct
+    -- skillchain-capable Samurai until Shikikoyo/Mudo support is completed.
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 25 }, { ai.c.NOT_STATUS, xi.effect.HASSO } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.HASSO })
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 35 }, { ai.c.HAS_TOP_ENMITY, 0 }, { ai.c.NOT_STATUS, xi.effect.SEIGAN } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SEIGAN })
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 15 }, { ai.c.HAS_TOP_ENMITY, 0 } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.THIRD_EYE })
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 30 }, { ai.c.TP_LT, 1000 } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.MEDITATE })
+    mob:addGambit(ai.t.SELF, { ai.c.LVL_GTE, 77 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SENGIKORI })
 
-    if lvl >= 15 then
-        mob:addGambit(ai.t.SELF, { ai.c.HAS_TOP_ENMITY, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.THIRD_EYE })
-    end
-
-    if lvl >= 25 then
-        mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.HASSO }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.HASSO })
-    end
-
-    if lvl >= 30 then
-        mob:addGambit(ai.t.SELF, { ai.c.TP_LT, 1000 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.MEDITATE })
-    end
-
-    if lvl >= 75 then
-        mob:addGambit(ai.t.TARGET, { ai.c.READYING_WS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BLADE_BASH })
-        mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SHIKIKOYO })
-    end
-
-    if lvl >= 77 then
-        mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SENGIKORI })
-    end
-
-    mob:setTrustTPSkillSettings(ai.tp.OPENER, ai.s.RANDOM, 2000)
+    -- Source behavior notes Shikikoyo after the caller uses a WS at 2000+ TP,
+    -- and Tachi: Mudo as a special WS. Those are held until proper targeting
+    -- and mobskill Lua support are implemented.
+    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.HIGHEST, 2000)
 end
 
 spellObject.onMobDespawn = function(mob)

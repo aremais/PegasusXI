@@ -1,6 +1,7 @@
 -----------------------------------
 -- Pocket Sand
--- Deals dark damage in a fan-shaped area. Additional effect: Blindness.
+-- Trust: Chacharoon
+-- Description: Deals earth damage. Additional effect: Blindness.
 -----------------------------------
 require('scripts/globals/mobskills')
 -----------------------------------
@@ -13,22 +14,26 @@ end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
-
-    params.baseDamage     = mob:getMainLvl() + 2
-    params.fTP            = { 2.0, 2.0, 2.0 }
-    params.element        = xi.element.DARK
-    params.attackType     = xi.attackType.MAGICAL
-    params.damageType     = xi.damageType.DARK
-    params.shadowBehavior = xi.mobskills.shadowBehavior.IGNORE_SHADOWS
+    params.mobHPMultiplier = 1
+    params.includemab      = true
+    params.element         = xi.element.EARTH
+    params.damageType      = xi.damageType.EARTH
+    params.attackType      = xi.attackType.MAGICAL
+    params.shadowBehavior  = xi.mobskills.shadowBehavior.IGNORE_SHADOWS
+    params.fTP             = { 1.5, 1.5, 1.5 }
 
     local info = xi.mobskills.mobMagicalMove(mob, target, skill, action, params)
 
     if xi.mobskills.processDamage(mob, target, skill, action, info) then
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)
-        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.BLINDNESS, 20, 0, 60)
+
+        if info.damage > 0 then
+            xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.BLINDNESS, 30, 0, 120)
+        end
     end
 
     return info.damage
 end
 
 return mobskillObject
+

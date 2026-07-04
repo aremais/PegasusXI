@@ -13,13 +13,17 @@ spellObject.onSpellCast = function(caster, target, spell)
 end
 
 spellObject.onMobSpawn = function(mob)
+    -- Source notes: Treasure Hunter I, Gilfinder I, Despoil, Wasp Sting, Dancing Edge, King Cobra Clamp.
+    mob:addMod(xi.mod.TREASURE_HUNTER, 1)
+    mob:addMod(xi.mod.GILFINDER, 1)
+
     xi.trust.teamworkMessage(mob, {
         [xi.magic.spell.ROMAA_MIHGO] = xi.trust.messageOffset.TEAMWORK_1,
     })
 
     mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.DESPOIL })
 
-    mob:setTrustTPSkillSettings(ai.tp.OPENER, ai.s.HIGHEST)
+    mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.HIGHEST)
 end
 
 spellObject.onMobDespawn = function(mob)

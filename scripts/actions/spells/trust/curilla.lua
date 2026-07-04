@@ -67,7 +67,12 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.FLASH }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLASH      })
     mob:addGambit(ai.t.PARTY,  { ai.c.HPP_LT,     75              }, { ai.r.MA, ai.s.HIGHEST,  xi.magic.spellFamily.CURE })
 
-    mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.RANDOM)
+    -- Curilla uses TP without attempting to skillchain.
+    -- Explicit level gates prevent higher WS from being selected too early.
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 60 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 40 }) -- Vorpal Blade
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 50 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 41 }) -- Swift Blade
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 25 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 37 }) -- Seraph Blade
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE,  5 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 34 }) -- Red Lotus Blade
 end
 
 spellObject.onMobDespawn = function(mob)

@@ -4,6 +4,15 @@
 ---@type TSpellTrust
 local spellObject = {}
 
+-- Retail/wiki-confirmed notes:
+-- Chacharoon is a Qiqirn THF/RNG-style melee Trust.
+-- He has no spells, has Triple Attack, low delay/low base damage, occasionally uses ranged attacks, and uses:
+-- Pocket Sand, Tripe Gripe, and Sharp Eye.
+--
+-- Source-limited notes:
+-- - Exact ranged attack rate and exact TP move formulas, powers, and durations are conservative here.
+-- - Branch-safe Trust gambits are used for TP move selection.
+
 spellObject.onMagicCastingCheck = function(caster, target, spell)
     return xi.trust.canCast(caster, spell)
 end
@@ -15,51 +24,19 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    -----------------------------------
-    -- Retail-inspired passive behavior
-    -- Chacharoon is a fast, low-damage THF/RNG-style Qiqirn.
-    -----------------------------------
+    -- BG notes HP-10%, MP-10%.
     mob:addMod(xi.mod.HPP, -10)
     mob:addMod(xi.mod.MPP, -10)
+
+    -- Source-noted Triple Attack.
     mob:addMod(xi.mod.TRIPLE_ATTACK, 10)
-    mob:addMod(xi.mod.ATT, -10)
 
-    -----------------------------------
-    -- Ranged attack behavior
-    -- Retail notes describe occasional ranged attacks.
-    -----------------------------------
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.RANDOM, 25 },
-        { ai.r.RATTACK, 0, 0 },
-        30
-    )
-
-    -----------------------------------
-    -- Chacharoon unique TP moves
-    -----------------------------------
-    local pocketSand = 3440
-    local tripeGripe = 3441
-    local sharpEye   = 3442
-
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.TP_GTE, 1000 },
-        { ai.r.MS, ai.s.SPECIFIC, pocketSand },
-        30
-    )
-
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.TP_GTE, 1250 },
-        { ai.r.MS, ai.s.SPECIFIC, tripeGripe },
-        45
-    )
-
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.TP_GTE, 1500 },
-        { ai.r.MS, ai.s.SPECIFIC, sharpEye },
-        45
-    )
-
-    mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.RANDOM)
+    -- Chacharoon uses TP at 1000 and is not documented as a deliberate skillchain partner.
+    -- These are Trust-specific mobskill rows assigned to TRUST_Chacharoon skill list 1078.
+    -- Use branch-safe WS gambits for Chacharoon's Trust-specific TP moves.
+    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.WS, ai.s.SPECIFIC, 3440 }, 60) -- Pocket Sand
+    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.WS, ai.s.SPECIFIC, 3441 }, 60) -- Tripe Gripe
+    mob:addGambit(ai.t.TARGET, { ai.c.TP_GTE, 1000 }, { ai.r.WS, ai.s.SPECIFIC, 3442 }, 60) -- Sharp Eye
 end
 
 spellObject.onMobDespawn = function(mob)

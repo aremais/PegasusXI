@@ -1,10 +1,10 @@
 -----------------------------------
--- Grape Shot
--- Family: Humanoid (Lion)
--- Description: Conal physical damage. Additional Effect: Stun
--- Skillchain Properties: Reverberation/Transfixion
+-- Grapeshot
+-- Lion Trust TP move. Conal damage + Stun.
 -----------------------------------
----@type TMobSkill
+require("scripts/globals/mobskills")
+-----------------------------------
+
 local mobskillObject = {}
 
 mobskillObject.onMobSkillCheck = function(target, mob, skill)
@@ -13,19 +13,16 @@ end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
-
-    params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 1
-    params.fTP            = { 0.3, 0.3, 0.3 } -- TODO: Capture fTPs
+    params.fTP            = { 1.0, 1.0, 1.0 }
     params.attackType     = xi.attackType.PHYSICAL
     params.damageType     = xi.damageType.PIERCING
-    params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1 -- TODO: Capture shadowBehavior
+    params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 
     if xi.mobskills.processDamage(mob, target, skill, action, info) then
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)
-
         xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.STUN, 1, 0, 10)
     end
 

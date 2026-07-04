@@ -21,6 +21,10 @@ spellObject.onMobSpawn = function(mob)
         [xi.magic.spell.PRISHE_II] = xi.trust.messageOffset.TEAMWORK_5,
     })
 
+    -- Source notes: HP-10%, MP+15%. Job order sources conflict, so pool job order is held.
+    mob:addMod(xi.mod.HPP, -10)
+    mob:addMod(xi.mod.MPP, 15)
+
     mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 75 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.CURE })
     -- TODO: Should only use Curaga when *3* or more party members are below 75%
     -- Setting the Curaga threshold a bit lower here to prevent a priority conflict with regular Cure gambit, above.

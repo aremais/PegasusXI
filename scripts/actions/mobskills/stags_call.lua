@@ -1,34 +1,25 @@
 -----------------------------------
 -- Stag's Call
--- Trust: Excenmille (S)
--- AoE party buff: Haste, Attack Boost, Magic Attack Boost
+-- Excenmille (S) Trust TP move.
+-- Source notes: AoE party buff with Haste, Attack Boost, and Magic Attack Boost.
+-- AoE/party targeting is controlled by mob_skills.sql.
 -----------------------------------
----@type TMobSkill
+require("scripts/globals/mobskills")
+-----------------------------------
+
 local mobskillObject = {}
 
 mobskillObject.onMobSkillCheck = function(target, mob, skill)
+    mob:messageBasic(xi.msg.basic.READIES_WS, 0, skill:getID())
     return 0
 end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
-    local duration = 180
-    local partyMembers = mob:getParty()
+    target:addStatusEffect(xi.effect.HASTE, { power = 1500, duration = 180, tick = 0, origin = mob })
+    target:addStatusEffect(xi.effect.ATTACK_BOOST, { power = 15, duration = 180, tick = 0, origin = mob })
+    target:addStatusEffect(xi.effect.MAGIC_ATK_BOOST, { power = 15, duration = 180, tick = 0, origin = mob })
 
-    if partyMembers then
-        for _, member in ipairs(partyMembers) do
-            if
-                mob:checkDistance(member) <= 6 and
-                member:isAlive()
-            then
-                member:addStatusEffect(xi.effect.HASTE, { power = 1500, duration = duration, origin = mob })
-                member:addStatusEffect(xi.effect.ATTACK_BOOST, { power = 15, duration = duration, origin = mob })
-                member:addStatusEffect(xi.effect.MAGIC_ATK_BOOST, { power = 15, duration = duration, origin = mob })
-            end
-        end
-    end
-
-    skill:setMsg(xi.msg.basic.USES)
-
+    skill:setMsg(xi.msg.basic.SKILL_GAIN_EFFECT)
     return xi.effect.HASTE
 end
 

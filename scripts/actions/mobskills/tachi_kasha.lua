@@ -16,7 +16,6 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     params.baseDamage       = mob:getWeaponDmg()
     params.numHits          = 1
     params.fTP              = { 1.56, 1.88, 2.5 }
-    -- params.str_wSC       = 0.75 -- TODO: Capture if mobskill weaponskills have wSC.
     params.attackMultiplier = { 1.5, 1.5, 1.5 }
     params.attackType       = xi.attackType.PHYSICAL
     params.damageType       = xi.damageType.SLASHING

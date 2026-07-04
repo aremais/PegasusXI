@@ -1,7 +1,8 @@
 -----------------------------------
 -- Trust: Lhu Mhakaracca
 -----------------------------------
----@type TSpellTrust
+require("scripts/globals/trust")
+-----------------------------------
 local spellObject = {}
 
 spellObject.onMagicCastingCheck = function(caster, target, spell)
@@ -15,22 +16,13 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    local lvl = mob:getMainLvl()
+    -- Source target: BST/WAR axe Trust.
+    mob:addMod(xi.mod.DOUBLE_ATTACK, 10)
 
-    -- Lhu Mhakaracca: BST/WAR.
-    if lvl >= 75 then
-        mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.FERAL_HOWL })
-    end
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 75 }, { ai.c.HPP_LT, 20 } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.FERAL_HOWL }, 60)
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 50 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 68 }, 15) -- Spinning Axe
 
-    if lvl >= 15 then
-        mob:addGambit(ai.t.SELF,   { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK })
-    end
-
-    if lvl >= 45 then
-        mob:addGambit(ai.t.SELF,   { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.AGGRESSOR })
-    end
-
-    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.RANDOM, 3000)
+    mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.SPECIFIC, 68, 1000)
 end
 
 spellObject.onMobDespawn = function(mob)

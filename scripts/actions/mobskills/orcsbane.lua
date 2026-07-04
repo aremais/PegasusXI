@@ -1,21 +1,23 @@
 -----------------------------------
 -- Orcsbane
--- Trust: Excenmille (S)
--- AoE physical damage
+-- Excenmille (S) Trust TP move.
+-- Conservative physical damage implementation.
 -----------------------------------
----@type TMobSkill
+require("scripts/globals/mobskills")
+-----------------------------------
+
 local mobskillObject = {}
 
 mobskillObject.onMobSkillCheck = function(target, mob, skill)
+    mob:messageBasic(xi.msg.basic.READIES_WS, 0, skill:getID())
     return 0
 end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
-
     params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 1
-    params.fTP            = { 1.0, 1.5, 2.0 }
+    params.fTP            = { 2.75, 2.75, 2.75 }
     params.attackType     = xi.attackType.PHYSICAL
     params.damageType     = xi.damageType.SLASHING
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1

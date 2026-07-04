@@ -15,32 +15,19 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    local lvl = mob:getMainLvl()
+    -- Ark Angel MR is a BST/THF melee Trust with HP+20% and TH I.
     mob:addMod(xi.mod.HPP, 20)
+    mob:addMod(xi.mod.TREASURE_HUNTER, 1)
 
-    if lvl >= 1 then
-        mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.CHARM })
-    end
+    -- THF subjob tools. Retail behavior attempts positional Sneak/Trick
+    -- Attack WS usage, but this is approximated with safe gambits because
+    -- Trust Lua does not have a clean behind-target/behind-master selector.
+    mob:addGambit(ai.t.SELF, { ai.c.LVL_GTE, 30 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SNEAK_ATTACK })
+    mob:addGambit(ai.t.SELF, { ai.c.LVL_GTE, 60 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.TRICK_ATTACK })
 
-    if lvl >= 23 then
-        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.CALL_BEAST })
-    end
-
-    if lvl >= 25 then
-        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.READY })
-        mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SIC })
-    end
-
-    if lvl >= 30 then
-        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SNEAK_ATTACK })
-    end
-
-    if lvl >= 60 then
-        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.TRICK_ATTACK })
-    end
-
-    -- Uses existing DB skill list 1109: Rampage, Calamity, Havoc Spiral, Cloudsplitter.
-    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.RANDOM, 1500)
+    -- AAMR holds TP for WS opportunities and does not intentionally skillchain.
+    -- Prefer higher TP/highest WS selection rather than closer logic.
+    mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.HIGHEST, 3000)
 end
 
 spellObject.onMobDespawn = function(mob)

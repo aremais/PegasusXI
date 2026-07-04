@@ -22,11 +22,11 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     params.shadowBehavior = xi.mobskills.shadowBehavior.IGNORE_SHADOWS
 
     if mob:getPool() == xi.mobPool.BUGBOY then
-        params.fTP = 7.0
+        params.fTP = { 7.0, 7.0, 7.0 }
     end
 
     if mob:getPool() == xi.mobPool.BUGBEAR_MATMAN then
-        params.fTP = 10.0
+        params.fTP = { 10.0, 10.0, 10.0 }
     end
 
     local info = xi.mobskills.mobMagicalMove(mob, target, skill, action, params)

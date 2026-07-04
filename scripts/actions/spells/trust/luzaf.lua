@@ -1,7 +1,8 @@
 -----------------------------------
 -- Trust: Luzaf
 -----------------------------------
----@type TSpellTrust
+require("scripts/globals/trust")
+-----------------------------------
 local spellObject = {}
 
 spellObject.onMagicCastingCheck = function(caster, target, spell)
@@ -15,22 +16,20 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    local lvl = mob:getMainLvl()
+    -- Source target: COR/NIN ranged Trust. Does not use Phantom Roll.
+    mob:addMod(xi.mod.RACC, 50)
+    mob:addMod(xi.mod.RATT, 25)
+    mob:addMod(xi.mod.STORETP, 15)
+    mob:addMod(xi.mod.TRIPLE_SHOT_RATE, 10)
 
-    -- Luzaf: COR/NIN attacker.
-    -- Retail/wiki-confirmed abilities: Quick Draw, Triple Shot.
-    if lvl >= 40 then
-        mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.QUICK_DRAW })
-    end
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 40 }, { ai.c.TP_GTE, 1000 } }, { ai.r.MS, ai.s.SPECIFIC, 3252 }, 30) -- Bisection
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 60 }, { ai.c.TP_GTE, 1000 } }, { ai.r.MS, ai.s.SPECIFIC, 3253 }, 30) -- Leaden Salute
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 70 }, { ai.c.TP_GTE, 1000 } }, { ai.r.MS, ai.s.SPECIFIC, 3254 }, 30) -- Akimbo Shot
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 75 }, { ai.c.TP_GTE, 1000 } }, { ai.r.MS, ai.s.SPECIFIC, 3255 }, 30) -- Grisly Horizon
 
-    if lvl >= 87 then
-        mob:addGambit(ai.t.SELF,   { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.TRIPLE_SHOT })
-    end
+    mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.RATTACK, 0, 0 }, 10)
 
-    -- Uses ranged attacks frequently and does not use Phantom Roll.
-    mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.RATTACK, 0, 0 })
-
-    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.RANDOM, 1500)
+    mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.RANDOM, 1000)
 end
 
 spellObject.onMobDespawn = function(mob)

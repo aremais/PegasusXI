@@ -7,7 +7,6 @@
 local mobskillObject = {}
 
 mobskillObject.onMobSkillCheck = function(target, mob, skill)
-    -- TODO: Split this into a file for each mob family
 
     -- Handle Ghrah family humanoid form.
     -- If not in Paladin form, then ignore.
@@ -39,7 +38,6 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 4
     params.fTP            = { 1.0, 1.0, 1.0 }
-    -- params.str_wSC        = 0.3 -- TODO: Capture if mobskill weaponskills have wSC.
     params.canCrit        = true
     params.criticalChance = { 0.1, 0.3, 0.5 }
     params.attackType     = xi.attackType.PHYSICAL

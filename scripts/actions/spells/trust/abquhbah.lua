@@ -14,20 +14,9 @@ end
 
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
-
-    local lvl = mob:getMainLvl()
-
-    if lvl >= 15 then
-        mob:addGambit(ai.t.SELF, { ai.c.NOT_SC_AVAILABLE, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK })
-    end
-
-    if lvl >= 35 then
-        mob:addGambit(ai.t.SELF, { ai.c.NOT_SC_AVAILABLE, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.WARCRY })
-    end
-
-    if lvl >= 77 then
-        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.RESTRAINT })
-    end
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 15 }, { ai.c.NOT_SC_AVAILABLE, 0 } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK })
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 35 }, { ai.c.NOT_SC_AVAILABLE, 0 } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.WARCRY })
+    mob:addGambit(ai.t.SELF, { ai.c.LVL_GTE, 77 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.RESTRAINT })
 
     mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.RANDOM, 1500)
 end
