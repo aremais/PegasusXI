@@ -30,7 +30,9 @@ local function getArcielaPartyTargets(mob)
     table.insert(fallback, mob)
 
     return fallback
-        mobskillObject.onMobSkillCheck = function(target, mob, skill)
+end
+
+mobskillObject.onMobSkillCheck = function(target, mob, skill)
     return 0
 end
 
