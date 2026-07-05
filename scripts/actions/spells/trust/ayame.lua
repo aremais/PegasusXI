@@ -5,7 +5,7 @@
 local spellObject = {}
 
 spellObject.onMagicCastingCheck = function(caster, target, spell)
-    return xi.trust.canCast(caster, spell, xi.magic.spell.AYAME_UC)
+    return xi.trust.canCast(caster, spell, xi.magic.spell.AYAME)
 end
 
 spellObject.onSpellCast = function(caster, target, spell)
@@ -18,19 +18,11 @@ spellObject.onMobSpawn = function(mob)
         [xi.magic.spell.GILGAMESH] = xi.trust.messageOffset.TEAMWORK_2,
     })
 
-    local lvl = mob:getMainLvl()
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 25 }, { ai.c.NOT_STATUS, xi.effect.HASSO } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.HASSO })
 
-    if lvl >= 15 then
-        mob:addGambit(ai.t.SELF, { ai.c.HAS_TOP_ENMITY, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.THIRD_EYE })
-    end
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 15 }, { ai.c.HAS_TOP_ENMITY, 0 } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.THIRD_EYE })
 
-    if lvl >= 25 then
-        mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.HASSO }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.HASSO })
-    end
-
-    if lvl >= 30 then
-        mob:addGambit(ai.t.SELF, { ai.c.TP_LT, 1000 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.MEDITATE })
-    end
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 30 }, { ai.c.TP_LT, 1000 } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.MEDITATE })
 
     mob:setTrustTPSkillSettings(ai.tp.OPENER, ai.s.SPECIAL_AYAME)
 end

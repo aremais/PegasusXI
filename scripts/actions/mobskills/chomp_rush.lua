@@ -25,18 +25,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     if xi.mobskills.processDamage(mob, target, skill, action, info) then
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)
 
-        local tp = skill:getTP()
-        local duration
-
-        if tp >= 2000 then
-            duration = 120 -- 2 minutes
-        elseif tp >= 1000 then
-            duration = 90  -- 1.5 minutes
-        else
-            duration = 60  -- 1 minute
-        end
-
-        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.SLOW, 1250, 0, duration) -- 25% Slow
+        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.SLOW, 2500, 0, 180)
     end
 
     return info.damage

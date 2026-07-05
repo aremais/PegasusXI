@@ -41,6 +41,9 @@ spellObject.onMobSpawn = function(mob)
 
     mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.LONG_RANGE)
 
+    -- Oisoya's mobskill script requires this local var. Exact retail five-shot gating is held.
+    mob:setLocalVar('[Tenzen]ShouldOisoya', 1)
+
     mob:setTrustTPSkillSettings(ai.tp.OPENER, ai.s.HIGHEST)
 end
 

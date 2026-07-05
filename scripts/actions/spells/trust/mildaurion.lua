@@ -32,6 +32,8 @@ spellObject.onMobSpawn = function(mob)
     end)
 
     mob:addMod(xi.mod.MPP, 100)
+    mob:addMod(xi.mod.DOUBLE_ATTACK, 10)
+    mob:addMod(xi.mod.UNDEAD_KILLER, 10)
 
     mob:setTrustTPSkillSettings(ai.tp.OPENER, ai.s.RANDOM)
 end

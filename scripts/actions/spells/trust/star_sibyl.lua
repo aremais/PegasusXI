@@ -23,6 +23,12 @@ spellObject.onMobSpawn = function(mob)
 
     mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.NON_COMBAT)
 
+    -- Star Sibyl is an incorporeal Trust and should be unaffected by attacks, skills, and magic.
+    mob:setMod(xi.mod.UDMGPHYS, -10000)
+    mob:setMod(xi.mod.UDMGRANGE, -10000)
+    mob:setMod(xi.mod.UDMGMAGIC, -10000)
+    mob:setMod(xi.mod.UDMGBREATH, -10000)
+
     mob:addMod(xi.mod.AURA_SIZE, 600) -- Trust have a 12 yalm aura 6 base + 6 from mod
 
     local effectParams =

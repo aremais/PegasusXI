@@ -1,12 +1,7 @@
 -----------------------------------
 -- Hoof Volley
 -- Family: Hippogryph
--- Description: Deals physical damage to a single target. Damage varies with TP.
--- Type: Physical
--- Utsusemi/Blink absorb: 1 shadow
--- Range: Single target
--- Skillchain: Fragmentation
--- TODO: Verify fTP from retail captures.
+-- Description: Deals critical damage to a single target. Additional Effect: Hate Reset, Knockback
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -20,7 +15,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
 
     params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 1
-    params.fTP            = { 3.0, 4.0, 5.0 } -- TODO: Verify from retail captures
+    params.fTP            = { 4.0, 4.0, 4.0 }
     params.attackType     = xi.attackType.PHYSICAL
     params.damageType     = xi.damageType.BLUNT
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1
@@ -29,6 +24,10 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
 
     if xi.mobskills.processDamage(mob, target, skill, action, info) then
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)
+
+        -- TODO: Capture hate reset type (Enmity wipe vs enmity turned off)
+        -- See Antica skill "Sand Trap" for reference
+        mob:resetEnmity(target)
     end
 
     return info.damage

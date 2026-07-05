@@ -1,13 +1,7 @@
 -----------------------------------
 -- Whirl Claws
 -- Family: Rabbit
--- Description: Deals physical damage to enemies within range.
---              Area of effect varies with TP (controlled via SQL/skill data).
--- Type: Physical
--- Utsusemi/Blink absorb: 3 shadows
--- Range: AoE (range varies with TP)
--- Skillchain: Impaction
--- TODO: Verify fTP from retail captures.
+-- Description: Deals damage in an area of effect.
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -21,7 +15,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
 
     params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 1
-    params.fTP            = { 2.0, 2.0, 2.0 } -- Damage does not vary with TP per BGwiki
+    params.fTP            = { 2.0, 2.0, 2.0 }
     params.attackType     = xi.attackType.PHYSICAL
     params.damageType     = xi.damageType.SLASHING
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_3

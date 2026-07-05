@@ -1,7 +1,8 @@
 -----------------------------------
 -- Twirling Dervish
 -- Family: Humanoid (Adelheid Sturm)
--- Description: Deals damage in an area of effect.
+-- Description: Deals magic damage in an area of effect.
+-- Used by Adelheid (Trust)
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -13,15 +14,14 @@ end
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
-    -- TODO: Magical or physical?
     params.baseDamage     = mob:getWeaponDmg()
-    params.numHits        = 1
     params.fTP            = { 6.0, 6.0, 6.0 } -- TODO: Capture fTPs
-    params.attackType     = xi.attackType.PHYSICAL
-    params.damageType     = xi.damageType.BLUNT
-    params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_3 -- TODO: Capture shadowBehavior
+    params.element        = xi.element.NONE   -- TODO: Capture element
+    params.attackType     = xi.attackType.MAGICAL
+    params.damageType     = xi.damageType.NONE
+    params.shadowBehavior = xi.mobskills.shadowBehavior.IGNORE_SHADOWS
 
-    local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
+    local info = xi.mobskills.mobMagicalMove(mob, target, skill, action, params)
 
     if xi.mobskills.processDamage(mob, target, skill, action, info) then
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)
