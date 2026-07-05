@@ -18,6 +18,7 @@ spellObject.onMobSpawn = function(mob)
     if mob:getMainLvl() >= 50 then
         mob:addMod(xi.mod.DOUBLE_ATTACK, 10)
     end
+
     -- LAX_FLAVIRIA_UC_RETAIL_BLOCK_START
     -- Retail target: DRG/WAR melee Trust. No spells. Uses WS at 1000 TP and does not try to skillchain.
     -- Super Jump is only used when Flaviria has top enmity.

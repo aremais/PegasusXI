@@ -30,6 +30,7 @@ spellObject.onMobSpawn = function(mob)
         mob:addGambit(targetType, { ai.c.NOT_STATUS, xi.effect.PROTECT }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.PROTECT })
         mob:addGambit(targetType, { ai.c.NOT_STATUS, xi.effect.SHELL }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.SHELL })
     end
+
     mob:addGambit(ai.t.PARTY, { ai.c.NOT_STATUS, xi.effect.HASTE }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.HASTE })
     -- -na Spells
     mob:addGambit(ai.t.PARTY, { ai.l.OR(
@@ -83,7 +84,6 @@ spellObject.onMobSpawn = function(mob)
     else
         mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.HIGHEST, 3000)
     end
-
 end
 
 spellObject.onMobDespawn = function(mob)

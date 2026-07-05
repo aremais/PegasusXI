@@ -20,6 +20,7 @@ spellObject.onMobSpawn = function(mob)
             mobArg:setLocalVar('MorimarVehementResolution', 0)
         end
     end)
+
     -- Retail/source notes: possesses HP+10%.
     mob:addMod(xi.mod.HPP, 10)
 

@@ -67,6 +67,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
             end
         end)
     end
+
     mob:timer(100, function(mobArg)
         local party = nil
         local master = mobArg:getMaster()
