@@ -21,7 +21,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     mob:addMP(mp)
 
     if mp > 0 then
-        mob:messageBasic(xi.msg.basic.RECOVERS_MP_SECONDARY, 0, mp)
+        mob:messageBasic(xi.msg.basic.RECOVERS_MP, 0, mp)
     end
 
     skill:setMsg(xi.msg.basic.SKILL_RECOVERS_HP)
