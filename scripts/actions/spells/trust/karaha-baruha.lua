@@ -83,6 +83,7 @@ spellObject.onMobSpawn = function(mob)
     else
         mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.HIGHEST, 3000)
     end
+
 end
 
 spellObject.onMobDespawn = function(mob)
