@@ -5,7 +5,7 @@
 local spellObject = {}
 
 local function trustMessage(mob, offset)
-    local messageOffset = xi.trust.messageOffset or xi.trust.message_offset
+    local messageOffset = xi.trust.messageOffset
     xi.trust.message(mob, messageOffset[offset])
 end
 
