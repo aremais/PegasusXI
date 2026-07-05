@@ -22,7 +22,7 @@ local function hasValidConditions(conditions)
         return false
     end
 
-    if type(conditions[1]) == "table" then
+    if type(conditions[1]) == 'table' then
         for _, condition in ipairs(conditions) do
             if condition[1] == nil or condition[2] == nil then
                 return false
@@ -81,13 +81,17 @@ local function addEsunaGambits(mob)
     addGambitIf(mob, ai.t.SELF, { { ai.c.STATUS, xi.effect.PETRIFICATION }, { ai.c.STATUS, xi.effect.AFFLATUS_MISERY }, { ai.c.LVL_GTE, 61 } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ESUNA })
     addGambitIf(mob, ai.t.SELF, { { ai.c.STATUS, xi.effect.CURSE_I }, { ai.c.STATUS, xi.effect.AFFLATUS_MISERY }, { ai.c.LVL_GTE, 61 } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ESUNA })
 
-    if ai.c.STATUS_FLAG ~= nil and xi.effectFlag ~= nil and xi.effectFlag.ERASABLE ~= nil then
+    if
+        ai.c.STATUS_FLAG ~= nil and
+        xi.effectFlag ~= nil and
+        xi.effectFlag.ERASABLE ~= nil
+    then
         addGambitIf(mob, ai.t.SELF, { { ai.c.STATUS_FLAG, xi.effectFlag.ERASABLE }, { ai.c.STATUS, xi.effect.AFFLATUS_MISERY }, { ai.c.LVL_GTE, 61 } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ESUNA })
     end
 end
 
 spellObject.onMobSpawn = function(mob)
-    trustMessage(mob, "SPAWN")
+    trustMessage(mob, 'SPAWN')
 
     -- Retail notes:
     -- WHM/PLD. Cure I-VI, -na, Erase, Esuna, Protect/ra, Shell/ra, Auspice, Haste.
@@ -130,7 +134,11 @@ spellObject.onMobSpawn = function(mob)
     addStatusRemovalGambits(mob, ai.t.SELF)
     addStatusRemovalGambits(mob, ai.t.PARTY)
 
-    if ai.c.STATUS_FLAG ~= nil and xi.effectFlag ~= nil and xi.effectFlag.ERASABLE ~= nil then
+    if
+        ai.c.STATUS_FLAG ~= nil and
+        xi.effectFlag ~= nil and
+        xi.effectFlag.ERASABLE ~= nil
+    then
         addGambitIf(mob, ai.t.MASTER, { ai.c.STATUS_FLAG, xi.effectFlag.ERASABLE }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ERASE })
         addGambitIf(mob, ai.t.SELF, { ai.c.STATUS_FLAG, xi.effectFlag.ERASABLE }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ERASE })
         addGambitIf(mob, ai.t.PARTY, { ai.c.STATUS_FLAG, xi.effectFlag.ERASABLE }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ERASE })
@@ -161,11 +169,11 @@ spellObject.onMobSpawn = function(mob)
 end
 
 spellObject.onMobDespawn = function(mob)
-    trustMessage(mob, "DESPAWN")
+    trustMessage(mob, 'DESPAWN')
 end
 
 spellObject.onMobDeath = function(mob)
-    trustMessage(mob, "DEATH")
+    trustMessage(mob, 'DEATH')
 end
 
 return spellObject
