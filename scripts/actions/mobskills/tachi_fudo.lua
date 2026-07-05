@@ -7,22 +7,20 @@
 local mobskillObject = {}
 
 mobskillObject.onMobSkillCheck = function(target, mob, skill)
-    mob:messageBasic(xi.msg.basic.READIES_WS, 0, 2281 + 256)
     return 0
 end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
-    params.baseDamage     = mob:getWeaponDmg()
-    params.numHits        = 1
-    params.ftp1000        = 3.75
-    params.ftp2000        = 5.75
-    params.ftp3000        = 8.0
-    params.str_wsc        = 0.8
-    params.attackType     = xi.attackType.PHYSICAL
-    params.damageType     = xi.damageType.SLASHING
-    params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1
+    params.baseDamage       = mob:getWeaponDmg()
+    params.numHits          = 1
+    params.fTP              = { 3.75, 4.75, 5.75 }
+    -- params.str_wSC       = 0.6 -- TODO: Capture if mobskill weaponskills have wSC.
+    params.attackMultiplier = { 2.0, 2.0, 2.0 }
+    params.attackType       = xi.attackType.PHYSICAL
+    params.damageType       = xi.damageType.SLASHING
+    params.shadowBehavior   = xi.mobskills.shadowBehavior.NUMSHADOWS_1
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 

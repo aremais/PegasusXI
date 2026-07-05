@@ -1,27 +1,28 @@
 -----------------------------------
 -- Critical Mass
--- Family: Cid Trust
--- Description: Deals single-target Fire damage.
--- Skillchain: Fusion / Impaction
+-- Trust: Cid
+-- Description: Cid-specific club weaponskill. Deals blunt physical damage.
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
 
 mobskillObject.onMobSkillCheck = function(target, mob, skill)
+    mob:messageBasic(xi.msg.basic.READIES_WS, 0, skill:getID())
     return 0
 end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
-    params.baseDamage     = mob:getMainLvl() + mob:getWeaponDmg()
-    params.fTP            = { 3.0, 3.0, 3.0 }
-    params.element        = xi.element.FIRE
-    params.attackType     = xi.attackType.MAGICAL
-    params.damageType     = xi.damageType.FIRE
+    -- Source confirms the move; exact retail formula is not currently sourced.
+    params.baseDamage     = mob:getWeaponDmg()
+    params.numHits        = 1
+    params.fTP            = { 2.0, 2.0, 2.0 }
+    params.attackType     = xi.attackType.PHYSICAL
+    params.damageType     = xi.damageType.BLUNT
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1
 
-    local info = xi.mobskills.mobMagicalMove(mob, target, skill, action, params)
+    local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 
     if xi.mobskills.processDamage(mob, target, skill, action, info) then
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)

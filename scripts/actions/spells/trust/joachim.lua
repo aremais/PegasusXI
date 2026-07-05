@@ -20,66 +20,96 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    -----------------------------------
-    -- STATUS REMOVAL (highest priority)
-    -----------------------------------
-    mob:addGambit(ai.t.PARTY, { ai.c.STATUS, xi.effect.POISON },        { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.POISONA })
-    mob:addGambit(ai.t.PARTY, { ai.c.STATUS, xi.effect.PARALYSIS },     { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.PARALYNA })
-    mob:addGambit(ai.t.PARTY, { ai.c.STATUS, xi.effect.BLINDNESS },     { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.BLINDNA })
-    mob:addGambit(ai.t.PARTY, { ai.c.STATUS, xi.effect.SILENCE },       { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.SILENA })
-    mob:addGambit(ai.t.PARTY, { ai.c.STATUS, xi.effect.PETRIFICATION }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.STONA })
-    mob:addGambit(ai.t.PARTY, { ai.c.STATUS, xi.effect.DISEASE },       { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.VIRUNA })
-    mob:addGambit(ai.t.PARTY, { ai.c.STATUS, xi.effect.CURSE_I },       { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.CURSNA })
+    -- Joachim: BRD/WHM support Trust.
+    -- Retail-safe approximation for this branch:
+    -- * no melee / no WS
+    -- * no unsupported ranged-attack gambit
+    -- * -na / Erase / Cure support before songs
+    -- * party song support should not depend on possibly-missing song effect enums
+    -- * at Lv68+, healthy/default support should include Victory March + Blade Madrigal
+    -- * Elegy is enemy support and should not starve party songs
 
-    -----------------------------------
-    -- HEALING (priority over songs)
-    -----------------------------------
+    local spellIds    = xi.magic.spell or {}
+    local spellFamily = xi.magic.spellFamily or {}
 
-    mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 33 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.CURE })
-    mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 66 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.CURE_II })
+    -- Numeric spell-family fallbacks are from spell_list.sql family IDs.
+    local familyCure     = spellFamily.CURE or 1
+    local familyPaeon    = spellFamily.ARMYS_PAEON or spellFamily.ARMY_PAEON or spellFamily.PAEON or 105
+    local familyBallad   = spellFamily.MAGES_BALLAD or spellFamily.MAGE_BALLAD or spellFamily.BALLAD or 106
+    local familyMinne    = spellFamily.KNIGHTS_MINNE or spellFamily.KNIGHT_MINNE or spellFamily.MINNE or 107
+    local familyMinuet   = spellFamily.VALOR_MINUET or spellFamily.MINUET or 108
+    local familyMadrigal = spellFamily.MADRIGAL or 109
+    local familyMarch    = spellFamily.MARCH or 113
+    local familyElegy    = spellFamily.ELEGY or 114
 
-    -----------------------------------
-    -- SONG PRIORITY SYSTEM
-    -----------------------------------
+    local erase = spellIds.ERASE or 143
 
-    -- Paeon x2 when Joachim HP < 90%
-    mob:addGambit(ai.t.SELF,
-        { ai.c.HPP_LT, 90 },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.ARMYS_PAEON }
-    )
+    local function addStatusRemoval(targetType, statusEffect, spellId)
+        if statusEffect ~= nil and spellId ~= nil then
+            mob:addGambit(targetType, { ai.c.STATUS, statusEffect }, { ai.r.MA, ai.s.SPECIFIC, spellId })
+        end
+    end
 
-    -- Ballad when MP < 75%
-    mob:addGambit(ai.t.SELF,
-        { ai.c.MPP_LT, 75 },
-        { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.MAGE_BALLAD }
-    )
+    -- Prefer NOT_STATUS when this branch exposes the song effect enum.
+    -- If the enum is missing, still add the song with a long cooldown instead of skipping it entirely.
+    local function addSongWithOptionalStatus(targetType, statusEffect, familyId, cooldown)
+        if familyId == nil then
+            return
+        end
 
-    -- March / madrigal: HIGHEST avoids two NOT_STATUS marches/madrigals where the second never fired.
-    mob:addGambit(ai.t.PARTY,
-        { ai.c.NOT_STATUS, xi.effect.MARCH },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.MARCH }
-    )
+        if statusEffect ~= nil then
+            mob:addGambit(targetType, { ai.c.NOT_STATUS, statusEffect }, { ai.r.MA, ai.s.HIGHEST, familyId }, cooldown)
+        else
+            mob:addGambit(targetType, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.HIGHEST, familyId }, cooldown)
+        end
+    end
 
-    mob:addGambit(ai.t.PARTY,
-        { ai.c.NOT_STATUS, xi.effect.MADRIGAL },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.MADRIGAL }
-    )
+    -- Status removal first.
+    addStatusRemoval(ai.t.PARTY, xi.effect.POISON,        spellIds.POISONA or 14)
+    addStatusRemoval(ai.t.PARTY, xi.effect.PARALYSIS,     spellIds.PARALYNA or 15)
+    addStatusRemoval(ai.t.PARTY, xi.effect.BLINDNESS,     spellIds.BLINDNA or 16)
+    addStatusRemoval(ai.t.PARTY, xi.effect.SILENCE,       spellIds.SILENA or 17)
+    addStatusRemoval(ai.t.PARTY, xi.effect.PETRIFICATION, spellIds.STONA or 18)
+    addStatusRemoval(ai.t.PARTY, xi.effect.DISEASE,       spellIds.VIRUNA or 19)
+    addStatusRemoval(ai.t.PARTY, xi.effect.CURSE_I or xi.effect.CURSE, spellIds.CURSNA or 20)
 
-    mob:addGambit(ai.t.PARTY,
-        { ai.c.NOT_STATUS, xi.effect.MINUET },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.VALOR_MINUET }
-    )
+    -- Erase-supported debuffs. Missing effect constants are skipped safely.
+    addStatusRemoval(ai.t.PARTY, xi.effect.SLOW,               erase)
+    addStatusRemoval(ai.t.PARTY, xi.effect.BIND,               erase)
+    addStatusRemoval(ai.t.PARTY, xi.effect.WEIGHT,             erase)
+    addStatusRemoval(ai.t.PARTY, xi.effect.ATTACK_DOWN,        erase)
+    addStatusRemoval(ai.t.PARTY, xi.effect.DEFENSE_DOWN,       erase)
+    addStatusRemoval(ai.t.PARTY, xi.effect.EVASION_DOWN,       erase)
+    addStatusRemoval(ai.t.PARTY, xi.effect.MAGIC_ATK_DOWN,     erase)
+    addStatusRemoval(ai.t.PARTY, xi.effect.MAGIC_DEF_DOWN,     erase)
+    addStatusRemoval(ai.t.PARTY, xi.effect.MAGIC_ACC_DOWN,     erase)
+    addStatusRemoval(ai.t.PARTY, xi.effect.MAGIC_EVASION_DOWN, erase)
 
-    mob:addGambit(ai.t.PARTY,
-        { ai.c.NOT_STATUS, xi.effect.MINNE },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.KNIGHTS_MINNE }
-    )
+    -- Cure support before songs.
+    mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 75 }, { ai.r.MA, ai.s.HIGHEST, familyCure })
 
-    -- Try and ranged attack every 60s
-    mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.RATTACK, 0, 0 }, 60)
+    -- Emergency/self-sustain songs.
+    -- Paeon remains highest conditional song priority when Joachim is hurt.
+    mob:addGambit(ai.t.SELF, { ai.c.HPP_LT, 90 }, { ai.r.MA, ai.s.HIGHEST, familyPaeon }, 125)
 
+    -- Core default support. These must be added even if xi.effect.MARCH/MADRIGAL are nil.
+    -- At Lv68 this should select Victory March and Blade Madrigal from spell list 323.
+    addSongWithOptionalStatus(ai.t.SELF, xi.effect.MARCH,    familyMarch,    125)
+    addSongWithOptionalStatus(ai.t.SELF, xi.effect.MADRIGAL, familyMadrigal, 125)
+
+    -- Ballad is valid when Joachim is very low on MP, but should not be the only maintained party song.
+    mob:addGambit(ai.t.SELF, { ai.c.MPP_LT, 40 }, { ai.r.MA, ai.s.HIGHEST, familyBallad }, 125)
+
+    -- Fallbacks for when other Bard support already covers March/Madrigal or when song slots allow.
+    addSongWithOptionalStatus(ai.t.SELF, xi.effect.MINUET, familyMinuet, 125)
+    addSongWithOptionalStatus(ai.t.SELF, xi.effect.MINNE,  familyMinne,  125)
+
+    -- Enemy support last so it does not compete ahead of party song setup.
+    addSongWithOptionalStatus(ai.t.TARGET, xi.effect.ELEGY, familyElegy, 60)
+
+    -- Joachim should not melee or weapon skill. His weak throwing attack is intentionally
+    -- omitted because this branch does not expose a verified safe ranged-attack gambit action.
     mob:setAutoAttackEnabled(false)
-
     mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.MID_RANGE)
 end
 

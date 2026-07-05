@@ -17,10 +17,8 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     params.numHits          = 2
     params.fTP              = { 2.5, 2.75, 3.0 }
     params.attackMultiplier = { 1.5, 1.5, 1.5 }
-    --params.str_wSC        = 0.2 -- TODO: Capture if mobskill weaponskills have wSC.
-    --params.vit_wSC        = 0.5 -- TODO: Capture if mobskill weaponskills have wSC.
     params.attackType       = xi.attackType.PHYSICAL
-    params.damageType       = xi.damageType.HTH
+    params.damageType       = xi.damageType.HAND_TO_HAND
     params.shadowBehavior   = xi.mobskills.shadowBehavior.NUMSHADOWS_2
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)

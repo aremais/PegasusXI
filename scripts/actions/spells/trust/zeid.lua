@@ -14,19 +14,23 @@ end
 
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
-    -- Wave 2 spell behavior: DRK interrupt and dark magic.
+
+    -- Source notes: Last Resort, Souleater, Power Slash, Freezebite,
+    -- Ground Strike, Abyssal Drain, Abyssal Strike. Casts Stun to interrupt
+    -- TP moves, Drain/Aspir when low HP/MP, Absorbs, and Endark.
     mob:addGambit(ai.t.TARGET, { ai.c.READYING_WS, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.STUN })
     mob:addGambit(ai.t.TARGET, { ai.c.READYING_MS, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.STUN })
     mob:addGambit(ai.t.TARGET, { ai.c.READYING_JA, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.STUN })
     mob:addGambit(ai.t.TARGET, { ai.c.CASTING_MA, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.STUN })
 
-    mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.STR_DOWN }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ABSORB_STR }, 60)
-    mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.DEX_DOWN }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ABSORB_DEX }, 60)
-    mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.VIT_DOWN }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ABSORB_VIT }, 60)
-    mob:addGambit(ai.t.SELF, { ai.c.HPP_LT, 75 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.DRAIN }, 60)
-    mob:addGambit(ai.t.SELF, { ai.c.MPP_LT, 50 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.ASPIR }, 60)
+    mob:addGambit(ai.t.SELF, { ai.c.HPP_LT, 50 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.DRAIN })
+    mob:addGambit(ai.t.SELF, { ai.c.MPP_LT, 50 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.ASPIR })
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 37 }, { ai.c.NOT_STATUS, xi.effect.ENDARK } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ENDARK })
 
-    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.RANDOM, 3000)
+    mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.LAST_RESORT })
+    mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SOULEATER })
+
+    mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.RANDOM, 1000)
 end
 
 spellObject.onMobDespawn = function(mob)

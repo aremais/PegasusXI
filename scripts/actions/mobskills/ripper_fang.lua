@@ -17,7 +17,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     params.numHits          = 1
     params.fTP              = { 1.5, 1.5, 1.5 }
     params.attackType       = xi.attackType.PHYSICAL
-    params.damageType       = xi.damageType.SLASHING
+    params.damageType       = xi.damageType.BLUNT
     params.shadowBehavior   = xi.mobskills.shadowBehavior.NUMSHADOWS_1
     params.attackMultiplier = { 1.3, 1.3, 1.3 }
 

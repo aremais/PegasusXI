@@ -1,7 +1,7 @@
 -----------------------------------
 -- Feast of Arrows
--- Family: Balamor
--- Description: Deals ranged AoE damage. Additional effect: Bind.
+-- Trust: Balamor
+-- Description: Delivers a ranged-style attack.
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -13,9 +13,9 @@ end
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
-    params.baseDamage     = mob:getMainLvl() + 2
+    params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 1
-    params.fTP            = { 2.00, 2.00, 2.00 }
+    params.fTP            = { 2.0, 2.0, 2.0 }
     params.attackType     = xi.attackType.RANGED
     params.damageType     = xi.damageType.PIERCING
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1
@@ -24,8 +24,6 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
 
     if xi.mobskills.processDamage(mob, target, skill, action, info) then
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)
-
-        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.BIND, 1, 0, 30)
     end
 
     return info.damage

@@ -7,7 +7,7 @@
 local mobskillObject = {}
 
 mobskillObject.onMobSkillCheck = function(target, mob, skill)
-    mob:messageBasic(xi.msg.basic.READIES_WS, 0, 166)
+    mob:messageBasic(xi.msg.basic.READIES_WS, 0, skill:getID())
     return 0
 end
 
@@ -17,7 +17,6 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     params.baseDamage       = mob:getWeaponDmg()
     params.numHits          = 1
     params.fTP              = { 1.0, 1.0, 1.0 }
-    -- params.str_wSC       = 0.5 -- TODO: Capture if mobskill weaponskills have wSC.
     params.canCrit          = true
     params.criticalChance   = { 1.0, 1.0, 1.0 }
     params.accuracyModifier = { -50, -50, -50 }

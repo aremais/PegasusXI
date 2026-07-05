@@ -15,6 +15,13 @@ end
 spellObject.onMobSpawn = function(mob)
     local psychoAnima  = 3539
 
+    -- Source notes: HP+10%, MP+10%, Counter, Guard.
+    -- Hysteroanima is held because safe high-tier AoE magic detection is not confirmed.
+    mob:addMod(xi.mod.HPP, 10)
+    mob:addMod(xi.mod.MPP, 10)
+    mob:addMod(xi.mod.COUNTER, 10)
+    mob:addMod(xi.mod.GUARD, 10)
+
     xi.trust.teamworkMessage(mob, {
         [xi.magic.spell.TENZEN_II   ] = xi.trust.messageOffset.TEAMWORK_1,
         [xi.magic.spell.NASHMEIRA_II] = xi.trust.messageOffset.TEAMWORK_2,

@@ -16,12 +16,12 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
 
     params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 4
-    params.fTP            = { 2.25, 2.25, 2.25 } -- TODO: Capture fTPs
+    params.fTP            = { 2.25, 2.25, 2.25 }
     params.attackType     = xi.attackType.PHYSICAL
-    params.damageType     = xi.damageType.HTH
+    params.damageType     = xi.damageType.HAND_TO_HAND
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_4
     params.canCrit        = true
-    params.criticalChance = { 0.10, 0.20, 0.25 } -- TODO: Capture crit rate
+    params.criticalChance = { 0.10, 0.20, 0.25 }
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 

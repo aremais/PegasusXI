@@ -20,9 +20,12 @@ spellObject.onMobSpawn = function(mob)
         [xi.magic.spell.KING_OF_HEARTS] = xi.trust.messageOffset.TEAMWORK_4
     })
 
-    mob:addGambit(ai.t.TARGET, { ai.c.MB_AVAILABLE, 0 }, { ai.r.MA, ai.s.MB_ELEMENT, xi.magic.spellFamily.NONE })
+    -- Retail behavior: Shantotto stops casting while she has hate.
+    -- Spell list 308 handles normal BLM level gates for elemental nukes I-V.
+    mob:addGambit(ai.t.TARGET, { { ai.c.NOT_HAS_TOP_ENMITY, 0 }, { ai.c.MB_AVAILABLE, 0 } }, { ai.r.MA, ai.s.MB_ELEMENT, xi.magic.spellFamily.NONE })
 
-    mob:addGambit(ai.t.TARGET, { ai.c.NOT_SC_AVAILABLE, 0 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.NONE }, 60)
+    -- Default to the highest available spell, with a faster caster cadence than the old 60s fallback.
+    mob:addGambit(ai.t.TARGET, { { ai.c.NOT_HAS_TOP_ENMITY, 0 }, { ai.c.NOT_SC_AVAILABLE, 0 } }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.NONE }, 10)
 
     local power = mob:getMainLvl() / 10
     mob:addMod(xi.mod.MATT, power)

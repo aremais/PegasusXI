@@ -28,9 +28,9 @@ spellObject.onMobSpawn = function(mob)
     mob:addMod(xi.mod.INSPIRATION_FAST_CAST, 50)
     mob:addMod(xi.mod.ENMITY, 15)
     mob:addMod(xi.mod.DMG, -500) -- Damage Taken -5%
+    mob:addMod(xi.mod.ABSORB_PHYSDMG_TO_MP, 5)
     mob:addMod(xi.mod.HPP, 10)
     mob:addMod(xi.mod.MPP, 10)
-    mob:addMod(xi.mod.ABSORB_PHYSDMG_TO_MP, 5)
 
     local lvl = mob:getMainLvl()
 

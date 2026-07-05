@@ -15,21 +15,14 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    local lvl = mob:getMainLvl()
+    -- Aldo is a THF/NIN Trust. Sources note that he uses Sneak Attack
+    -- regardless of positioning, does not intentionally combine it with WS,
+    -- and uses Bully before Sneak Attack.
+    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 93 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BULLY })
+    mob:addGambit(ai.t.SELF, { ai.c.LVL_GTE, 15 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SNEAK_ATTACK })
+    mob:addGambit(ai.t.SELF, { ai.c.LVL_GTE, 75 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.ASSASSINS_CHARGE })
 
-    if lvl >= 15 then
-        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SNEAK_ATTACK })
-    end
-
-    if lvl >= 75 then
-        mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 1000 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.ASSASSINS_CHARGE })
-    end
-
-    if lvl >= 93 then
-        mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BULLY })
-    end
-
-    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.RANDOM, 2000)
+    mob:setTrustTPSkillSettings(ai.tp.OPENER_OR_CLOSER, ai.s.RANDOM, 1000)
 end
 
 spellObject.onMobDespawn = function(mob)

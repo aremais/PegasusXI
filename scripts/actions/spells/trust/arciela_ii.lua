@@ -5,7 +5,7 @@
 local spellObject = {}
 
 spellObject.onMagicCastingCheck = function(caster, target, spell)
-    return xi.trust.canCast(caster, spell, xi.magic.spell.ARCIELA_II)
+    return xi.trust.canCast(caster, spell, xi.magic.spell.ARCIELA)
 end
 
 spellObject.onSpellCast = function(caster, target, spell)
@@ -15,90 +15,33 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    mob:setMobMod(xi.mobMod.SKILL_LIST, 1132)
+    -- Offensive/support Trust approximation based on documented Arciela II behavior:
+    -- Haste/Haste II, Refresh/Refresh II, Flurry/Flurry II, Slow/Paralyze enfeebles,
+    -- Dispel/Addle, elemental magic from spell list 426, Regain, and unique TP moves.
 
-    -- Party buffs
-    mob:addGambit(ai.t.PARTY,
-        { ai.c.NOT_STATUS, xi.effect.PROTECT },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.PROTECT })
+    mob:addMod(xi.mod.REGAIN, 30)
+    mob:addMod(xi.mod.FASTCAST, 50)
 
-    mob:addGambit(ai.t.PARTY,
-        { ai.c.NOT_STATUS, xi.effect.SHELL },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.SHELL })
+    mob:addGambit(ai.t.PARTY, { ai.c.NOT_STATUS, xi.effect.HASTE }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.HASTE })
+    mob:addGambit(ai.t.CASTER, { ai.c.NOT_STATUS, xi.effect.REFRESH }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.REFRESH })
 
-    mob:addGambit(ai.t.MELEE,
+    mob:addGambit(ai.t.RANGED, {
+        { ai.c.NOT_STATUS, xi.effect.FLURRY_II },
         { ai.c.NOT_STATUS, xi.effect.HASTE },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.HASTE })
+    }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.FLURRY })
 
-    mob:addGambit(ai.t.RANGED,
-        {
-            { ai.c.NOT_STATUS, xi.effect.FLURRY_II },
-            { ai.c.NOT_STATUS, xi.effect.HASTE },
-        },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.FLURRY })
+    mob:addGambit(ai.t.TARGET, { ai.c.STATUS_FLAG, xi.effectFlag.DISPELABLE }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.DISPEL })
+    mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.SLOW }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.SLOW }, 60)
+    mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.PARALYSIS }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.PARALYZE }, 60)
+    mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.ADDLE }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ADDLE }, 60)
 
-    mob:addGambit(ai.t.CASTER,
-        {
-            { ai.c.NOT_STATUS, xi.effect.REFRESH },
-            { ai.c.NOT_STATUS, xi.effect.SUBLIMATION_ACTIVATED },
-            { ai.c.NOT_STATUS, xi.effect.SUBLIMATION_COMPLETE },
-        },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.REFRESH })
+    -- Safe elemental fallback. Spell list 426 level-gates available tiers.
+    mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.FIRE }, 30)
 
-    mob:addGambit(ai.t.TANK,
-        { ai.c.NOT_STATUS, xi.effect.REFRESH },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.REFRESH })
+    -- Uses confirmed Arciela II unique TP moves from skill list 1132.
+    mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.RANDOM)
 
-    -- Enfeebles
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.NOT_STATUS, xi.effect.SLOW },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.SLOW },
-        60)
-
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.NOT_STATUS, xi.effect.PARALYSIS },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.PARALYZE },
-        60)
-
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.NOT_STATUS, xi.effect.ADDLE },
-        { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ADDLE },
-        60)
-
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.STATUS_FLAG, xi.effectFlag.DISPELABLE },
-        { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.DISPEL })
-
-    -- Single-target elemental nukes
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.ALWAYS, 0 },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.FIRE },
-        30)
-
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.ALWAYS, 0 },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.BLIZZARD },
-        30)
-
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.ALWAYS, 0 },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.AERO },
-        30)
-
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.ALWAYS, 0 },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.STONE },
-        30)
-
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.ALWAYS, 0 },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.THUNDER },
-        30)
-
-    mob:addGambit(ai.t.TARGET,
-        { ai.c.ALWAYS, 0 },
-        { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.WATER },
-        30)
+    mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.MID_RANGE)
 end
 
 spellObject.onMobDespawn = function(mob)
