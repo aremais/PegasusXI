@@ -17,9 +17,11 @@ spellObject.onMobSpawn = function(mob)
 
     mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.NON_COMBAT)
 
-    mob:addMod(xi.mod.AURA_SIZE, 600) -- Trust have a 12 yalm aura 6 base + 6 from mod
+    -- Cornelia is an incorporeal passive aura Trust.
+    -- Retail aura: Haste +20%, Accuracy +30, Ranged Accuracy +30, Magic Accuracy +30 at Lv99.
+    mob:addMod(xi.mod.AURA_SIZE, 600)
 
-    local effectParams =
+    mob:addStatusEffect(xi.effect.COLURE_ACTIVE,
     {
         power = 6,
         origin = mob,
@@ -28,12 +30,12 @@ spellObject.onMobSpawn = function(mob)
         subPower = mob:getMainLvl(),
         subIcon = xi.effect.GEO_HASTE,
         tier = xi.auraTarget.ALLIES,
-        flag = xi.effectFlag.AURA
-    }
+        flag = xi.effectFlag.AURA,
+    })
 
-    mob:addStatusEffect(xi.effect.COLURE_ACTIVE, effectParams)
-
-    mob:addGambit(ai.t.SELF, { { ai.c.TIMER, 5 }, { ai.c.RANDOM, 45 } }, { ai.r.ANIM_STRING, ai.s.RANDOM_ANIMATION, 4 })
+    if mob.setUnkillable then
+        mob:setUnkillable(true)
+    end
 
     mob:setAutoAttackEnabled(false)
 end
@@ -43,7 +45,7 @@ spellObject.onMobDespawn = function(mob)
 end
 
 spellObject.onMobDeath = function(mob)
-    xi.trust.message(mob, xi.trust.messageOffset.DEATH)
+    -- Cornelia is incorporeal and should not die.
 end
 
 return spellObject

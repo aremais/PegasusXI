@@ -4461,6 +4461,7 @@ INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,159,1,255);  -- stone
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,164,1,255);  -- thunder (1~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,169,1,255);  -- water (1~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,235,24,255); -- burn (24~255)
+INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,245,12,255); -- drain (12~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,247,25,255); -- aspir (25~255)
 INSERT INTO `mob_spell_lists` VALUES ('TRUST_Matsui-P',435,252,45,255); -- stun (45~255)
 
