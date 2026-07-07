@@ -112,15 +112,9 @@ CBattleEntity::~CBattleEntity()
 
 bool CBattleEntity::IsDualWielding()
 {
-    // Trusts are mob-like entities, but they may not report objtype == TYPE_MOB.
-    // Honor MOBMOD_DUAL_WIELD for any entity that is actually backed by CMobEntity
-    // so Trusts such as Matsui-P can create their offhand attack.
-    if (auto* PMob = dynamic_cast<CMobEntity*>(this))
+    if (objtype == TYPE_MOB || objtype == TYPE_TRUST)
     {
-        if (PMob->getMobMod(MOBMOD_DUAL_WIELD) != 0)
-        {
-            return true;
-        }
+        return static_cast<CMobEntity*>(this)->getMobMod(MOBMOD_DUAL_WIELD) != 0;
     }
 
     return m_dualWield;

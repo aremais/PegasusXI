@@ -127,14 +127,6 @@ spellObject.onMobSpawn = function(mob)
     -- Listed behavior includes Mana Wall, but it is guarded because Matsui-P is BLM subjob.
     addStatusJA(mob, 76, xi.effect.MANA_WALL, xi.ja.MANA_WALL, 600)
 
-    -- Magic burst behavior.
-    if
-        ai.c.MB_AVAILABLE ~= nil and
-        ai.s.MB_ELEMENT ~= nil and
-        xi.magic.spellFamily.NONE ~= nil
-    then
-        addGambitIfKnown(mob, ai.t.TARGET, { ai.c.MB_AVAILABLE, 0 }, { ai.r.MA, ai.s.MB_ELEMENT, xi.magic.spellFamily.NONE })
-    end
 
     -- Debuffs and interrupt tools.
     addStatusSpell(mob, ai.t.TARGET, 83, xi.effect.MAGIC_DEF_DOWN, xi.magic.spell.AISHA_ICHI, 90)
@@ -156,16 +148,21 @@ spellObject.onMobSpawn = function(mob)
 
     addAlwaysSpell(mob, ai.t.TARGET, 25, xi.magic.spell.ASPIR, 180)
 
-    -- General magic fallback.
-    -- Keep this as one HIGHEST/NONE gambit so Matsui-P does not juggle twelve
-    -- separate elemental filler timers. MB_ELEMENT above handles actual magic bursts.
-    if xi.magic.spellFamily.NONE ~= nil then
-        if ai.c.NOT_SC_AVAILABLE ~= nil then
-            addGambitIfKnown(mob, ai.t.TARGET, { ai.c.NOT_SC_AVAILABLE, 0 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.NONE }, 45)
-        else
-            addGambitIfKnown(mob, ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.NONE }, 60)
-        end
-    end
+    -- Elemental ninjutsu San priority.
+    addAlwaysSpell(mob, ai.t.TARGET, 73, xi.magic.spell.RAITON_SAN, 45)
+    addAlwaysSpell(mob, ai.t.TARGET, 73, xi.magic.spell.HUTON_SAN, 45)
+    addAlwaysSpell(mob, ai.t.TARGET, 73, xi.magic.spell.KATON_SAN, 45)
+    addAlwaysSpell(mob, ai.t.TARGET, 73, xi.magic.spell.HYOTON_SAN, 45)
+    addAlwaysSpell(mob, ai.t.TARGET, 73, xi.magic.spell.DOTON_SAN, 45)
+    addAlwaysSpell(mob, ai.t.TARGET, 73, xi.magic.spell.SUITON_SAN, 45)
+
+    -- Tier-I elemental magic as secondary filler.
+    addAlwaysSpell(mob, ai.t.TARGET, 1, xi.magic.spell.THUNDER, 60)
+    addAlwaysSpell(mob, ai.t.TARGET, 1, xi.magic.spell.AERO, 60)
+    addAlwaysSpell(mob, ai.t.TARGET, 1, xi.magic.spell.FIRE, 60)
+    addAlwaysSpell(mob, ai.t.TARGET, 1, xi.magic.spell.BLIZZARD, 60)
+    addAlwaysSpell(mob, ai.t.TARGET, 1, xi.magic.spell.STONE, 60)
+    addAlwaysSpell(mob, ai.t.TARGET, 1, xi.magic.spell.WATER, 60)
 
     -- Matsui-P opens skillchains like Ayame.
     -- The DB skill list 1135 already supplies Blade: Rin/Retsu/Ei/Jin/Ten/Ku/Kamu/Hi/Shun.
