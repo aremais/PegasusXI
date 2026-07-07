@@ -10,6 +10,7 @@ local function addModIfKnown(mob, modId, value)
         mob:addMod(modId, value)
     end
 end
+
 local function addGambitIfKnown(mob, targetType, condition, action, cooldown)
     if
         targetType == nil or
@@ -23,12 +24,14 @@ local function addGambitIfKnown(mob, targetType, condition, action, cooldown)
     then
         return
     end
+
     if cooldown ~= nil then
         mob:addGambit(targetType, condition, action, cooldown)
     else
         mob:addGambit(targetType, condition, action)
     end
 end
+
 local function addStatusJA(mob, level, statusEffect, jobAbility, cooldown)
     if
         mob:getMainLvl() >= level and
@@ -38,6 +41,7 @@ local function addStatusJA(mob, level, statusEffect, jobAbility, cooldown)
         addGambitIfKnown(mob, ai.t.SELF, { ai.c.NOT_STATUS, statusEffect }, { ai.r.JA, ai.s.SPECIFIC, jobAbility }, cooldown)
     end
 end
+
 local function addAlwaysJA(mob, level, jobAbility, cooldown)
     if
         mob:getMainLvl() >= level and
@@ -47,6 +51,7 @@ local function addAlwaysJA(mob, level, jobAbility, cooldown)
         addGambitIfKnown(mob, ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, jobAbility }, cooldown)
     end
 end
+
 local function addStatusSpell(mob, targetType, level, statusEffect, spellId, cooldown)
     if
         mob:getMainLvl() >= level and
@@ -56,6 +61,7 @@ local function addStatusSpell(mob, targetType, level, statusEffect, spellId, coo
         addGambitIfKnown(mob, targetType, { ai.c.NOT_STATUS, statusEffect }, { ai.r.MA, ai.s.SPECIFIC, spellId }, cooldown)
     end
 end
+
 local function addAlwaysSpell(mob, targetType, level, spellId, cooldown)
     if
         mob:getMainLvl() >= level and
@@ -65,12 +71,15 @@ local function addAlwaysSpell(mob, targetType, level, spellId, cooldown)
         addGambitIfKnown(mob, targetType, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.SPECIFIC, spellId }, cooldown)
     end
 end
+
 spellObject.onMagicCastingCheck = function(caster, target, spell)
     return xi.trust.canCast(caster, spell, matsuiPSpell)
 end
+
 spellObject.onSpellCast = function(caster, target, spell)
     return xi.trust.spawn(caster, spell)
 end
+
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
     -- Retail target:
@@ -80,6 +89,7 @@ spellObject.onMobSpawn = function(mob)
     if xi.mobMod ~= nil and xi.mobMod.DUAL_WIELD ~= nil then
         mob:setMobMod(xi.mobMod.DUAL_WIELD, 1)
     end
+
     addModIfKnown(mob, xi.mod.DUAL_WIELD, 25)
     addModIfKnown(mob, xi.mod.DAKEN, 25)
     addModIfKnown(mob, xi.mod.MATT, 35)
@@ -96,6 +106,7 @@ spellObject.onMobSpawn = function(mob)
     then
         addGambitIfKnown(mob, ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.COPY_IMAGE }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.UTSUSEMI }, 20)
     end
+
     addStatusSpell(mob, ai.t.SELF, 88, xi.effect.MIGAWARI, xi.magic.spell.MIGAWARI_ICHI, 120)
     -- Self-buffs / job abilities.
     addAlwaysSpell(mob, ai.t.SELF, 78, xi.magic.spell.KAKKA_ICHI, 300)
@@ -123,6 +134,7 @@ spellObject.onMobSpawn = function(mob)
     then
         addGambitIfKnown(mob, ai.t.TARGET, { ai.c.CASTING_MA, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.STUN }, 20)
     end
+
     addAlwaysSpell(mob, ai.t.TARGET, 25, xi.magic.spell.ASPIR, 180)
     -- Elemental ninjutsu San priority.
     addAlwaysSpell(mob, ai.t.TARGET, 73, xi.magic.spell.RAITON_SAN, 45)
@@ -142,10 +154,13 @@ spellObject.onMobSpawn = function(mob)
     -- The DB skill list 1135 already supplies Blade: Rin/Retsu/Ei/Jin/Ten/Ku/Kamu/Hi/Shun.
     mob:setTrustTPSkillSettings(ai.tp.OPENER, ai.s.SPECIAL_AYAME)
 end
+
 spellObject.onMobDespawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.DESPAWN)
 end
+
 spellObject.onMobDeath = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.DEATH)
 end
+
 return spellObject
