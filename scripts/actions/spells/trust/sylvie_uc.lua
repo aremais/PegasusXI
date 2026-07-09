@@ -28,6 +28,7 @@ spellObject.onMobSpawn = function(mob)
     mob:addMod(xi.mod.GEOMANCY_SKILL, 8 * mob:getMainLvl() + 1)
     mob:addMod(xi.mod.INDI_DURATION, 180)
     mob:addMod(xi.mod.REGAIN, 50)
+    mob:addMod(xi.mod.DMG, -2500)
 
     if mob:getMainLvl() >= 99 then
         mob:addMod(xi.mod.GEOMANCY_BONUS, 3)
