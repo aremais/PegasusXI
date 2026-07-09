@@ -503,9 +503,15 @@ INSERT INTO `mob_pool_mods` VALUES (6732,3,100,1); -- MP_BASE: 100
 
 -- Nashmeira Trust: MP+70%
 INSERT INTO `mob_pool_mods` VALUES (5923,2,70,1);
+
+-- King of Hearts
+INSERT INTO `mob_pool_mods` VALUES (5989,1,25,1); -- HP +25%
+INSERT INTO `mob_pool_mods` VALUES (5989,2,80,1); -- MP +80%
+
+-- Arciela: MP +20% retail/wiki trait
+INSERT INTO `mob_pool_mods` VALUES (5965,2,20,1);
+
 /*!40000 ALTER TABLE `mob_pool_mods` ENABLE KEYS */;
-INSERT INTO `mob_pool_mods` VALUES (5989,1,25,1); -- King of Hearts HP +25%
-INSERT INTO `mob_pool_mods` VALUES (5989,2,80,1); -- King of Hearts MP +80%
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -516,5 +522,4 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
--- Arciela: MP +20% retail/wiki trait
-INSERT INTO `mob_pool_mods` VALUES (5965,2,20,1);
+
