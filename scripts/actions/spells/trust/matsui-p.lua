@@ -4,7 +4,7 @@
 require('scripts/globals/trust')
 -----------------------------------
 local spellObject = {}
-local matsuiPSpell = xi.magic.spell.MATSUI_P or 1003
+
 local function addModIfKnown(mob, modId, value)
     if modId ~= nil and value ~= nil then
         mob:addMod(modId, value)
@@ -73,7 +73,7 @@ local function addAlwaysSpell(mob, targetType, level, spellId, cooldown)
 end
 
 spellObject.onMagicCastingCheck = function(caster, target, spell)
-    return xi.trust.canCast(caster, spell, matsuiPSpell)
+    return xi.trust.canCast(caster, spell)
 end
 
 spellObject.onSpellCast = function(caster, target, spell)

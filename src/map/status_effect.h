@@ -753,11 +753,21 @@ enum EFFECT : uint16
     EFFECT_NUKE_WALL           = 806, // Custom effect for NM type mobs only. Applied by elemental magic damage sources
     EFFECT_KUPOFRIED_AURA      = 807, // Tracks party members in Trust: Kupofried's COLURE_ACTIVE aura (EXP/CP bonus)
 
+    // TRUST Aura Effects
+    EFFECT_TRUST_AURA_CHR          = 808, // CHR Aura, +9.7% Defense Bonus, +5 Magic Defense Bonus and +5 CHR at lv.99, stacks with player Indi/Geo CHR.
+    EFFECT_TRUST_AURA_HASTE        = 809, // HASTE Aura, Haste +20%, Accuracy +30, Ranged Accuracy +30 and Magic Accuracy +30 at lvl 99, stacks with player Indi/Geo HASTE.
+    EFFECT_TRUST_AURA_EXP          = 810, // EXP Aura, +20% dedication effect for Experience Points and Capacity Points, stacks with other forms of dedication.
+    EFFECT_TRUST_AURA_ACC          = 811, // ACC Aura, Accuracy +24, Ranged accuracy +24, and DEX +5 at lvl 99, stacks with player Indi/Geo PRECISION.
+    EFFECT_TRUST_AURA_REFRESH      = 812, // REFRESH Aura, 3 MP/tick at lvl 99 stacks with player Indi/Geo REFRESH, also grants an increase to magical skill gain rate.
+    EFFECT_TRUST_AURA_REGEN        = 813, // REGEN Aura, 6 HP/tick at lvl 99 stacks with player Indi/Geo REGEN. also grants an increase to physical combat skill gain rate.
+    EFFECT_TRUST_AURA_MAGIC_ATTACK = 814, // MATT Aura, Magic Attack Boost +19 and +19 Magic Accuracy boost at lvl 99, stacks with player Indi/Geo ACUMEN.
+    // End of Trust Aura Effects
+
     // 789
-    // 808-1022
+    // 815-1022
     // EFFECT_PLACEHOLDER           = 1023 // The client dat file seems to have only this many "slots", results of exceeding that are untested.
 };
-#define MAX_EFFECTID 808 // 768 real + 40 custom
+#define MAX_EFFECTID 815 // 768 real + 47 custom
 DECLARE_FORMAT_AS_UNDERLYING(EFFECT);
 
 /************************************************************************
