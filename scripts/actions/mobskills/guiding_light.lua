@@ -15,7 +15,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local duration = 180
     local power    = 15
 
-    skill:setMsg(xi.msg.basic.SKILL_NO_EFFECT)
+    skill:setMsg(xi.msg.basic.SKILL_GAIN_EFFECT)
 
     local function addGuidingLightMod(memberArg, modId, amount)
         if modId ~= nil then
@@ -97,7 +97,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
         end
     end)
 
-    return 0
+    return xi.effect.ATTACK_BOOST
 end
 
 return mobskillObject

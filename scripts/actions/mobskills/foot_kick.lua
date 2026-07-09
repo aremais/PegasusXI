@@ -20,7 +20,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     params.damageType      = xi.damageType.SLASHING
     params.shadowBehavior  = xi.mobskills.shadowBehavior.NUMSHADOWS_1
     params.canCrit         = true
-    params.criticalChance  = { 1.0, 1.0, 1.0 }
+    params.criticalChance  = { 0.25, 0.50, 0.75 } -- Critical hit rate varies with TP
 
     if mob:getMainLvl() >= 50 then
         params.fTP = { 2, 2, 2 }
