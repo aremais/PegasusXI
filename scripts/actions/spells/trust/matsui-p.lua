@@ -4,9 +4,76 @@
 require('scripts/globals/trust')
 -----------------------------------
 local spellObject = {}
+local matsuiPSpell = xi.magic.spell.MATSUI_P or 1003
+local function addModIfKnown(mob, modId, value)
+    if modId ~= nil and value ~= nil then
+        mob:addMod(modId, value)
+    end
+end
+
+local function addGambitIfKnown(mob, targetType, condition, action, cooldown)
+    if
+        targetType == nil or
+        condition == nil or
+        condition[1] == nil or
+        condition[2] == nil or
+        action == nil or
+        action[1] == nil or
+        action[2] == nil or
+        action[3] == nil
+    then
+        return
+    end
+
+    if cooldown ~= nil then
+        mob:addGambit(targetType, condition, action, cooldown)
+    else
+        mob:addGambit(targetType, condition, action)
+    end
+end
+
+local function addStatusJA(mob, level, statusEffect, jobAbility, cooldown)
+    if
+        mob:getMainLvl() >= level and
+        statusEffect ~= nil and
+        jobAbility ~= nil
+    then
+        addGambitIfKnown(mob, ai.t.SELF, { ai.c.NOT_STATUS, statusEffect }, { ai.r.JA, ai.s.SPECIFIC, jobAbility }, cooldown)
+    end
+end
+
+local function addAlwaysJA(mob, level, jobAbility, cooldown)
+    if
+        mob:getMainLvl() >= level and
+        jobAbility ~= nil and
+        ai.c.ALWAYS ~= nil
+    then
+        addGambitIfKnown(mob, ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, jobAbility }, cooldown)
+    end
+end
+
+local function addStatusSpell(mob, targetType, level, statusEffect, spellId, cooldown)
+    if
+        mob:getMainLvl() >= level and
+        statusEffect ~= nil and
+        spellId ~= nil
+    then
+        addGambitIfKnown(mob, targetType, { ai.c.NOT_STATUS, statusEffect }, { ai.r.MA, ai.s.SPECIFIC, spellId }, cooldown)
+    end
+end
+
+local function addAlwaysSpell(mob, targetType, level, spellId, cooldown)
+    if
+        mob:getMainLvl() >= level and
+        spellId ~= nil and
+        ai.c.ALWAYS ~= nil
+    then
+        addGambitIfKnown(mob, targetType, { ai.c.ALWAYS, 0 }, { ai.r.MA, ai.s.SPECIFIC, spellId }, cooldown)
+    end
+end
 
 spellObject.onMagicCastingCheck = function(caster, target, spell)
-    return xi.trust.canCast(caster, spell)
+    return xi.trust.canCast(caster, spell, matsuiPSpell)
 end
 
 spellObject.onSpellCast = function(caster, target, spell)
@@ -15,63 +82,77 @@ end
 
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
+    -- Retail target:
+    -- Matsui-P is a NIN/BLM damage Trust that opens skillchains and magic bursts
+    -- with elemental ninjutsu and tier-I black magic.
+    -- Enable actual mob offhand swings first; xi.mod.DUAL_WIELD only handles delay reduction.
+    if xi.mobMod ~= nil and xi.mobMod.DUAL_WIELD ~= nil then
+        mob:setMobMod(xi.mobMod.DUAL_WIELD, 1)
+    end
 
-    -- Source target: NIN/BLM Trust that opens skillchains and magic bursts with ninjutsu/elemental magic.
-    mob:addMod(xi.mod.DUAL_WIELD, 25)
-    mob:addMod(xi.mod.DAKEN, 25)
-    mob:addMod(xi.mod.MATT, 35)
-    mob:addMod(xi.mod.STORETP, 20)
-    mob:addMod(xi.mod.SUBTLE_BLOW, 15)
+    addModIfKnown(mob, xi.mod.DUAL_WIELD, 25)
+    addModIfKnown(mob, xi.mod.DAKEN, 25)
+    addModIfKnown(mob, xi.mod.MATT, 35)
+    addModIfKnown(mob, xi.mod.MACC, 35)
+    addModIfKnown(mob, xi.mod.FASTCAST, 20)
+    addModIfKnown(mob, xi.mod.STORETP, 20)
+    addModIfKnown(mob, xi.mod.SUBTLE_BLOW, 15)
+    local lvl = mob:getMainLvl()
+    -- Shadows and defensive NIN tools.
+    if
+        lvl >= 12 and
+        xi.effect.COPY_IMAGE ~= nil and
+        xi.magic.spellFamily.UTSUSEMI ~= nil
+    then
+        addGambitIfKnown(mob, ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.COPY_IMAGE }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.UTSUSEMI }, 20)
+    end
 
-    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 12 }, { ai.c.NOT_STATUS, xi.effect.COPY_IMAGE } }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.UTSUSEMI }, 20)
-    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 88 }, { ai.c.NOT_STATUS, xi.effect.MIGAWARI } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.MIGAWARI_ICHI }, 120)
-    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 78 } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.KAKKA_ICHI }, 120)
-    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 85 } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.MYOSHU_ICHI }, 120)
+    addStatusSpell(mob, ai.t.SELF, 88, xi.effect.MIGAWARI, xi.magic.spell.MIGAWARI_ICHI, 120)
+    -- Self-buffs / job abilities.
+    addAlwaysSpell(mob, ai.t.SELF, 78, xi.magic.spell.KAKKA_ICHI, 300)
+    addAlwaysSpell(mob, ai.t.SELF, 85, xi.magic.spell.MYOSHU_ICHI, 300)
+    addStatusJA(mob, 40, xi.effect.INNIN, xi.ja.INNIN, 180)
+    addStatusJA(mob, 75, xi.effect.SANGE, xi.ja.SANGE, 180)
+    addStatusJA(mob, 15, xi.effect.ELEMENTAL_SEAL, xi.ja.ELEMENTAL_SEAL, 600)
+    addStatusJA(mob, 77, xi.effect.FUTAE, xi.ja.FUTAE, 180)
+    addAlwaysJA(mob, 95, xi.ja.ISSEKIGAN, 300)
+    -- Listed behavior includes Mana Wall, but it is guarded because Matsui-P is BLM subjob.
+    addStatusJA(mob, 76, xi.effect.MANA_WALL, xi.ja.MANA_WALL, 600)
+    -- Debuffs and interrupt tools.
+    addStatusSpell(mob, ai.t.TARGET, 83, xi.effect.MAGIC_DEF_DOWN, xi.magic.spell.AISHA_ICHI, 90)
+    addStatusSpell(mob, ai.t.TARGET, 83, xi.effect.ACCURACY_DOWN, xi.magic.spell.YURIN_ICHI, 90)
+    addStatusSpell(mob, ai.t.TARGET, 30, xi.effect.PARALYSIS, xi.magic.spell.JUBAKU_ICHI, 60)
+    addStatusSpell(mob, ai.t.TARGET, 23, xi.effect.SLOW, xi.magic.spell.HOJO_ICHI, 60)
+    addStatusSpell(mob, ai.t.TARGET, 19, xi.effect.BLINDNESS, xi.magic.spell.KURAYAMI_ICHI, 60)
+    addStatusSpell(mob, ai.t.TARGET, 27, xi.effect.POISON, xi.magic.spell.DOKUMORI_ICHI, 60)
+    addStatusSpell(mob, ai.t.TARGET, 24, xi.effect.BURN, xi.magic.spell.BURN, 90)
+    addAlwaysSpell(mob, ai.t.TARGET, 12, xi.magic.spell.DRAIN, 180)
+    if
+        lvl >= 45 and
+        ai.c.CASTING_MA ~= nil and
+        xi.magic.spell.STUN ~= nil
+    then
+        addGambitIfKnown(mob, ai.t.TARGET, { ai.c.CASTING_MA, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.STUN }, 20)
+    end
 
-    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 40 }, { ai.c.NOT_STATUS, xi.effect.INNIN } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.INNIN }, 300)
-    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 15 }, { ai.c.NOT_STATUS, xi.effect.ELEMENTAL_SEAL } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.ELEMENTAL_SEAL }, 600)
-    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 75 }, { ai.c.NOT_STATUS, xi.effect.SANGE } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SANGE }, 300)
-    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 77 }, { ai.c.NOT_STATUS, xi.effect.FUTAE } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.FUTAE }, 300)
-    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 76 }, { ai.c.NOT_STATUS, xi.effect.MANA_WALL } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.MANA_WALL }, 600)
-
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 83 }, { ai.c.NOT_STATUS, xi.effect.MAGIC_DEF_DOWN } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.AISHA_ICHI }, 90)
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 83 }, { ai.c.NOT_STATUS, xi.effect.ACCURACY_DOWN } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.YURIN_ICHI }, 90)
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 30 }, { ai.c.NOT_STATUS, xi.effect.PARALYSIS } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.JUBAKU_ICHI }, 60)
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 23 }, { ai.c.NOT_STATUS, xi.effect.SLOW } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.HOJO_ICHI }, 60)
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 19 }, { ai.c.NOT_STATUS, xi.effect.BLINDNESS } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.KURAYAMI_ICHI }, 60)
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 27 }, { ai.c.NOT_STATUS, xi.effect.POISON } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.DOKUMORI_ICHI }, 60)
-
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 45 }, { ai.c.CASTING_MA, 0 } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.STUN }, 20)
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 24 }, { ai.c.NOT_STATUS, xi.effect.BURN } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.BURN }, 90)
-    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 25 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ASPIR }, 120)
-
-    -- Elemental Ninjutsu San priority.
-    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 73 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.RAITON_SAN }, 45)
-    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 73 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.HUTON_SAN }, 45)
-    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 73 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.KATON_SAN }, 45)
-    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 73 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.HYOTON_SAN }, 45)
-    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 73 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.DOTON_SAN }, 45)
-    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 73 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.SUITON_SAN }, 45)
-
-    -- Tier-1 BLM elemental magic as secondary magic-burst flavor.
-    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 1 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.THUNDER }, 60)
-    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 1 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.AERO }, 60)
-    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 1 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FIRE }, 60)
-    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 1 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.BLIZZARD }, 60)
-    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 1 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.STONE }, 60)
-    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 1 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.WATER }, 60)
-
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 1 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 128 }, 30) -- Blade: Rin
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 9 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 129 }, 30) -- Blade: Retsu
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 55 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 133 }, 30) -- Blade: Ei
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 60 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 134 }, 30) -- Blade: Jin
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 66 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 135 }, 30) -- Blade: Ten
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 72 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 136 }, 30) -- Blade: Ku
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 75 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 138 }, 30) -- Blade: Kamu
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 85 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 140 }, 30) -- Blade: Hi
-    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 91 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 141 }, 30) -- Blade: Shun
-
-    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.HIGHEST, 2000)
+    addAlwaysSpell(mob, ai.t.TARGET, 25, xi.magic.spell.ASPIR, 180)
+    -- Elemental ninjutsu San priority.
+    addAlwaysSpell(mob, ai.t.TARGET, 73, xi.magic.spell.RAITON_SAN, 45)
+    addAlwaysSpell(mob, ai.t.TARGET, 73, xi.magic.spell.HUTON_SAN, 45)
+    addAlwaysSpell(mob, ai.t.TARGET, 73, xi.magic.spell.KATON_SAN, 45)
+    addAlwaysSpell(mob, ai.t.TARGET, 73, xi.magic.spell.HYOTON_SAN, 45)
+    addAlwaysSpell(mob, ai.t.TARGET, 73, xi.magic.spell.DOTON_SAN, 45)
+    addAlwaysSpell(mob, ai.t.TARGET, 73, xi.magic.spell.SUITON_SAN, 45)
+    -- Tier-I elemental magic as secondary filler.
+    addAlwaysSpell(mob, ai.t.TARGET, 1, xi.magic.spell.THUNDER, 60)
+    addAlwaysSpell(mob, ai.t.TARGET, 1, xi.magic.spell.AERO, 60)
+    addAlwaysSpell(mob, ai.t.TARGET, 1, xi.magic.spell.FIRE, 60)
+    addAlwaysSpell(mob, ai.t.TARGET, 1, xi.magic.spell.BLIZZARD, 60)
+    addAlwaysSpell(mob, ai.t.TARGET, 1, xi.magic.spell.STONE, 60)
+    addAlwaysSpell(mob, ai.t.TARGET, 1, xi.magic.spell.WATER, 60)
+    -- Matsui-P opens skillchains like Ayame.
+    -- The DB skill list 1135 already supplies Blade: Rin/Retsu/Ei/Jin/Ten/Ku/Kamu/Hi/Shun.
+    mob:setTrustTPSkillSettings(ai.tp.OPENER, ai.s.SPECIAL_AYAME)
 end
 
 spellObject.onMobDespawn = function(mob)

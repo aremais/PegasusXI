@@ -20,6 +20,11 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
+    -- Enable actual Trust offhand swings; xi.mod.DUAL_WIELD only affects delay.
+    if xi.mobMod ~= nil and xi.mobMod.DUAL_WIELD ~= nil then
+        mob:setMobMod(xi.mobMod.DUAL_WIELD, 1)
+    end
+
     -- Custom UC upgrade: Aldo UC is a stronger dagger-focused THF/NIN
     -- variant for Lax's solo server. Ninjutsu is intentional custom utility.
     mob:addMod(xi.mod.TREASURE_HUNTER, 1)
