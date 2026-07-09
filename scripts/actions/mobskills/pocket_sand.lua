@@ -14,13 +14,12 @@ end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
-    params.mobHPMultiplier = 1
-    params.includemab      = true
-    params.element         = xi.element.EARTH
-    params.damageType      = xi.damageType.EARTH
-    params.attackType      = xi.attackType.MAGICAL
-    params.shadowBehavior  = xi.mobskills.shadowBehavior.IGNORE_SHADOWS
-    params.fTP             = { 1.5, 1.5, 1.5 }
+    params.baseDamage     = mob:getMainLvl() + 2
+    params.fTP            = { 1.5, 1.5, 1.5 }
+    params.element        = xi.element.EARTH
+    params.attackType     = xi.attackType.MAGICAL
+    params.damageType     = xi.damageType.EARTH
+    params.shadowBehavior = xi.mobskills.shadowBehavior.IGNORE_SHADOWS
 
     local info = xi.mobskills.mobMagicalMove(mob, target, skill, action, params)
 

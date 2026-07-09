@@ -15,8 +15,9 @@ end
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
-    params.baseDamage     = mob:getWeaponDmg()
+    params.baseDamage     = mob:getMainLvl() + 2
     params.fTP            = { 3.0, 3.0, 3.0 } -- Approximation; exact fTP not captured.
+    params.element        = xi.element.NONE
     params.attackType     = xi.attackType.MAGICAL
     params.damageType     = xi.damageType.NONE
     params.shadowBehavior = xi.mobskills.shadowBehavior.IGNORE_SHADOWS

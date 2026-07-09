@@ -13,6 +13,7 @@ end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
+    params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 2
     params.fTP            = { 1.5, 1.5, 1.5 }
     params.attackType     = xi.attackType.RANGED

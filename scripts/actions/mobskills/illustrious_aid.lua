@@ -55,9 +55,13 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
         end
     end
 
-    skill:setMsg(xi.msg.basic.SKILL_NO_EFFECT)
+    if healed > 0 then
+        skill:setMsg(xi.msg.basic.SELF_HEAL)
+    else
+        skill:setMsg(xi.msg.basic.SKILL_NO_EFFECT)
+    end
 
-    return 0
+    return healed
 end
 
 return mobskillObject

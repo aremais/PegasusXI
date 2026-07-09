@@ -12,14 +12,14 @@ end
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
-    params.numHits    = 1
-    params.ftpMod     = { 3.0, 3.0, 3.0 } -- Approximation; exact fTP not captured.
-    params.str_wsc    = 0.35
-    params.dex_wsc    = 0.35
-    params.skill      = xi.skill.HAND_TO_HAND
-    params.includemab = false
-    params.attackType = xi.attackType.PHYSICAL
-    params.damageType = xi.damageType.SLASHING
+    params.baseDamage     = mob:getWeaponDmg()
+    params.numHits        = 1
+    params.fTP            = { 3.0, 3.0, 3.0 } -- Approximation; exact fTP not captured.
+    params.str_wSC        = 0.35
+    params.dex_wSC        = 0.35
+    params.attackType     = xi.attackType.PHYSICAL
+    params.damageType     = xi.damageType.SLASHING
+    params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 

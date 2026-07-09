@@ -14,6 +14,7 @@ end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
+    params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 1
     params.fTP            = { 3.0, 3.0, 3.0 }
     params.ignoreDefense  = { 0.15, 0.35, 0.5 }
