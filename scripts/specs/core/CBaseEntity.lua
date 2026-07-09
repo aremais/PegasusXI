@@ -1995,6 +1995,10 @@ end
 function CBaseEntity:masterJob()
 end
 
+---@return nil
+function CBaseEntity:maxAllMerits()
+end
+
 ---@nodiscard
 ---@return integer
 function CBaseEntity:getGil()

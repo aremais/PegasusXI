@@ -180,6 +180,15 @@ def main() -> int:
     dbtool.import_file_verbose(patch_path)
     print("  mob_groups.content_tag column verified.", flush=True)
 
+    npc_fix_patches = [
+        "sql/fix_bastok_markets_missing_npc_17740187.sql",
+        "sql/fix_bastok_markets_missing_npc_17740191.sql",
+    ]
+    for rel_path in npc_fix_patches:
+        patch_path = dbtool.from_server_path(rel_path)
+        dbtool.import_file_verbose(patch_path)
+    print("  NPC lookup fix patches applied.", flush=True)
+
     print("\n[4/7] Applying mob data patches (droplists, spell lists, groups) ...", flush=True)
     mob_data_patches = [
         "sql/patches/fix_mob_reference_data.sql",
@@ -187,6 +196,7 @@ def main() -> int:
         "sql/patches/fix_remaining_mob_groups.sql",
         "sql/patches/fix_synthetic_mob_groups.sql",
         "sql/patches/fix_eurytos_zone82.sql",
+        "sql/patches/merge_lsb_mob_spawn_points.sql",
     ]
     for rel_path in mob_data_patches:
         patch_path = dbtool.from_server_path(rel_path)
