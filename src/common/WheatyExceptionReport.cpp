@@ -6,8 +6,6 @@
 //==========================================
 #include "WheatyExceptionReport.h"
 
-#include "console_pause.h"
-
 // clang-format off
 
 #include <algorithm>
@@ -255,7 +253,7 @@ LONG WINAPI WheatyExceptionReport::WheatyUnhandledExceptionFilter(
     // Handle only 1 exception in the whole process lifetime
     if (alreadyCrashed)
     {
-        return EXCEPTION_EXECUTE_HANDLER;
+        terminateProcess(1);
     }
 
     alreadyCrashed = true;
@@ -270,8 +268,7 @@ LONG WINAPI WheatyExceptionReport::WheatyUnhandledExceptionFilter(
     if (!pos)
     {
         Log(_T("GetModuleFileName failed"));
-        TerminateProcess(GetCurrentProcess(), 1);
-        return EXCEPTION_EXECUTE_HANDLER; // Unreacheable code
+        terminateProcess(1);
     }
 
     pos[0] = '\0';
@@ -284,8 +281,7 @@ LONG WINAPI WheatyExceptionReport::WheatyUnhandledExceptionFilter(
         if (GetLastError() != ERROR_ALREADY_EXISTS)
         {
             Log(_T("CreateDirectory failed"));
-            TerminateProcess(GetCurrentProcess(), 1);
-            return EXCEPTION_EXECUTE_HANDLER; // Unreacheable code
+            terminateProcess(1);
         }
     }
 
@@ -399,16 +395,14 @@ LONG WINAPI WheatyExceptionReport::WheatyUnhandledExceptionFilter(
 
     Log(_T(fmt::format("WheatyUnhandledExceptionFilter Exit").c_str()));
 
-    fclose(m_hReportFile);
-    m_hReportFile = nullptr;
+    if (m_hReportFile)
+    {
+        fclose(m_hReportFile);
+        m_hReportFile = nullptr;
+    }
 
-    // Pause for a moment to give spdlog a chance to flush
-    std::this_thread::sleep_for(200ms);
-
-    console_pause::pauseIfNeededFromCommandLine();
-
-    TerminateProcess(GetCurrentProcess(), 1);
-    return EXCEPTION_EXECUTE_HANDLER; // Unreacheable code
+    spdlog::shutdown();
+    terminateProcess(1);
 }
 
 void __cdecl WheatyExceptionReport::WheatyCrtHandler(wchar_t const* /*expression*/, wchar_t const* /*function*/, wchar_t const* /*file*/, unsigned int /*line*/, uintptr_t /*pReserved*/)
@@ -852,13 +846,6 @@ PEXCEPTION_POINTERS pExceptionInfo)
         CONTEXT trashableContext = *pCtx;
         WriteStackDetails(&trashableContext, false, nullptr);
         printTracesForAllThreads(false);
-
-        Log(_T("====================================================="));
-        Log(_T("=== Full Dumps ==="));
-
-        trashableContext = *pCtx;
-        WriteStackDetails(&trashableContext, true, nullptr);
-        printTracesForAllThreads(true);
 
         SymCleanup(GetCurrentProcess());
     }
