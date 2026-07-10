@@ -34,6 +34,13 @@
 #include <regex>
 #include <string>
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+
 #ifdef _MSC_VER
 #include <intrin.h>
 #endif
@@ -900,6 +907,15 @@ void crash()
     int* volatile ptr = nullptr;
     // cppcheck-suppress nullPointer
     *ptr = 0xDEAD;
+}
+
+[[noreturn]] void terminateProcess(int exitCode)
+{
+#ifdef _WIN32
+    TerminateProcess(GetCurrentProcess(), static_cast<UINT>(exitCode));
+#else
+    _exit(exitCode);
+#endif
 }
 
 std::unique_ptr<FILE> utils::openFile(const std::string& path, const std::string& mode)
