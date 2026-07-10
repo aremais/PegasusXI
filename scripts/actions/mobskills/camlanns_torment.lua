@@ -16,7 +16,6 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 1
     params.fTP            = { 3.0, 3.0, 3.0 }
-    -- params.vit_wSC     = 0.6 -- TODO: Capture if mobskill weaponskills have wSC.
     params.ignoreDefense  = { 0.15, 0.35, 0.5 }
     params.attackType     = xi.attackType.PHYSICAL
     params.damageType     = xi.damageType.PIERCING

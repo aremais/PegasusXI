@@ -1,10 +1,10 @@
 -----------------------------------
 -- Powder Keg
--- Family: Humanoid (Lion)
--- Description: Conal physical damage. Additional Effect: Defense Down, Knockback, Magic Defense Down
--- Skillchain Properties: Fusion/Compression
+-- Lion Trust TP move. Conal damage + Defense Down + Magic Defense Down.
 -----------------------------------
----@type TMobSkill
+require('scripts/globals/mobskills')
+-----------------------------------
+
 local mobskillObject = {}
 
 mobskillObject.onMobSkillCheck = function(target, mob, skill)
@@ -13,10 +13,9 @@ end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
-
     params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 1
-    params.fTP            = { 0.3, 0.3, 0.3 }
+    params.fTP            = { 1.5, 1.5, 1.5 }
     params.attackType     = xi.attackType.PHYSICAL
     params.damageType     = xi.damageType.PIERCING
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1
@@ -25,8 +24,6 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
 
     if xi.mobskills.processDamage(mob, target, skill, action, info) then
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)
-
-        -- TODO: Capture power/durations
         xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.DEFENSE_DOWN, 20, 0, 60)
         xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.MAGIC_DEF_DOWN, 20, 0, 60)
     end

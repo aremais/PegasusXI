@@ -24,6 +24,9 @@ spellObject.onMobSpawn = function(mob)
         end
     end)
 
+    -- Source notes: only Ground Strike, Last Resort, Souleater, Stun TP moves, occasional Double Attack.
+    mob:addMod(xi.mod.DOUBLE_ATTACK, 10)
+
     -- Stun all the things!
     mob:addGambit(ai.t.TARGET, { ai.c.READYING_WS, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.STUN })
 
@@ -38,7 +41,7 @@ spellObject.onMobSpawn = function(mob)
 
     mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.LAST_RESORT })
 
-    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.RANDOM, 3000)
+    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.HIGHEST, 3000)
 end
 
 spellObject.onMobDespawn = function(mob)

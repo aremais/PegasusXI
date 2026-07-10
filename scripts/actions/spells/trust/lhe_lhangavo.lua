@@ -1,7 +1,8 @@
 -----------------------------------
 -- Trust: Lhe Lhangavo
 -----------------------------------
----@type TSpellTrust
+require('scripts/globals/trust')
+-----------------------------------
 local spellObject = {}
 
 spellObject.onMagicCastingCheck = function(caster, target, spell)
@@ -15,34 +16,22 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    local lvl = mob:getMainLvl()
+    -- Source target: MNK/WAR bare-hand Trust.
+    mob:addMod(xi.mod.COUNTER, 10)
+    mob:addMod(xi.mod.DOUBLE_ATTACK, 10)
+    mob:addMod(xi.mod.KICK_ATTACK_RATE, 10)
 
-    -- Lhe Lhangavo: MNK/WAR.
-    if lvl >= 15 then
-        mob:addGambit(ai.t.SELF,   { ai.c.ALWAYS, 0 },  { ai.r.JA, ai.s.SPECIFIC, xi.ja.DODGE })
-    end
+    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 5 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.PROVOKE }, 30)
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 15 }, { ai.c.NOT_STATUS, xi.effect.DODGE } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.DODGE }, 180)
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 41 }, { ai.c.HPP_LT, 75 } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.CHAKRA }, 180)
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 88 }, { ai.c.NOT_STATUS, xi.effect.IMPETUS } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.IMPETUS }, 300)
 
-    if lvl >= 25 then
-        mob:addGambit(ai.t.SELF,   { ai.c.ALWAYS, 0 },  { ai.r.JA, ai.s.SPECIFIC, xi.ja.FOCUS })
-    end
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 10 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 4 }) -- Backhand Blow
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 40 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 5 }) -- Raging Fists
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 60 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 8 }) -- Dragon Kick
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 71 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 9 }) -- Asuran Fists
 
-    if lvl >= 88 then
-        mob:addGambit(ai.t.SELF,   { ai.c.ALWAYS, 0 },  { ai.r.JA, ai.s.SPECIFIC, xi.ja.IMPETUS })
-    end
-
-    if lvl >= 75 then
-        mob:addGambit(ai.t.SELF,   { ai.c.ALWAYS, 0 },  { ai.r.JA, ai.s.SPECIFIC, xi.ja.FORMLESS_STRIKES })
-    end
-
-    if lvl >= 35 then
-        mob:addGambit(ai.t.SELF,   { ai.c.HPP_LT, 50 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.CHAKRA })
-    end
-
-    if lvl >= 5 then
-        mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 },  { ai.r.JA, ai.s.SPECIFIC, xi.ja.PROVOKE })
-    end
-
-    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.RANDOM, 3000)
+    mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.RANDOM, 1000)
 end
 
 spellObject.onMobDespawn = function(mob)

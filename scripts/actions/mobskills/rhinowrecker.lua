@@ -1,13 +1,10 @@
 -----------------------------------
 -- Rhinowrecker
 -- Family: Beetle
--- Description: Deals physical damage to all enemies in a fan-shaped area in front of pet.
---              Additional Effect: Defense Down. Damage varies with TP.
--- Type: Physical
--- Utsusemi/Blink absorb: 3 shadows
--- Range: Fan-shaped AoE
--- Skillchain: Fusion / Transfixion
--- TODO: Verify fTP and Defense Down power/duration from retail captures.
+-- Description : Powerful physical attack to enemies in a cone. Additional Effect: Defense Down, Knockback
+-- Range: Cone originating from caster.
+-- TODO: Verify animation ID, skill is currently commented out in mob_skills.sql
+-- Defense down power is NM specific. Abyssea only move. Needs captures.
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -21,17 +18,18 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
 
     params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 1
-    params.fTP            = { 2.5, 3.0, 3.5 } -- TODO: Verify from retail captures
+    params.fTP            = { 3.0, 3.0, 3.0 }
     params.attackType     = xi.attackType.PHYSICAL
-    params.damageType     = xi.damageType.SLASHING
-    params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_3
+    params.damageType     = xi.damageType.BLUNT
+    params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_3 -- TODO: Capture shadowBehavior
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 
     if xi.mobskills.processDamage(mob, target, skill, action, info) then
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)
 
-        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.DEFENSE_DOWN, 25, 0, 60) -- TODO: Verify power/duration
+        -- TODO: DEF Down power varies depending on mob
+        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.DEFENSE_DOWN, 25, 0, 180)
     end
 
     return info.damage

@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -112,7 +112,7 @@ CBattleEntity::~CBattleEntity()
 
 bool CBattleEntity::IsDualWielding()
 {
-    if (objtype == TYPE_MOB)
+    if (objtype == TYPE_MOB || objtype == TYPE_TRUST)
     {
         return static_cast<CMobEntity*>(this)->getMobMod(MOBMOD_DUAL_WIELD) != 0;
     }

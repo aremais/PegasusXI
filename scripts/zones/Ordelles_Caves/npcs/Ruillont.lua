@@ -12,9 +12,9 @@ entity.onTrigger = function(player, npc)
 
     -- Ruillont Default Actions vary based on Nation
     if player:getNation() == xi.nation.SANDORIA then
-        player:showText(npc, ID.text.RUILLONT_SANDORIA_DIALOG, 0, 0, 0, 0, true, false) -- 7366
+        player:showText(npc, ID.text.RUILLONT_SANDORIA_DIALOG, 0, 0, 0, 0, true, false) -- 7364
     else
-        player:showText(npc, ID.text.RUILLONT_DEFAULT_DIALOG, 0, 0, 0, 0, true, false) -- 7370
+        player:showText(npc, ID.text.RUILLONT_DEFAULT_DIALOG, 0, 0, 0, 0, true, false) -- 7368
     end
 end
 

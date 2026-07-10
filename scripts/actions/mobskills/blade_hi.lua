@@ -16,7 +16,6 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 1
     params.fTP            = { 4.0, 4.0, 4.0 }
-    -- params.agi_wSC     = 0.6 -- TODO: Capture if mobskill weaponskills have wSC.
     params.attackType     = xi.attackType.PHYSICAL
     params.damageType     = xi.damageType.SLASHING
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1

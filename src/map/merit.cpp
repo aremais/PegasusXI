@@ -23,8 +23,16 @@
 #include "entities/charentity.h"
 
 #include "map_engine.h"
+#include "packets/char_status.h"
+#include "packets/char_sync.h"
+#include "packets/s2c/0x061_clistatus.h"
+#include "packets/s2c/0x062_clistatus2.h"
+#include "packets/s2c/0x063_miscdata_merits.h"
+#include "packets/s2c/0x063_miscdata_monstrosity.h"
+#include "packets/s2c/0x08c_merit.h"
 #include "packets/s2c/0x0aa_magic_data.h"
 #include "packets/s2c/0x0ac_command_data.h"
+#include "packets/s2c/0x119_abil_recast.h"
 #include "utils/charutils.h"
 
 // clang-format off
@@ -385,6 +393,84 @@ void CMeritPoints::RaiseMerit(MERIT_TYPE merit)
         // Reset traits
         charutils::BuildingCharTraitsTable(m_PChar);
     }
+}
+
+void CMeritPoints::MaxAllMerits()
+{
+    bool spellsChanged = false;
+    bool wsChanged     = false;
+
+    for (uint16 i = 0; i < MERITS_COUNT; ++i)
+    {
+        Merit_t& merit = merits[i];
+
+        if (merit.id == 0 || merit.upgrade == 0)
+        {
+            continue;
+        }
+
+        if (merit.count >= merit.upgrade)
+        {
+            continue;
+        }
+
+        merit.count = static_cast<uint8>(merit.upgrade);
+
+        if (merit.spellid != 0)
+        {
+            if (charutils::addSpell(m_PChar, merit.spellid))
+            {
+                charutils::SaveSpell(m_PChar, merit.spellid);
+                spellsChanged = true;
+            }
+        }
+
+        if (merit.wsunlockid != 0 && !charutils::hasLearnedWeaponskill(m_PChar, merit.wsunlockid))
+        {
+            charutils::addLearnedWeaponskill(m_PChar, merit.wsunlockid);
+            wsChanged = true;
+        }
+    }
+
+    m_MeritPoints = 0;
+    SaveMeritPoints(m_PChar->id);
+
+    if (wsChanged)
+    {
+        charutils::BuildingCharWeaponSkills(m_PChar);
+        charutils::SaveLearnedAbilities(m_PChar);
+    }
+
+    charutils::BuildingCharTraitsTable(m_PChar);
+    charutils::BuildingCharSkillsTable(m_PChar);
+    charutils::CalculateStats(m_PChar);
+    charutils::CheckValidEquipment(m_PChar);
+    charutils::BuildingCharAbilityTable(m_PChar);
+
+    m_PChar->UpdateHealth();
+    m_PChar->addHP(m_PChar->GetMaxHP());
+    m_PChar->addMP(m_PChar->GetMaxMP());
+
+    m_PChar->pushPacket<GP_SERV_COMMAND_MISCDATA::MERITS>(m_PChar);
+    m_PChar->pushPacket<GP_SERV_COMMAND_MISCDATA::MONSTROSITY1>(m_PChar);
+    m_PChar->pushPacket<GP_SERV_COMMAND_MISCDATA::MONSTROSITY2>(m_PChar);
+
+    if (spellsChanged)
+    {
+        m_PChar->pushPacket<GP_SERV_COMMAND_MAGIC_DATA>(m_PChar);
+    }
+
+    if (wsChanged)
+    {
+        m_PChar->pushPacket<GP_SERV_COMMAND_COMMAND_DATA>(m_PChar);
+    }
+
+    m_PChar->pushPacket<CCharStatusPacket>(m_PChar);
+    m_PChar->pushPacket<GP_SERV_COMMAND_CLISTATUS>(m_PChar);
+    m_PChar->pushPacket<GP_SERV_COMMAND_CLISTATUS2>(m_PChar);
+    m_PChar->pushPacket<GP_SERV_COMMAND_ABIL_RECAST>(m_PChar);
+    m_PChar->pushPacket<CCharSyncPacket>(m_PChar);
+    charutils::SendExtendedJobPackets(m_PChar);
 }
 
 void CMeritPoints::LowerMerit(MERIT_TYPE merit)

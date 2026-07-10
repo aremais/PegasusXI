@@ -14,8 +14,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
     -- TODO: Physical or Ranged PDIF?
-    local wdmg = mob:getWeaponDmg()
-    params.baseDamage       = (wdmg > 0) and wdmg or mob:getMainLvl()
+    params.baseDamage       = mob:getWeaponDmg()
     params.numHits          = 1
     params.fTP              = { 1.5, 1.5, 1.5 }
     params.attackType       = xi.attackType.PHYSICAL

@@ -17,14 +17,16 @@ spellObject.onMobSpawn = function(mob)
         [xi.magic.spell.CURILLA] = xi.trust.messageOffset.TEAMWORK_1,
     })
 
-    -- TODO: Selection based on enemy weakness
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 50 }, { ai.c.NOT_STATUS, xi.effect.COMPOSURE } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.COMPOSURE })
+
+    -- HELD: Source says Enspell selection is based on enemy weakness; local implementation uses Enfire as a safe approximation.
     mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.ENFIRE }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.ENFIRE })
 
     mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.EVASION_DOWN }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.DISTRACT }, 60)
 
     mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.PHALANX }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.PHALANX })
     mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.HASTE }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.HASTE })
-    mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.REFRESH }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.REFRESH })
+    mob:addGambit(ai.t.SELF, { ai.c.MPP_LT, 50 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.REFRESH })
 
     -- If Curilla is present, will cast Haste/Phalanx/Refresh on her.
     mob:addGambit(ai.t.CURILLA, { ai.c.NOT_STATUS, xi.effect.HASTE }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.HASTE })

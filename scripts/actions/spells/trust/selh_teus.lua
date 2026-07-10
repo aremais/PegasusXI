@@ -15,16 +15,17 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    -- Retail-style Selh'teus:
-    -- Regain +50, MP +100%, non-melee support positioning.
-    -- Special moves:
-    -- xi.mobSkill.LUMINOUS_LANCE_1 = 1508
-    -- xi.mobSkill.REJUVENATION_1   = 1509
-    -- xi.mobSkill.REVELATION_1     = 1510
-    mob:addMod(xi.mod.REGAIN, 50)
+    -- Source notes: MP+100%, 50 Regain, Rejuvenation when a player
+    -- drops to yellow HP or is asleep, and holds TP until 3000 to close SC.
     mob:addMod(xi.mod.MPP, 100)
-    mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.NON_COMBAT)
-    mob:setMobMod(xi.mobMod.SKILL_LIST, 1094)
+    mob:addMod(xi.mod.REGAIN, 50)
+
+    mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 75 }, { ai.r.MS, ai.s.SPECIFIC, 1509 }, 30)
+    mob:addGambit(ai.t.PARTY, { ai.c.STATUS, xi.effect.SLEEP_I }, { ai.r.MS, ai.s.SPECIFIC, 1509 }, 30)
+    mob:addGambit(ai.t.PARTY, { ai.c.STATUS, xi.effect.SLEEP_II }, { ai.r.MS, ai.s.SPECIFIC, 1509 }, 30)
+
+    -- Approximation: retail behavior specifically responds to the player/master,
+    -- but party targeting is safer with current gambit helpers.
     mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.HIGHEST, 3000)
 end
 

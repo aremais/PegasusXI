@@ -1,6 +1,7 @@
 -----------------------------------
 -- Sharp Eye
--- Inflicts Gravity/Weight on targets in front of Chacharoon.
+-- Trust: Chacharoon
+-- Description: Inflicts Weight/Gravity-style movement down and Defense Down.
 -----------------------------------
 require('scripts/globals/mobskills')
 -----------------------------------
@@ -12,8 +13,10 @@ mobskillObject.onMobSkillCheck = function(target, mob, skill)
 end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
-    skill:setMsg(xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.WEIGHT, 50, 0, 60))
+    local weightMsg = xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.WEIGHT, 50, 0, 60)
+    xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.DEFENSE_DOWN, 25, 0, 60)
 
+    skill:setMsg(weightMsg)
     return xi.effect.WEIGHT
 end
 
