@@ -1,9 +1,8 @@
 -----------------------------------
 -- Peacebreaker
--- Family: Humanoid (Naja Salaheem)
--- Description: Deals damage to a target. Additional Effect: Magic Defense Down
--- Notes: Peacebreaker increases Magic Damage Taken on the target (~2x Magic Damage),
---        making Naja a good fit with offensive magic jobs such as Rune Fencer.
+-- Family: Humanoid (Trust: Naja Salaheem)
+-- Description: Deals damage. Additional Effect: Defense Down and Magic Defense Down.
+-- Source notes: BG lists 20% Defense Down and 20% Magic Defense Down, lasting up to 30s.
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -17,7 +16,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
 
     params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 1
-    params.fTP            = { 2.0, 2.0, 2.0 } -- TODO: Capture fTPs
+    params.fTP            = { 2.0, 2.0, 2.0 } -- Approximation; exact fTP not captured.
     params.attackType     = xi.attackType.PHYSICAL
     params.damageType     = xi.damageType.BLUNT
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1
@@ -27,8 +26,8 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     if xi.mobskills.processDamage(mob, target, skill, action, info) then
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)
 
-        -- TODO: This should be Increases Magic Damage Taken, but this was faster/easier
-        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.MAGIC_DEF_DOWN, 50, 0, 60)
+        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.DEFENSE_DOWN, 20, 0, 30)
+        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.MAGIC_DEF_DOWN, 20, 0, 30)
     end
 
     return info.damage

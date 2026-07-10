@@ -189,9 +189,6 @@ INSERT INTO `mob_pool_mods` VALUES (2271,165,15,0); -- CRITHITRATE: 15
 -- Ladon
 INSERT INTO `mob_pool_mods` VALUES (2314,28,23,1); -- EXP_BONUS: 23
 
--- Mammet-19 Epsilon
-INSERT INTO `mob_pool_mods` VALUES (2499,240,90,0); -- SLEEPRES: 90
-
 -- Minotaur
 INSERT INTO `mob_pool_mods` VALUES (2675,4,25,1); -- SIGHT_RANGE: 25
 
@@ -467,30 +464,8 @@ INSERT INTO `mob_pool_mods` VALUES (4672,3,100,1); -- MP_BASE: 100
 -- Suzaku Pet
 INSERT INTO `mob_pool_mods` VALUES (4673,3,100,1); -- MP_BASE: 100
 
--- Maat Blm
-INSERT INTO `mob_pool_mods` VALUES (4836,62,1,1); -- NO_STANDBACK: 1
-
--- Maat Rng
-INSERT INTO `mob_pool_mods` VALUES (4837,62,1,1); -- NO_STANDBACK: 1
-
--- Maat Bst
-INSERT INTO `mob_pool_mods` VALUES (4932,30,1017,1); -- SPECIAL_SKILL: 1017
-INSERT INTO `mob_pool_mods` VALUES (4932,33,50,1);   -- SPECIAL_COOL: 50
-
--- Maat Nin
-INSERT INTO `mob_pool_mods` VALUES (5403,62,1,1); -- NO_STANDBACK: 1
-
--- Maat Pld
-INSERT INTO `mob_pool_mods` VALUES (5408,30,1036,1); -- SPECIAL_SKILL: 1036
-INSERT INTO `mob_pool_mods` VALUES (5408,33,50,1);   -- SPECIAL_COOL: 50
-INSERT INTO `mob_pool_mods` VALUES (5408,58,40,1);   -- SPECIAL_DELAY: 40
-
--- Maat Drk
-INSERT INTO `mob_pool_mods` VALUES (5409,30,1036,1); -- SPECIAL_SKILL: 1036
-INSERT INTO `mob_pool_mods` VALUES (5409,33,50,1);   -- SPECIAL_COOL: 50
-INSERT INTO `mob_pool_mods` VALUES (5409,58,40,1);   -- SPECIAL_DELAY: 40
-
 -- Trust: Shikaree Z
+INSERT INTO `mob_pool_mods` VALUES (5915,3,-10,0); -- Shikaree Z: HPP -10
 INSERT INTO `mob_pool_mods` VALUES (5915,6,100,0);      -- MPP: 100
 
 -- Trust: Lehko
@@ -514,6 +489,9 @@ INSERT INTO `mob_pool_mods` VALUES (5944,6,35,0);       -- MPP: 35
 -- Trust: Rahal
 INSERT INTO `mob_pool_mods` VALUES (5951,233,8,0); -- DRAGON_KILLER: 8
 
+-- Trust: Prishe
+INSERT INTO `mob_pool_mods` VALUES (5913,3,-5,0);       -- HPP: -5
+INSERT INTO `mob_pool_mods` VALUES (5913,6,75,0);       -- MPP: 75
 -- Trust: Prishe II
 INSERT INTO `mob_pool_mods` VALUES (6011,165,25,0);     -- CRITHITRATE: 25
 
@@ -522,6 +500,16 @@ INSERT INTO `mob_pool_mods` VALUES (6019,3,-10,0);      -- HPP: -10
 
 -- Kaiser Behemoth (Apollyon NW)
 INSERT INTO `mob_pool_mods` VALUES (6732,3,100,1); -- MP_BASE: 100
+
+-- Nashmeira Trust: MP+70%
+INSERT INTO `mob_pool_mods` VALUES (5923,2,70,1);
+
+-- King of Hearts
+INSERT INTO `mob_pool_mods` VALUES (5989,1,25,1); -- HP +25%
+INSERT INTO `mob_pool_mods` VALUES (5989,2,80,1); -- MP +80%
+
+-- Arciela: MP +20% retail/wiki trait
+INSERT INTO `mob_pool_mods` VALUES (5965,2,20,1);
 
 /*!40000 ALTER TABLE `mob_pool_mods` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -534,3 +522,4 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+

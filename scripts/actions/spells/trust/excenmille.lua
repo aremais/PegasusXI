@@ -5,7 +5,7 @@
 local spellObject = {}
 
 spellObject.onMagicCastingCheck = function(caster, target, spell)
-    return xi.trust.canCast(caster, spell, xi.magic.spell.EXCENMILLE)
+    return xi.trust.canCast(caster, spell, xi.magic.spell.EXCENMILLE_S)
 end
 
 spellObject.onSpellCast = function(caster, target, spell)
@@ -27,20 +27,17 @@ spellObject.onMobSpawn = function(mob)
         [xi.magic.spell.RAHAL] = xi.trust.messageOffset.TEAMWORK_1,
     })
 
-    local lvl = mob:getMainLvl()
-
-    if lvl >= 30 then
-        mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.SENTINEL }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SENTINEL })
-    end
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 30 }, { ai.c.NOT_STATUS, xi.effect.SENTINEL } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SENTINEL })
 
     mob:addGambit(ai.t.TARGET, { ai.c.NOT_STATUS, xi.effect.FLASH }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLASH })
 
-    mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 75 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.CURE })
+    -- Retail behavior: cures orange HP normally. The special <75% threshold
+    -- when no WHM is present is held because current gambits do not expose
+    -- a safe party-composition condition.
+    mob:addGambit(ai.t.PARTY, { ai.c.HPP_LT, 50 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.CURE })
 
     mob:addMod(xi.mod.STORETP, 25)
-
-    -- Uses existing DB skill list 1014: Double Thrust, Leg Sweep, Penta Thrust.
-    mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.RANDOM, 1500)
+    mob:addMod(xi.mod.UNDEAD_KILLER, 8)
 end
 
 spellObject.onMobDespawn = function(mob)

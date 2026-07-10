@@ -9802,6 +9802,26 @@ void CLuaBaseEntity::masterJob()
 }
 
 /************************************************************************
+ *  Function: maxAllMerits()
+ *  Purpose : GM override - max every merit to its rank cap
+ *  Example : player:maxAllMerits()
+ *  Notes   : Used in GM command
+ ************************************************************************/
+
+void CLuaBaseEntity::maxAllMerits()
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowDebug("Warning: Attempt to max merits for non-PC type!");
+        return;
+    }
+
+    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
+
+    PChar->PMeritPoints->MaxAllMerits();
+}
+
+/************************************************************************
  *  Function: getGil()
  *  Purpose : Returns the total amount of a gil a player has
  *  Example : player:getGil()
@@ -20925,6 +20945,7 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("delJobPoints", CLuaBaseEntity::delJobPoints);
     SOL_REGISTER("getJobPoints", CLuaBaseEntity::getJobPoints);
     SOL_REGISTER("masterJob", CLuaBaseEntity::masterJob);
+    SOL_REGISTER("maxAllMerits", CLuaBaseEntity::maxAllMerits);
 
     SOL_REGISTER("getGil", CLuaBaseEntity::getGil);
     SOL_REGISTER("addGil", CLuaBaseEntity::addGil);

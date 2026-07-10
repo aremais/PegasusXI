@@ -1,0 +1,1 @@
+-- REVERTED: qm2 / look-117 changes reverted. Use fix_talacca_cove_revert_qm.sql instead.

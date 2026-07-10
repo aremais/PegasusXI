@@ -44,6 +44,9 @@ spellObject.onMobSpawn = function(mob)
     mob:addMod(xi.mod.STORETP, 86)
 
     mob:setMobMod(xi.mobMod.TRUST_DISTANCE, xi.trust.movementType.LONG_RANGE)
+
+    -- BGWiki notes Semih Lafihna can hold up to 2000 TP to try to close skillchains.
+    mob:addGambit(ai.t.SELF, { ai.c.TP_GTE, 2000 }, { ai.r.WS, ai.s.HIGHEST, 0 })
 end
 
 spellObject.onMobDespawn = function(mob)

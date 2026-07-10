@@ -2,7 +2,6 @@
 -- Dragon Kick
 -- Family: Humanoid Hand to Hand Weaponskill
 -- Description: Delivers a twofold attack. Damage varies with TP.
--- TODO: Effected by Kick Attacks bonuses?
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -17,10 +16,8 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     params.baseDamage     = mob:getWeaponDmg()
     params.numHits        = 2
     params.fTP            = { 2.0, 2.5, 3.5 }
-    --params.str_wSC      = 0.5 -- TODO: Capture if mobskill weaponskills have wSC.
-    --params.vit_wSC      = 0.5 -- TODO: Capture if mobskill weaponskills have wSC.
     params.attackType     = xi.attackType.PHYSICAL
-    params.damageType     = xi.damageType.HTH
+    params.damageType     = xi.damageType.HAND_TO_HAND
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_2
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)

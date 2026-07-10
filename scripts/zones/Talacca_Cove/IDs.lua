@@ -54,12 +54,18 @@ zones[xi.zone.TALACCA_COVE] =
     },
     mob =
     {
+        -- Fished up
+        WOOTZSHELL      = GetFirstID('Wootzshell'),
+        ARRAPAGO_LEECH  = GetFirstID('Arrapago_Leech'),
+        TALACCA_CLOT    = GetFirstID('Talacca_Clot'),
+        LAHAMA          = GetFirstID('Lahama'),
+        LLAMHIGYN_Y_DWR = GetFirstID('Llamhigyn_Y_Dwr'),
+        GIANT_OROBON    = GetFirstID('Giant_Orobon'),
+
+        -- Battlefield / event
         GESSHO  = GetFirstID('Gessho'),
         QULTADA = GetFirstID('Qultada'),
         VALKENG = GetFirstID('Valkeng'),
-    },
-    npc =
-    {
     },
 }
 

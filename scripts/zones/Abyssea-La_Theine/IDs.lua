@@ -8,8 +8,8 @@ zones[xi.zone.ABYSSEA_LA_THEINE] =
     text =
     {
         ITEM_CANNOT_BE_OBTAINED       = 6385, -- You cannot obtain the <item>. Come back after sorting your inventory.
-        ITEM_OBTAINED                 = 6393, -- Obtained: <item>.
-        GIL_OBTAINED                  = 6394, -- Obtained <number> gil.
+        ITEM_OBTAINED                 = 6391, -- Obtained: <item>.
+        GIL_OBTAINED                  = 6392, -- Obtained <number> gil.
         KEYITEM_OBTAINED              = 6394, -- Obtained key item: <keyitem>.
         LOST_KEYITEM                  = 6395, -- Lost key item: <keyitem>.
         CRUOR_TOTAL                   = 6990, -- Obtained <number> cruor. (Total: <number>)

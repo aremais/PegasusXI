@@ -1,24 +1,26 @@
 -----------------------------------
 -- Songbird Swoop
--- Trust: Excenmille (S)
--- Physical damage
+-- Excenmille (S) Trust TP move.
+-- Conservative physical damage implementation.
 -----------------------------------
----@type TMobSkill
+require('scripts/globals/mobskills')
+-----------------------------------
+
 local mobskillObject = {}
 
 mobskillObject.onMobSkillCheck = function(target, mob, skill)
+    mob:messageBasic(xi.msg.basic.READIES_WS, 0, skill:getID())
     return 0
 end
 
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
-
     params.baseDamage     = mob:getWeaponDmg()
-    params.numHits        = 2
-    params.fTP            = { 1.0, 1.25, 1.5 }
+    params.numHits        = 1
+    params.fTP            = { 2.0, 2.0, 2.0 }
     params.attackType     = xi.attackType.PHYSICAL
     params.damageType     = xi.damageType.SLASHING
-    params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_2
+    params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 

@@ -481,6 +481,7 @@ public:
     uint16 getJobPoints(JOBTYPE jobID);
     void   setCapacityPoints(uint16 amount);
     void   masterJob();
+    void   maxAllMerits();
 
     uint32 getGil();
     void   addGil(int32 gil);

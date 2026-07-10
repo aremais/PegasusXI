@@ -559,6 +559,7 @@ public:
 
     void RaiseMerit(MERIT_TYPE merit);
     void LowerMerit(MERIT_TYPE merit);
+    void MaxAllMerits();
 
     void SetLimitPoints(uint16 points); // used for loading player limit points on login
     void SetMeritPoints(uint16 points); // used for loading player merit points on login

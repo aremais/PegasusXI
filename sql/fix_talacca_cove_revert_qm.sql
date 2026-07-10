@@ -1,0 +1,2 @@
+-- DEPRECATED: Do not run. This migration corrupted qm1 look by setting look = 57 (integer).
+-- Use fix_talacca_cove_corsair_quest.sql instead.

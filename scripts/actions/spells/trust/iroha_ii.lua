@@ -1,11 +1,12 @@
 -----------------------------------
 -- Trust: Iroha II
 -----------------------------------
----@type TSpellTrust
+require('scripts/globals/trust')
+-----------------------------------
 local spellObject = {}
 
 spellObject.onMagicCastingCheck = function(caster, target, spell)
-    return xi.trust.canCast(caster, spell, xi.magic.spell.IROHA)
+    return xi.trust.canCast(caster, spell)
 end
 
 spellObject.onSpellCast = function(caster, target, spell)
@@ -15,28 +16,28 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    local lvl = mob:getMainLvl()
+    -- Source target: WHM/SAM Naginata/Polearm Trust with Protectra V, Shellra V, Flare II MB, and Rise from Ashes.
+    mob:addMod(xi.mod.HPP, -5)
+    mob:addMod(xi.mod.MPP, 250)
+    mob:addMod(xi.mod.DOUBLE_ATTACK, 10)
 
-    -- Iroha II: SAM/WHM melee skillchain closer with Flare II magic burst.
-    -- Retail/wiki-confirmed abilities: Third Eye, Hasso, Meditate.
-    if lvl >= 25 then
-        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.HASSO })
-    end
+    mob:addGambit(ai.t.PARTY, { { ai.c.LVL_GTE, 75 }, { ai.c.NOT_STATUS, xi.effect.PROTECT } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.PROTECTRA_V })
+    mob:addGambit(ai.t.PARTY, { { ai.c.LVL_GTE, 75 }, { ai.c.NOT_STATUS, xi.effect.SHELL } }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.SHELLRA_V })
+    mob:addGambit(ai.t.TARGET, { ai.c.MB_AVAILABLE, 0 }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLARE_II })
 
-    if lvl >= 15 then
-        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.THIRD_EYE })
-    end
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 15 }, { ai.c.NOT_STATUS, xi.effect.THIRD_EYE } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.THIRD_EYE }, 30)
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 25 }, { ai.c.NOT_STATUS, xi.effect.HASSO } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.HASSO }, 60)
+    mob:addGambit(ai.t.SELF, { ai.c.LVL_GTE, 30 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.MEDITATE }, 180)
 
-    if lvl >= 30 then
-        mob:addGambit(ai.t.SELF, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.MEDITATE })
-    end
+    mob:addGambit(ai.t.PARTY, { { ai.c.LVL_GTE, 75 }, { ai.c.STATUS, xi.effect.SLEEP_I }, { ai.c.TP_GTE, 1000 } }, { ai.r.MS, ai.s.SPECIFIC, 3738 }, 30) -- Rise from Ashes
+    mob:addGambit(ai.t.PARTY, { { ai.c.LVL_GTE, 75 }, { ai.c.STATUS, xi.effect.SLEEP_II }, { ai.c.TP_GTE, 1000 } }, { ai.r.MS, ai.s.SPECIFIC, 3738 }, 30) -- Rise from Ashes
+    mob:addGambit(ai.t.PARTY, { { ai.c.LVL_GTE, 75 }, { ai.c.HPP_LT, 75 }, { ai.c.TP_GTE, 1000 } }, { ai.r.MS, ai.s.SPECIFIC, 3738 }, 30) -- Rise from Ashes approximation
 
-    -- Retail/wiki: casts Protectra V, Shellra V, and magic bursts with Flare II.
-    mob:addGambit(ai.t.PARTY,  { ai.c.NOT_STATUS, xi.effect.PROTECT }, { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.PROTECTRA_V })
-    mob:addGambit(ai.t.PARTY,  { ai.c.NOT_STATUS, xi.effect.SHELL },   { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.SHELLRA_V })
-    mob:addGambit(ai.t.TARGET, { ai.c.MB_AVAILABLE, 0 },               { ai.r.MA, ai.s.SPECIFIC, xi.magic.spell.FLARE_II }, 60)
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 40 }, { ai.c.TP_GTE, 1000 } }, { ai.r.MS, ai.s.SPECIFIC, 3733 }, 30) -- Amatsu: Kyori
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 50 }, { ai.c.TP_GTE, 1000 } }, { ai.r.MS, ai.s.SPECIFIC, 3734 }, 30) -- Amatsu: Hanadoki
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 60 }, { ai.c.TP_GTE, 1000 } }, { ai.r.MS, ai.s.SPECIFIC, 3737 }, 30) -- Amatsu: Suien
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 75 }, { ai.c.TP_GTE, 1000 } }, { ai.r.MS, ai.s.SPECIFIC, 3736 }, 30) -- Amatsu: Gachirin
 
-    -- Holds TP to close skillchains.
     mob:setTrustTPSkillSettings(ai.tp.CLOSER_UNTIL_TP, ai.s.RANDOM, 2500)
 end
 

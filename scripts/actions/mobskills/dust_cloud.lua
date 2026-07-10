@@ -1,13 +1,7 @@
 -----------------------------------
 -- Dust Cloud
--- Family: Rabbit
--- Description: Deals Earth elemental damage to enemies in a fan-shaped area.
---              Additional Effect: Blind. Damage varies with TP.
--- Type: Magical
--- Utsusemi/Blink absorb: Ignores shadows
--- Range: Fan-shaped AoE
--- Skillchain: N/A
--- TODO: Verify fTP and Blind power/duration from retail captures.
+-- Family: Rabbits
+-- Description: Deals Earth damage to targets in a fan-shaped area of effect. Additional Effect: Blind
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -20,7 +14,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
     params.baseDamage     = mob:getMainLvl() + 2
-    params.fTP            = { 1.5, 2.0, 2.5 } -- TODO: Verify from retail captures
+    params.fTP            = { 2.0, 2.0, 2.0 }
     params.element        = xi.element.EARTH
     params.attackType     = xi.attackType.MAGICAL
     params.damageType     = xi.damageType.EARTH
@@ -31,7 +25,7 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     if xi.mobskills.processDamage(mob, target, skill, action, info) then
         target:takeDamage(info.damage, mob, info.attackType, info.damageType)
 
-        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.BLINDNESS, 30, 0, 120) -- TODO: Verify power/duration
+        xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.BLINDNESS, 30, 0, 120)
     end
 
     return info.damage

@@ -19,7 +19,6 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     params.attackType     = xi.attackType.PHYSICAL
     params.damageType     = xi.damageType.SLASHING
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_3
-    -- TODO: Possible accuracy modifier
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 

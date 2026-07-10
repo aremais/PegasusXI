@@ -15,30 +15,27 @@ end
 spellObject.onMobSpawn = function(mob)
     xi.trust.message(mob, xi.trust.messageOffset.SPAWN)
 
-    local lvl = mob:getMainLvl()
-
-    if lvl >= 10 then
-        mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.JUMP })
+    if mob:getMainLvl() >= 50 then
+        mob:addMod(xi.mod.DOUBLE_ATTACK, 10)
     end
 
-    if lvl >= 30 then
-        mob:addGambit(ai.t.SELF, { ai.c.NOT_STATUS, xi.effect.BERSERK }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK })
-    end
+    -- LAX_FLAVIRIA_UC_RETAIL_BLOCK_START
+    -- Retail target: DRG/WAR melee Trust. No spells. Uses WS at 1000 TP and does not try to skillchain.
+    -- Super Jump is only used when Flaviria has top enmity.
 
-    if lvl >= 35 then
-        mob:addGambit(ai.t.TARGET, { ai.c.HAS_TOP_ENMITY, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.HIGH_JUMP })
-    end
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 30 }, { ai.c.NOT_STATUS, xi.effect.BERSERK } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.BERSERK })
 
-    if lvl >= 50 then
-        mob:addGambit(ai.t.SELF, { ai.c.HAS_TOP_ENMITY, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SUPER_JUMP })
-    end
+    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 10 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.JUMP })
+    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 35 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.HIGH_JUMP })
+    mob:addGambit(ai.t.SELF, { { ai.c.LVL_GTE, 50 }, { ai.c.HAS_TOP_ENMITY, 0 } }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.SUPER_JUMP })
+    mob:addGambit(ai.t.TARGET, { ai.c.LVL_GTE, 75 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.ANGON })
 
-    if lvl >= 75 then
-        mob:addGambit(ai.t.TARGET, { ai.c.ALWAYS, 0 }, { ai.r.JA, ai.s.SPECIFIC, xi.ja.ANGON })
-    end
-
-    -- Flaviria UC uses retail-close Polearm weapon skills as a DRG/WAR damage dealer.
-    mob:setTrustTPSkillSettings(ai.tp.ASAP, ai.s.HIGHEST)
+    -- Highest-level WS first so Flaviria upgrades cleanly as she levels.
+    -- Celidon's Torment 3500 currently displays but does not dispatch Lua on this branch, so use Camlann's Torment as the working retail approximation.
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 50 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 124 }) -- Celidon's Torment fallback
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 25 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 120 }) -- Impulse Drive
+    mob:addGambit(ai.t.TARGET, { { ai.c.LVL_GTE, 5 }, { ai.c.TP_GTE, 1000 } }, { ai.r.WS, ai.s.SPECIFIC, 118 }) -- Skewer
+    -- LAX_FLAVIRIA_UC_RETAIL_BLOCK_END
 end
 
 spellObject.onMobDespawn = function(mob)
