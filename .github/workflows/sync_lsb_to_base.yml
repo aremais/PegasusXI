@@ -1,0 +1,55 @@
+name: Sync LSB into base
+
+# Runs on GitHub (not the game server). Merges LandSandBoat/server base -> this repo's base.
+on:
+  schedule:
+    # Daily 08:00 UTC (04:00 US Eastern during EDT)
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-lsb-to-base
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Merge upstream/base into base
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout base
+        uses: actions/checkout@v6
+        with:
+          ref: base
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Add LandSandBoat upstream and fetch
+        run: |
+          git remote add upstream https://github.com/LandSandBoat/server.git
+          git fetch upstream base
+
+      - name: Merge upstream/base into base
+        id: merge
+        run: |
+          BEFORE=$(git rev-parse HEAD)
+          UPSTREAM=$(git rev-parse upstream/base)
+          echo "base before : $BEFORE"
+          echo "upstream tip: $UPSTREAM"
+          if [ "$BEFORE" = "$UPSTREAM" ]; then
+            echo "already_up_to_date=true" >> "$GITHUB_OUTPUT"
+            echo "Already up to date with LandSandBoat base."
+            exit 0
+          fi
+          echo "already_up_to_date=false" >> "$GITHUB_OUTPUT"
+          git merge --no-edit upstream/base
+
+      - name: Push base
+        if: steps.merge.outputs.already_up_to_date != 'true'
+        run: git push origin base
