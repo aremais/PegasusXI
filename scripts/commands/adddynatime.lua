@@ -2,6 +2,8 @@
 -- func: adddynatime
 -- desc: Adds an amount of time to the given target. If no target then to the current player.
 -----------------------------------
+require('scripts/globals/dynamis')
+
 ---@type TCommand
 local commandObj = {}
 
@@ -43,12 +45,10 @@ commandObj.onTrigger = function(player, minutes, target)
     end
 
     -- add time
-    local zoneId = targ:getZoneID()
-    local ID = zones[zoneId]
     local oldDuration = effect:getDuration()
     effect:setDuration((oldDuration + (minutes * 60)) * 1000)
     targ:setLocalVar('dynamis_lasttimeupdate', effect:getTimeRemaining() / 1000)
-    targ:messageSpecial(ID.text.DYNAMIS_TIME_EXTEND, minutes)
+    xi.dynamis.printTimeExtendEnglish(targ, minutes)
 end
 
 return commandObj

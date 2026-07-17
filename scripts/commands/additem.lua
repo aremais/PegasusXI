@@ -16,26 +16,29 @@ local function error(player, msg)
     player:printToPlayer('!additem <itemId> (quantity) (aug1) (v1) (aug2) (v2) (aug3) (v3) (aug4) (v4) (trial)')
 end
 
-commandObj.onTrigger = function(player, item, quantity, aug0, aug0val, aug1, aug1val, aug2, aug2val, aug3, aug3val, trialId)
-    -- Early return
-    if item == nil then
-        -- No Item Provided
-        error(player, 'No Item ID given.')
+-- Always use zone ITEM_OBTAINED.
+-- Do not use ITEMS_OBTAINED or ITEM_OBTAINED+9; Pegasus offsets differ from LSB.
+local function showItemObtained(player, itemId)
+    local ID = zones[player:getZoneID()]
+    if not ID or not ID.text or not ID.text.ITEM_OBTAINED then
+        return false
+    end
 
+    player:messageSpecial(ID.text.ITEM_OBTAINED, itemId)
+    return true
+end
+
+commandObj.onTrigger = function(player, item, quantity, aug0, aug0val, aug1, aug1val, aug2, aug2val, aug3, aug3val, trialId)
+    if item == nil then
+        error(player, 'No Item ID given.')
         return
     end
 
-    -----------------------------------
-    -- Validate first parameter (Item)
-    -----------------------------------
     local itemToGet = 0
     local dataType  = tonumber(item)
 
-    -- String or other.
     if dataType == nil then
-        -- Item was provided, but was not a number. Try text lookup.
         local retItem = GetItemIDByName(tostring(item))
-
         if retItem > 0 and retItem < 65000 then
             itemToGet = retItem
         elseif retItem >= 65000 then
@@ -45,45 +48,41 @@ commandObj.onTrigger = function(player, item, quantity, aug0, aug0val, aug1, aug
             player:printToPlayer(string.format('Item %s not found in database.', item))
             return
         end
-
-    -- Number
     else
-        -- Number was provided, so just use it
         itemToGet = dataType
     end
 
-    -- At this point, if there's no item found, exit out of the function
     if itemToGet == 0 then
         error(player, 'Item not found.')
         return
     end
 
-    -----------------------------------
-    -- Validate second parameter (Quantity) (Optional)
-    -----------------------------------
-    local ID = zones[player:getZoneID()]
-    quantity = quantity or 1
-
-    -- TODO: check qty and stack size + remaining inventory space instead of hardcoded == 0 check
-    -- Ensure the GM has room to obtain the item...
-    if player:getFreeSlotsCount() == 0 then
-        if quantity > 1 then
-            player:messageSpecial(ID.text.ITEM_CANNOT_BE_OBTAINED + 1, itemToGet)
-        else
-            player:messageSpecial(ID.text.ITEM_CANNOT_BE_OBTAINED, itemToGet)
-        end
-
+    local zoneId = player:getZoneID()
+    local ID     = zones[zoneId]
+    if not ID or not ID.text then
+        error(player, string.format('Zone text IDs are not loaded for zone %u.', zoneId))
         return
     end
 
-    -----------------------------------
-    -- Give the GM the item
-    -----------------------------------
-    local itemData =
-    {
-        id       = itemToGet,
-        quantity = quantity,
-    }
+    if not quantity or quantity < 1 then
+        quantity = 1
+    end
+
+    local itemProto = GetItemByID(itemToGet)
+    if not itemProto then
+        player:printToPlayer(string.format('Item ID %u is not in the item database.', itemToGet))
+        return
+    end
+
+    if itemProto:isType(xi.itemType.CURRENCY) then
+        player:printToPlayer(string.format('Item ID %u is currency. Use !givegil instead.', itemToGet))
+        return
+    end
+
+    if player:getFreeSlotsCount() == 0 then
+        player:messageSpecial(ID.text.ITEM_CANNOT_BE_OBTAINED, itemToGet)
+        return
+    end
 
     local hasExdata = false
     local augments  = {}
@@ -103,7 +102,18 @@ commandObj.onTrigger = function(player, item, quantity, aug0, aug0val, aug1, aug
         end
     end
 
-    if hasExdata or (trialId ~= nil and trialId > 0) then
+    if trialId ~= nil and trialId > 0 then
+        hasExdata = true
+    end
+
+    local itemData =
+    {
+        id       = itemToGet,
+        quantity = quantity,
+        silent   = true,
+    }
+
+    if hasExdata then
         itemData.exdata =
         {
             augmentKind    = xi.augment.kind.HAS_AUGMENTS,
@@ -120,13 +130,44 @@ commandObj.onTrigger = function(player, item, quantity, aug0, aug0val, aug1, aug
         end
     end
 
-    local obtained = player:addItem(itemData)
+    local itemFlags = GetItemFlagsByID(itemToGet)
+    if bit.band(itemFlags, xi.itemFlag.RARE) ~= 0 then
+        -- Rare items cannot be duplicated; remove any existing copy from all bags first.
+        for i = xi.inv.INVENTORY, xi.inv.WARDROBE8 do
+            while player:hasItem(itemToGet, i) do
+                player:delItem(itemToGet, 1, i)
+            end
+        end
+    end
 
-    if obtained then
-        if quantity and quantity > 1 then
-            player:messageSpecial(ID.text.ITEM_OBTAINED + 9, itemToGet, quantity)
+    local countBefore = player:getItemCount(itemToGet)
+    local obtained    = player:addItem(itemData)
+    local countAfter  = player:getItemCount(itemToGet)
+
+    if not obtained or countAfter <= countBefore then
+        if player:getFreeSlotsCount() == 0 then
+            player:printToPlayer(string.format(
+                'Failed to add item %u (%s): main inventory has no free slots.',
+                itemToGet,
+                itemProto:getName()
+            ))
         else
-            player:messageSpecial(ID.text.ITEM_OBTAINED, itemToGet)
+            player:printToPlayer(string.format(
+                'Failed to add item %u (%s). Check server logs for database errors.',
+                itemToGet,
+                itemProto:getName()
+            ))
+        end
+
+        return
+    end
+
+    local added = countAfter - countBefore
+    if not showItemObtained(player, itemToGet) then
+        if added > 1 then
+            player:printToPlayer(string.format('You obtain %u x %s!', added, itemProto:getName()), xi.msg.channel.SYSTEM_3)
+        else
+            player:printToPlayer(string.format('Obtained: %s.', itemProto:getName()), xi.msg.channel.SYSTEM_3)
         end
     end
 end

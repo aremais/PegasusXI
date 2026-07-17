@@ -1,6 +1,6 @@
 -----------------------------------
--- func: capallskills
--- desc: Caps all the players skills.
+-- func: nopants
+-- desc: Silly flavor text only (no equipment changes).
 -----------------------------------
 ---@type TCommand
 local commandObj = {}
@@ -12,8 +12,7 @@ commandObj.cmdprops =
 }
 
 commandObj.onTrigger = function(player)
-    player:capAllSkills()
-    player:printToPlayer('All skills capped!')
+    player:printToPlayer('The winds of Vana\'diel rustle suspiciously, then think better of it.')
 end
 
 return commandObj

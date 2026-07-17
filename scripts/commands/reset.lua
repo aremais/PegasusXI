@@ -59,8 +59,6 @@ commandObj.onTrigger = function(player, target)
         xi.effect.DOOM,
         xi.effect.CURSE_I,
         xi.effect.CURSE_II,
-        xi.effect.MEDICINE,
-        xi.effect.FOOD,
     }
 
     for _, v in pairs(effects) do
