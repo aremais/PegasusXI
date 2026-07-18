@@ -502,7 +502,7 @@ end
 --]]
 ---@param player CBaseEntity
 ---@param keyitems xi.keyItem|{ [integer]: xi.keyItem }
----@param msgId integer?
+---@param msgId integer|boolean? Custom message ID, or false to suppress the obtain message
 function npcUtil.giveKeyItem(player, keyitems, msgId)
     local ID            = zones[player:getZoneID()]
     local givenKeyItems = type(keyitems) == 'table' and keyitems or { keyitems }
@@ -514,8 +514,16 @@ function npcUtil.giveKeyItem(player, keyitems, msgId)
         if not player:hasKeyItem(keyItemId) then
             player:addKeyItem(keyItemId)
 
-            if msgId then
+            -- msgId == false: grant silently (caller suppressed messaging)
+            if msgId == false then
+                -- no obtain message
+            elseif msgId then
                 player:messageSpecial(msgId, keyItemId)
+            -- Some KI IDs collide with real item IDs (e.g. MEMORANDOLL / RUBBER_HARNESS = 2466).
+            -- When that happens, KEYITEM_OBTAINED can resolve as the item name. Skip the message;
+            -- doll KIs already announce themselves via client flavor text.
+            elseif GetItemByID(keyItemId) ~= nil then
+                -- no obtain message
             else
                 player:messageSpecial(ID.text.KEYITEM_OBTAINED, keyItemId)
             end
