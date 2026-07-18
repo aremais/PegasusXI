@@ -20,6 +20,10 @@ quest.sections =
             onZoneIn =
             {
                 function(player, prevZone)
+                    -- Must set pos before returning CS; new chars spawn at 0,0,0 and
+                    -- Zone.lua moghouse fallback would otherwise move them to the MH exit.
+                    player:setPos(-280, -12, -91, 15)
+
                     local cutsceneFlags = bit.bor(
                         xi.cutsceneFlag.UNKNOWN_1,
                         xi.cutsceneFlag.NO_PCS,
@@ -67,6 +71,8 @@ quest.sections =
             onZoneIn =
             {
                 function(player, prevZone)
+                    player:setPos(-45, -0, 26, 213)
+
                     local cutsceneFlags = bit.bor(
                         xi.cutsceneFlag.UNKNOWN_1,
                         xi.cutsceneFlag.NO_PCS,
@@ -99,6 +105,8 @@ quest.sections =
             onZoneIn =
             {
                 function(player, prevZone)
+                    player:setPos(132, -8.5, -13, 179)
+
                     local cutsceneFlags = bit.bor(
                         xi.cutsceneFlag.UNKNOWN_1,
                         xi.cutsceneFlag.NO_PCS,
@@ -131,6 +139,8 @@ quest.sections =
             onZoneIn =
             {
                 function(player, prevZone)
+                    player:setPos(0, 0, -11, 191)
+
                     local cutsceneFlags = bit.bor(
                         xi.cutsceneFlag.UNKNOWN_1,
                         xi.cutsceneFlag.NO_PCS,
@@ -164,6 +174,8 @@ quest.sections =
             onZoneIn =
             {
                 function(player, prevZone)
+                    player:setPos(-96, 1, -40, 224)
+
                     local cutsceneFlags = bit.bor(
                         xi.cutsceneFlag.UNKNOWN_1,
                         xi.cutsceneFlag.NO_PCS,
@@ -197,6 +209,8 @@ quest.sections =
             onZoneIn =
             {
                 function(player, prevZone)
+                    player:setPos(-104, -8, -128, 227)
+
                     local cutsceneFlags = bit.bor(
                         xi.cutsceneFlag.UNKNOWN_1,
                         xi.cutsceneFlag.NO_PCS,
@@ -230,6 +244,8 @@ quest.sections =
             onZoneIn =
             {
                 function(player, prevZone)
+                    player:setPos(-40, -5, 80, 64)
+
                     local cutsceneFlags = bit.bor(
                         xi.cutsceneFlag.UNKNOWN_1,
                         xi.cutsceneFlag.NO_PCS,
@@ -275,6 +291,8 @@ quest.sections =
             onZoneIn =
             {
                 function(player, prevZone)
+                    player:setPos(0, 0, -50, 0)
+
                     local cutsceneFlags = bit.bor(
                         xi.cutsceneFlag.UNKNOWN_1,
                         xi.cutsceneFlag.NO_PCS,
@@ -308,6 +326,8 @@ quest.sections =
             onZoneIn =
             {
                 function(player, prevZone)
+                    player:setPos(-120, -5.5, 175, 48)
+
                     local cutsceneFlags = bit.bor(
                         xi.cutsceneFlag.UNKNOWN_1,
                         xi.cutsceneFlag.NO_PCS,

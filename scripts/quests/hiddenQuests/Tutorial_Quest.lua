@@ -13,6 +13,13 @@ local function hasLearntWeaponskill(player)
     return false
 end
 
+-- Alaune retail CSIDs (3640-3662) softlock this server's clients; use text instead of events.
+local alauneText = function(player, npc)
+    local ID = zones[xi.zone.SOUTHERN_SAN_DORIA]
+    player:messageSpecial(ID.text.TUTORIAL_NPC)
+    return quest:noAction()
+end
+
 quest.sections =
 {
     -- Step 0 -> Introduction.
@@ -35,7 +42,7 @@ quest.sections =
 
         [xi.zone.SOUTHERN_SAN_DORIA] =
         {
-            ['Alaune'] = quest:progressEvent(3662),
+            ['Alaune'] = { onTrigger = alauneText },
 
             onEventFinish =
             {
@@ -78,7 +85,7 @@ quest.sections =
 
         [xi.zone.SOUTHERN_SAN_DORIA] =
         {
-            ['Alaune'] = quest:progressEvent(3640),
+            ['Alaune'] = { onTrigger = alauneText },
 
             onEventFinish =
             {
@@ -132,16 +139,7 @@ quest.sections =
 
         [xi.zone.SOUTHERN_SAN_DORIA] =
         {
-            ['Alaune'] =
-            {
-                onTrigger = function(player, npc)
-                    if player:hasStatusEffect(xi.effect.SIGNET) then
-                        return quest:progressEvent(3642)
-                    else
-                        return quest:event(3641)
-                    end
-                end,
-            },
+            ['Alaune'] = { onTrigger = alauneText },
 
             onEventFinish =
             {
@@ -206,16 +204,7 @@ quest.sections =
 
         [xi.zone.SOUTHERN_SAN_DORIA] =
         {
-            ['Alaune'] =
-            {
-                onTrigger = function(player, npc)
-                    if player:hasStatusEffect(xi.effect.FOOD) then
-                        return quest:progressEvent(3644)
-                    else
-                        return quest:event(3643)
-                    end
-                end,
-            },
+            ['Alaune'] = { onTrigger = alauneText },
 
             onEventFinish =
             {
@@ -277,16 +266,7 @@ quest.sections =
 
         [xi.zone.SOUTHERN_SAN_DORIA] =
         {
-            ['Alaune'] =
-            {
-                onTrigger = function(player, npc)
-                    if hasLearntWeaponskill(player) then
-                        return quest:progressEvent(3646)
-                    else
-                        return quest:event(3645)
-                    end
-                end,
-            },
+            ['Alaune'] = { onTrigger = alauneText },
 
             onEventFinish =
             {
@@ -351,16 +331,7 @@ quest.sections =
 
         [xi.zone.SOUTHERN_SAN_DORIA] =
         {
-            ['Alaune'] =
-            {
-                onTrigger = function(player, npc)
-                    if player:hasKeyItem(xi.ki.MEMORANDOLL) then
-                        return quest:progressEvent(3648)
-                    else
-                        return quest:event(3647)
-                    end
-                end,
-            },
+            ['Alaune'] = { onTrigger = alauneText },
 
             onEventFinish =
             {
@@ -517,16 +488,7 @@ quest.sections =
                 end,
             },
 
-            ['Alaune'] =
-            {
-                onTrigger = function(player, npc)
-                    if quest:getVar(player, 'Option') == 1 then
-                        return quest:progressEvent(3650)
-                    else
-                        return quest:event(3649)
-                    end
-                end,
-            },
+            ['Alaune'] = { onTrigger = alauneText },
 
             onEventFinish =
             {
@@ -626,16 +588,7 @@ quest.sections =
 
         [xi.zone.SOUTHERN_SAN_DORIA] =
         {
-            ['Alaune'] =
-            {
-                onTrigger = function(player, npc)
-                    if player:getMainLvl() >= 5 then
-                        return quest:progressEvent(3652)
-                    else
-                        return quest:event(3651)
-                    end
-                end,
-            },
+            ['Alaune'] = { onTrigger = alauneText },
 
             onEventFinish =
             {
@@ -702,16 +655,7 @@ quest.sections =
 
         [xi.zone.SOUTHERN_SAN_DORIA] =
         {
-            ['Alaune'] =
-            {
-                onTrigger = function(player, npc)
-                    if player:hasKeyItem(xi.ki.SAN_DORIA_TRUST_PERMIT) then
-                        return quest:progressEvent(3654)
-                    else
-                        return quest:event(3653)
-                    end
-                end,
-            },
+            ['Alaune'] = { onTrigger = alauneText },
 
             onEventFinish =
             {
@@ -831,16 +775,7 @@ quest.sections =
 
         [xi.zone.SOUTHERN_SAN_DORIA] =
         {
-            ['Alaune'] =
-            {
-                onTrigger = function(player, npc)
-                    if player:getCharVar('TutorialBypass') >= 2 then
-                        return quest:progressEvent(3656, xi.nation.SANDORIA)
-                    else
-                        return quest:event(3655, xi.nation.SANDORIA)
-                    end
-                end,
-            },
+            ['Alaune'] = { onTrigger = alauneText },
 
             onEventFinish =
             {
@@ -935,16 +870,7 @@ quest.sections =
 
         [xi.zone.SOUTHERN_SAN_DORIA] =
         {
-            ['Alaune'] =
-            {
-                onTrigger = function(player, npc)
-                    if player:getMainLvl() >= 18 then
-                        return quest:progressEvent(3658, xi.nation.SANDORIA)
-                    else
-                        return quest:event(3657)
-                    end
-                end,
-            },
+            ['Alaune'] = { onTrigger = alauneText },
 
             onEventFinish =
             {
@@ -1011,16 +937,7 @@ quest.sections =
 
         [xi.zone.SOUTHERN_SAN_DORIA] =
         {
-            ['Alaune'] =
-            {
-                onTrigger = function(player, npc)
-                    if player:getSubLvl() >= 1 then
-                        return quest:progressEvent(3660)
-                    else
-                        return quest:event(3659, xi.nation.SANDORIA)
-                    end
-                end,
-            },
+            ['Alaune'] = { onTrigger = alauneText },
 
             onEventFinish =
             {
@@ -1069,7 +986,7 @@ quest.sections =
 
         [xi.zone.SOUTHERN_SAN_DORIA] =
         {
-            ['Alaune'] = quest:event(3661),
+            ['Alaune'] = { onTrigger = alauneText },
         },
 
         [xi.zone.WINDURST_WOODS] =
