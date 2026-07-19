@@ -326,6 +326,14 @@ auto LoadNPCList(Scheduler& scheduler, const std::vector<uint16>& zoneIds) -> Ta
                                     PNpc->name       = rset->get<std::string>("name");          // Internal name
                                     PNpc->packetName = rset->get<std::string>("polutils_name"); // Name sent to the client (when applicable)
 
+                                    // Force client name override when display name differs from internal name.
+                                    // Required for MODEL_EQUIPPED NPCs (spawn mask omits UPDATE_NAME) and for
+                                    // NPCs not present in the client's zone name DAT (shows as blank/"NPC").
+                                    if (!PNpc->packetName.empty() && PNpc->packetName != PNpc->name)
+                                    {
+                                        PNpc->isRenamed = true;
+                                    }
+
                                     PNpc->loc.p.rotation = rset->get<uint8>("pos_rot");
                                     PNpc->loc.p.x        = rset->get<float>("pos_x");
                                     PNpc->loc.p.y        = rset->get<float>("pos_y");

@@ -356,7 +356,9 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
             // TODO: Unify name logic
             if (updatemask & UPDATE_NAME)
             {
-                auto name = PNpc->getName();
+                // Prefer polutils/packet name so clients without matching DAT entries
+                // (e.g. SOA NPCs) display "Ancestry Moogle" instead of "Ancestry_Moogle"/"NPC".
+                auto name = !PNpc->packetName.empty() ? PNpc->packetName : PNpc->getName();
                 if (PNpc->look.size == MODEL_ELEVATOR || PNpc->look.size == MODEL_SHIP)
                 {
                     name = getTransportNPCName(PNpc);
@@ -531,8 +533,11 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         }
     }
 
-    // Slightly bigger packet to encompass both name and model on first spawn, and only for dynamic entities.
-    if (type == ENTITY_SPAWN && PEntity->isRenamed && PEntity->look.size == MODEL_EQUIPPED && PEntity->targid >= 0x700)
+    // Equipped/chocobo look data occupies 0x30-0x43, so a custom name must be placed at 0x44.
+    // Used for dynamic entities and zone NPCs whose polutils_name differs from the internal name
+    // (e.g. A.M.A.N. Liaison — not present in older client DATs).
+    const bool equippedModel = PEntity->look.size == MODEL_EQUIPPED || PEntity->look.size == MODEL_CHOCOBO;
+    if (PEntity->isRenamed && equippedModel && type != ENTITY_DESPAWN)
     {
         this->setSize(0x56);
 
@@ -542,16 +547,12 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
 
         std::memcpy(buffer_.data() + 0x30, &PEntity->look, sizeof(look_t));
 
-        auto name       = PEntity->packetName;
-        auto nameOffset = 0x44;
-        auto maxLength  = std::min<size_t>(name.size(), PacketNameLength);
+        const auto& name      = PEntity->packetName;
+        constexpr size_t nameOffset = 0x44;
+        const auto       maxLength  = std::min<size_t>(name.size(), PacketNameLength);
 
-        // Make sure to zero-out the existing name area of the packet
-        auto start = buffer_.data() + nameOffset;
-        auto size  = this->getSize();
-        std::memset(start, 0U, size);
-
-        // Copy in name
+        auto* start = buffer_.data() + nameOffset;
+        std::memset(start, 0U, this->getSize() - nameOffset);
         std::memcpy(start, name.c_str(), maxLength);
     }
     // If the entity has been renamed, we have to re-send the name during every update.
@@ -563,9 +564,9 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
 
         this->setSize(0x48);
 
-        auto name       = PEntity->packetName;
-        auto nameOffset = 0x34;
-        auto maxLength  = std::min<size_t>(name.size(), PacketNameLength);
+        const auto& name       = PEntity->packetName;
+        size_t      nameOffset = 0x34;
+        const auto  maxLength  = std::min<size_t>(name.size(), PacketNameLength);
 
         // Mobs and NPC's targid's live in the range 0-1023
         if (PEntity->targid < 1024)
@@ -574,12 +575,8 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
             nameOffset        = 0x35;
         }
 
-        // Make sure to zero-out the existing name area of the packet
-        auto start = buffer_.data() + nameOffset;
-        auto size  = this->getSize();
-        std::memset(start, 0U, size);
-
-        // Copy in name
+        auto* start = buffer_.data() + nameOffset;
+        std::memset(start, 0U, this->getSize() - nameOffset);
         std::memcpy(start, name.c_str(), maxLength);
     }
 
