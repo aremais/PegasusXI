@@ -21,6 +21,7 @@
 
 #include "common/utils.h"
 
+#include <algorithm>
 #include <cstring>
 
 #include "entity_update.h"
@@ -365,8 +366,16 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
                 }
 
                 // depending on size of name, this can be 0x20, 0x22, or 0x24
-                this->setSize(0x48);
-                std::memcpy(buffer_.data() + 0x34, name.c_str(), std::min<size_t>(name.size(), PacketNameLength));
+                // Static NPC rename field is Name[16] (15 chars + NUL).
+                constexpr size_t nameOffset               = 0x34;
+                constexpr size_t MaxStaticNpcNameLength = PacketNameLength - 1;
+                const size_t     nameBytes                = std::min(name.size(), MaxStaticNpcNameLength);
+                size_t           packetSize               = std::max<size_t>(0x48, nameOffset + nameBytes + 1);
+                packetSize                                = (packetSize + 3) & ~size_t{ 3 };
+                this->setSize(packetSize);
+                auto* start = buffer_.data() + nameOffset;
+                std::memset(start, 0U, this->getSize() - nameOffset);
+                std::memcpy(start, name.c_str(), nameBytes);
             }
         }
         break;
@@ -536,24 +545,31 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
     // Equipped/chocobo look data occupies 0x30-0x43, so a custom name must be placed at 0x44.
     // Used for dynamic entities and zone NPCs whose polutils_name differs from the internal name
     // (e.g. A.M.A.N. Liaison — not present in older client DATs).
-    const bool equippedModel = PEntity->look.size == MODEL_EQUIPPED || PEntity->look.size == MODEL_CHOCOBO;
+    //
+    // Client 0x0E name field is Name[16] (15 chars + NUL) for static NPCs / renames.
+    // See atom0s/XiPackets 0x000E — enQueStrCpy(..., 0x10, ...). Do not send 16 visible
+    // characters or the last glyph is dropped ("A.M.A.N. Liaison" -> "A.M.A.N. Liaiso").
+    constexpr size_t MaxStaticNpcNameLength = PacketNameLength - 1; // 15
+    const bool       equippedModel            = PEntity->look.size == MODEL_EQUIPPED || PEntity->look.size == MODEL_CHOCOBO;
     if (PEntity->isRenamed && equippedModel && type != ENTITY_DESPAWN)
     {
-        this->setSize(0x56);
+        const auto&      name       = PEntity->packetName;
+        constexpr size_t nameOffset = 0x44;
+        const size_t     nameBytes  = std::min(name.size(), MaxStaticNpcNameLength);
+        size_t           packetSize = std::max<size_t>(0x56, nameOffset + nameBytes + 1);
+        packetSize                  = (packetSize + 3) & ~size_t{ 3 };
+
+        this->setSize(packetSize);
 
         // Temporarily override UpdateFlags (0x0A) to perform black magic:
         ref<uint8>(0x0A) = 0x57; // Carefully chosen bits to make FUNC_Packet_Incoming_0x000E behave (Same type as first 0x00E Fellow packet)
-        ref<uint8>(0x18) = 0x01; // Copy longer name in FUNC_Packet_Incoming_0x000E
+        ref<uint8>(0x18) = 0x01; // Name follows look data at 0x44
 
         std::memcpy(buffer_.data() + 0x30, &PEntity->look, sizeof(look_t));
 
-        const auto& name      = PEntity->packetName;
-        constexpr size_t nameOffset = 0x44;
-        const auto       maxLength  = std::min<size_t>(name.size(), PacketNameLength);
-
         auto* start = buffer_.data() + nameOffset;
         std::memset(start, 0U, this->getSize() - nameOffset);
-        std::memcpy(start, name.c_str(), maxLength);
+        std::memcpy(start, name.c_str(), nameBytes);
     }
     // If the entity has been renamed, we have to re-send the name during every update.
     // Otherwise it will revert to it's default name (if applicable).
@@ -562,22 +578,28 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         updatemask |= UPDATE_NAME;
         ref<uint8>(0x0A) |= updatemask;
 
-        this->setSize(0x48);
-
         const auto& name       = PEntity->packetName;
         size_t      nameOffset = 0x34;
-        const auto  maxLength  = std::min<size_t>(name.size(), PacketNameLength);
 
         // Mobs and NPC's targid's live in the range 0-1023
         if (PEntity->targid < 1024)
         {
+            nameOffset = 0x35;
+        }
+
+        const size_t nameBytes  = std::min(name.size(), MaxStaticNpcNameLength);
+        size_t       packetSize = std::max<size_t>(0x48, nameOffset + nameBytes + 1);
+        packetSize              = (packetSize + 3) & ~size_t{ 3 };
+        this->setSize(packetSize);
+
+        if (PEntity->targid < 1024)
+        {
             ref<uint16>(0x34) = 0x01;
-            nameOffset        = 0x35;
         }
 
         auto* start = buffer_.data() + nameOffset;
         std::memset(start, 0U, this->getSize() - nameOffset);
-        std::memcpy(start, name.c_str(), maxLength);
+        std::memcpy(start, name.c_str(), nameBytes);
     }
 
     //  Don't overwrite data for model size and hitbox size from look string on NPCs

@@ -37,6 +37,7 @@
 #include "mob_modifier.h"
 #include "mob_spell_list.h"
 #include "mobutils.h"
+#include "packets/entity_update.h"
 #include "spawn_handler.h"
 #include "spawn_slot.h"
 #include "zone_instance.h"
@@ -326,14 +327,6 @@ auto LoadNPCList(Scheduler& scheduler, const std::vector<uint16>& zoneIds) -> Ta
                                     PNpc->name       = rset->get<std::string>("name");          // Internal name
                                     PNpc->packetName = rset->get<std::string>("polutils_name"); // Name sent to the client (when applicable)
 
-                                    // Force client name override when display name differs from internal name.
-                                    // Required for MODEL_EQUIPPED NPCs (spawn mask omits UPDATE_NAME) and for
-                                    // NPCs not present in the client's zone name DAT (shows as blank/"NPC").
-                                    if (!PNpc->packetName.empty() && PNpc->packetName != PNpc->name)
-                                    {
-                                        PNpc->isRenamed = true;
-                                    }
-
                                     PNpc->loc.p.rotation = rset->get<uint8>("pos_rot");
                                     PNpc->loc.p.x        = rset->get<float>("pos_x");
                                     PNpc->loc.p.y        = rset->get<float>("pos_y");
@@ -357,6 +350,24 @@ auto LoadNPCList(Scheduler& scheduler, const std::vector<uint16>& zoneIds) -> Ta
 
                                     PNpc->name_prefix = rset->get<uint8>("name_prefix");
                                     PNpc->setWidescan(rset->get<uint8>("widescan"));
+
+                                    // Force client name override when display name differs from internal name.
+                                    // Required for NPCs missing from the client's zone name DAT (blank/"NPC").
+                                    // Skip equipped NPCs whose polutils_name is only underscores→spaces: those
+                                    // usually have full DAT names, and forcing a packet name hits the 15-char
+                                    // PC name limit (e.g. "Synergy Enthusiast" → "Synergy Enthusi").
+                                    if (!PNpc->packetName.empty() && PNpc->packetName != PNpc->name)
+                                    {
+                                        auto spacedName = PNpc->name;
+                                        std::replace(spacedName.begin(), spacedName.end(), '_', ' ');
+                                        const bool simpleSpacedVariant = PNpc->packetName == spacedName;
+                                        const bool equippedModel       = PNpc->look.size == MODEL_EQUIPPED ||
+                                                                   PNpc->look.size == MODEL_CHOCOBO;
+                                        if (!(equippedModel && simpleSpacedVariant))
+                                        {
+                                            PNpc->isRenamed = true;
+                                        }
+                                    }
 
                                     PZone->InsertNPC(PNpc);
                                 }
