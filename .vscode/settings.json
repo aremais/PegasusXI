@@ -336,6 +336,8 @@
         "GetSynergyRecipeByTrade",
         "ReloadSynthRecipes",
         "LoadExpDifficultyCurves",
+
+        "FindNPCsByName"
     ],
     "Lua.diagnostics.disable": [
         "lowercase-global"
