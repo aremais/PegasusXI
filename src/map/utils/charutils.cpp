@@ -5347,26 +5347,30 @@ void DistributeCapacityPoints(CCharEntity* PChar, CMobEntity* PMob)
                 return;
             }
 
-            bool  chainActive = false;
-            int16 levelDiff   = mobLevel - 99; // Passed previous 99 check, no need to calculate
-
-            // Capacity Chains are only granted for Mobs level 100+
+            // Capacity Points are earned from monsters level 96+.
+            // Capacity Chains are only granted for mobs level 100+.
             // Ref: https://www.bg-wiki.com/ffxi/Job_Points
-            float capacityPoints = 0;
+            if (mobLevel < 96)
+            {
+                return;
+            }
+
+            bool  chainActive    = false;
+            int16 levelDiff      = mobLevel - 99;
+            // Base Capacity Point formula derived from the table located at:
+            // https://ffxiclopedia.fandom.com/wiki/Job_Points#Capacity_Points
+            float capacityPoints = 0.0089 * std::pow(levelDiff, 3) + 0.0533 * std::pow(levelDiff, 2) + 3.7439 * levelDiff + 89.7;
 
             if (mobLevel > 99)
             {
-                // Base Capacity Point formula derived from the table located at:
-                // https://ffxiclopedia.fandom.com/wiki/Job_Points#Capacity_Points
-                capacityPoints = 0.0089 * std::pow(levelDiff, 3) + 0.0533 * std::pow(levelDiff, 2) + 3.7439 * levelDiff + 89.7;
-
                 if (PMember->capacityChain.chainTime > timer::now() || PMember->capacityChain.chainTime == timer::time_point::min())
                 {
                     chainActive = true;
 
-                    // TODO: Needs verification, pulled from: https://www.bluegartr.com/threads/120445-Job-Points-discussion?p=6138288&viewfull=1#post6138288
-                    // Assumption: Chain0 is no bonus, Chains 10+ capped at 1.5 value, f(chain) = 1 + 0.05 * chain
-                    float chainModifier = std::min(1 + 0.05 * PMember->capacityChain.chainNumber, 1.5);
+                    // Retail chain bonus reaches x1.6 at chain 30+.
+                    // Ref: https://www.bg-wiki.com/ffxi/Job_Points
+                    // f(chain) = 1 + 0.05 * chain, capped at 1.6
+                    float chainModifier = std::min(1 + 0.05 * PMember->capacityChain.chainNumber, 1.6);
                     capacityPoints *= chainModifier;
                 }
                 else
@@ -5380,10 +5384,10 @@ void DistributeCapacityPoints(CCharEntity* PChar, CMobEntity* PMob)
                 {
                     PMember->capacityChain.chainTime = timer::now() + 30s;
                 }
-
-                capacityPoints = AddCapacityBonus(PMember, capacityPoints);
-                AddCapacityPoints(PMember, PMob, capacityPoints, levelDiff, chainActive);
             }
+
+            capacityPoints = AddCapacityBonus(PMember, capacityPoints);
+            AddCapacityPoints(PMember, PMob, capacityPoints, levelDiff, chainActive);
         });
 }
 
@@ -5445,8 +5449,9 @@ uint16 AddCapacityBonus(CCharEntity* PChar, uint16 capacityPoints)
         }
     }
 
-    capacityPoints *= 1.0f + rawBonus / 100;
-    return capacityPoints;
+    float adjusted = capacityPoints * (1.0f + rawBonus / 100.0f);
+    // Retail hard-caps Capacity Points earned from a single kill at 65535.
+    return static_cast<uint16>(std::min(adjusted, 65535.0f));
 }
 
 /************************************************************************
@@ -5464,7 +5469,10 @@ void AddCapacityPoints(CCharEntity* PChar, CBaseEntity* PMob, uint32 capacityPoi
         return;
     }
 
-    capacityPoints = (uint32)(capacityPoints * settings::get<float>("map.EXP_RATE"));
+    // map.CAPACITY_RATE is applied in CJobPoints::AddCapacityPoints.
+    // Do not multiply by map.EXP_RATE — that incorrectly tied CP gains to combat EXP rate.
+    // Retail hard-caps Capacity Points earned from a single kill at 65535.
+    capacityPoints = std::min<uint32>(capacityPoints, 65535);
 
     if (capacityPoints > 0)
     {
