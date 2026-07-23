@@ -214,6 +214,7 @@ cmake_install.cmake
 
 # Tool/misc configs
 /tools/config.yaml
+/tools/logs/
 ip.txt
 
 # Tracy download
