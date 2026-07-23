@@ -57,7 +57,7 @@ end
 local function findNpcsByPattern(player, pattern)
     local matches = {}
 
-    if type(FindNPCsByName) == 'function' then
+    if FindNPCsByName and type(FindNPCsByName) == "function" then
         for _, record in pairs(FindNPCsByName(pattern)) do
             table.insert(matches, record)
         end
@@ -132,7 +132,7 @@ commandObj.onTrigger = function(player, pattern, index)
     local matches = findNpcsByPattern(player, pattern)
 
     if #matches == 0 then
-        if type(FindNPCsByName) ~= 'function' then
+        if not FindNPCsByName or type(FindNPCsByName) ~= "function" then
             player:printToPlayer(string.format('No NPCs named "%s" in this zone. Rebuild xi_map for world-wide search, or use !gotonpc <npcid>.', pattern))
         else
             player:printToPlayer(string.format('No NPCs found matching "%s".', pattern))
