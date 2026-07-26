@@ -366,7 +366,8 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
                 }
 
                 // depending on size of name, this can be 0x20, 0x22, or 0x24
-                // Static NPC rename field is Name[16] (15 chars + NUL).
+                // Static NPC rename field is Name[16] (15 chars + NUL). Longer names are
+                // upgraded after this packet via 0x67 in CCharEntity::updateEntityPacket.
                 constexpr size_t nameOffset               = 0x34;
                 constexpr size_t MaxStaticNpcNameLength = PacketNameLength - 1;
                 const size_t     nameBytes                = std::min(name.size(), MaxStaticNpcNameLength);
@@ -573,7 +574,10 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
     }
     // If the entity has been renamed, we have to re-send the name during every update.
     // Otherwise it will revert to it's default name (if applicable).
-    else if (PEntity->isRenamed)
+    // Do not apply to doors/ships/elevators: their 0x34+ payload is mesh/trigger identity
+    // (written above), not a display name — stomping it prevents client door animation.
+    else if (PEntity->isRenamed && PEntity->look.size != MODEL_DOOR && PEntity->look.size != MODEL_SHIP &&
+             PEntity->look.size != MODEL_ELEVATOR)
     {
         updatemask |= UPDATE_NAME;
         ref<uint8>(0x0A) |= updatemask;

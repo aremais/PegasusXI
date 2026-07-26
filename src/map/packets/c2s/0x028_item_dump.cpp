@@ -28,6 +28,9 @@
 #include "linkshell.h"
 #include "utils/charutils.h"
 
+#include <chrono>
+#include <fstream>
+
 namespace
 {
 
@@ -64,6 +67,22 @@ auto GP_CLI_COMMAND_ITEM_DUMP::validate(MapSession* PSession, const CCharEntity*
 
 void GP_CLI_COMMAND_ITEM_DUMP::process(MapSession* PSession, CCharEntity* PChar) const
 {
+    // #region agent log
+    {
+        std::ofstream _dbg("d:/server/debug-e28540.log", std::ios::app);
+        if (_dbg)
+        {
+            const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                std::chrono::system_clock::now().time_since_epoch())
+                                .count();
+            _dbg << "{\"sessionId\":\"e28540\",\"hypothesisId\":\"C\",\"location\":\"0x028_item_dump.cpp:process\","
+                    "\"message\":\"ITEM_DUMP received\",\"data\":{\"category\":"
+                 << static_cast<int>(this->Category) << ",\"slot\":" << static_cast<int>(this->ItemIndex)
+                 << ",\"qty\":" << this->ItemNum << "},\"timestamp\":" << ms << "}\n";
+        }
+    }
+    // #endregion
+
     // Gil cannot be dropped.
     if (this->Category == LOC_INVENTORY && this->ItemIndex == 0)
     {
@@ -76,6 +95,21 @@ void GP_CLI_COMMAND_ITEM_DUMP::process(MapSession* PSession, CCharEntity* PChar)
     if (!PItem || PItem->isSubType(ITEM_LOCKED))
     {
         ShowWarning("GP_CLI_COMMAND_ITEM_DUMP: Attempt of removal of invalid item from slot %u", this->ItemIndex);
+        // #region agent log
+        {
+            std::ofstream _dbg("d:/server/debug-e28540.log", std::ios::app);
+            if (_dbg)
+            {
+                const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                    std::chrono::system_clock::now().time_since_epoch())
+                                    .count();
+                _dbg << "{\"sessionId\":\"e28540\",\"hypothesisId\":\"E\",\"location\":\"0x028_item_dump.cpp:process\","
+                        "\"message\":\"reject invalid/locked\",\"data\":{\"slot\":"
+                     << static_cast<int>(this->ItemIndex) << ",\"hasItem\":" << (PItem ? 1 : 0)
+                     << "},\"timestamp\":" << ms << "}\n";
+            }
+        }
+        // #endregion
         return;
     }
 

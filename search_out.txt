@@ -1,0 +1,4 @@
+[07/23/26 06:12:46:975][search][info] ======================================================================= (Application::Application:74)
+[07/23/26 06:12:46:975][search][info] Begin search-server init... (Application::Application:75)
+[07/23/26 06:12:46:975][search][info] 64-bit environment detected (Application::Application:78)
+[07/23/26 06:12:46:975][search][info] Creating engine (Application::run:261)
