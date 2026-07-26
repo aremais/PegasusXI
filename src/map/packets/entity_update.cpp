@@ -366,12 +366,14 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
                 }
 
                 // depending on size of name, this can be 0x20, 0x22, or 0x24
-                // Static NPC rename field is Name[16] (15 chars + NUL).
-                constexpr size_t nameOffset               = 0x34;
-                constexpr size_t MaxStaticNpcNameLength = PacketNameLength - 1;
-                const size_t     nameBytes                = std::min(name.size(), MaxStaticNpcNameLength);
-                size_t           packetSize               = std::max<size_t>(0x48, nameOffset + nameBytes + 1);
-                packetSize                                = (packetSize + 3) & ~size_t{ 3 };
+                // HasName static-NPC path reads a NUL-terminated string from the packet
+                // (not enQueStrCpy's 0x10 cap), so full display names like
+                // "Curio Vendor Moogle" (19) can be delivered.
+                constexpr size_t nameOffset             = 0x34;
+                constexpr size_t MaxNpcPacketNameLength = 24;
+                const size_t     nameBytes              = std::min(name.size(), MaxNpcPacketNameLength);
+                size_t           packetSize             = std::max<size_t>(0x48, nameOffset + nameBytes + 1);
+                packetSize                              = (packetSize + 3) & ~size_t{ 3 };
                 this->setSize(packetSize);
                 auto* start = buffer_.data() + nameOffset;
                 std::memset(start, 0U, this->getSize() - nameOffset);
@@ -546,16 +548,17 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
     // Used for dynamic entities and zone NPCs whose polutils_name differs from the internal name
     // (e.g. A.M.A.N. Liaison — not present in older client DATs).
     //
-    // Client 0x0E name field is Name[16] (15 chars + NUL) for static NPCs / renames.
-    // See atom0s/XiPackets 0x000E — enQueStrCpy(..., 0x10, ...). Do not send 16 visible
-    // characters or the last glyph is dropped ("A.M.A.N. Liaison" -> "A.M.A.N. Liaiso").
-    constexpr size_t MaxStaticNpcNameLength = PacketNameLength - 1; // 15
-    const bool       equippedModel            = PEntity->look.size == MODEL_EQUIPPED || PEntity->look.size == MODEL_CHOCOBO;
+    // Equipped/Name2 path uses client enQueStrCpy(..., 0x10, ...) — hard 15-char + NUL cap.
+    // HasName path (standard look, targid < 1024) assigns the packet string pointer directly,
+    // so longer display names (e.g. "Curio Vendor Moogle") can be sent intact.
+    constexpr size_t MaxEquippedNpcNameLength = PacketNameLength - 1; // 15
+    constexpr size_t MaxNpcPacketNameLength   = 24;
+    const bool       equippedModel              = PEntity->look.size == MODEL_EQUIPPED || PEntity->look.size == MODEL_CHOCOBO;
     if (PEntity->isRenamed && equippedModel && type != ENTITY_DESPAWN)
     {
         const auto&      name       = PEntity->packetName;
         constexpr size_t nameOffset = 0x44;
-        const size_t     nameBytes  = std::min(name.size(), MaxStaticNpcNameLength);
+        const size_t     nameBytes  = std::min(name.size(), MaxEquippedNpcNameLength);
         size_t           packetSize = std::max<size_t>(0x56, nameOffset + nameBytes + 1);
         packetSize                  = (packetSize + 3) & ~size_t{ 3 };
 
@@ -587,7 +590,7 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
             nameOffset = 0x35;
         }
 
-        const size_t nameBytes  = std::min(name.size(), MaxStaticNpcNameLength);
+        const size_t nameBytes  = std::min(name.size(), MaxNpcPacketNameLength);
         size_t       packetSize = std::max<size_t>(0x48, nameOffset + nameBytes + 1);
         packetSize              = (packetSize + 3) & ~size_t{ 3 };
         this->setSize(packetSize);
