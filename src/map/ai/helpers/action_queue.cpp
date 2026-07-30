@@ -22,7 +22,7 @@
 #include "action_queue.h"
 #include "ai/ai_container.h"
 #include "common/logging.h"
-#include "entities/baseentity.h"
+#include "entities/base_entity.h"
 
 #include <exception>
 

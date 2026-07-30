@@ -22,7 +22,7 @@
 #include "0x037_item_use.h"
 
 #include "ai/ai_container.h"
-#include "entities/charentity.h"
+#include "entities/char_entity.h"
 #include "enums/chat_message_type.h"
 #include "items.h"
 #include "packets/s2c/0x017_chat_std.h"

@@ -19,7 +19,7 @@
 #include <ranges>
 
 #include "ai/ai_container.h"
-#include "entities/mobentity.h"
+#include "entities/mob_entity.h"
 #include "spawn_handler.h"
 #include "zone.h"
 

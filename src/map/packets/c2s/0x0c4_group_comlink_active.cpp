@@ -27,7 +27,7 @@
 #include <cctype>
 #include <string>
 
-#include "entities/charentity.h"
+#include "entities/char_entity.h"
 #include "enums/chat_message_type.h"
 #include "enums/item_lockflg.h"
 #include "enums/msg_std.h"
