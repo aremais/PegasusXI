@@ -355,7 +355,11 @@ auto LoadNPCList(Scheduler& scheduler, const std::vector<uint16>& zoneIds) -> Ta
                                     // Required for NPCs missing from the client's zone name DAT (blank/"NPC").
                                     // Skip equipped NPCs whose polutils_name is only underscores→spaces: those
                                     // usually have full DAT names, and forcing a packet name hits the 15-char
-                                    // PC name limit (e.g. "Synergy Enthusiast" → "Synergy Enthusi").
+                                    // 0x00E limit (e.g. "Synergy Enthusiast" → "Synergy Enthusi").
+                                    // Long names on non-equipped NPCs still need isRenamed (DAT often missing);
+                                    // CCharEntity::updateEntityPacket follows up with 0x67 for the full string.
+                                    // Never rename doors/ships/elevators: 0x0E bytes at 0x34+ hold mesh/trigger
+                                    // identity (internal name), not a display string — overwriting breaks them.
                                     if (!PNpc->packetName.empty() && PNpc->packetName != PNpc->name)
                                     {
                                         auto spacedName = PNpc->name;
@@ -363,7 +367,10 @@ auto LoadNPCList(Scheduler& scheduler, const std::vector<uint16>& zoneIds) -> Ta
                                         const bool simpleSpacedVariant = PNpc->packetName == spacedName;
                                         const bool equippedModel       = PNpc->look.size == MODEL_EQUIPPED ||
                                                                    PNpc->look.size == MODEL_CHOCOBO;
-                                        if (!(equippedModel && simpleSpacedVariant))
+                                        const bool specialModel = PNpc->look.size == MODEL_DOOR ||
+                                                                  PNpc->look.size == MODEL_SHIP ||
+                                                                  PNpc->look.size == MODEL_ELEVATOR;
+                                        if (!specialModel && !(equippedModel && simpleSpacedVariant))
                                         {
                                             PNpc->isRenamed = true;
                                         }

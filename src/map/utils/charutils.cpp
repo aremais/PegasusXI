@@ -32,6 +32,7 @@
 
 #include <array>
 #include <chrono>
+#include <fstream>
 
 #include "lua/luautils.h"
 
@@ -2937,6 +2938,20 @@ void AddItemToRecycleBin(CCharEntity* PChar, uint32 container, uint8 slotID, uin
     auto* PSrcItem = OtherContainer->GetItem(slotID);
     if (PSrcItem == nullptr)
     {
+        // #region agent log
+        {
+            std::ofstream _dbg("d:/server/debug-e28540.log", std::ios::app);
+            if (_dbg)
+            {
+                const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                    std::chrono::system_clock::now().time_since_epoch())
+                                    .count();
+                _dbg << "{\"sessionId\":\"e28540\",\"hypothesisId\":\"E\",\"location\":\"charutils.cpp:AddItemToRecycleBin\","
+                        "\"message\":\"early return null src\",\"data\":{\"container\":"
+                     << container << ",\"slot\":" << static_cast<int>(slotID) << "},\"timestamp\":" << ms << "}\n";
+            }
+        }
+        // #endregion
         return;
     }
 
@@ -2946,17 +2961,71 @@ void AddItemToRecycleBin(CCharEntity* PChar, uint32 container, uint8 slotID, uin
                        PSrcItem->getID(),
                        magic_enum::enum_name(PSrcItem->state()),
                        PChar->getName());
+        // #region agent log
+        {
+            std::ofstream _dbg("d:/server/debug-e28540.log", std::ios::app);
+            if (_dbg)
+            {
+                const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                    std::chrono::system_clock::now().time_since_epoch())
+                                    .count();
+                _dbg << "{\"sessionId\":\"e28540\",\"hypothesisId\":\"E\",\"location\":\"charutils.cpp:AddItemToRecycleBin\","
+                        "\"message\":\"early return busy\",\"data\":{\"itemId\":"
+                     << PSrcItem->getID() << "},\"timestamp\":" << ms << "}\n";
+            }
+        }
+        // #endregion
         return;
     }
 
     const uint16 itemID   = PSrcItem->getID();
     const auto   itemName = PSrcItem->getName();
+    const uint8  freeSlots = RecycleBin->GetFreeSlotsCount();
+    // #region agent log
+    {
+        uint8 occupied = 0;
+        for (uint8 i = 1; i <= RecycleBin->GetSize(); ++i)
+        {
+            if (RecycleBin->GetItem(i) != nullptr)
+            {
+                ++occupied;
+            }
+        }
+        std::ofstream _dbg("d:/server/debug-e28540.log", std::ios::app);
+        if (_dbg)
+        {
+            const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                std::chrono::system_clock::now().time_since_epoch())
+                                .count();
+            _dbg << "{\"sessionId\":\"e28540\",\"hypothesisId\":\"A,D\",\"location\":\"charutils.cpp:AddItemToRecycleBin\","
+                    "\"message\":\"discard attempt\",\"data\":{\"itemId\":"
+                 << itemID << ",\"freeSlots\":" << static_cast<int>(freeSlots) << ",\"binSize\":"
+                 << static_cast<int>(RecycleBin->GetSize()) << ",\"occupiedSlots\":" << static_cast<int>(occupied)
+                 << ",\"branch\":\"" << (freeSlots > 0 ? "free" : "evict") << "\"},\"timestamp\":" << ms << "}\n";
+        }
+    }
+    // #endregion
 
     if (RecycleBin->GetFreeSlotsCount() > 0)
     {
         const uint8 NewSlotID = OtherContainer->MoveItemTo(slotID, *RecycleBin);
         if (NewSlotID == ERROR_SLOTID)
         {
+            // #region agent log
+            {
+                std::ofstream _dbg("d:/server/debug-e28540.log", std::ios::app);
+                if (_dbg)
+                {
+                    const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                        std::chrono::system_clock::now().time_since_epoch())
+                                        .count();
+                    _dbg << "{\"sessionId\":\"e28540\",\"hypothesisId\":\"A,D\",\"location\":\"charutils.cpp:AddItemToRecycleBin\","
+                            "\"message\":\"free-path MoveItemTo failed\",\"data\":{\"itemId\":"
+                         << itemID << ",\"freeSlots\":" << static_cast<int>(freeSlots)
+                         << "},\"timestamp\":" << ms << "}\n";
+                }
+            }
+            // #endregion
             return;
         }
 
@@ -2969,6 +3038,20 @@ void AddItemToRecycleBin(CCharEntity* PChar, uint32 container, uint8 slotID, uin
         if (!rset || !rset->rowsAffected())
         {
             RecycleBin->MoveItemTo(NewSlotID, *OtherContainer, slotID);
+            // #region agent log
+            {
+                std::ofstream _dbg("d:/server/debug-e28540.log", std::ios::app);
+                if (_dbg)
+                {
+                    const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                        std::chrono::system_clock::now().time_since_epoch())
+                                        .count();
+                    _dbg << "{\"sessionId\":\"e28540\",\"hypothesisId\":\"B\",\"location\":\"charutils.cpp:AddItemToRecycleBin\","
+                            "\"message\":\"free-path DB update failed\",\"data\":{\"itemId\":"
+                         << itemID << ",\"newSlot\":" << static_cast<int>(NewSlotID) << "},\"timestamp\":" << ms << "}\n";
+                }
+            }
+            // #endregion
             return;
         }
 
@@ -2993,13 +3076,17 @@ void AddItemToRecycleBin(CCharEntity* PChar, uint32 container, uint8 slotID, uin
         }
 
         // Slide slots 2..10 down to 1..9
+        uint8 slideFails = 0;
         for (int i = 2; i <= 10; ++i)
         {
             if (RecycleBin->GetItem(i) == nullptr)
             {
                 continue;
             }
-            RecycleBin->MoveItemTo(i, *RecycleBin, i - 1);
+            if (RecycleBin->MoveItemTo(i, *RecycleBin, static_cast<uint8>(i - 1)) == ERROR_SLOTID)
+            {
+                ++slideFails;
+            }
 
             const auto rset = db::preparedStmt("UPDATE char_inventory SET location = ?, slot = ? WHERE charid = ? AND location = ? AND slot = ? LIMIT 1", LOC_RECYCLEBIN, i - 1, PChar->id, LOC_RECYCLEBIN, i);
             if (!rset || !rset->rowsAffected())
@@ -3009,8 +3096,24 @@ void AddItemToRecycleBin(CCharEntity* PChar, uint32 container, uint8 slotID, uin
         }
 
         // Move new item from source container into freed slot 10
-        OtherContainer->MoveItemTo(slotID, *RecycleBin, 10);
-        auto* PInserted = RecycleBin->GetItem(10);
+        const uint8 insertResult = OtherContainer->MoveItemTo(slotID, *RecycleBin, 10);
+        auto*       PInserted    = RecycleBin->GetItem(10);
+        // #region agent log
+        {
+            std::ofstream _dbg("d:/server/debug-e28540.log", std::ios::app);
+            if (_dbg)
+            {
+                const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                    std::chrono::system_clock::now().time_since_epoch())
+                                    .count();
+                _dbg << "{\"sessionId\":\"e28540\",\"hypothesisId\":\"A\",\"location\":\"charutils.cpp:AddItemToRecycleBin\","
+                        "\"message\":\"evict-path result\",\"data\":{\"itemId\":"
+                     << itemID << ",\"slideFails\":" << static_cast<int>(slideFails) << ",\"insertResult\":"
+                     << static_cast<int>(insertResult) << ",\"inserted\":" << (PInserted != nullptr ? 1 : 0)
+                     << ",\"hadEvicted\":" << (PEvictedItem ? 1 : 0) << "},\"timestamp\":" << ms << "}\n";
+            }
+        }
+        // #endregion
 
         const auto rset = db::preparedStmt("UPDATE char_inventory SET location = ?, slot = ? WHERE charid = ? AND location = ? AND slot = ? LIMIT 1",
                                            LOC_RECYCLEBIN,
@@ -3021,6 +3124,20 @@ void AddItemToRecycleBin(CCharEntity* PChar, uint32 container, uint8 slotID, uin
         if (!rset || !rset->rowsAffected())
         {
             ShowError("Problem moving Recycle Bin items! (%s - %s)", PChar->getName(), itemName);
+            // #region agent log
+            {
+                std::ofstream _dbg("d:/server/debug-e28540.log", std::ios::app);
+                if (_dbg)
+                {
+                    const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                        std::chrono::system_clock::now().time_since_epoch())
+                                        .count();
+                    _dbg << "{\"sessionId\":\"e28540\",\"hypothesisId\":\"B\",\"location\":\"charutils.cpp:AddItemToRecycleBin\","
+                            "\"message\":\"evict-path DB update failed\",\"data\":{\"itemId\":"
+                         << itemID << "},\"timestamp\":" << ms << "}\n";
+                }
+            }
+            // #endregion
         }
 
         PChar->pushPacket<GP_SERV_COMMAND_ITEM_ATTR>(nullptr, static_cast<CONTAINER_ID>(container), slotID);
