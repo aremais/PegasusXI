@@ -57,6 +57,33 @@ commandObj.onTrigger = function(player, logId, missionId, target)
         end
     end
 
+    -- Chains of Promathia stores progress differently from every other log:
+    -- there is NO per-mission "completed" bitmask. A CoP mission shows as
+    -- completed when its id is LESS THAN the log's current mission (a high-water
+    -- mark). completeMission() would reset current to 0 for CoP, which blanks
+    -- the entire CoP log -- that's why the old add+complete loop wiped it.
+    --
+    -- So for CoP we just set current to the next mission id after the chosen
+    -- one. That marks the chosen mission and everything before it as completed,
+    -- and leaves the following mission active. If the chosen one is the last in
+    -- the line, we push current just past it so the whole line reads complete.
+    if logId == xi.mission.log_id.COP then
+        local nextId
+        if areaMissionIds ~= nil then
+            for _, id in pairs(areaMissionIds) do
+                if type(id) == 'number' and id > missionId and (nextId == nil or id < nextId) then
+                    nextId = id
+                end
+            end
+        end
+        nextId = nextId or (missionId + 1)
+
+        targ:addMission(logId, nextId)
+        pcall(function() targ:sendPartialMissionLog(logId, false) end)
+        player:printToPlayer(string.format('Completed %s through mission %u for %s.', logName, missionId, targ:getName()))
+        return
+    end
+
     -- Build the ordered list of every canonical mission id in this log that is
     -- <= the chosen one. xi.mission.id[area] is a name->id table; we collect the
     -- numeric ids, sort them, and walk in order. Mission ids are not contiguous
