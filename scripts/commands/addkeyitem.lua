@@ -16,6 +16,24 @@ local function error(player, msg)
     player:printToPlayer('!addkeyitem <key item ID> (player)')
 end
 
+-- Pegasus obtain blocks: KEYITEM shares the GIL slot, not GIL+2 (6394 / 6416).
+local function getKeyItemObtainedMsgId(player)
+    local ID = zones[player:getZoneID()]
+    if not ID or not ID.text then
+        return 6416
+    end
+
+    if ID.text.ITEM_OBTAINED == 6415 then
+        return 6416
+    end
+
+    if ID.text.ITEM_OBTAINED == 6393 then
+        return 6394
+    end
+
+    return ID.text.KEYITEM_OBTAINED
+end
+
 commandObj.onTrigger = function(player, keyId, target)
     -- validate key item id
     if keyId == nil then
@@ -45,9 +63,7 @@ commandObj.onTrigger = function(player, keyId, target)
     if targ:hasKeyItem(keyId) then
         player:printToPlayer(string.format('%s already has key item %i.', targ:getName(), keyId))
     else
-        local ID = zones[targ:getZoneID()]
-        targ:addKeyItem(keyId)
-        targ:messageSpecial(ID.text.KEYITEM_OBTAINED, keyId)
+        npcUtil.giveKeyItem(targ, keyId, getKeyItemObtainedMsgId(targ))
         player:printToPlayer(string.format('Key item %i was given to %s.', keyId, targ:getName()))
     end
 end

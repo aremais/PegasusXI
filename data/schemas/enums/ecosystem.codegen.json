@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/ecosystem.codegen.json",
+  "description": "GENERATED from data/enums/ecosystem.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "unclassified",
+    "amorph",
+    "aquan",
+    "arcana",
+    "archaic_machine",
+    "beast",
+    "beastmen",
+    "bird",
+    "demon",
+    "dragon",
+    "elemental",
+    "empty",
+    "humanoid",
+    "lizard",
+    "luminian",
+    "luminion",
+    "plantoid",
+    "supreme_beings",
+    "undead",
+    "vermin",
+    "voragean",
+    "structures",
+    "weapons"
+  ]
+}

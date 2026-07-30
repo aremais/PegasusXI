@@ -22,7 +22,9 @@
 #include "common/logging.h"
 
 #include "item_container.h"
-#include "utils/itemutils.h"
+
+#include <chrono>
+#include <fstream>
 
 CItemContainer::CItemContainer(uint16 LocationID)
 : SortingPacket(0)
@@ -178,7 +180,7 @@ auto CItemContainer::RemoveItem(uint8 SlotID) -> std::unique_ptr<CItem>
     return std::move(m_ItemList[SlotID]);
 }
 
-auto CItemContainer::MoveItemTo(uint8 fromSlot, CItemContainer& dst, std::optional<uint8> dstSlot) -> uint8
+auto CItemContainer::MoveItemTo(uint8 fromSlot, CItemContainer& dst, Maybe<uint8> dstSlot) -> uint8
 {
     if (dstSlot.has_value())
     {
@@ -256,8 +258,29 @@ uint8 CItemContainer::SearchItemWithSpace(uint16 ItemID, uint32 quantity)
 
 void CItemContainer::Clear()
 {
+    // #region agent log
+    const uint8 preCount = m_count;
+    const uint8 preSize  = m_size;
+    // #endregion
     for (uint8 SlotID = 0; SlotID <= m_size; ++SlotID)
     {
         m_ItemList[SlotID].reset();
     }
+    // #region agent log
+    // NOTE: intentionally not resetting m_count yet — logging proves stale count after Clear.
+    {
+        std::ofstream _dbg("d:/server/debug-e28540.log", std::ios::app);
+        if (_dbg)
+        {
+            const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                std::chrono::system_clock::now().time_since_epoch())
+                                .count();
+            _dbg << "{\"sessionId\":\"e28540\",\"hypothesisId\":\"D\",\"location\":\"item_container.cpp:Clear\","
+                    "\"message\":\"Clear called\",\"data\":{\"containerId\":"
+                 << m_id << ",\"preCount\":" << static_cast<int>(preCount) << ",\"preSize\":"
+                 << static_cast<int>(preSize) << ",\"postCount\":" << static_cast<int>(m_count)
+                 << ",\"postSize\":" << static_cast<int>(m_size) << "},\"timestamp\":" << ms << "}\n";
+        }
+    }
+    // #endregion
 }

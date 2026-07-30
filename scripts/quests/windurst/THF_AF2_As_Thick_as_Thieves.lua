@@ -64,8 +64,8 @@ end
 -- Dangruf Wadi dice CS (136–145) expect a different param layout than Sniggnix in Lower Jeuno (10024/10025).
 -- Win: (REGAL_DIE, 0, roll1, roll2). Lose: (0, 0, roll1, roll2). Using Jeuno ordering here blanks rolls / shows bogus values.
 local function handleDangrufMinigame(player, winEventId, loseEventId, itemPlaced)
-    local rand1 = math.random(1, 999)
-    local rand2 = math.random(1, 999)
+    local rand1 = math.randomInt(1, 999)
+    local rand2 = math.randomInt(1, 999)
 
     if rand1 > rand2 then
         player:messageSpecial(dangrufID.text.YOU_PLACE_ITEM, 0, itemPlaced)
@@ -215,7 +215,7 @@ quest.sections =
                         npcUtil.tradeHasExactly(trade, xi.item.REGAL_DIE) and
                         quest:getVar(player, 'Prog') == 6
                     then
-                        return quest:progressEvent(10026, 0, xi.item.REGAL_DIE, math.random(1, 700))
+                        return quest:progressEvent(10026, 0, xi.item.REGAL_DIE, math.randomInt(1, 700))
                     end
                 end,
 
@@ -223,8 +223,8 @@ quest.sections =
                     -- NOTE: 'Prog' questVar is only used for the gambling phase of this quest.  All other tracking utilizes
                     -- key items obtained.
                     local questProgress = quest:getVar(player, 'Prog')
-                    local rand1 = math.random(1, 999)
-                    local rand2 = math.random(1, 999)
+                    local rand1 = math.randomInt(1, 999)
+                    local rand2 = math.randomInt(1, 999)
 
                     if questProgress == 0 then
                         return quest:progressEvent(10024, 0, xi.item.REGAL_DIE, rand1, rand2)

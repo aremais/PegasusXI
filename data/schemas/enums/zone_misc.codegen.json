@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/zone_misc.codegen.json",
+  "description": "GENERATED from data/enums/zone_misc.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "none",
+    "escape",
+    "fellow",
+    "mount",
+    "mazurka",
+    "tractor",
+    "mogmenu",
+    "costume",
+    "pet",
+    "treasure",
+    "auction_house",
+    "yell",
+    "trust",
+    "los_player_block",
+    "los_off",
+    "assist"
+  ]
+}

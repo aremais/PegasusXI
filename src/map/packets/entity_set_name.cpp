@@ -23,17 +23,24 @@
 
 #include "entity_set_name.h"
 
-#include "entities/baseentity.h"
-#include "entities/charentity.h"
-#include "entities/trustentity.h"
+#include "entities/base_entity.h"
+#include "entities/trust_entity.h"
+
+#include <algorithm>
+#include <cstring>
 
 CEntitySetNamePacket::CEntitySetNamePacket(CBaseEntity* PEntity)
 {
     // One of the purposes of this packet is to make the client aware that this pet is a trust, and hence
     // to show trust options in the menu (like "Release").
     // It is also reported to be used to name Pankration entities, and sometimes Fellows.
+    // Mode 3 copies up to 24 name bytes (see atom0s/XiPackets 0x0067).
     this->setType(0x67);
-    this->setSize(0x2C);
+
+    const auto& name    = PEntity->packetName.empty() ? PEntity->getName() : PEntity->packetName;
+    const auto  nameLen = std::min(name.size(), size_t{ 24 });
+    // Name starts at 0x18; grow so longer names are not truncated.
+    this->setSize(std::max<std::size_t>(0x2C, (0x18 + nameLen + 1 + 3) & ~std::size_t{ 3 }));
 
     ref<uint8>(0x04) = 0x03;
     ref<uint8>(0x05) = 0x05;
@@ -46,8 +53,12 @@ CEntitySetNamePacket::CEntitySetNamePacket(CBaseEntity* PEntity)
         ref<uint16>(0x0C) = PTrust->PMaster->targid;
     }
 
-    packBitsBE(buffer_.data() + 0x04, 0x18 + PEntity->packetName.size(), 0, 6, 10); // Message Size
-    std::memcpy(buffer_.data() + 0x18, PEntity->packetName.c_str(), PEntity->packetName.size());
+    packBitsBE(buffer_.data() + 0x04, static_cast<uint32>(0x18 + nameLen), 0, 6, 10); // Message Size
+    std::memset(buffer_.data() + 0x18, 0, nameLen + 1);
+    if (nameLen > 0)
+    {
+        std::memcpy(buffer_.data() + 0x18, name.c_str(), nameLen);
+    }
 
     // Unknown, maybe entity flags?
     ref<uint8>(0x10) = 0x04;

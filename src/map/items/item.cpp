@@ -146,7 +146,7 @@ uint8 CItem::getAHCat() const
  *                                                                       *
  ************************************************************************/
 
-void CItem::setType(uint8 type)
+void CItem::setType(uint16 type)
 {
     m_type |= type;
 }

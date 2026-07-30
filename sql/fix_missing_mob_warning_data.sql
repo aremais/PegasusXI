@@ -23,14 +23,14 @@ ON DUPLICATE KEY UPDATE
     `content_tag` = VALUES(`content_tag`);
 
 INSERT INTO `mob_spawn_points` VALUES
-    (16891960,0,'Fomors_Bats','Fomor''s Bats',16,49,51,1.000,1.000,1.000,117),
-    (16892007,0,'Fomors_Bats','Fomor''s Bats',16,49,51,1.000,1.000,1.000,196),
-    (16892011,0,'Fomors_Bats','Fomor''s Bats',16,49,51,1.000,1.000,1.000,32),
-    (16896134,0,'Air_Elemental','Air Elemental',10,57,64,-586.808,1.079,689.897,193),
-    (16896165,0,'Ziryu','Ziryu',22,74,76,-693.144,0.284,816.515,0),
-    (16990224,0,'Fomors_Bats','Fomor''s Bats',9,58,60,1.000,1.000,1.000,0),
-    (16990233,0,'Fomors_Bats','Fomor''s Bats',9,58,60,1.000,1.000,1.000,0),
-    (16990248,0,'Fomors_Bats','Fomor''s Bats',9,58,60,1.000,1.000,1.000,0)
+    (16891960,0,'Fomors_Bats','Fomor''s Bats',16,49,51,1.000,1.000,1.000,117,NULL,NULL),
+    (16892007,0,'Fomors_Bats','Fomor''s Bats',16,49,51,1.000,1.000,1.000,196,NULL,NULL),
+    (16892011,0,'Fomors_Bats','Fomor''s Bats',16,49,51,1.000,1.000,1.000,32,NULL,NULL),
+    (16896134,0,'Air_Elemental','Air Elemental',10,57,64,-586.808,1.079,689.897,193,NULL,NULL),
+    (16896165,0,'Ziryu','Ziryu',22,74,76,-693.144,0.284,816.515,0,NULL,NULL),
+    (16990224,0,'Fomors_Bats','Fomor''s Bats',9,58,60,1.000,1.000,1.000,0,NULL,NULL),
+    (16990233,0,'Fomors_Bats','Fomor''s Bats',9,58,60,1.000,1.000,1.000,0,NULL,NULL),
+    (16990248,0,'Fomors_Bats','Fomor''s Bats',9,58,60,1.000,1.000,1.000,0,NULL,NULL)
 ON DUPLICATE KEY UPDATE
     `spawnslotid` = VALUES(`spawnslotid`),
     `mobname` = VALUES(`mobname`),
@@ -41,4 +41,6 @@ ON DUPLICATE KEY UPDATE
     `pos_x` = VALUES(`pos_x`),
     `pos_y` = VALUES(`pos_y`),
     `pos_z` = VALUES(`pos_z`),
-    `pos_rot` = VALUES(`pos_rot`);
+    `pos_rot` = VALUES(`pos_rot`),
+    `spawnHour` = VALUES(`spawnHour`),
+    `despawnHour` = VALUES(`despawnHour`);

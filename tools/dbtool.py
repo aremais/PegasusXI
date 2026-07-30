@@ -267,9 +267,19 @@ else:
 colorama.init(autoreset=True)
 
 
+# MySQL CLI on Windows often emits UTF-8 bytes; decoding with the console
+# code page (cp1252) raises UnicodeDecodeError in subprocess reader threads.
+_MYSQL_SUBPROCESS_TEXT = {
+    "text": True,
+    "encoding": "utf-8",
+    "errors": "replace",
+}
+
+
 # Redirect errors through this to hide annoying password warning
 def fetch_errors(query, result):
-    for line in result.stderr.splitlines():
+    stderr = result.stderr or ""
+    for line in stderr.splitlines():
         # Safe to ignore this warning
         if "Using a password on the command line interface can be insecure" in line:
             continue
@@ -296,7 +306,7 @@ def db_query(query):
             f"-e {query}",
         ],
         capture_output=True,
-        text=True,
+        **_MYSQL_SUBPROCESS_TEXT,
     )
     fetch_errors(query, result)
     return result
@@ -576,7 +586,7 @@ def connect():
                         f"-e {query}",
                     ],
                     capture_output=True,
-                    text=True,
+                    **_MYSQL_SUBPROCESS_TEXT,
                 )
                 fetch_errors(query, result)
                 setup_db()
@@ -634,12 +644,12 @@ def backup_db(silent=False, lite=False):
                 outfile_path = f"{server_dir_path}/sql/backups/{database}-{time.strftime('%Y%m%d-%H%M%S')}-{db_ver}.sql"
             else:
                 outfile_path = f"{server_dir_path}/sql/backups/{database}-{time.strftime('%Y%m%d-%H%M%S')}-full.sql"
-        with open(outfile_path, "w") as outfile:
+        with open(outfile_path, "w", encoding="utf-8", errors="replace") as outfile:
             result = subprocess.run(
                 dumpcmd,
                 stdout=outfile,
                 stderr=subprocess.PIPE,
-                text=True,
+                **_MYSQL_SUBPROCESS_TEXT,
             )
             fetch_errors("Dumping database", result)
             print_green("Database saved!")
@@ -1004,6 +1014,89 @@ def offload_to_auction_house_history():
     print(db_query("SELECT COUNT(*) FROM auction_house_history;").stdout)
 
 
+def resolve_charid(charname):
+    cur.execute("SELECT charid FROM chars WHERE charname = ?", (charname,))
+    row = cur.fetchone()
+    if row is None:
+        print_red(f'No character found with name "{charname}".')
+        return None
+
+    return row[0]
+
+
+def flag_character_for_rename(charname):
+    if not cur and connect() == False:
+        return
+
+    charid = resolve_charid(charname)
+    if charid is None:
+        return
+
+    cur.execute(
+        "INSERT INTO char_flags (charid, `rename`) VALUES (?, 1) "
+        "ON DUPLICATE KEY UPDATE `rename` = 1",
+        (charid,),
+    )
+    db.commit()
+    print_green(f'Flagged "{charname}" (charid {charid}) for a forced rename at next login.')
+
+
+def flag_character_for_race_change(charname):
+    if not cur and connect() == False:
+        return
+
+    charid = resolve_charid(charname)
+    if charid is None:
+        return
+
+    expiry = int(time.time()) + 1209600  # 14 days
+    cur.execute(
+        "INSERT INTO char_vars (charid, varname, value, expiry) "
+        "VALUES (?, '[RaceChange]Eligible', ?, ?) "
+        "ON DUPLICATE KEY UPDATE value = VALUES(value), expiry = VALUES(expiry)",
+        (charid, expiry, expiry),
+    )
+    cur.execute(
+        "INSERT INTO char_vars (charid, varname, value, expiry) "
+        "VALUES (?, '[RaceChange]Last', 0, 0) "
+        "ON DUPLICATE KEY UPDATE value = 0, expiry = 0",
+        (charid,),
+    )
+    db.commit()
+    print_green(f'Made "{charname}" (charid {charid}) race change eligible for 14 days.')
+
+
+def flag_character_dialog(question, fn):
+    charname = input(question + "\n> ").strip()
+    if not charname:
+        bad_selection()
+        return
+
+    fn(charname)
+
+
+def flag_character_for_rename_dialog():
+    flag_character_dialog("Which character to flag for a forced rename?", flag_character_for_rename)
+
+
+def flag_character_for_race_change_dialog():
+    flag_character_dialog("Which character to make race change eligible?", flag_character_for_race_change)
+
+
+def player_admin_menu():
+    if not cur:
+        connect()
+
+    present_menu(
+        "Player Administration",
+        {
+            "1": ["Flag character for forced rename", flag_character_for_rename_dialog],
+            "2": ["Grant character race change eligibility", flag_character_for_race_change_dialog],
+            "q": ["Quit to main menu", NOOP],
+        },
+    )
+
+
 def announce_menu():
     from tools.announce import send_server_message
 
@@ -1315,6 +1408,19 @@ def dump_all_tables(silent=False):
         print_green(f"Replaced values in all .sql files with data from the database.")
 
 
+def validate_yaml_data():
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        rc = subprocess.call(
+            [sys.executable, "-m", "tools.codegen", tmp, "--validate"],
+            cwd=server_dir_path,
+        )
+    if rc == 0:
+        print_green("YAML data validates clean.")
+    else:
+        print_red("YAML validation failed.")
+
+
 def tasks_menu():
     present_menu(
         "Maintenance Tasks",
@@ -1327,6 +1433,7 @@ def tasks_menu():
             #     "Offload historical auction data to auction_house_history",
             #     offload_to_auction_house_history,
             # ],
+            "v": ["Validate YAML data", validate_yaml_data],
             "l": [
                 "Configure single-process server",
                 configure_single_process,
@@ -1404,7 +1511,7 @@ def main():
                             f"-e {query}",
                         ],
                         capture_output=True,
-                        text=True,
+                        **_MYSQL_SUBPROCESS_TEXT,
                     )
                     fetch_errors(query, result)
                     fetch_versions()
@@ -1435,6 +1542,7 @@ def main():
                 "4": ["Restore/Import", restore_backup],
                 "r": ["Reset DB", reset_db],
                 "t": ["Maintenance Tasks", tasks_menu],
+                "p": ["Player Administration", player_admin_menu],
                 "l": ["Launch Server", launch_using_zone_settings],
                 "s": ["Settings", settings_menu],
                 "q": ["Quit", close],

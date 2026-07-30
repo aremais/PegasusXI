@@ -41,5 +41,4 @@ xi.settings.search =
     -- TTL is short so listing counts stay reasonably fresh without map-server invalidation.
     AH_CACHE_ENABLED     = true,
     AH_CACHE_TTL_SECONDS = 45,
-
 }

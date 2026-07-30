@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/spawn_animation.codegen.json",
+  "description": "GENERATED from data/enums/spawn_animation.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "normal",
+    "special"
+  ]
+}

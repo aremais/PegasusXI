@@ -16,14 +16,15 @@ INSERT IGNORE INTO `spell_list` VALUES
 (926,'mnejing',0x01010101010101010101010101010101010101010101,8,0,7,0,1,0,0,2000,240000,0,0,939,1500,0,0,1.00,0,0,0,0,0,NULL),
 (930,'aldo',0x01010101010101010101010101010101010101010101,8,0,7,0,1,0,0,2000,240000,0,0,939,1500,0,0,1.00,0,0,0,0,0,NULL);
 
--- Trust pools and their required family/resistance/skill-list references.
+-- Trust pools and their required species/resistance/skill-list references.
+-- Column was renamed familyid -> speciesid; keep values aligned with sql/mob_pools.sql.
 INSERT INTO `mob_pools` VALUES
-(5926,'mnejing','Mnejing',364,0x0000D60B00000000000000000000000000000000,7,1,3,240,100,0,0,0,0,0,0,32,0,3,0,0,0,0,0,1041,1041,1,8),
+(5926,'mnejing','Mnejing',364,0x0000D60B00000000000000000000000000000000,7,0,3,240,100,0,0,0,0,0,0,32,0,3,0,0,0,0,0,1041,364,1,8),
 (5930,'aldo','Aldo',149,0x0000DA0B00000000000000000000000000000000,6,0,1,240,100,0,0,0,0,0,0,32,0,3,0,0,0,0,0,1045,149,0,15)
 ON DUPLICATE KEY UPDATE
     `name` = VALUES(`name`),
     `packet_name` = VALUES(`packet_name`),
-    `familyid` = VALUES(`familyid`),
+    `speciesid` = VALUES(`speciesid`),
     `modelid` = VALUES(`modelid`),
     `mJob` = VALUES(`mJob`),
     `sJob` = VALUES(`sJob`),

@@ -32,7 +32,6 @@ end
 entity.onEventFinish = function(player, csid, option, npc)
     if csid == 848 and option == 1 then
         xi.roe.onRecordTrigger(player, 1)
-        player:messageBasic(xi.msg.basic.ROE_BONUS_ITEM_PLURAL, 4376, 6)
     end
 end
 

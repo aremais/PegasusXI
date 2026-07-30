@@ -1,0 +1,151 @@
+PegasusXI branch workflow
+=========================
+
+Promotion pipeline
+------------------
+  LandSandBoat (upstream/base)
+          |
+          v  merge (GitHub Action, daily)
+     origin/base          integrate LSB updates here first
+          |
+          v  merge (manual)
+     origin/Test          test and patch here
+          |
+          v  merge when ready (manual)
+     origin/Live          production
+
+
+Remotes
+-------
+  origin   = https://github.com/aremais/PegasusXI/
+  upstream = https://github.com/LandSandBoat/server.git
+  Default branch on GitHub: base
+
+
+=====================================================================
+Daily LSB -> base sync (runs ON GITHUB, not on the game server)
+=====================================================================
+
+Workflow file:
+  .github/workflows/sync_lsb_to_base.yml
+
+What it does each day (and when you click Run workflow):
+  1. Checks out this repo's base branch
+  2. Fetches LandSandBoat/server base
+  3. Merges upstream into base (no force-push)
+  4. Pushes updated base to GitHub
+  5. If already up to date, exits successfully and skips push
+  6. If there are merge conflicts, the Action FAILS and does not push
+     -> resolve conflicts locally on base, then push
+
+
+ONE-TIME SETUP
+--------------
+  1. Commit and push the workflow so it exists on the default branch (base):
+
+       git checkout base
+       git add .github/workflows/sync_lsb_to_base.yml tools/BRANCH_WORKFLOW.txt
+       git commit -m "Add daily GitHub Action to sync LSB into base"
+       git push origin base
+
+     (Also merge/cherry-pick that commit onto Test if you want the docs there.)
+
+  2. Confirm Actions are enabled for the repo:
+       GitHub -> PegasusXI -> Settings -> Actions -> General
+       -> Allow all actions and reusable workflows (or equivalent)
+
+  3. Confirm the workflow can write to base:
+       Settings -> Actions -> General -> Workflow permissions
+       -> Read and write permissions
+       (Or leave read-only and use a PAT secret; read/write is simplest.)
+
+  4. If base is branch-protected and blocks github-actions[bot]:
+       Settings -> Branches -> base protection rules
+       -> Allow GitHub Actions / allow specified actors to bypass
+       -or- use a personal access token stored as a repo secret and
+            wire it into the checkout/push steps later.
+
+  5. Schedule note:
+       Cron workflows only run from the DEFAULT branch.
+       This repo's default branch is base, which is correct.
+
+
+HOW TO VERIFY / RUN MANUALLY
+----------------------------
+  1. Open:
+       https://github.com/aremais/PegasusXI/actions/workflows/sync_lsb_to_base.yml
+
+  2. Click "Run workflow"
+       Branch: base
+       Run workflow
+
+  3. Open the run and confirm it is green.
+       - "Already up to date" is success
+       - "Push base" means new LSB commits were merged
+
+  4. Check the branch tip:
+       https://github.com/aremais/PegasusXI/commits/base
+
+
+SCHEDULE
+--------
+  Cron: 0 8 * * *   (08:00 UTC daily)
+  Approx Eastern: 4:00 AM EDT / 3:00 AM EST
+
+  To change the time, edit the cron in:
+    .github/workflows/sync_lsb_to_base.yml
+
+
+IF THE ACTION FAILS ON CONFLICTS
+--------------------------------
+  On a machine with the repo cloned:
+
+    git fetch origin
+    git fetch upstream
+    git checkout base
+    git pull origin base
+    git merge upstream/base
+    # fix conflicts, commit
+    git push origin base
+
+  Next daily run should succeed once base includes those resolutions.
+
+
+Promote base -> Test (manual)
+-----------------------------
+  cd C:\PegasusXI\server
+  git checkout Test
+  git fetch origin
+  git merge origin/base
+  git push origin Test
+
+  Then rebuild and test. Commit any Pegasus patches on Test (or a feature
+  branch merged into Test).
+
+
+Promote Test -> Live (manual, when ready)
+-----------------------------------------
+  cd C:\PegasusXI\server
+  git checkout Live
+  git fetch origin
+  git merge origin/Test
+  git push origin Live
+
+  Then deploy/rebuild on the Live server.
+
+
+Rules of thumb
+--------------
+  - Never merge upstream straight into Test or Live. Always via base.
+  - Do custom patches on Test (or feature branches into Test).
+  - Only merge Test into Live after testing.
+  - Do not force-push base/Test/Live as part of normal updates.
+  - LSB sync happens on GitHub Actions, not on the game server.
+
+
+Backup branches (one-time, from LSB rewrite)
+--------------------------------------------
+  base-pre-lsb-rewrite
+  Test-pre-lsb-rewrite
+
+  Safe to delete later once you no longer need the old Pegasus history.

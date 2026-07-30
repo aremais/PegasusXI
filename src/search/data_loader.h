@@ -26,9 +26,6 @@
 #include "common/scheduler.h"
 
 #include <list>
-#include <stdio.h>
-#include <string.h>
-#include <vector>
 
 struct search_req;
 

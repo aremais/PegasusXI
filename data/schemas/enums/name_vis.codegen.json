@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/name_vis.codegen.json",
+  "description": "GENERATED from data/enums/name_vis.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "none",
+    "icon",
+    "hide_name",
+    "ghost_phase"
+  ]
+}

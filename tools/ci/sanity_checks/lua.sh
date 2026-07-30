@@ -34,6 +34,10 @@ global_objects=(
     _
     _G
 
+    math.randomFloat
+    math.randomInt
+    math.randomNormal
+
     Module
     Override
     super
@@ -79,6 +83,7 @@ global_objects=(
     SKCNMBattlefield
     Limbus
     SeasonalEvent
+    InstanceAssault
 
     onBattlefieldHandlerInitialize
     applyResistanceAddEffect
@@ -100,6 +105,7 @@ global_objects=(
     BuildString
 
     GetFirstID
+    GetTableOfIDs
 
     LoadExpDifficultyCurves
     ReloadSynthRecipes

@@ -112,3 +112,5 @@ BEGIN
     INSERT INTO `char_storage`   SET `charid` = NEW.charid;
     INSERT INTO `char_unlocks`   SET `charid` = NEW.charid;
 END $$
+
+DELIMITER ;

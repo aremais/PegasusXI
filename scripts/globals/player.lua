@@ -166,7 +166,6 @@ xi.player.charCreate = function(player)
     player:setCharVar('HQuest[moghouseExpo]notSeen', 1) -- needs Moghouse intro
     player:setCharVar('spokeKindlix', 1)                -- Kindlix introduction
     player:setCharVar('spokePyropox', 1)                -- Pyropox introduction
-    player:setCharVar('TutorialProgress', 1)            -- Has not started tutorial
     player:setCharVar('EinherjarIntro', 1)              -- Has not seen Einherjar intro
     player:setNewPlayer(true)                           -- apply new player flag
 end
@@ -270,6 +269,16 @@ xi.player.onGameIn = function(player, firstLogin, zoning)
     -- !immortal
     if player:getCharVar('Immortal') == 1 then
         player:setUnkillable(true)
+        if not player:hasStatusEffect(xi.effect.NONE) then
+            player:addStatusEffect(xi.effect.NONE, { origin = player, icon = xi.effect.TRANSCENDENCY })
+        end
+    end
+
+    -- !aremais permanent movement speed
+    local aremaisSpeed = player:getCharVar('AremaisPermMoveSpeed')
+    if aremaisSpeed > 0 then
+        player:setMod(xi.mod.MOVE_SPEED_OVERRIDE, aremaisSpeed)
+        player:recalculateStats()
     end
 
     -- !hide

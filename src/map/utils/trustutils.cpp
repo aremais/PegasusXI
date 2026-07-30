@@ -23,14 +23,12 @@
 
 #include "common/utils.h"
 
+#include <common/types/hash_map.h>
+
 #include <algorithm>
-#include <cstring>
-#include <vector>
 
 #include "battleutils.h"
-#include "charutils.h"
 #include "mobutils.h"
-#include "zoneutils.h"
 
 #include "grades.h"
 #include "mob_spell_list.h"
@@ -38,13 +36,11 @@
 #include "ai/ai_container.h"
 #include "ai/controllers/trust_controller.h"
 #include "ai/helpers/gambits_container.h"
-#include "entities/mobentity.h"
-#include "entities/trustentity.h"
+#include "entities/trust_entity.h"
 #include "items/item_weapon.h"
 #include "mobskill.h"
 #include "status_effect_container.h"
 #include "weapon_skill.h"
-#include "zone_instance.h"
 
 //
 // Forward declarations
@@ -67,13 +63,13 @@ static std::unordered_set<SpellID> passiveTrustIDs = {
 
 struct TrustData
 {
-    uint32      trustID{};
-    bool        isPassiveTrust{};
-    uint32      pool{};
-    look_t      look;        // appearance data
-    std::string name;        // script name string
-    std::string packet_name; // packet name string
-    ECOSYSTEM   EcoSystem{}; // ecosystem
+    uint32        trustID{};
+    bool          isPassiveTrust{};
+    uint32        pool{};
+    look_t        look;        // appearance data
+    std::string   name;        // script name string
+    std::string   packet_name; // packet name string
+    xi::Ecosystem EcoSystem{}; // ecosystem
 
     uint8  name_prefix{};
     uint8  modelSize{ 0 };
@@ -145,7 +141,7 @@ struct TrustData
     int8 blind_res_rank{};
 };
 
-std::unordered_map<uint16, std::unique_ptr<TrustData>> g_PTrustData;
+HashMap<uint16, std::unique_ptr<TrustData>> g_PTrustData;
 
 void trustutils::LoadTrustList()
 {
@@ -289,7 +285,7 @@ void BuildTrustData(uint32 TrustID)
 
             data->modelSize       = rset->getOrDefault<uint8>("modelSize", 0);
             data->modelHitboxSize = std::max<float>(0.0f, rset->getOrDefault<float>("modelHitboxSize", 0) / 10.f);
-            data->EcoSystem       = rset->get<ECOSYSTEM>("ecosystemID");
+            data->EcoSystem       = rset->get<xi::Ecosystem>("ecosystemID");
             data->HPscale         = rset->get<float>("HP");
             data->MPscale         = rset->get<float>("MP");
 
@@ -359,7 +355,7 @@ auto LoadTrust(CCharEntity* PMaster, uint32 TrustID) -> CTrustEntity*
 
     auto* trustData = itr->second.get();
 
-    auto* PTrust = new CTrustEntity(PMaster);
+    auto* PTrust = new CTrustEntity(PMaster, trustData->trustID, IsPassiveTrust{ trustData->isPassiveTrust });
 
     PTrust->loc              = PMaster->loc;
     PTrust->m_OwnerID.id     = PMaster->id;
@@ -379,13 +375,13 @@ auto LoadTrust(CCharEntity* PMaster, uint32 TrustID) -> CTrustEntity*
     PTrust->MPscale        = trustData->MPscale;
     PTrust->baseSpeed      = trustData->baseSpeed;
     PTrust->animationSpeed = trustData->animationSpeed;
+
     PTrust->UpdateSpeed();
-    PTrust->m_TrustID        = trustData->trustID;
-    PTrust->m_isPassiveTrust = trustData->isPassiveTrust;
-    PTrust->status           = STATUS_TYPE::NORMAL;
-    PTrust->modelSize        = trustData->modelSize;
-    PTrust->modelHitboxSize  = trustData->modelHitboxSize;
-    PTrust->m_EcoSystem      = trustData->EcoSystem;
+
+    PTrust->status          = xi::Status::Normal;
+    PTrust->modelSize       = trustData->modelSize;
+    PTrust->modelHitboxSize = trustData->modelHitboxSize;
+    PTrust->m_EcoSystem     = trustData->EcoSystem;
 
     PTrust->SetMJob(trustData->mJob);
     PTrust->SetSJob(trustData->sJob);
@@ -397,7 +393,8 @@ auto LoadTrust(CCharEntity* PMaster, uint32 TrustID) -> CTrustEntity*
     LoadTrustStatsAndSkills(PTrust);
 
     // Use Mob formulas to work out base "weapon" damage, but scale down to reasonable values.
-    const float  mobStyleDamage   = static_cast<float>(mobutils::GetWeaponDamage(PTrust, SLOT_MAIN));
+    // TODO: Verify trust base damage.
+    const float  mobStyleDamage   = static_cast<float>(mobutils::GetBaseWeaponDamage(PTrust, SLOT_MAIN));
     const float  baseDamage       = mobStyleDamage * 0.5f;
     const float  damageMultiplier = static_cast<float>(trustData->cmbDmgMult) / 100.0f;
     const float  adjustedDamage   = baseDamage * damageMultiplier;
@@ -408,7 +405,7 @@ auto LoadTrust(CCharEntity* PMaster, uint32 TrustID) -> CTrustEntity*
     if (auto* mainWeapon = dynamic_cast<CItemWeapon*>(PTrust->m_Weapons[SLOT_MAIN]))
     {
         mainWeapon->setMaxHit(1);
-        mainWeapon->setSkillType(trustData->cmbSkill);
+        mainWeapon->setSkillType(static_cast<xi::SkillType>(trustData->cmbSkill));
 
         mainWeapon->setDamage(finalDamage);
         mainWeapon->setDelay(trustData->cmbDelay);
@@ -464,8 +461,8 @@ auto LoadTrust(CCharEntity* PMaster, uint32 TrustID) -> CTrustEntity*
 
     // NOTE: Trusts don't really have weapons, and they don't really have combat skills. They only have
     // a damage type, and whether or not they are multi-hit. We handle this wrong everywhere.
-    // To give any Trust multi-hit, you need to give them cmbSkill == SKILL_HAND_TO_HAND (1).
-    if (trustData->cmbSkill == SKILL_HAND_TO_HAND)
+    // To give any Trust multi-hit, you need to give them cmbSkill == xi::SkillType::HandToHand (1).
+    if (trustData->cmbSkill == static_cast<uint8>(xi::SkillType::HandToHand))
     {
         PTrust->m_dualWield = true;
     }
@@ -676,9 +673,9 @@ void LoadTrustStatsAndSkills(CTrustEntity* PTrust)
     PTrust->stats.CHR   = static_cast<uint16>((fCHR + mCHR + sCHR) * statMultiplier);
 
     // Skills =======================
-    for (int i = SKILL_DIVINE_MAGIC; i <= SKILL_BLUE_MAGIC; i++)
+    for (int i = static_cast<int>(xi::SkillType::DivineMagic); i <= static_cast<int>(xi::SkillType::BlueMagic); i++)
     {
-        uint16 maxSkill = battleutils::GetMaxSkill((SKILLTYPE)i, mJob, mLvl > 99 ? 99 : mLvl);
+        uint16 maxSkill = battleutils::GetMaxSkill((xi::SkillType)i, mJob, mLvl > 99 ? 99 : mLvl);
         if (maxSkill != 0)
         {
             PTrust->WorkingSkills.skill[i] = static_cast<uint16>(maxSkill * settings::get<float>("map.ALTER_EGO_SKILL_MULTIPLIER"));
@@ -686,7 +683,7 @@ void LoadTrustStatsAndSkills(CTrustEntity* PTrust)
         else // if the mob is WAR/BLM and can cast spell
         {
             // set skill as high as main level, so their spells won't get resisted
-            uint16 maxSubSkill = battleutils::GetMaxSkill((SKILLTYPE)i, sJob, mLvl > 99 ? 99 : mLvl);
+            uint16 maxSubSkill = battleutils::GetMaxSkill((xi::SkillType)i, sJob, mLvl > 99 ? 99 : mLvl);
 
             if (maxSubSkill != 0)
             {
@@ -695,9 +692,9 @@ void LoadTrustStatsAndSkills(CTrustEntity* PTrust)
         }
     }
 
-    for (int i = SKILL_HAND_TO_HAND; i <= SKILL_STAFF; i++)
+    for (int i = static_cast<int>(xi::SkillType::HandToHand); i <= static_cast<int>(xi::SkillType::Staff); i++)
     {
-        uint16 maxSkill = battleutils::GetMaxSkill((SKILLTYPE)i, mLvl > 99 ? 99 : mLvl);
+        uint16 maxSkill = battleutils::GetMaxSkill(static_cast<uint8>(i), mLvl > 99 ? 99 : mLvl);
         if (maxSkill != 0)
         {
             PTrust->WorkingSkills.skill[i] = static_cast<uint16>(maxSkill * settings::get<float>("map.ALTER_EGO_SKILL_MULTIPLIER"));

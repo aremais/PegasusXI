@@ -336,6 +336,8 @@
         "GetSynergyRecipeByTrade",
         "ReloadSynthRecipes",
         "LoadExpDifficultyCurves",
+
+        "FindNPCsByName"
     ],
     "Lua.diagnostics.disable": [
         "lowercase-global"
@@ -355,6 +357,13 @@
         "editor.defaultFormatter": "ms-python.black-formatter",
         "editor.formatOnSave": true
     },
+    "[yaml]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "yaml.format.enable": false,
     "files.associations": {
         "algorithm": "cpp",
         "any": "cpp",

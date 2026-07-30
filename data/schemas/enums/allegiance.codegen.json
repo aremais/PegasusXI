@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/allegiance.codegen.json",
+  "description": "GENERATED from data/enums/allegiance.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "mob",
+    "player",
+    "san_doria",
+    "bastok",
+    "windurst",
+    "wyverns",
+    "griffons"
+  ]
+}

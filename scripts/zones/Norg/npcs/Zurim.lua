@@ -289,9 +289,6 @@ local domainInvasionItems =
     },
 }
 
-entity.onTrade = function(player, npc, trade)
-end
-
 entity.onTrigger = function(player, npc)
     local domainInvPoints = player:getCurrency('domain_points')
 
@@ -317,9 +314,6 @@ entity.onEventUpdate = function(player, csid, option, npc)
     end
 
     player:updateEvent(domainInvPoints)
-end
-
-entity.onEventFinish = function(player, csid, option, npc)
 end
 
 return entity
