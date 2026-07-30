@@ -87,18 +87,25 @@ commandObj.onTrigger = function(player, targetName)
         return
     end
 
-    require("scripts/globals/player_job_levels")
+    require('scripts/globals/player_job_levels')
 
     local name = targ:getName()
-    msg(player, string.format("Running @aremais package for %s...", name))
+    msg(player, string.format('Running @aremais package for %s...', name))
 
-    -- Unlock all jobs + subjob.
+    -- Unlock all jobs + subjob (job 0 grants support-job access).
     for jobId = 0, xi.MAX_JOB_TYPE - 1 do
         targ:unlockJob(jobId)
     end
 
+    -- Mirror !unlocksubjob quest completion so the client treats subjob as unlocked.
+    targ:completeQuest(xi.questLog.OTHER_AREAS, xi.quest.id.otherAreas.ELDER_MEMORIES)
+
     -- Set all job levels to 99.
-    xi.player_job_levels.setAllJobLevels(targ, 99)
+    local ok, levelMsg = xi.player_job_levels.setAllJobLevels(targ, 99)
+    if not ok then
+        msg(player, levelMsg or 'Could not set all job levels.')
+        return
+    end
 
     -- Gil.
     targ:setGil(999999999)
@@ -136,29 +143,39 @@ commandObj.onTrigger = function(player, targetName)
         end
     end
 
-    -- All spells and trusts (queued in sequence to avoid overlapping batch timers).
-    if xi.commands.addallspells and type(xi.commands.addallspells.onTrigger) == "function" then
-        msg(player, string.format("Queueing all non-trust spells for %s...", name))
+    -- All spells and trusts (trusts delayed so their batch timers do not overlap spells).
+    if xi.commands.addallspells and type(xi.commands.addallspells.onTrigger) == 'function' then
+        msg(player, string.format('Queueing all non-trust spells for %s...', name))
         xi.commands.addallspells.onTrigger(player, name)
+    else
+        msg(player, 'Warning: !addallspells is unavailable; spells were not unlocked.')
     end
-    if xi.commands.addalltrusts and type(xi.commands.addalltrusts.onTrigger) == "function" then
-        player:timer(5000, function(playerArg)
+
+    if xi.commands.addalltrusts and type(xi.commands.addalltrusts.onTrigger) == 'function' then
+        -- Spell unlock batches typically finish well under 90s; start trusts after that.
+        player:timer(90000, function(playerArg)
             local target = GetPlayerByName(name)
             if target then
-                msg(playerArg, string.format("Queueing all trust spells for %s...", name))
+                msg(playerArg, string.format('Queueing all trust spells for %s...', name))
                 xi.commands.addalltrusts.onTrigger(playerArg, name)
             end
         end)
+    else
+        msg(player, 'Warning: !addalltrusts is unavailable; trusts were not unlocked.')
     end
 
     -- All mounts.
-    if xi.commands.addallmounts and type(xi.commands.addallmounts.onTrigger) == "function" then
+    if xi.commands.addallmounts and type(xi.commands.addallmounts.onTrigger) == 'function' then
         xi.commands.addallmounts.onTrigger(player, name)
+    else
+        msg(player, 'Warning: !addallmounts is unavailable; mounts were not unlocked.')
     end
 
     -- All attachments.
-    if xi.commands.addallattachments and type(xi.commands.addallattachments.onTrigger) == "function" then
+    if xi.commands.addallattachments and type(xi.commands.addallattachments.onTrigger) == 'function' then
         xi.commands.addallattachments.onTrigger(player, name)
+    else
+        msg(player, 'Warning: !addallattachments is unavailable; attachments were not unlocked.')
     end
 
     -- All learned weapon skills.
@@ -269,26 +286,25 @@ commandObj.onTrigger = function(player, targetName)
     targ:setVisibleGMLevel(math.min(7, targ:getGMLevel() + 3))
 
     -- Immortal on (persistent + active).
-    targ:setCharVar("Immortal", 1)
-    targ:addStatusEffect(xi.effect.NONE, { origin = player, icon = xi.effect.TRANSCENDENCY })
+    targ:setCharVar('Immortal', 1)
+    targ:addStatusEffect(xi.effect.NONE, { origin = targ, icon = xi.effect.TRANSCENDENCY })
     targ:setUnkillable(true)
 
     -- Godmode on (persistent + active).
     enableGodMode(targ)
 
-    -- Permanent movement speed override.
-    targ:setCharVar("AremaisPermMoveSpeed", 100)
+    -- Permanent movement speed override (reapplied on zone-in via player.lua).
+    targ:setCharVar('AremaisPermMoveSpeed', 100)
     targ:setMod(xi.mod.MOVE_SPEED_OVERRIDE, 100)
     targ:recalculateStats()
 
-    msg(player, string.format("@aremais core setup complete for %s. (Spell/trust unlocks will finish asynchronously.)", name))
+    msg(player, string.format('@aremais core setup complete for %s. (Spell/trust unlocks will finish asynchronously.)', name))
 
-    -- Best-effort "fully completed" notice: spells/trust unlocks are queued in batches.
-    -- They themselves print completion messages when done, but this gives you a quick end-of-script confirmation.
-    player:timer(120000, function(playerArg)
+    -- Best-effort "fully completed" notice: spells then trusts are queued in batches.
+    player:timer(180000, function(playerArg)
         local targ2 = GetPlayerByName(name)
         if targ2 then
-            msg(playerArg, string.format("@aremais command run finished for %s (queued batches should be complete by now).", name))
+            msg(playerArg, string.format('@aremais command run finished for %s (queued batches should be complete by now).', name))
         end
     end)
 end
