@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/mob_type.codegen.json",
+  "description": "GENERATED from data/enums/mob_type.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "normal",
+    "unused",
+    "notorious",
+    "fished",
+    "called",
+    "battlefield",
+    "event"
+  ]
+}

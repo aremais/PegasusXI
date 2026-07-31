@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -23,7 +23,6 @@
 #define _CLUABASEENTITY_H
 
 #include "common/cbasetypes.h"
-#include "data/enums/entity_flags.h"
 #include "enums/mission_log.h"
 #include "luautils.h"
 #include "packets/s2c/0x009_message.h"
@@ -66,7 +65,7 @@ public:
     void printToPlayer(const std::string& message, const sol::object& messageTypeObj, const sol::object& nameObj);
     void printToArea(const std::string& message, const sol::object& arg1, const sol::object& arg2, const sol::object& arg3, const sol::object& arg4);
     void messageBasic(uint16 messageID, const sol::object& p0, const sol::object& p1, const sol::object& target);
-    void messageName(uint16 messageID, const sol::object& entity, const sol::object& p0, const sol::object& p1, const sol::object& p2, const sol::object& p3, const sol::object& chat);
+    void messageName(uint16 messageID, const sol::object& entity, const sol::object& p0, const sol::object& p1, const sol::object& p2, const sol::object& p3, const sol::object& chat, const sol::object& showSender);
     void messagePublic(uint16 messageID, const CLuaBaseEntity* PEntity, const sol::object& arg2, const sol::object& arg3);
     void messageSpecial(uint16 messageID, sol::variadic_args va);
     void messageSystem(MsgStd messageID, const sol::object& p0, const sol::object& p1);
@@ -97,8 +96,8 @@ public:
     void entityVisualPacket(const std::string& command, const sol::object& entity) const;
     void entityAnimationPacket(const char* command, const sol::object& target);
     void sendDebugPacket(const sol::table& packetData);
-    void sendLinkshellConcierge(const sol::table& data) const;
-    void sendChocoboRace(const sol::table& race) const;
+    void addPacketMod(uint16 packetId, uint16 offset, uint8 value);
+    void clearPacketMods();
 
     void       StartEventHelper(int32 EventID, sol::variadic_args va, EVENT_TYPE eventType);
     EventInfo* ParseEvent(int32 EventID, sol::variadic_args va, EventPrep* eventPreparation, EVENT_TYPE eventType);
@@ -138,8 +137,8 @@ public:
     // AI and Control
     void  initNpcAi();
     void  resetAI();
-    auto  getStatus() -> xi::Status;
-    void  setStatus(xi::Status status);
+    uint8 getStatus();
+    void  setStatus(uint8 status);
     uint8 getCurrentAction();
     bool  canUseAbilities();
 
@@ -176,16 +175,13 @@ public:
     void updateNPCHideTime(const sol::object& seconds); // Updates the length of time a NPC remains hidden, if shorter than the original hide time.
 
     auto getWeather(const sol::object& ignoreScholar) const -> uint8;
-    void setWeather(xi::Weather weatherType); // Set Weather condition (GM COMMAND)
+    void setWeather(Weather weatherType); // Set Weather condition (GM COMMAND)
 
     // PC Instructions
-    void changeMusic(MusicSlot slotId, uint16 trackId) const;                                                      // Sets the specified music Track for specified music block.
-    void sendMenu(uint32 menu);                                                                                    // Displays a menu (AH,Raise,Tractor,MH etc)
-    auto sendGuild(uint16 guildId, uint8 open, uint8 close, uint8 holiday) const -> bool;                          // Sends guild shop menu
-    auto openGuildShop(CLuaBaseEntity* PNpc, uint8 open, uint8 close, sol::optional<uint8> holiday) const -> bool; // Opens a lua guild shop and remembers the NPC the PC opened it with
-    void clearGuildShop() const;                                                                                   // Clears the PC's open guild shop handle
-    void sendGuildClose(uint8 open, uint8 close) const;                                                            // Sends the guild-open packet with a Close status
-    void openSendBox() const;                                                                                      // Opens send box (to deliver items)
+    void changeMusic(MusicSlot slotId, uint16 trackId) const;                             // Sets the specified music Track for specified music block.
+    void sendMenu(uint32 menu);                                                           // Displays a menu (AH,Raise,Tractor,MH etc)
+    auto sendGuild(uint16 guildId, uint8 open, uint8 close, uint8 holiday) const -> bool; // Sends guild shop menu
+    void openSendBox() const;                                                             // Opens send box (to deliver items)
     void leaveGame();
     void sendEmote(const CLuaBaseEntity* target, uint8 emID, uint8 emMode, bool othersOnly) const;
 
@@ -214,11 +210,12 @@ public:
     void onPlayerTriggerAreaLeave(uint32 triggerAreaId);
     void clearPlayerTriggerAreas();
 
-    void updateToEntireZone(xi::Status statusID, uint8 animation, const sol::object& matchTime); // Forces an update packet to update the NPC entity zone-wide
+    void updateToEntireZone(uint8 statusID, uint8 animation, const sol::object& matchTime); // Forces an update packet to update the NPC entity zone-wide
     void sendEntityUpdateToPlayer(CLuaBaseEntity* entityToUpdate, uint8 entityUpdate, uint8 updateMask);
     void sendEmptyEntityUpdateToPlayer(CLuaBaseEntity* entityToUpdate);
 
     void forceRezone();
+    void forceLogout();
 
     auto  getPos() -> sol::table;
     void  showPosition();
@@ -258,23 +255,25 @@ public:
     bool   hasEquipped(uint16 equipmentID); // Returns true if item is equipped in any slot
     bool   hasItem(uint16 itemID, const sol::object& location);
     uint32 getItemCount(uint16 itemID);
-    auto   addItem(sol::variadic_args va) const -> CItem*;
+    bool   addItem(sol::variadic_args va);
     bool   delItem(uint16 itemID, int32 quantity, const sol::object& containerID);
     bool   delItemAt(uint16 itemID, int32 quantity, uint8 containerId, uint8 slotId);
     bool   delContainerItems(const sol::object& containerID);
     bool   addUsedItem(uint16 itemID);
     bool   addTempItem(uint16 itemID, const sol::object& arg1);
-    auto   getWornUses(uint16 itemID) const -> uint8;                      // Check if the item is already worn
-    auto   incrementItemWear(uint16 itemID) const -> uint8;                // Increment the item's worn value and returns it
+    uint8  getWornUses(uint16 itemID);                      // Check if the item is already worn
+    uint8  incrementItemWear(uint16 itemID);               // Increment the item's worn value and returns it
     auto   findItem(uint16 itemID, const sol::object& location) -> CItem*; // Like hasItem, but returns the item object (nil if not found)
     auto   findItems(uint16 itemID, const sol::object& location) -> sol::table;
     auto   getItems(const sol::object& location) -> sol::table;
 
     void createShop(uint8 size, const sol::object& arg1);
-    void addShopItem(uint16 itemID, double rawPrice, sol::optional<sol::table> requirements) const;
+    void addShopItem(uint16 itemID, double rawPrice, const sol::object& arg2, const sol::object& arg3);
     auto getCurrentGPItem(uint8 guildId) const -> std::tuple<uint16, uint16>;
     bool breakLinkshell(const std::string& lsname);
     bool addLinkpearl(const std::string& lsname, bool equip);
+    bool addLinkshellHolder(const std::string& lsname, sol::optional<uint8> equipSlot);
+    auto addSoulPlate(const std::string& name, uint32 interestData, uint8 zeni, uint16 skillIndex, uint8 fp) -> CItem*;
 
     // Trading
     uint8 getContainerSize(uint8 locationID);
@@ -328,7 +327,7 @@ public:
     void   setAnimation(uint8 animation);
     uint8  getAnimationSub();
     void   setAnimationSub(uint8 animationsub, const sol::object& sendUpdate);
-    void   setSpawnAnimation(xi::SpawnAnimation spawnAnimation);
+    void   setSpawnAnimation(uint8 spawnAnimation);
     bool   getCallForHelpFlag() const;
     void   setCallForHelpFlag(bool cfh);
     bool   getCallForHelpBlocked() const;
@@ -337,8 +336,8 @@ public:
     // Player Status
     uint8 getNation();
     void  setNation(uint8 nation);
-    auto  getAllegiance() -> xi::Allegiance;
-    void  setAllegiance(xi::Allegiance allegiance);
+    uint8 getAllegiance();
+    void  setAllegiance(uint8 allegiance);
 
     uint8 getCampaignAllegiance();
     void  setCampaignAllegiance(uint8 allegiance);
@@ -362,7 +361,7 @@ public:
     bool isJailed();
     void jail();
 
-    bool canUseMisc(xi::ZoneMisc misc); // Check misc flags of current zone.
+    bool canUseMisc(uint16 misc); // Check misc flags of current zone.
 
     uint8 getSpeed();
     uint8 getBaseSpeed();
@@ -494,7 +493,6 @@ public:
     int32 getCP(); // Conquest points, not to be confused with Capacity Points
     void  addCP(int32 cp);
     void  delCP(int32 cp);
-    void  gainConquestInfluence(int32 points);
 
     int32 getSeals(uint8 sealType);
     void  addSeals(int32 points, uint8 sealType);
@@ -669,7 +667,7 @@ public:
     auto   getBaseDelay() -> uint16;        // get base delay of entity, melee only
     auto   getBaseRangedDelay() -> uint16;  // get base delay of entity, ranged only
 
-    auto checkLiementAbsorb(xi::DamageType damageType) -> float; // return 1.0 if did not absorb, return >= -1.0 if did absorb
+    float checkLiementAbsorb(uint16 damageType); // return 1.0 if did not absorb, return >= -1.0 if did absorb
 
     // Enmity
     int32 getCE(const CLuaBaseEntity* target);
@@ -689,26 +687,24 @@ public:
     bool  hasClaim(CLuaBaseEntity* PTarget);
     bool  hasEnmity();
     auto  getNotorietyList() -> sol::table;
-    auto  getMasterThreatMob(const sol::object& rangeOverride) -> CBaseEntity*;
     void  clearEnmityForEntity(CLuaBaseEntity* PEntity);
 
     // Status Effects
-    auto  addStatusEffect(xi::StatusEffect effectId, sol::table params) const -> bool;
+    auto  addStatusEffect(EFFECT effectId, sol::table params) const -> bool;
     auto  copyStatusEffect(const CLuaStatusEffect* PStatusEffect) const -> bool;
-    auto  getStatusEffect(xi::StatusEffect StatusID, const sol::object& SubType, const sol::object& SourceType, const sol::object& SourceTypeParam) -> CStatusEffect*;
-    auto  getStatusEffectBySource(xi::StatusEffect StatusID, EffectSourceType SourceType, uint16 SourceTypeParam) -> CStatusEffect*;
+    auto  getStatusEffect(uint16 StatusID, const sol::object& SubType, const sol::object& SourceType, const sol::object& SourceTypeParam) -> CStatusEffect*;
+    auto  getStatusEffectBySource(uint16 StatusID, EffectSourceType SourceType, uint16 SourceTypeParam) -> CStatusEffect*;
     auto  getStatusEffects() -> sol::table;
     int16 getStatusEffectElement(uint16 statusId);
-    auto  canGainStatusEffect(xi::StatusEffect effect, const sol::object& powerObj) -> bool;
-    auto  hasStatusEffect(xi::StatusEffect StatusID, const sol::object& SubType) -> bool;
+    bool  canGainStatusEffect(uint16 effect, const sol::object& powerObj);
+    bool  hasStatusEffect(uint16 StatusID, const sol::object& SubType);
     bool  hasStatusEffectByFlag(uint16 StatusID);
-    auto  countEffect(xi::StatusEffect StatusID) -> uint8; // Gets the number of effects of a specific type on the entity
-    uint8 countEffectWithFlag(uint32 flag);                // Gets the number of effects with a flag on the entity
+    uint8 countEffect(uint16 StatusID);     // Gets the number of effects of a specific type on the entity
+    uint8 countEffectWithFlag(uint32 flag); // Gets the number of effects with a flag on the entity
 
-    auto   delStatusEffect(xi::StatusEffect StatusID, const sol::object& SubType, const sol::object& SourceType, const sol::object& SourceTypeParam) -> bool;
+    bool   delStatusEffect(uint16 StatusID, const sol::object& SubType, const sol::object& SourceType, const sol::object& SourceTypeParam);
     void   delStatusEffectsByFlag(uint32 flag, const sol::object& silent);
-    void   delStatusEffectsByType(uint16 type);
-    auto   delStatusEffectSilent(xi::StatusEffect StatusID) -> bool; // Removes Status Effect, suppresses message
+    bool   delStatusEffectSilent(uint16 StatusID); // Removes Status Effect, suppresses message
     uint16 eraseStatusEffect();
     uint8  eraseAllStatusEffect();
     int32  dispelStatusEffect(const sol::object& flagObj);
@@ -724,15 +720,18 @@ public:
     int16 getGearModFromSlot(uint8 slot, Mod modId);
 
     void addLatent(uint16 condID, uint16 conditionValue, uint16 mID, int16 modValue);
-    auto delLatent(uint16 condID, uint16 conditionValue, uint16 mID, int16 modValue) -> bool;
+    bool delLatent(uint16 condID, uint16 conditionValue, uint16 mID, int16 modValue);
     bool hasAllLatentsActive(uint8 slot);
 
+    void   fold();
     void   doWildCard(CLuaBaseEntity* PEntity, uint8 total);
     bool   doRandomDeal(CLuaBaseEntity* PTarget);
+    auto   addCorsairRoll(sol::variadic_args va) -> bool;
+    bool   hasCorsairEffect();
     bool   hasBustEffect(uint16 id); // Checks to see if a character has a specified busted corsair roll
     uint8  numBustEffects();         // Gets the number of bust effects on the player
     uint16 healingWaltz();
-    auto   addBardSong(CLuaBaseEntity* PEntity, xi::StatusEffect effectID, uint16 power, uint16 tick, uint16 duration, uint16 SubType, uint16 subPower, uint16 tier) -> bool;
+    bool   addBardSong(CLuaBaseEntity* PEntity, uint16 effectID, uint16 power, uint16 tick, uint16 duration, uint16 SubType, uint16 subPower, uint16 tier);
 
     void charm(const CLuaBaseEntity* target, const sol::object& p0);
     void uncharm();
@@ -753,9 +752,9 @@ public:
     uint16 getILvlSkill();
     uint16 getILvlParry();
 
-    auto physicalDmgTaken(double damage, sol::variadic_args va) -> int32;
-    auto rangedDmgTaken(double damage, sol::variadic_args va) -> int32;
-    void handleAfflatusMiseryDamage(double damage);
+    int32 physicalDmgTaken(double damage, sol::variadic_args va);
+    int32 rangedDmgTaken(double damage, sol::variadic_args va);
+    void  handleAfflatusMiseryDamage(double damage);
 
     bool   isWeaponTwoHanded();
     uint16 getWeaponDmg();                  // gets the current equipped weapons' DMG rating
@@ -776,10 +775,10 @@ public:
     uint8  getWeaponSubSkillType(uint8 slotID);                      // gets the subskill of weapon equipped
     auto   getWSSkillchainProp() -> std::tuple<uint8, uint8, uint8>; // returns weapon skill's skillchain properties (up to 3)
 
-    auto takeWeaponskillDamage(CLuaBaseEntity* attacker, int32 damage, uint8 atkType, xi::DamageType dmgType, uint8 slot, bool primary, float tpMultiplier, uint16 bonusTP, float targetTPMultiplier) -> int32;
+    int32 takeWeaponskillDamage(CLuaBaseEntity* attacker, int32 damage, uint8 atkType, uint8 dmgType, uint8 slot, bool primary, float tpMultiplier, uint16 bonusTP, float targetTPMultiplier);
 
     void  takeSpellDamage(CLuaBaseEntity* caster, CLuaSpell* spell, int32 damage, uint8 atkType, uint8 dmgType);
-    auto  takeSwipeLungeDamage(CLuaBaseEntity* caster, int32 damage, uint8 atkType, xi::DamageType dmgType) -> int32;
+    int32 takeSwipeLungeDamage(CLuaBaseEntity* caster, int32 damage, uint8 atkType, uint8 dmgType);
     int32 checkDamageCap(int32 damage);
     auto  handleSevereDamage(int32 damage, bool isPhysical) -> int32;
 
@@ -823,7 +822,6 @@ public:
     void delPetMod(uint16 modID, int16 amount);
 
     auto hasAttachment(uint16 itemID) const -> bool;
-    auto hasAttachmentSet(uint16 itemID) const -> bool;
     auto getAutomatonName() const -> std::string;
     auto getAutomatonFrame() const -> Maybe<AutomatonFrame>;
     void setAutomatonFrame(AutomatonFrame frame) const;
@@ -833,6 +831,7 @@ public:
     auto getActiveManeuverCount() const -> uint8;
     void removeOldestManeuver() const;
     void removeAllManeuvers() const;
+    auto getAttachment(uint8 slotId) const -> const CItem*;
     auto getAttachments() const -> sol::table;
     void setAttachment(uint8 attachmentItemID, uint8 slotID) const;
     void updateAttachments() const;
@@ -854,20 +853,19 @@ public:
     uint8  getEcosystem();
     uint16 getFamily();
     uint16 getSpecies();
-    auto   isMobType(xi::MobType mobType) const -> bool; // True if mob is of type passed to function
-    auto   isUndead() -> bool;
+    auto   isMobType(uint8 mobType) const -> bool; // True if mob is of type passed to function
+    bool   isUndead();
     bool   isNM();
 
-    uint8 getModelSize();
-    void  setModelSize(uint8 newSize);
-    float getHitboxSize();
-    void  setHitboxSize(float newSize);
-    float getMeleeRange(CLuaBaseEntity* target);
-    void  setMobFlags(xi::EntityFlags flags, const sol::object& mobId); // Used to manipulate the mob's flags, such as changing size.
-    auto  getMobFlags() -> xi::EntityFlags;
+    uint8  getModelSize();
+    void   setModelSize(uint8 newSize);
+    float  getHitboxSize();
+    void   setHitboxSize(float newSize);
+    float  getMeleeRange(CLuaBaseEntity* target);
+    void   setMobFlags(uint32 flags, const sol::object& mobId); // Used to manipulate the mob's flags, such as changing size.
+    uint32 getMobFlags();
 
-    void setNpcFlags(xi::EntityFlags flags);
-    void setNpcAlwaysRelevant(bool alwaysRelevant);
+    void setNpcFlags(uint32 flags);
 
     void spawn(const sol::object& despawnSec, const sol::object& respawnSec);
     bool isSpawned();
@@ -879,22 +877,20 @@ public:
     void instantiateMob(uint32 groupID);
 
     bool hasTrait(uint16 traitID);
-    bool hasImmunity(xi::Immunity immunityID); // Check if the mob has immunity for a type of spell (immunity list in mobentity.h)
-    void addImmunity(xi::Immunity immunityID);
-    void delImmunity(xi::Immunity immunityID);
+    bool hasImmunity(uint32 immunityID); // Check if the mob has immunity for a type of spell (immunity list in mobentity.h)
+    void addImmunity(uint32 immunityID);
+    void delImmunity(uint32 immunityID);
 
     void setAggressive(bool aggressive);
     void setTrueDetection(bool truedetection);
     void setUnkillable(bool unkillable);
-    auto getUnkillable() -> bool;
     void setUntargetable(bool untargetable);
     bool getUntargetable();
-    void setPriorityRender(bool enabled) const;
     void setIsAggroable(bool isAggroable);
     bool isAggroable();
 
     void setDelay(uint16 delay);
-    auto setDamage(uint16 damage, uint8 slot) -> void;
+    void setDamage(uint16 damage);
     auto getSpellListId() const -> uint16;
     auto hasSpellList() const -> bool;
     void setSpellList(uint16 spellListId) const;
@@ -910,19 +906,15 @@ public:
     void  addMobMod(uint16 mobModID, int16 value);
     void  delMobMod(uint16 mobModID, int16 value);
 
-    auto getfTPModifierOverride(uint16 skillId) -> sol::object;
-    void setfTPModifierOverride(uint16 skillId, float ftp1, float ftp2, float ftp3);
-
     uint32 getBattleTime();
     auto   getCrystalElement() const -> ELEMENT;
-    void   setCrystalElement(ELEMENT crystalElement);
 
-    auto  getBehavior() -> xi::Behavior;
-    void  setBehavior(xi::Behavior behavior);
-    uint8 getLink();
-    void  setLink(uint8 link);
-    auto  getRoamFlags() -> xi::RoamFlag;
-    void  setRoamFlags(xi::RoamFlag newRoamFlags);
+    uint16 getBehavior();
+    void   setBehavior(uint16 behavior);
+    uint8  getLink();
+    void   setLink(uint8 link);
+    uint16 getRoamFlags();
+    void   setRoamFlags(uint16 newRoamFlags);
 
     auto getTarget() -> CBaseEntity*;
     void updateTarget(); // Force mob to update target from enmity container (ie after updateEnmity)
@@ -954,8 +946,8 @@ public:
     uint16 getStealItem();
     uint16 getDespoilItem();                // gets ItemID of droplist despoil item from mob (steal item if no despoil item)
     uint16 getDespoilDebuff(uint16 itemID); // gets the status effect id to apply to the mob on successful despoil
-    void   itemStolen(bool stolen);         // sets mob's ItemStolen var
-    void   itemDespoiled(bool despoiled);   // sets mob's ItemDespoiled var
+    bool   itemStolen();                    // sets mob's ItemStolen var = true
+    bool   itemDespoiled();                 // sets mob's ItemDespoiled var = true
     int16  getTHlevel();                    // Returns the Monster's current Treasure Hunter Tier
     void   setTHlevel(int16 newLevel);      // Sets the Monster's current Treasure Hunter Tier
 

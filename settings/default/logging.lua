@@ -62,7 +62,8 @@ xi.settings.logging =
     DEBUG_PERFORMANCE    = false, -- Calls in C++: DebugPerformance(...)
     DEBUG_TEST           = false, -- Calls in C++: DebugTest(...)
 
-    SQL_SLOW_QUERY_LOG_ENABLE   = true, -- true/false. If true, slow SQL queries will generate warning or error logs if they exceed the durations listed below.
-    SQL_SLOW_QUERY_WARNING_TIME = 100,  -- uint (milliseconds).
-    SQL_SLOW_QUERY_ERROR_TIME   = 250,  -- uint (milliseconds).
+    -- Both tiers log at spdlog "warning" (see database.cpp); ERROR_TIME is only the higher threshold label.
+    SQL_SLOW_QUERY_LOG_ENABLE   = true, -- true/false. If true, log queries that exceed the durations below.
+    SQL_SLOW_QUERY_WARNING_TIME = 200,  -- uint (milliseconds). Typical single-row loads stay below this on healthy DBs.
+    SQL_SLOW_QUERY_ERROR_TIME   = 1000, -- uint (milliseconds). Must be > WARNING_TIME. Tune down if profiling the DB.
 }

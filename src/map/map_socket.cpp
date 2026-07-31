@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2025 LandSandBoat Dev Teams
@@ -21,15 +21,43 @@
 
 #include "map_socket.h"
 
-#include <common/logging.h>
+#include "common/logging.h"
 
-MapSocket::MapSocket(Scheduler& scheduler, MapStatistics& mapStatistics, const uint16 port, ReceiveFn onReceiveFn)
+#include <asio/error.hpp>
+#include <system_error>
+
+namespace
+{
+// Windows (and some POSIX stacks) surface ICMP unreachable / "no listener" on UDP as
+// connection_refused on a later recv/send completion — not a server bug.
+bool isBenignUdpSocketError(const std::error_code& ec)
+{
+    if (!ec)
+    {
+        return false;
+    }
+    if (ec == asio::error::operation_aborted)
+    {
+        return true;
+    }
+    const std::error_condition cond = ec.default_error_condition();
+    if (cond == std::errc::connection_refused || cond == std::errc::connection_reset)
+    {
+        return true;
+    }
+#if defined(_WIN32)
+    if (ec.category() == std::system_category() && ec.value() == WSAECONNREFUSED)
+    {
+        return true;
+    }
+#endif
+    return false;
+}
+} // namespace
+
+MapSocket::MapSocket(Scheduler& scheduler, const uint16 port, ReceiveFn onReceiveFn)
 : scheduler_(scheduler)
-, mapStatistics_(mapStatistics)
 , port_(port)
-, inFlightSends_(0)
-, sendsBlockedThisTick_(0)
-, sendsDroppedThisTick_(0)
 , socket_(scheduler_.mainContext())
 , buffer_{}
 , onReceiveFn_(std::move(onReceiveFn))
@@ -42,7 +70,7 @@ MapSocket::MapSocket(Scheduler& scheduler, MapStatistics& mapStatistics, const u
     socket_.open(listen_endpoint.protocol());
     socket_.bind(listen_endpoint);
 
-    receive(); // begin receiving loop
+    startReceive();
 }
 
 MapSocket::~MapSocket()
@@ -55,44 +83,39 @@ MapSocket::~MapSocket()
     }
 }
 
-void MapSocket::receive()
+void MapSocket::startReceive()
 {
     TracyZoneScoped;
 
     socket_.async_receive_from(
-        asio::buffer(buffer_), remoteEndpoint_, [this](const std::error_code& ec, std::size_t bytesRecvd)
+        asio::buffer(buffer_), remote_endpoint_, [this](const std::error_code& ec, std::size_t bytes_recvd)
         {
             // NOTE: ASIO returns the address in host byte order, but we store it in network byte order,
             //     : so we convert it back.
-            const auto senderIP   = htonl(remoteEndpoint_.address().to_v4().to_uint());
-            const auto senderPort = remoteEndpoint_.port();
-            const auto ipp        = IPP(senderIP, senderPort);
+            const auto sender_ip   = htonl(remote_endpoint_.address().to_v4().to_uint());
+            const auto sender_port = remote_endpoint_.port();
+            const auto ipp         = IPP(sender_ip, sender_port);
 
-            const auto sizedBuffer = ByteSpan(buffer_.data(), bytesRecvd);
+            std::error_code recv_ec = ec;
+            if (ec && isBenignUdpSocketError(ec))
+            {
+                recv_ec.clear();
+            }
 
-            DebugPacketsFmt("Received {} bytes from {}", sizedBuffer.size(), ipp.toString());
+            const auto buffer = std::span(buffer_.data(), bytes_recvd);
 
-            if (ec)
-            {
-                ShowErrorFmt("Receive error from {}: {}", ipp.toString(), ec.message());
-            }
-            else if (sizedBuffer.empty())
-            {
-                ShowErrorFmt("Received empty buffer from {}", ipp.toString());
-            }
-            else // Everything is OK
-            {
-                onReceiveFn_(sizedBuffer, ipp);
-            }
+            DebugPacketsFmt("Received {} bytes from {}", buffer.size(), ipp.toString());
+
+            onReceiveFn_(recv_ec, buffer, ipp);
 
             if (!scheduler_.closeRequested() && socket_.is_open())
             {
-                receive(); // Queue up more work
+                startReceive(); // Queue up more work
             }
         });
 }
 
-void MapSocket::send(const IPP& ipp, ByteSpan buffer)
+void MapSocket::send(const IPP& ipp, std::span<uint8> buffer)
 {
     TracyZoneScoped;
 
@@ -103,45 +126,14 @@ void MapSocket::send(const IPP& ipp, ByteSpan buffer)
     const auto ip       = ntohl(ipp.getIP());
     const auto endpoint = asio::ip::udp::endpoint(asio::ip::address_v4(ip), ipp.getPort());
 
-    // Sends normally complete near-instantly. If the OS send path is backing up, completions
-    // arrive late (on POSIX, ASIO silently parks would-block sends until the socket is
-    // writable again) and the in-flight count climbs. Its per-tick high-water mark is the
-    // backpressure signal that send error codes alone can't show.
-    ++inFlightSends_;
-    mapStatistics_.set(MapStatistics::Key::MaxInFlightSendsPerTick,
-                       std::max(mapStatistics_.get(MapStatistics::Key::MaxInFlightSendsPerTick), inFlightSends_));
-
     socket_.async_send_to(
         asio::buffer(buffer),
         endpoint,
-        [this](const std::error_code& ec, std::size_t bytesSent)
+        [](const std::error_code& ec, std::size_t /*bytes_sent*/)
         {
-            --inFlightSends_;
-
-            if (ec)
+            if (ec && !isBenignUdpSocketError(ec))
             {
-                // ENOBUFS/EWOULDBLOCK (WSAENOBUFS/WSAEWOULDBLOCK on Windows): the OS couldn't
-                // accept the datagram right now, i.e. the send path is backing up.
-                // Aggregated and logged once per tick in flushDiagnostics(), so a burst of
-                // failures can't flood the log while the server is already under pressure.
-                if (ec == asio::error::no_buffer_space ||
-                    ec == asio::error::would_block ||
-                    ec == asio::error::try_again)
-                {
-                    mapStatistics_.increment(MapStatistics::Key::TotalSendsBlockedPerTick);
-                    ++sendsBlockedThisTick_;
-                    blockedReasons_.insert(ec);
-                }
-                else
-                {
-                    mapStatistics_.increment(MapStatistics::Key::TotalSendErrorsPerTick);
-                    ++sendsDroppedThisTick_;
-                    droppedReasons_.insert(ec);
-                }
-            }
-            else
-            {
-                mapStatistics_.increment(MapStatistics::Key::TotalBytesSentPerTick, static_cast<int64>(bytesSent));
+                ShowErrorFmt("Error sending data: {}", ec.message());
             }
         });
 
@@ -149,36 +141,8 @@ void MapSocket::send(const IPP& ipp, ByteSpan buffer)
     // need to enqueue more work when we're done here.
 }
 
-void MapSocket::flushDiagnostics()
+void MapSocket::requestExit()
 {
-    TracyZoneScoped;
-
-    const auto reasonsToString = [](const std::set<std::error_code>& reasons)
-    {
-        std::string out;
-        for (const auto& reason : reasons)
-        {
-            out += (out.empty() ? "" : ", ") + reason.message();
-        }
-        return out;
-    };
-
-    if (sendsBlockedThisTick_ > 0)
-    {
-        ShowWarningFmt("{} sends pushed back by the OS this tick (send path backing up, datagrams dropped). Reasons: {}",
-                       sendsBlockedThisTick_,
-                       reasonsToString(blockedReasons_));
-    }
-
-    if (sendsDroppedThisTick_ > 0)
-    {
-        ShowErrorFmt("{} sends failed this tick (datagrams dropped). Reasons: {}",
-                     sendsDroppedThisTick_,
-                     reasonsToString(droppedReasons_));
-    }
-
-    sendsBlockedThisTick_ = 0;
-    sendsDroppedThisTick_ = 0;
-    blockedReasons_.clear();
-    droppedReasons_.clear();
+    isRunning_ = false;
+    scheduler_.stop();
 }

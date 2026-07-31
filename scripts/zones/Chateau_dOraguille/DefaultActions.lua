@@ -8,7 +8,6 @@ return {
     ['Aramaviont']  = { event          = 518 },
     ['Arsha']       = { event          = 513 },
     ['Atoranne']    = { event          = 519 },
-    ['Chaloutte']   = { event          = 557 },
     ['Chalvatot']   = { event          = 531 },
     ['Chaphoire']   = { event          = 512 },
     ['Chupaile']    = { event          = 514 },

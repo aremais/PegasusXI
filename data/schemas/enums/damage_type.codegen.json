@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/damage_type.codegen.json",
+  "description": "GENERATED from data/enums/damage_type.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "none",
+    "piercing",
+    "slashing",
+    "blunt",
+    "hand_to_hand",
+    "elemental",
+    "fire",
+    "ice",
+    "wind",
+    "earth",
+    "thunder",
+    "water",
+    "light",
+    "dark"
+  ]
+}

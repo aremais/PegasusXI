@@ -167,8 +167,6 @@ xi.settings.main =
     ENABLE_TRUST_QUESTS            = 1,
     ENABLE_TRUST_CUSTOM_ENGAGEMENT = 0,
 
-    ENABLE_LIMITED_TIME_TRUST = 0, -- 0 = disabled, 1 = Cornelia, 2 = Matsui-P, will get automatically added to players trust list if the player has a trust permit KI.
-
     ENABLE_TRUST_ALTER_EGO_EXTRAVAGANZA          = 0, -- 0 = disabled, 1 = summer/ny, 2 = spring/autumn, 3 = both
     ENABLE_TRUST_ALTER_EGO_EXTRAVAGANZA_ANNOUNCE = 0, -- 0 = disabled, 1 = add announcement to player login
     ENABLE_TRUST_ALTER_EGO_EXPO                  = 0, -- 0 = disabled, 1 = expo - HPP/MPP/Status Resistance, 2 = expo plus (not implemented)
@@ -255,8 +253,11 @@ xi.settings.main =
     HALLOWEEN_YEAR_ROUND            = 0,  -- Set to 1 to have Harvest Festival initialize outside of normal times.
     EGG_HUNT                        =
     {
-        START                       = { DAY = 6,  MONTH = 4 },
-        FINISH                      = { DAY = 17, MONTH = 4 },
+        -- Set to 1 to ignore START/FINISH and keep Egg Hunt active year-round (testing only).
+        YEAR_ROUND                  = 0,
+        -- JST inclusive window (all dates use Vanadiel JST helpers).
+        START                       = { DAY = 1, MONTH = 3 },
+        FINISH                      = { DAY = 20, MONTH = 4 },
 
         -- Default era is 2005
         ERA_2006 = false, -- Orphic Egg
@@ -286,9 +287,6 @@ xi.settings.main =
     -- Login Campaign (Set to 0 if you don't want to run a Login Campaign)
     -- Please visit scripts/globals/events/login_campaign.lua for assigning the correct campaign dates.
     ENABLE_LOGIN_CAMPAIGN = 0,
-
-    -- Strange Happenings in Vana'Diel
-    ENABLE_STRANGE_HAPPENINGS = 0,
 
     -- FISH RANKING CONTEST
     -- Set to false to require manual progression of contest

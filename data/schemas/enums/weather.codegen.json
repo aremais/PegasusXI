@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/weather.codegen.json",
+  "description": "GENERATED from data/enums/weather.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "none",
+    "sunshine",
+    "clouds",
+    "fog",
+    "hot_spell",
+    "heat_wave",
+    "rain",
+    "squall",
+    "dust_storm",
+    "sand_storm",
+    "wind",
+    "gales",
+    "snow",
+    "blizzards",
+    "thunder",
+    "thunderstorms",
+    "auroras",
+    "stellar_glare",
+    "gloom",
+    "darkness"
+  ]
+}

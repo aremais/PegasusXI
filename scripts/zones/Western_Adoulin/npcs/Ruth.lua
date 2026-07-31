@@ -4,6 +4,8 @@
 -- Involved With Quest: 'A Pioneers Best (Imaginary) Friend'
 -- !pos -144 4 -10 256
 -----------------------------------
+require('scripts/globals/ionis')
+
 ---@type TNpcEntity
 local entity = {}
 
@@ -23,7 +25,14 @@ entity.onEventFinish = function(player, csid, option, npc)
     if csid == 2523 then
         -- Progresses Quest: 'A Pioneers Best (Imaginary) Friend'
         player:delStatusEffectsByFlag(xi.effectFlag.INFLUENCE, true)
-        player:addStatusEffect(xi.effect.IONIS, { duration = 9000, origin = player })
+        local ionisParams = xi.ionis.encodeEffectParams(player)
+        player:addStatusEffect(xi.effect.IONIS, {
+            duration = 9000,
+            origin = player,
+            power = ionisParams.power,
+            subPower = ionisParams.subPower,
+            subType = ionisParams.subType,
+        })
     end
 end
 

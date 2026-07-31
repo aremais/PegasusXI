@@ -92,7 +92,7 @@ set(MAP_CORE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/map_session_container.h
     ${CMAKE_CURRENT_SOURCE_DIR}/map_session.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/map_session.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/map_socket.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/_map_socket_patched.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/map_socket.h
     ${CMAKE_CURRENT_SOURCE_DIR}/map_statistics.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/map_statistics.h
@@ -320,6 +320,15 @@ target_include_directories(xi_map
 target_link_libraries(xi_map
     PUBLIC
         xi_map_lib)
+
+# xi_map_lib is INTERFACE; disable LTO on the concrete link targets instead.
+if(MSVC)
+    disable_lto(xi_map)
+    disable_lto(xi_map_core)
+    foreach(group_lib ${MAP_GROUP_LIBS})
+        disable_lto(${group_lib})
+    endforeach()
+endif()
 
 if (APPLE)
     disable_lto(xi_map)

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/roam_flag.codegen.json",
+  "description": "GENERATED from data/enums/roam_flag.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "none",
+    "none0",
+    "none1",
+    "none2",
+    "none3",
+    "none4",
+    "none5",
+    "worm",
+    "ambush",
+    "scripted",
+    "ignore",
+    "stealth",
+    "follow"
+  ]
+}

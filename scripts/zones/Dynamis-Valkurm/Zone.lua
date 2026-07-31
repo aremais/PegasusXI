@@ -1,11 +1,14 @@
 -----------------------------------
 -- Zone: Dynamis-Valkurm
 -----------------------------------
+require('scripts/globals/dynamis_valkurm_christelle')
+-----------------------------------
 ---@type TZone
 local zoneObject = {}
 
 zoneObject.onInitialize = function(zone)
     xi.dynamis.zoneOnInitialize(zone)
+    xi.dynamis.valkurmResetChristelleTiers()
 end
 
 zoneObject.onConquestUpdate = function(zone, updatetype, influence, owner, ranking, isConquestAlliance)

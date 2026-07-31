@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/detects.codegen.json",
+  "description": "GENERATED from data/enums/detects.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "none",
+    "sight",
+    "hearing",
+    "sight_and_hearing",
+    "lowhp",
+    "none1",
+    "none2",
+    "magic",
+    "weaponskill",
+    "jobability",
+    "scent"
+  ]
+}

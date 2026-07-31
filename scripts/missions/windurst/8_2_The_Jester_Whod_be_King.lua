@@ -8,7 +8,7 @@
 -- Janshura-Rashura : !pos -227 -8 184 240
 -- Zokima-Rokima    : !pos 0 -16 124 239
 -- Apururu          : !pos -11 -2 13 241
--- Cermet Door(Ruk) : !pos -183 0 190 204
+-- Cermet Door(Ruk) : !pos -183 0 190 204 (scripts/zones/FeiYin/npcs/_no4.lua)
 -- Sedal-Godjal     : !pos 185 -3 -116 149
 -- Tosuka-Porika    : !pos -26 -6 103 238
 -- Kupipi           : !pos 2 0.1 30 242
@@ -109,35 +109,6 @@ mission.sections =
             },
         },
 
-        [xi.zone.FEIYIN] =
-        {
-            ['_no4'] =
-            {
-                onTrigger = function(player, npc)
-                    if
-                        player:getMissionStatus(mission.areaId) == 1 and
-                        not player:hasKeyItem(xi.ki.RHINOSTERY_RING)
-                    then
-                        return mission:progressEvent(22, 0, xi.ki.RHINOSTERY_RING)
-                    end
-                end,
-            },
-
-            onEventFinish =
-            {
-                [22] = function(player, csid, option, npc)
-                    npcUtil.giveKeyItem(player, xi.ki.RHINOSTERY_RING)
-
-                    if
-                        player:hasKeyItem(xi.ki.AURASTERY_RING) and
-                        player:hasKeyItem(xi.ki.OPTISTERY_RING)
-                    then
-                        player:setMissionStatus(mission.areaId, 2)
-                    end
-                end,
-            },
-        },
-
         [xi.zone.HEAVENS_TOWER] =
         {
             ['Kupipi'] =
@@ -182,14 +153,21 @@ mission.sections =
             {
                 onTrigger = function(player, npc)
                     local missionStatus = player:getMissionStatus(mission.areaId)
+                    local queenSwordsId = outerHorutotoID.mob.JESTER_WHOD_BE_KING_OFFSET
+                    local queenCoinsId  = queenSwordsId + 1
 
-                    if
-                        missionStatus == 4 and
-                        not GetMobByID(outerHorutotoID.mob.JESTER_WHOD_BE_KING_OFFSET + 0):isSpawned() and
-                        not GetMobByID(outerHorutotoID.mob.JESTER_WHOD_BE_KING_OFFSET + 1):isSpawned()
-                    then
-                        SpawnMob(outerHorutotoID.mob.JESTER_WHOD_BE_KING_OFFSET + 0)
-                        SpawnMob(outerHorutotoID.mob.JESTER_WHOD_BE_KING_OFFSET + 1)
+                    if missionStatus == 4 then
+                        local qs = GetMobByID(queenSwordsId)
+                        local qc = GetMobByID(queenCoinsId)
+
+                        if
+                            qs and qc and
+                            not qs:isSpawned() and
+                            not qc:isSpawned()
+                        then
+                            SpawnMob(queenSwordsId)
+                            SpawnMob(queenCoinsId)
+                        end
                     elseif missionStatus == 5 then
                         return mission:progressEvent(71)
                     end
@@ -199,9 +177,11 @@ mission.sections =
             ['Queen_of_Coins'] =
             {
                 onMobDeath = function(mob, player, optParams)
+                    local other = GetMobByID(mob:getID() - 1)
+
                     if
                         player:getMissionStatus(mission.areaId) == 4 and
-                        GetMobByID(mob:getID() - 1):isDead()
+                        other and other:isDead()
                     then
                         player:setMissionStatus(mission.areaId, 5)
                     end
@@ -211,9 +191,11 @@ mission.sections =
             ['Queen_of_Swords'] =
             {
                 onMobDeath = function(mob, player, optParams)
+                    local other = GetMobByID(mob:getID() + 1)
+
                     if
                         player:getMissionStatus(mission.areaId) == 4 and
-                        GetMobByID(mob:getID() + 1):isDead()
+                        other and other:isDead()
                     then
                         player:setMissionStatus(mission.areaId, 5)
                     end

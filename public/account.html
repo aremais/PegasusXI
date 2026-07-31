@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Account Management - PegasusXI | PegasusXI</title>
+  <meta name="description" content="Manage your PegasusXI account, characters, and security" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    header .nav { display: flex !important; flex-wrap: nowrap !important; align-items: center !important; }
+    header .brand-wrap { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: center !important; gap: 8px !important; }
+    header .brand-icon { width: 48px !important; height: 48px !important; max-width: 48px !important; max-height: 48px !important; display: block !important; object-fit: contain !important; }
+    header nav ul { display: flex !important; flex-wrap: nowrap !important; flex-direction: row !important; align-items: center !important; }
+    header .nav-dropdown { display: flex !important; flex-direction: column !important; align-items: flex-start !important; }
+    header .nav-dropdown .dropdown-menu { display: block !important; position: absolute !important; top: 100% !important; left: 0 !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+    header .nav-dropdown:hover .dropdown-menu, header .nav-dropdown.open .dropdown-menu { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+    header .nav-dropdown .dropdown-menu li { display: block !important; width: 100% !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="nav">
+        <div class="brand-wrap">
+          <a class="brand" href="index.html" aria-label="PegasusXI Home">
+            <img src="images/icon.png" alt="PegasusXI" class="brand-icon" width="48" height="48" />
+          </a>
+          <a class="brand-play" href="play-now.html">Play Now</a>
+        </div>
+        <nav aria-label="Primary"><ul>
+          <li class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">About <span class="chevron" aria-hidden="true">▼</span></button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="server-info.html">Server Info</a></li>
+              <li><a href="addons.html">Addons</a></li>
+            </ul>
+          </li>
+          <li><a href="rules.html">Rules</a></li>
+          <li><a href="news.html">News</a></li>
+          <li class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">Tools <span class="chevron" aria-hidden="true">▼</span></button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="players.html">Players</a></li>
+              <li><a href="seeking.html">Seeking</a></li>
+              <li><a href="items.html">Items</a></li>
+              <li><a href="bazaar.html">Bazaar</a></li>
+              <li><a href="bcnm-ranking.html">BCNM Ranking</a></li>
+              <li><a href="wiki.html">Wiki</a></li>
+              <li><a href="yells.html">Yells</a></li>
+            </ul>
+          </li>
+        </ul></nav>
+        <div class="nav-right">
+          <div id="navStatus" class="nav-status" aria-live="polite">
+            <span class="dot ok"></span><span class="nav-status-text">— Online</span>
+          </div>
+          <span class="nav-game-icon" aria-hidden="true"></span>
+          <span class="nav-sep" aria-hidden="true"></span>
+          <div class="account-header-user">
+            <span class="account-header-avatar" aria-hidden="true"></span>
+            <span class="account-header-username">GeekyBear</span>
+          </div>
+          <button class="btn hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">Menu</button>
+        </div>
+      </div>
+      <div id="mobileMenu" class="mobile-menu" aria-label="Mobile navigation" style="display:none">
+        <a href="server-info.html">Server Info</a>
+        <a href="addons.html">Addons</a>
+        <a href="rules.html">Rules</a>
+        <a href="news.html">News</a>
+        <a href="players.html">Players</a>
+        <a href="seeking.html">Seeking</a>
+        <a href="items.html">Items</a>
+        <a href="bazaar.html">Bazaar</a>
+        <a href="bcnm-ranking.html">BCNM Ranking</a>
+        <a href="wiki.html">Wiki</a>
+        <a href="yells.html">Yells</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container account-page" style="padding: 18px 0 32px;">
+    <h1 class="account-main-title">ACCOUNT MANAGEMENT</h1>
+
+    <div class="account-layout">
+      <aside class="account-sidebar" aria-label="Account sections">
+        <nav class="account-sidebar-nav">
+          <a href="#characters" class="account-sidebar-link active" data-panel="characters">Characters</a>
+          <a href="#achievements" class="account-sidebar-link" data-panel="achievements">Achievements</a>
+          <a href="#security" class="account-sidebar-link" data-panel="security">Security</a>
+          <a href="#account" class="account-sidebar-link" data-panel="account">Account</a>
+          <a href="login.html" class="account-sidebar-link account-sidebar-logout">Logout</a>
+        </nav>
+      </aside>
+
+      <div class="account-content">
+        <!-- Characters panel -->
+        <section id="panel-characters" class="account-panel active" aria-labelledby="heading-characters">
+          <div class="account-section">
+            <h2 id="heading-characters" class="account-section-title">CHARACTERS</h2>
+            <p class="account-section-desc">These are your current active characters on PegasusXI.</p>
+            <div class="account-section-meta">
+              <span>3/3 Character slots</span>
+              <span>0 Available</span>
+            </div>
+            <div class="account-char-list">
+              <a href="character.html?name=Aremais" class="account-char-card">
+                <span class="account-char-avatar" aria-hidden="true"></span>
+                <div class="account-char-info">
+                  <span class="account-char-name">Aremais</span>
+                  <span class="account-char-job">WHM 57 / BLM 28</span>
+                </div>
+              </a>
+              <a href="character.html?name=Drazek" class="account-char-card">
+                <span class="account-char-avatar" aria-hidden="true"></span>
+                <div class="account-char-info">
+                  <span class="account-char-name">Drazek</span>
+                  <span class="account-char-job">WHM 10</span>
+                </div>
+              </a>
+              <a href="character.html?name=Geekybear" class="account-char-card">
+                <span class="account-char-avatar" aria-hidden="true"></span>
+                <div class="account-char-info">
+                  <span class="account-char-name">Geekybear</span>
+                  <span class="account-char-job">THF 12</span>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <div class="account-section account-ra-section">
+            <div class="account-ra-left">
+              <img src="images/ra-icon.webp" alt="RetroAchievements" class="account-ra-logo" width="64" height="64" />
+              <p class="account-ra-desc">Interested in tracking and sharing your progress in Vana'diel? Keep tabs on your achievements with our user-friendly integration, powered by <a href="https://retroachievements.org" target="_blank" rel="noopener">RetroAchievements</a>.</p>
+            </div>
+            <div class="account-ra-right">
+              <h3 class="account-section-title">NOT LINKED YET</h3>
+              <p class="account-ra-steps">1. Place the following code in your <a href="https://retroachievements.org" target="_blank" rel="noopener">RetroAchievements.org</a> account's motto: <code class="account-ra-code">0b04d027</code></p>
+              <p class="account-ra-steps">2. Provide your username below and trigger a scan to verify ownership of your account:</p>
+              <div class="form">
+                <label class="form-label" for="ra-username">RetroAchievements username:</label>
+                <input class="input" id="ra-username" type="text" placeholder="Username" />
+                <button type="button" class="btn primary">Link RA account</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Achievements panel -->
+        <section id="panel-achievements" class="account-panel" aria-labelledby="heading-achievements" hidden>
+          <div class="account-section">
+            <h2 id="heading-achievements" class="account-section-title">ACHIEVEMENTS</h2>
+            <p class="account-section-desc">Your achievements will appear here once linked with RetroAchievements.</p>
+          </div>
+        </section>
+
+        <!-- Security panel (2FA) -->
+        <section id="panel-security" class="account-panel" aria-labelledby="heading-security" hidden>
+          <div class="account-section account-split">
+            <div class="account-section-left">
+              <h2 id="heading-security" class="account-section-title">TWO-FACTOR AUTHENTICATION</h2>
+              <p class="account-section-desc">Add an extra layer of security to your PegasusXI account by enabling Time-based One-Time Password (TOTP) authentication. You'll use apps such as <strong>Google Authenticator</strong>, <strong>Authy</strong>, or <strong>Microsoft Authenticator</strong>.</p>
+            </div>
+            <div class="account-section-right">
+              <h3 class="account-section-title">ENABLE 2FA</h3>
+              <p class="account-section-desc">Protect your account with an extra layer of security. Click below to start the setup process:</p>
+              <button type="button" class="btn primary">Enable Two-Factor Authentication</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Account panel (email / password) -->
+        <section id="panel-account" class="account-panel" aria-labelledby="heading-account" hidden>
+          <div class="account-section account-split">
+            <div class="account-section-left">
+              <h2 id="heading-account" class="account-section-title">ACCOUNT</h2>
+              <p class="account-section-desc">Make sure to keep your password safe! We'd recommend using a password manager. <strong>Note that PegasusXI staff will never ask for your password.</strong></p>
+            </div>
+            <div class="account-section-right">
+              <div class="form" style="margin-bottom:20px">
+                <label class="form-label" for="acc-email">Email:</label>
+                <input class="input" id="acc-email" type="email" value="aremais01@gmail.com" />
+                <button type="button" class="btn primary">Change Email</button>
+              </div>
+              <div class="form">
+                <label class="form-label">Password:</label>
+                <input class="input" type="password" placeholder="Current password" autocomplete="current-password" />
+                <input class="input" type="password" placeholder="New password" autocomplete="new-password" />
+                <input class="input" type="password" placeholder="Confirm new password" autocomplete="new-password" />
+                <button type="button" class="btn primary">Change Password</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="siteFooter"></div>
+  <script src="app.js"></script>
+  <script>
+    (function() {
+      var links = document.querySelectorAll(".account-sidebar-link[data-panel]");
+      var panels = document.querySelectorAll(".account-panel");
+      function showPanel(id) {
+        panels.forEach(function(p) {
+          var isActive = p.id === "panel-" + id;
+          p.classList.toggle("active", isActive);
+          p.hidden = !isActive;
+        });
+        links.forEach(function(a) {
+          a.classList.toggle("active", a.getAttribute("data-panel") === id);
+        });
+      }
+      links.forEach(function(a) {
+        a.addEventListener("click", function(e) {
+          e.preventDefault();
+          showPanel(a.getAttribute("data-panel"));
+          if (history.replaceState) history.replaceState(null, "", "#" + a.getAttribute("data-panel"));
+        });
+      });
+      var hash = window.location.hash.slice(1);
+      if (hash && document.getElementById("panel-" + hash)) showPanel(hash);
+    })();
+  </script>
+</body>
+</html>

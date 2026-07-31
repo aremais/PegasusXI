@@ -50,47 +50,25 @@ quest.sections =
             ['Hide_Flap_1'] =
             {
                 onTrigger = function(player, npc)
-                    player:messageSpecial(davoiID.text.FIND_ORC_TENT)
-
                     if player:checkDistance(npc) > 1 then
                         return quest:messageSpecial(davoiID.text.CLOSER_TO_SEARCH)
-                    elseif
-                        not GetMobByID(davoiID.mob.GAVOTVUT):isAlive() and
-                        not GetMobByID(davoiID.mob.BARAKBOK):isAlive()
-                    then
-                        return quest:progressEvent(110)
-                    else
-                        return quest:noAction()
                     end
-                end,
-            },
 
-            onEventFinish =
-            {
-                [110] = function(player, csid, option, npc)
-                    if option ~= 0 then
-                        return
-                    end
+                    player:messageSpecial(davoiID.text.FIND_ORC_TENT)
 
                     if player:hasKeyItem(xi.ki.SWORD_GRIP_MATERIAL) then
-                        player:messageSpecial(davoiID.text.YOU_FIND_NOTHING)
-                        return
-                    end
-
-                    if quest:getLocalVar(player, 'nmKilled') == 3 then
-                        npcUtil.giveKeyItem(player, xi.ki.SWORD_GRIP_MATERIAL)
-                        return
-                    end
-
-                    if
+                        return quest:messageSpecial(davoiID.text.YOU_FIND_NOTHING)
+                    elseif quest:getLocalVar(player, 'nmKilled') == 3 then
+                        return npcUtil.giveKeyItem(player, xi.ki.SWORD_GRIP_MATERIAL)
+                    elseif
                         not GetMobByID(davoiID.mob.GAVOTVUT):isSpawned() and
                         not GetMobByID(davoiID.mob.BARAKBOK):isSpawned()
                     then
-                        player:messageSpecial(davoiID.text.YOU_FIND_NOTHING)
                         SpawnMob(davoiID.mob.GAVOTVUT):updateClaim(player)
                         SpawnMob(davoiID.mob.BARAKBOK):updateClaim(player)
                         quest:setLocalVar(player, 'nmClaimed', 1)
-                        return
+                    else
+                        return quest:noAction()
                     end
                 end,
             },

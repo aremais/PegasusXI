@@ -54,7 +54,9 @@ zones[xi.zone.OUTER_HORUTOTO_RUINS] =
         BALLOON_NM_OFFSET          = GetTableOfIDs('Balloon')[2], -- TODO: NM Needs audit. This only uses 2 of the NMs
         DESMODONT                  = GetFirstID('Desmodont'),
         FULL_MOON_FOUNTAIN_OFFSET  = GetFirstID('Jack_of_Cups'),
-        JESTER_WHOD_BE_KING_OFFSET = GetFirstID('Queen_of_Swords'),
+        -- M8-2 queens at Cracked Wall (_5e5). Must be real mob_spawn_points IDs (see sql/mob_spawn_points.sql).
+        -- GetFirstID('Queen_of_Swords') can resolve to npc_list decorative card NPCs in the same zone; SpawnMob on those fails.
+        JESTER_WHOD_BE_KING_OFFSET = 17572201, -- Queen of Swords; Queen of Coins = +1 (17572202)
     },
     npc =
     {

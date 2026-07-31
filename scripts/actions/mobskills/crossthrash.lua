@@ -13,7 +13,8 @@ end
 mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     local params = {}
 
-    params.baseDamage     = mob:getWeaponDmg()
+    local wdmg = mob:getWeaponDmg()
+    params.baseDamage     = (wdmg > 0) and wdmg or mob:getMainLvl()
     params.numHits        = 1
     params.fTP            = { 2.0, 2.0, 2.0 }
     params.attackType     = xi.attackType.PHYSICAL

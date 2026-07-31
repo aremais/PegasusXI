@@ -31,8 +31,10 @@ zones[xi.zone.SACRIFICIAL_CHAMBER] =
     mob =
     {
         GRAVITON             =   GetFirstID('Graviton'),
-        QULL_THE_FALLSTOPPER   = GetFirstID('Qull_the_Fallstopper'),
-        SABLE_TONGUED_GONBERRY = GetFirstID('Sable-tongued_Gonberry'),
+        QULL_THE_FALLSTOPPER      = GetFirstID('Qull_the_Fallstopper'),    -- Tier I  BCNM60
+        QULL_THE_FALLSTOPPER_II   = 17445045,                              -- Tier II SKCNM (level 110)
+        SABLE_TONGUED_GONBERRY    = GetFirstID('Sable-tongued_Gonberry'),  -- Tier I  BCNM60
+        SABLE_TONGUED_GONBERRY_II = 17444940,                              -- Tier II SKCNM (level 110)
     },
     npc =
     {

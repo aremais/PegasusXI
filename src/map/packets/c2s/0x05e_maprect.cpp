@@ -21,23 +21,52 @@
 
 #include "0x05e_maprect.h"
 
-#include <string_view>
-
-#include "common/settings.h"
 #include "common/utils.h"
 #include "entities/char_entity.h"
 #include "enums/msg_std.h"
+#include "map/navmesh/navmesh.h"
 #include "packets/s2c/0x053_systemmes.h"
 #include "packets/s2c/0x065_wpos2.h"
-#include "status_effect.h"
-#include "status_effect_container.h"
 #include "utils/charutils.h"
 #include "utils/zoneutils.h"
+#include "zone.h"
 
 namespace
 {
 
-const auto denyZone = [](CCharEntity* PChar, MsgStd message = MsgStd::CouldNotEnter)
+// Same-zone zonelines in these zones are Mog House doors (sql: from_zone == to_zone). Other zones use same-zone for puzzles (e.g. Pso'Xja).
+bool isCityMogHousePortalZone(ZONEID zoneId)
+{
+    switch (zoneId)
+    {
+        case ZONE_AL_ZAHBI:
+        case ZONE_AHT_URHGAN_WHITEGATE:
+        case ZONE_SOUTHERN_SAN_DORIA_S:
+        case ZONE_BASTOK_MARKETS_S:
+        case ZONE_WINDURST_WATERS_S:
+        case ZONE_WESTERN_ADOULIN:
+        case ZONE_EASTERN_ADOULIN:
+        case ZONE_SOUTHERN_SANDORIA:
+        case ZONE_NORTHERN_SANDORIA:
+        case ZONE_PORT_SANDORIA:
+        case ZONE_BASTOK_MINES:
+        case ZONE_BASTOK_MARKETS:
+        case ZONE_PORT_BASTOK:
+        case ZONE_WINDURST_WATERS:
+        case ZONE_WINDURST_WALLS:
+        case ZONE_PORT_WINDURST:
+        case ZONE_WINDURST_WOODS:
+        case ZONE_RULUDE_GARDENS:
+        case ZONE_UPPER_JEUNO:
+        case ZONE_LOWER_JEUNO:
+        case ZONE_PORT_JEUNO:
+            return true;
+        default:
+            return false;
+    }
+}
+
+const auto denyZone = [](CCharEntity* PChar)
 {
     // TODO: Retail handling:
     // - Tripped poshack check: Placed somewhere on the corresponding 'exit' zoneline
@@ -45,16 +74,10 @@ const auto denyZone = [](CCharEntity* PChar, MsgStd message = MsgStd::CouldNotEn
     // - Invalid zoneline (observed in Kamihr): Placed on a different zoneline
     PChar->loc.p.rotation += 128;
 
-    PChar->pushPacket<GP_SERV_COMMAND_SYSTEMMES>(0, 0, message);
+    PChar->pushPacket<GP_SERV_COMMAND_SYSTEMMES>(0, 0, MsgStd::CouldNotEnter);
     PChar->pushPacket<GP_SERV_COMMAND_WPOS2>(PChar, PChar->loc.p, POSMODE::RESET);
 
-    PChar->status = xi::Status::Normal;
-};
-
-const auto isRidingRentalChocobo = [](const CCharEntity* PChar) -> bool
-{
-    const auto* effect = PChar->StatusEffectContainer->GetStatusEffect(xi::StatusEffect::Mounted);
-    return effect != nullptr && effect->GetPower() == MOUNT_CHOCOBO && effect->GetSubPower() == 0;
+    PChar->status = STATUS_TYPE::NORMAL;
 };
 
 } // namespace
@@ -62,7 +85,6 @@ const auto isRidingRentalChocobo = [](const CCharEntity* PChar) -> bool
 auto GP_CLI_COMMAND_MAPRECT::validate(MapSession* PSession, const CCharEntity* PChar) const -> PacketValidationResult
 {
     return PacketValidator(PChar)
-        .blockedBy({ BlockedState::InEvent })
         .oneOf<GP_CLI_COMMAND_MAPRECT_MYROOMEXITBIT>(this->MyRoomExitBit)
         .oneOf<GP_CLI_COMMAND_MAPRECT_MYROOMEXITMODE>(this->MyRoomExitMode);
 }
@@ -74,17 +96,14 @@ void GP_CLI_COMMAND_MAPRECT::process(MapSession* PSession, CCharEntity* PChar) c
 
     PChar->ClearTrusts();
 
-    // RectID is a uint32_t holding a 4-character zoneline tag (fourcc); reinterpret as exactly 4 bytes (no trailing NUL).
-    const std::string_view rectView(reinterpret_cast<const char*>(&this->RectID), 4);
+    auto isMogHouseExit = std::memcmp(&this->RectID, "zmrq", 4) == 0; // zmrq is the universal Mog House exit zoneline
+    // zmr* = classic cities; zms* = Treasures of Aht Urhgan / Seekers cities (e.g. Bastok [S], Western Adoulin)
+    auto isMogHouseEntrance = std::memcmp(&this->RectID, "zmr", 3) == 0 ||
+                              std::memcmp(&this->RectID, "zms", 3) == 0;
 
-    const auto isMogHouseExit = rectView == "zmrq"; // universal Mog House exit zoneline
-
-    const std::string_view mogEntrancePrefix  = rectView.substr(0, 3);
-    const auto             isMogHouseEntrance = mogEntrancePrefix == "zmr" || mogEntrancePrefix == "zms"; // zmr* classic cities; zms* WoTG [S] + Adoulin
-
-    if (PChar->status == xi::Status::Normal)
+    if (PChar->status == STATUS_TYPE::NORMAL)
     {
-        PChar->status       = xi::Status::Disappear;
+        PChar->status       = STATUS_TYPE::DISAPPEAR;
         PChar->loc.boundary = 0;
 
         // Exiting Mog House
@@ -92,18 +111,7 @@ void GP_CLI_COMMAND_MAPRECT::process(MapSession* PSession, CCharEntity* PChar) c
         {
             uint16_t destinationZone = PChar->getZone();
 
-            auto exitDestination = static_cast<GP_CLI_COMMAND_MAPRECT_MYROOMEXITMODE>(this->MyRoomExitMode);
-
-            if (!settings::get<bool>("main.ENABLE_MOG_GARDEN"))
-            {
-                // If Mog Garden is disabled, send the request as a regular mog house exit.
-                if (exitDestination == GP_CLI_COMMAND_MAPRECT_MYROOMEXITMODE::MogGarden)
-                {
-                    exitDestination = GP_CLI_COMMAND_MAPRECT_MYROOMEXITMODE::AreaEnteredFrom;
-                }
-            }
-
-            switch (exitDestination)
+            switch (static_cast<GP_CLI_COMMAND_MAPRECT_MYROOMEXITMODE>(this->MyRoomExitMode))
             {
                 case GP_CLI_COMMAND_MAPRECT_MYROOMEXITMODE::AreaEnteredFrom:
                     // Return to current zone
@@ -150,17 +158,17 @@ void GP_CLI_COMMAND_MAPRECT::process(MapSession* PSession, CCharEntity* PChar) c
                     break;
             }
 
-            bool moghouseExitRegular          = exitDestination == GP_CLI_COMMAND_MAPRECT_MYROOMEXITMODE::AreaEnteredFrom && PChar->inMogHouse();
-            bool requestedMoghouseFloorChange = startingZone == destinationZone && (exitDestination == GP_CLI_COMMAND_MAPRECT_MYROOMEXITMODE::Mog1F || exitDestination == GP_CLI_COMMAND_MAPRECT_MYROOMEXITMODE::Mog2F);
-            bool moghouse2FUnlocked           = (PChar->profile.mhflag & 0x20) && settings::get<bool>("main.ENABLE_MOG_HOUSE_2F");
+            bool moghouseExitRegular          = this->MyRoomExitMode == static_cast<uint8>(GP_CLI_COMMAND_MAPRECT_MYROOMEXITMODE::AreaEnteredFrom) && PChar->inMogHouse();
+            bool requestedMoghouseFloorChange = startingZone == destinationZone && (this->MyRoomExitMode == static_cast<uint8>(GP_CLI_COMMAND_MAPRECT_MYROOMEXITMODE::Mog1F) || this->MyRoomExitMode == static_cast<uint8>(GP_CLI_COMMAND_MAPRECT_MYROOMEXITMODE::Mog2F));
+            bool moghouse2FUnlocked           = PChar->profile.mhflag & 0x20;
             auto startingRegion               = zoneutils::GetCurrentRegion(startingZone);
             auto destinationRegion            = zoneutils::GetCurrentRegion(destinationZone);
             auto moghouseExitRegions          = { REGION_TYPE::SANDORIA, REGION_TYPE::BASTOK, REGION_TYPE::WINDURST, REGION_TYPE::JEUNO, REGION_TYPE::WEST_AHT_URHGAN, REGION_TYPE::ADOULIN_ISLANDS };
             auto moghouseSameRegion           = std::ranges::any_of(moghouseExitRegions,
-                                                                    [&destinationRegion](const REGION_TYPE acceptedReg)
-                                                                    {
+                                                          [&destinationRegion](const REGION_TYPE acceptedReg)
+                                                          {
                                                               return destinationRegion == acceptedReg;
-                                                                    });
+                                                          });
             auto moghouseQuestComplete        = PChar->profile.mhflag & (this->MyRoomExitBit ? 0x01 << (this->MyRoomExitBit - 1) : 0);
 
             if (startingRegion == REGION_TYPE::ADOULIN_ISLANDS)
@@ -199,14 +207,14 @@ void GP_CLI_COMMAND_MAPRECT::process(MapSession* PSession, CCharEntity* PChar) c
                 }
                 else
                 {
-                    PChar->status = xi::Status::Normal;
+                    PChar->status = STATUS_TYPE::NORMAL;
                     ShowWarning("GP_CLI_COMMAND_MAPRECT: Moghouse 2F requested without it being unlocked: %s", PChar->getName());
                     return;
                 }
             }
             else
             {
-                PChar->status = xi::Status::Normal;
+                PChar->status = STATUS_TYPE::NORMAL;
                 ShowWarning("GP_CLI_COMMAND_MAPRECT: Moghouse zoneline abuse by %s", PChar->getName());
                 return;
             }
@@ -228,8 +236,13 @@ void GP_CLI_COMMAND_MAPRECT::process(MapSession* PSession, CCharEntity* PChar) c
             }
             else
             {
-                // 38-42y distance limit observed
-                if (distance(PChar->loc.p, PZoneLine->originPos, true) > 40.0f)
+                // 38-42y distance limit observed. Zeruhn Mines -> Korroloka Tunnel (sql zonelineid 846410874)
+                // often still has a wrong from_pos in DB (~-274 vs gate ~-80), so players read ~197y from anchor and fail.
+                // Skip this check for that rect until from_pos is corrected (sql/fix_zeruhn_korroloka_zoneline.sql).
+                const bool skipZoneLineDistanceCheck = (this->RectID == 846410874U);
+
+                if (!skipZoneLineDistanceCheck &&
+                    distance(PChar->loc.p, PZoneLine->originPos, true) > 40.0f)
                 {
                     ShowWarning("GP_CLI_COMMAND_MAPRECT: %s too far from zoneline %u (%.1fy)",
                                 PChar->getName(),
@@ -250,20 +263,11 @@ void GP_CLI_COMMAND_MAPRECT::process(MapSession* PSession, CCharEntity* PChar) c
                     return;
                 }
 
-                if (!isMogHouseEntrance && zoneutils::IsZoneAtPlayerCap(PZoneLine->destinationZoneId, PChar->m_GMlevel > 0))
-                {
-                    denyZone(PChar);
-                    return;
-                }
+                const bool mogSameZoneHouseLine = PZoneLine->originZoneId == PZoneLine->destinationZoneId &&
+                                                  !PChar->inMogHouse() &&
+                                                  isCityMogHousePortalZone(PZoneLine->originZoneId);
 
-                // A rental chocobo cannot be taken into a zone that does not permit riding.
-                if (isRidingRentalChocobo(PChar) && !zoneutils::CanZoneUseMisc(PZoneLine->destinationZoneId, xi::ZoneMisc::Mount))
-                {
-                    denyZone(PChar, MsgStd::CannotEnterAreaWhileMounted);
-                    return;
-                }
-
-                if (isMogHouseEntrance)
+                if (isMogHouseEntrance || mogSameZoneHouseLine)
                 {
                     // TODO: for entering another persons mog house, it must be set here
                     PChar->m_moghouseID    = PChar->id;

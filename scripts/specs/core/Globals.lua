@@ -46,6 +46,12 @@ function GetNPCByID(npcid, instanceObj)
 end
 
 ---@nodiscard
+---@param pattern string
+---@return table
+function FindNPCsByName(pattern)
+end
+
+---@nodiscard
 ---@param npcid integer
 ---@param instanceObj CInstance?
 ---@return CBaseEntity?
@@ -147,6 +153,12 @@ end
 ---@param playerId integer
 ---@return boolean
 function PlayerHasValidSession(playerId)
+end
+
+---@nodiscard
+---@param ipStr string
+---@return integer
+function KickSessionsByClientIP(ipStr)
 end
 
 ---@nodiscard

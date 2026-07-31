@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -145,8 +145,9 @@ void CTargetFind::findWithinArea(CBattleEntity* PTarget, AOE_RADIUS radiusType, 
             // players will never need to add whole alliance
             m_findType = FIND_TYPE::PLAYER_PLAYER;
 
-            // For self-centered AoEs, add caster first
-            if (m_selfCenteredAoE)
+            // For self-centered AoEs, only pre-add the caster for non-offensive moves.
+            // Offensive TP moves should never include the caster as a damage target.
+            if (m_selfCenteredAoE && (m_targetFlags & TARGET_ENEMY) == 0)
             {
                 addEntity(m_PBattleEntity, false);
             }
@@ -204,8 +205,9 @@ void CTargetFind::findWithinArea(CBattleEntity* PTarget, AOE_RADIUS radiusType, 
             withPet = PETS_CAN_AOE_BUFF;
         }
 
-        // For self-centered AoEs, add caster first
-        if (m_selfCenteredAoE)
+        // For self-centered AoEs, only pre-add the caster for non-offensive moves.
+        // Offensive TP moves should never include the caster as a damage target.
+        if (m_selfCenteredAoE && (m_targetFlags & TARGET_ENEMY) == 0)
         {
             addEntity(m_PBattleEntity, false);
         }

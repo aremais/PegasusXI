@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -19,9 +19,10 @@
 ===========================================================================
 */
 
+#include "common/timer.h"
 #include "common/utils.h"
+#include "common/vana_time.h"
 
-#include <algorithm>
 #include <cstring>
 
 #include "entity_update.h"
@@ -29,6 +30,8 @@
 #include "entities/base_entity.h"
 #include "entities/mob_entity.h"
 #include "entities/npc_entity.h"
+#include "entities/pet_entity.h"
+#include "entities/trust_entity.h"
 #include "status_effect_container.h"
 #include "zone.h"
 
@@ -230,7 +233,7 @@ std::string getTransportNPCName(CBaseEntity* PEntity)
     auto strSize    = isElevator ? 10 : 8;
 
     std::string str(strSize, '\0');
-    std::memcpy(str.data() + 0, PEntity->name.data(), std::min<size_t>(PEntity->name.size(), 4));
+    std::memcpy(str.data() + 0, PEntity->name.data(), PEntity->name.size());
 
     auto timestamp = PEntity->GetLocalVar("TransportTimestamp");
     std::memcpy(str.data() + 4, &timestamp, 4);
@@ -264,6 +267,10 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         return;
     }
 
+    // Equipped/chocobo NPCs use a 20-byte look at 0x30; the short name slot at 0x34 collides with that data.
+    // Long layout (name at 0x44) matches the Fellow spawn path; see ref<uint8>(0x18) below.
+    bool useNpcLongNameLayout = false;
+
     auto packet = this->as<GP_SERV_CHAR_NPC>();
 
     packet->id = 0x0E;
@@ -295,7 +302,7 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
             {
                 ref<uint8>(0x2A) = 4;
             }
-            if (PEntity->spawnAnimation == xi::SpawnAnimation::Special)
+            if (PEntity->spawnAnimation == SPAWN_ANIMATION::SPECIAL)
             {
                 ref<uint8>(0x28) |= 0x04;
             }
@@ -305,6 +312,29 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         default:
         {
             break;
+        }
+    }
+
+    // Static NPCs (targid < 1024): the standard 0x00E name field only fits 15 displayable characters.
+    // Spawn packets can use the long-name layout; non-spawn updates omit oversized names to avoid truncation.
+    if (PEntity->objtype == TYPE_NPC)
+    {
+        auto* PNpc                 = static_cast<CNpcEntity*>(PEntity);
+        const bool isTransportLook = PNpc->look.size == MODEL_ELEVATOR || PNpc->look.size == MODEL_SHIP;
+        if (!isTransportLook && !PEntity->isRenamed)
+        {
+            const std::string& displayName = PNpc->packetName.empty() ? PNpc->getName() : PNpc->packetName;
+            // Cutscene bodies in npc_list use internal name csnpc with empty polutils_name; the slot is often
+            // targid >= 1024. Omit the label so the client does not show the developer string over the model.
+            const bool omitCsnpcPlaceholder = (PNpc->getName() == "csnpc" && PNpc->packetName.empty());
+            if ((PNpc->targid < 1024 && displayName.size() > PacketNameLength - 1 && type != ENTITY_SPAWN) || omitCsnpcPlaceholder)
+            {
+                updatemask &= static_cast<uint8>(~UPDATE_NAME);
+                ref<uint8>(0x0A) &= static_cast<uint8>(~UPDATE_NAME);
+                // Reused entity-update packets can still carry a previous truncated name at 0x34; clear it so
+                // clients that read the field even without the Name flag do not show stale text.
+                std::memset(buffer_.data() + 0x34, 0, PacketNameLength);
+            }
         }
     }
 
@@ -320,9 +350,9 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         ref<uint8>(0x1D)  = PEntity->animationSpeed;
     }
 
-    if (PEntity->allegiance == xi::Allegiance::Player && PEntity->status == xi::Status::Update)
+    if (PEntity->allegiance == ALLEGIANCE_TYPE::PLAYER && PEntity->status == STATUS_TYPE::UPDATE)
     {
-        ref<uint8>(0x20) = static_cast<uint8>(xi::Status::Normal);
+        ref<uint8>(0x20) = static_cast<uint8>(STATUS_TYPE::NORMAL);
     }
     else
     {
@@ -335,6 +365,7 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         case TYPE_NPC:
         {
             auto* PNpc = static_cast<CNpcEntity*>(PEntity);
+            const bool npcIsEquippedLike = PNpc->look.size == MODEL_EQUIPPED || PNpc->look.size == MODEL_CHOCOBO;
 
             if (updatemask & UPDATE_HP)
             {
@@ -342,42 +373,67 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
                 ref<uint8>(0x1F) = PEntity->animation;
                 ref<uint8>(0x2A) |= PEntity->animationsub;
 
-                ref<uint32>(0x21) = static_cast<uint32>(PNpc->m_flags);
+                ref<uint32>(0x21) = PNpc->m_flags;
                 ref<uint8>(0x27)  = PNpc->name_prefix; // gender and something else
 
-                if (PNpc->triggerable())
+                if (PNpc->IsTriggerable())
                 {
                     ref<uint8>(0x28) |= 0x40;
                 }
 
                 ref<uint8>(0x29) = static_cast<uint8>(PEntity->allegiance);
-                ref<uint8>(0x2B) = static_cast<uint8>(PEntity->namevis);
+                ref<uint8>(0x2B) = PEntity->namevis;
             }
 
             // TODO: Unify name logic
-            if (updatemask & UPDATE_NAME)
+            const bool shouldSendNpcName = (updatemask & UPDATE_NAME) || (type == ENTITY_SPAWN && npcIsEquippedLike);
+            if (shouldSendNpcName)
             {
-                // Prefer polutils/packet name so clients without matching DAT entries
-                // (e.g. SOA NPCs) display "Ancestry Moogle" instead of "Ancestry_Moogle"/"NPC".
-                auto name = !PNpc->packetName.empty() ? PNpc->packetName : PNpc->getName();
+                auto name = PNpc->packetName.empty() ? PNpc->getName() : PNpc->packetName;
                 if (PNpc->look.size == MODEL_ELEVATOR || PNpc->look.size == MODEL_SHIP)
                 {
                     name = getTransportNPCName(PNpc);
                 }
 
-                // depending on size of name, this can be 0x20, 0x22, or 0x24
-                // HasName static-NPC path reads a NUL-terminated string from the packet
-                // (not enQueStrCpy's 0x10 cap), so full display names like
-                // "Curio Vendor Moogle" (19) can be delivered.
-                constexpr size_t nameOffset             = 0x34;
-                constexpr size_t MaxNpcPacketNameLength = 24;
-                const size_t     nameBytes              = std::min(name.size(), MaxNpcPacketNameLength);
-                size_t           packetSize             = std::max<size_t>(0x48, nameOffset + nameBytes + 1);
-                packetSize                              = (packetSize + 3) & ~size_t{ 3 };
-                this->setSize(packetSize);
-                auto* start = buffer_.data() + nameOffset;
-                std::memset(start, 0U, this->getSize() - nameOffset);
-                std::memcpy(start, name.c_str(), nameBytes);
+                // db name "csnpc" with empty polutils: the early omit strips UPDATE_NAME, but ENTITY_SPAWN for
+                // equipped/chocobo look still takes this path and would write "csnpc" at 0x44 (long layout).
+                if (PNpc->getName() == "csnpc" && PNpc->packetName.empty() && !PEntity->isRenamed)
+                {
+                    name.clear();
+                }
+
+                // 0x00E fits at most 15 displayable characters in the standard name slot (PacketNameLength includes a
+                // terminator slot; see utils.h). Longer names truncate badly (e.g. "Linkshell Conci"). Known NPCs get
+                // a readable short label; DB polutils_name should also be kept within this limit.
+                if (name.size() > PacketNameLength - 1 && PNpc->getName() == "Linkshell_Concierge")
+                {
+                    name = "LS Concierge";
+                }
+
+                const bool staticNpcNeedsLongNameLayout = type == ENTITY_SPAWN && PNpc->targid < 1024 &&
+                                                          name.size() > PacketNameLength - 1 && !PEntity->isRenamed;
+                if (npcIsEquippedLike || staticNpcNeedsLongNameLayout)
+                {
+                    // Use the long-name path when the short slot is either unavailable or too small for the display name.
+                    useNpcLongNameLayout = true;
+                    this->setSize(0x58);
+                    auto start = buffer_.data() + 0x44;
+                    std::memset(start, 0U, this->getSize() - 0x44);
+                    std::memcpy(start, name.c_str(), std::min<size_t>(name.size(), this->getSize() - 0x44 - 1));
+                }
+                else
+                {
+                    // depending on size of name, this can be 0x20, 0x22, or 0x24
+                    this->setSize(0x48);
+                    if (name.empty())
+                    {
+                        std::memset(buffer_.data() + 0x34, 0, PacketNameLength);
+                    }
+                    else
+                    {
+                        std::memcpy(buffer_.data() + 0x34, name.c_str(), std::min<size_t>(name.size(), PacketNameLength));
+                    }
+                }
             }
         }
         break;
@@ -393,14 +449,14 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
                 ref<uint8>(0x1F) = PEntity->animation;
                 ref<uint8>(0x2A) |= PEntity->animationsub;
 
-                ref<uint32>(0x21) = static_cast<uint32>(PMob->m_flags);
+                ref<uint32>(0x21) = PMob->m_flags;
                 ref<uint8>(0x25)  = PMob->health.hp > 0 ? 0x08 : 0;
                 ref<uint8>(0x27)  = PMob->m_name_prefix;
                 if (PMob->PMaster != nullptr && PMob->PMaster->objtype == TYPE_PC)
                 {
                     ref<uint8>(0x27) |= 0x08;
                 }
-                ref<uint8>(0x28) |= PMob->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Terror) ? 0x10 : 0x00;
+                ref<uint8>(0x28) |= PMob->StatusEffectContainer->HasStatusEffect(EFFECT_TERROR) ? 0x10 : 0x00;
 
                 // Giga hack -- mobs in Pso'Xja for some reason are less "visible"
                 // Set CliPriorityFlag to force them to render on the client if they receive 0x00Es
@@ -412,9 +468,9 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
                 }
 
                 ref<uint8>(0x28) |= PMob->health.hp > 0 && PMob->animation == ANIMATION_DEATH ? 0x08 : 0;
-                ref<uint8>(0x28) |= PMob->status == xi::Status::Normal && PMob->objtype == TYPE_MOB ? 0x40 : 0; // Make the entity triggerable if a mob and normal status
+                ref<uint8>(0x28) |= PMob->status == STATUS_TYPE::NORMAL && PMob->objtype == TYPE_MOB ? 0x40 : 0; // Make the entity triggerable if a mob and normal status
                 ref<uint8>(0x29) = static_cast<uint8>(PEntity->allegiance);
-                ref<uint8>(0x2B) = static_cast<uint8>(PEntity->namevis);
+                ref<uint8>(0x2B) = PEntity->namevis;
             }
 
             // TODO: make flags struct for 0x00E when it's decompped
@@ -470,7 +526,10 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         case MODEL_EQUIPPED:
         case MODEL_CHOCOBO:
         {
-            this->setSize(0x48);
+            if (this->getSize() < 0x48)
+            {
+                this->setSize(0x48);
+            }
             std::memcpy(buffer_.data() + 0x30, &PEntity->look, sizeof(look_t));
         }
         break;
@@ -490,6 +549,12 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
             std::memcpy(buffer_.data() + 0x34, name.data(), name.size());
         }
         break;
+    }
+
+    if (type == ENTITY_SPAWN && useNpcLongNameLayout)
+    {
+        // Required for FUNC_Packet_Incoming_0x000E to use the long-name / full look layout (same as Fellow spawn).
+        ref<uint8>(0x18) = 0x01;
     }
 
     // TODO: Fill this in
@@ -544,35 +609,28 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         }
     }
 
-    // Equipped/chocobo look data occupies 0x30-0x43, so a custom name must be placed at 0x44.
-    // Used for dynamic entities and zone NPCs whose polutils_name differs from the internal name
-    // (e.g. A.M.A.N. Liaison — not present in older client DATs).
-    //
-    // Equipped/Name2 path uses client enQueStrCpy(..., 0x10, ...) — hard 15-char + NUL cap.
-    // HasName path (standard look, targid < 1024) assigns the packet string pointer directly,
-    // so longer display names (e.g. "Curio Vendor Moogle") can be sent intact.
-    constexpr size_t MaxEquippedNpcNameLength = PacketNameLength - 1; // 15
-    constexpr size_t MaxNpcPacketNameLength   = 24;
-    const bool       equippedModel              = PEntity->look.size == MODEL_EQUIPPED || PEntity->look.size == MODEL_CHOCOBO;
-    if (PEntity->isRenamed && equippedModel && type != ENTITY_DESPAWN)
+    // Slightly bigger packet to encompass both name and model on first spawn, and only for dynamic entities.
+    if (type == ENTITY_SPAWN && PEntity->isRenamed && PEntity->look.size == MODEL_EQUIPPED && PEntity->targid >= 0x700)
     {
-        const auto&      name       = PEntity->packetName;
-        constexpr size_t nameOffset = 0x44;
-        const size_t     nameBytes  = std::min(name.size(), MaxEquippedNpcNameLength);
-        size_t           packetSize = std::max<size_t>(0x56, nameOffset + nameBytes + 1);
-        packetSize                  = (packetSize + 3) & ~size_t{ 3 };
-
-        this->setSize(packetSize);
+        this->setSize(0x56);
 
         // Temporarily override UpdateFlags (0x0A) to perform black magic:
         ref<uint8>(0x0A) = 0x57; // Carefully chosen bits to make FUNC_Packet_Incoming_0x000E behave (Same type as first 0x00E Fellow packet)
-        ref<uint8>(0x18) = 0x01; // Name follows look data at 0x44
+        ref<uint8>(0x18) = 0x01; // Copy longer name in FUNC_Packet_Incoming_0x000E
 
         std::memcpy(buffer_.data() + 0x30, &PEntity->look, sizeof(look_t));
 
-        auto* start = buffer_.data() + nameOffset;
-        std::memset(start, 0U, this->getSize() - nameOffset);
-        std::memcpy(start, name.c_str(), nameBytes);
+        auto name       = PEntity->packetName;
+        auto nameOffset = 0x44;
+        auto maxLength  = std::min<size_t>(name.size(), PacketNameLength);
+
+        // Make sure to zero-out the existing name area of the packet
+        auto start = buffer_.data() + nameOffset;
+        auto size  = this->getSize();
+        std::memset(start, 0U, size);
+
+        // Copy in name
+        std::memcpy(start, name.c_str(), maxLength);
     }
     // If the entity has been renamed, we have to re-send the name during every update.
     // Otherwise it will revert to it's default name (if applicable).
@@ -581,28 +639,26 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         updatemask |= UPDATE_NAME;
         ref<uint8>(0x0A) |= updatemask;
 
-        const auto& name       = PEntity->packetName;
-        size_t      nameOffset = 0x34;
+        this->setSize(0x48);
+
+        auto name       = PEntity->packetName;
+        auto nameOffset = 0x34;
+        auto maxLength  = std::min<size_t>(name.size(), PacketNameLength);
 
         // Mobs and NPC's targid's live in the range 0-1023
         if (PEntity->targid < 1024)
         {
-            nameOffset = 0x35;
-        }
-
-        const size_t nameBytes  = std::min(name.size(), MaxNpcPacketNameLength);
-        size_t       packetSize = std::max<size_t>(0x48, nameOffset + nameBytes + 1);
-        packetSize              = (packetSize + 3) & ~size_t{ 3 };
-        this->setSize(packetSize);
-
-        if (PEntity->targid < 1024)
-        {
             ref<uint16>(0x34) = 0x01;
+            nameOffset        = 0x35;
         }
 
-        auto* start = buffer_.data() + nameOffset;
-        std::memset(start, 0U, this->getSize() - nameOffset);
-        std::memcpy(start, name.c_str(), nameBytes);
+        // Make sure to zero-out the existing name area of the packet
+        auto start = buffer_.data() + nameOffset;
+        auto size  = this->getSize();
+        std::memset(start, 0U, size);
+
+        // Copy in name
+        std::memcpy(start, name.c_str(), maxLength);
     }
 
     //  Don't overwrite data for model size and hitbox size from look string on NPCs
@@ -611,9 +667,5 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         packet->Flags1.GraphSize = PEntity->modelSize;
         // For some reason, SE reused a player struct where this "g" value is the hitbox size.
         packet->Flags2.g = static_cast<uint8_t>(PEntity->modelHitboxSize * 10);
-
-        // Fenced content ID
-        const uint8 gateId = static_cast<CBattleEntity*>(PEntity)->StatusEffectContainer->GetConfrontationSubPower() & 0x0F;
-        packet->Flags2.b   = (packet->Flags2.b & 0x0F) | (gateId << 4);
     }
 }

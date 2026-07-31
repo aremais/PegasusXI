@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -80,8 +80,8 @@ public:
     void ReloadPartyMembers(CCharEntity* PChar);
     void ReloadTreasurePool(CCharEntity* PChar);
 
-    void   AddMember(CBattleEntity* PEntity);
-    void   AddMember(uint32 id);                 // Add party member from outside this server's scope
+    void AddMember(CBattleEntity* PEntity);
+    bool AddMember(uint32 id); // Add party member from another map process; false if DB row could not be created (no session / FK)
     void   RemoveMember(CBattleEntity* PEntity); //
     void   DelMember(CBattleEntity* PEntity);    // remove a member without invoking chat/db
     void   PopMember(CBattleEntity* PEntity);    // remove a member from memberlist (zoned to different server)

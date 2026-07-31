@@ -15,7 +15,6 @@ return {
     ['Kupupu']           = { event = 800 },
     ['Lacia']            = { event = 10021 },
     ['Lakom-Lukom']      = { event = 600 },
-    ['Mathele']          = { event = 304 },
     ['Maximin']          = { event = 12 },
     ['Numi_Adaligo']     = { event = 50 },
     ['Phoochuchu']       = { event = 300 },

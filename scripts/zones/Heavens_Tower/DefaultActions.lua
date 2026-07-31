@@ -19,7 +19,6 @@ return {
     ['Kinono']          = { event = 67 },
     ['Kiwawa']          = { event = 58 },
     ['Lin_Megomifu']    = { event = 81 },
-    ['Mashua']          = { event = 334 },
     ['Mhabi Molkot']    = { event = 410 },
     ['Nayutata']        = { event = 64 },
     ['Nebibi']          = { event = 68 },

@@ -2,6 +2,8 @@
 -- Area: Dynamis - Valkurm
 --  Mob: Nantina
 -----------------------------------
+require('scripts/globals/dynamis_valkurm_christelle')
+-----------------------------------
 ---@type TMobEntity
 local entity = {}
 
@@ -30,6 +32,10 @@ entity.onMobMobskillChoose = function(mob, target, skillId)
 
         return 1619 -- attractant
     end
+end
+
+entity.onMobDeath = function(mob, player, optParams)
+    xi.dynamis.valkurmMarkChristelleWeakTier('fragrant')
 end
 
 return entity

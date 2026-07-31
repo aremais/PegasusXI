@@ -1,6 +1,6 @@
 -----------------------------------
 -- Area: Dynamis-Buburimu
---  NPC: ??? (qm3)
+--  NPC: ??? (qm4)
 -- Note: Spawns Lost Aitvaras
 -----------------------------------
 ---@type TNpcEntity

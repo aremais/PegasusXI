@@ -26,6 +26,8 @@ mission.reward =
 local handleAcceptMission = function(player, csid, option, npc)
     if option == 12 then
         mission:begin(player)
+        -- addMission() does not clear Windurst mission status; Vestal door (_6q2) needs status 0 for CS 153.
+        player:setMissionStatus(mission.areaId, 0)
         player:messageSpecial(zones[player:getZoneID()].text.YOU_ACCEPT_THE_MISSION)
         npcUtil.giveKeyItem(player, xi.ki.STAR_CRESTED_SUMMONS_1)
     end
@@ -162,6 +164,7 @@ mission.sections =
             ['_6q2'] =
             {
                 onTrigger = function(player, npc)
+                    -- Status 0: Star Sibyl briefing at Vestal Chamber (event 153).
                     if player:getMissionStatus(mission.areaId) == 0 then
                         return mission:progressEvent(153)
                     end

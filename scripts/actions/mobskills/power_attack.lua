@@ -1,8 +1,11 @@
 -----------------------------------
 -- Power Attack
 -- Family: Beetle
--- Description : Deals physical damage to a single target - 100% Attack Boost
--- TODO: Currently used by jug pet beetle. Needs to be renamed
+-- Description: Deals physical damage to a single target. Critical hit rate varies with TP.
+-- Type: Physical
+-- Utsusemi/Blink absorb: 1 shadow
+-- Skillchain: Reverberation
+-- TODO: Verify exact fTP and critical hit rate breakpoints from retail captures.
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -18,9 +21,11 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     params.numHits          = 1
     params.fTP              = { 1.0, 1.0, 1.0 }
     params.attackType       = xi.attackType.PHYSICAL
-    params.damageType       = xi.damageType.HAND_TO_HAND
+    params.damageType       = xi.damageType.SLASHING
     params.shadowBehavior   = xi.mobskills.shadowBehavior.NUMSHADOWS_1
     params.attackMultiplier = { 2.0, 2.0, 2.0 }
+    params.canCrit          = true
+    params.criticalChance   = { 0.25, 0.50, 0.75 } -- TODO: Verify from retail captures
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 

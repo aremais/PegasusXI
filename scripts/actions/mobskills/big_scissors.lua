@@ -1,8 +1,14 @@
 -----------------------------------
 -- Big Scissors
 -- Family: Crab
--- Description: Deals damage to a single target.
--- Note: Nightmare Crabs ignore shadows
+-- Description: Deals physical damage to a single target.
+--              Critical hit rate varies with TP.
+-- Type: Physical
+-- Utsusemi/Blink absorb: 1 shadow
+-- Range: Single target
+-- Skillchain: Scission
+-- Note: Nightmare Crabs ignore shadows.
+-- TODO: Nightmare Crab variant — IGNORE_SHADOWS behavior.
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -20,8 +26,10 @@ mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
     params.attackType     = xi.attackType.PHYSICAL
     params.damageType     = xi.damageType.SLASHING
     params.shadowBehavior = xi.mobskills.shadowBehavior.NUMSHADOWS_1
+    params.canCrit        = true
+    params.criticalChance = { 0.25, 0.50, 0.75 } -- Critical hit rate varies with TP
 
-    -- TODO: Nightmare Crab - Ignores shadows
+    -- TODO: Nightmare Crab - IGNORE_SHADOWS
 
     local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
 

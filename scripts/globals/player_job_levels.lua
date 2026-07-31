@@ -16,8 +16,8 @@ xi.player_job_levels = xi.player_job_levels or {}
 
 --- Set all jobs (WAR through MON) to the given level.
 --- Uses changeJob + setLevel to persist per-job levels.
----@param player CBaseEntity Player entity
----@param level integer Level to set (1-99)
+---@param player userdata Player entity
+---@param level number Level to set (1-99)
 ---@return boolean success True if all jobs were set
 ---@return string|nil message Optional message
 function xi.player_job_levels.setAllJobLevels(player, level)

@@ -18,7 +18,8 @@ end
 
 entity.onMobDeath = function(mob, player, optParams)
     local elementalId = mob:getID() + 2
-    if GetMobByID(elementalId):isSpawned() then
+    local elemental   = GetEntityByID(elementalId, nil, true)
+    if elemental and elemental:isSpawned() then
         DespawnMob(elementalId)
     end
 end

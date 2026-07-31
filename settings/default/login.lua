@@ -40,6 +40,9 @@ xi.settings.login =
     -- Number of simultaneous game sessions per IP (0 for no limit)
     LOGIN_LIMIT = 0,
 
+    -- Comma-separated IPv4 addresses exempt from LOGIN_LIMIT (unlimited concurrent sessions from those IPs)
+    LOGIN_LIMIT_EXEMPT_IPS = '',
+
     -- Expansion display on the client's login screen. This does NOT effect in game content whatsoever!
     RISE_OF_ZILART          = true,
     CHAINS_OF_PROMATHIA     = true,
@@ -53,8 +56,11 @@ xi.settings.login =
     HEROES_OF_ABYSSEA       = true,
     SEEKERS_OF_ADOULIN      = true,
 
-    -- Feature display on client's login screen. This does NOT effect in game content whatsoever!
-    -- Mog wardrobes are per character, so anything custom will not be able to reflect per-account login screen.
+    -- Feature flags sent to the client with the lobby authentication response (excode_server2).
+    -- MOG_WARDROBE_3 through MOG_WARDROBE_8 control whether Mog Wardrobe pages 3–8 appear in the Mog House
+    -- menu (pages 1–2 are always available). They are not per-character; set them true unless you intend
+    -- to mimic restricted retail-style wardrobe access. SECURE_TOKEN is login/TOTP related.
+    SECURE_TOKEN   = false, -- 2FA not supported yet
     MOG_WARDROBE_3 = true,
     MOG_WARDROBE_4 = true,
     MOG_WARDROBE_5 = true,

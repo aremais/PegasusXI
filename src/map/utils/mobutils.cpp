@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -21,15 +21,18 @@
 
 #include "mobutils.h"
 
+#include "common/database.h"
 #include "common/logging.h"
+#include "common/utils.h"
 
 #include "action/action.h"
 #include "ai/ai_container.h"
+#include "battlefield.h"
 #include "battleutils.h"
 #include "grades.h"
-#include "instance.h"
 #include "items/item_weapon.h"
 #include "lua/luautils.h"
+#include "map_engine.h"
 #include "mob_modifier.h"
 #include "mob_spell_container.h"
 #include "mob_spell_list.h"
@@ -38,6 +41,7 @@
 #include "trait.h"
 #include "zone_entities.h"
 #include "zoneutils.h"
+#include <vector>
 
 namespace mobutils
 {
@@ -48,11 +52,11 @@ ModsMap_t mobSpawnModsList;
 
 /************************************************************************
  *                                                                       *
- *  Calculate mob's initial base weapon damage without modifiers         *
+ *  Calculate mob base weapon damage                                     *
  *                                                                       *
  ************************************************************************/
 
-uint16 GetBaseWeaponDamage(CMobEntity* PMob, uint16 slot)
+uint16 GetWeaponDamage(CMobEntity* PMob, uint16 slot)
 {
     // https://docs.google.com/spreadsheets/d/1YBoveP-weMdidrirY-vPDzHyxbEI2ryECINlfCnFkLI/edit?pli=1&gid=1743955268#gid=1743955268
     // Basic base damage formulas for reference:
@@ -60,16 +64,13 @@ uint16 GetBaseWeaponDamage(CMobEntity* PMob, uint16 slot)
     // Normal MNK mobs     : (Level * Multiplier(Default: 1.0000)) + Offset (Auto attacks get a penalty multiplier)
     // "Special" MNK mobs  : (Level + Offset) * Multiplier(1.6667) (Auto attacks get a penalty multiplier)
 
-    // NOTE: Multipliers and damage modifiers are handled in battlentity::GetMainWeaponDmg(), battlentity::GetRangedWeaponDmg().
-    // Things such as auto attacks and skills reference these functions so the modifiers will be applied through there
-    // rather than when the mob's damage is initially set. This will allow us to use the mob:setDamage() lua binding
-    // without double dipping damage modifiers while also being able to see updated damage values with prints/getstats commands.
-
-    auto   mobZoneId    = PMob->getZone();
-    uint16 mobLvl       = PMob->GetMLevel();
-    int8   offset       = 0;
-    int8   rangedOffset = 0;
-    uint16 damage       = mobLvl;
+    auto   mobZoneId      = PMob->getZone();
+    uint16 mobLvl         = PMob->GetMLevel();
+    int8   offset         = 0;
+    int8   rangedOffset   = 0;
+    float  multiplier     = PMob->m_dmgMult / 100.0f;
+    int32  damage         = mobLvl;
+    int16  damageModifers = 0;
 
     // Zones from base game/expansions have different base offsets, multipliers, etc.
     REGION_TYPE regionID = PMob->loc.zone->GetRegionID();
@@ -153,12 +154,19 @@ uint16 GetBaseWeaponDamage(CMobEntity* PMob, uint16 slot)
             break;
     }
 
+    offset += PMob->getMobMod(MOBMOD_DAMAGE_OFFSET);
+
+    if (slot == SLOT_RANGED)
+    {
+        offset = rangedOffset;
+        offset += PMob->getMobMod(MOBMOD_RANGED_DAMAGE_OFFSET);
+    }
+
     // Normal mobs in beginner zones have the offset lowered by 1.
     // Excluded NMs for now for things like Voidwatch Mobs.
-    if (mobZoneId != 0 && PMob->m_Type != xi::MobType::Notorious && (mobZoneId == ZONE_WEST_RONFAURE || mobZoneId == ZONE_EAST_RONFAURE || mobZoneId == ZONE_NORTH_GUSTABERG || mobZoneId == ZONE_SOUTH_GUSTABERG || mobZoneId == ZONE_WEST_SARUTABARUTA || mobZoneId == ZONE_EAST_SARUTABARUTA))
+    if (mobZoneId != 0 && PMob->m_Type != MOBTYPE_NOTORIOUS && (mobZoneId == ZONE_WEST_RONFAURE || mobZoneId == ZONE_EAST_RONFAURE || mobZoneId == ZONE_NORTH_GUSTABERG || mobZoneId == ZONE_SOUTH_GUSTABERG || mobZoneId == ZONE_WEST_SARUTABARUTA || mobZoneId == ZONE_EAST_SARUTABARUTA))
     {
         offset -= 1;
-        rangedOffset -= 1;
     }
 
     // Clamp to 0 for edge cases that might cause the offset go negative.
@@ -167,14 +175,37 @@ uint16 GetBaseWeaponDamage(CMobEntity* PMob, uint16 slot)
         offset = 0;
     }
 
-    if (rangedOffset < 0)
+    // Add this mod to increase a mobs damage by a base amount
+    if (PMob->getMobMod(MOBMOD_WEAPON_BONUS) != 0)
     {
-        rangedOffset = 0;
+        damageModifers = PMob->getMobMod(MOBMOD_WEAPON_BONUS);
     }
 
-    // Set default offsets. Will be calculated in battlentity::GetMainWeaponDmg()
-    PMob->setMobMod(MOBMOD_DAMAGE_OFFSET, offset);
-    PMob->setMobMod(MOBMOD_RANGED_DAMAGE_OFFSET, rangedOffset);
+    // Add damage mods to the appropriate slot's base damage if the mob has them.
+    if (slot == SLOT_MAIN)
+    {
+        damageModifers += PMob->getMod(Mod::MAIN_DMG_RATING);
+    }
+    else if (slot == SLOT_SUB)
+    {
+        damageModifers += PMob->getMod(Mod::SUB_DMG_RATING);
+    }
+    else if (slot == SLOT_RANGED)
+    {
+        damageModifers += PMob->getMod(Mod::RANGED_DMG_RATING);
+    }
+
+    damage += damageModifers;
+
+    if (PMob->getMobMod(MOBMOD_BASE_DAMAGE_MULTIPLIER) != 0)
+    {
+        multiplier = PMob->getMobMod(MOBMOD_BASE_DAMAGE_MULTIPLIER) / 100.0f;
+    }
+
+    damage = (damage + offset) * multiplier;
+
+    damage = std::clamp<int32>(damage, 1, 65535);
+
     return static_cast<uint16>(damage);
 }
 
@@ -186,15 +217,15 @@ uint16 GetBaseSkill(CMobEntity* PMob, uint8 rank)
     switch (rank)
     {
         case 1:
-            return battleutils::GetMaxSkill(xi::SkillType::GreatAxe, JOB_WAR, mlvl); // A+ Skill (1)
+            return battleutils::GetMaxSkill(SKILL_GREAT_AXE, JOB_WAR, mlvl); // A+ Skill (1)
         case 2:
-            return battleutils::GetMaxSkill(xi::SkillType::Staff, JOB_WAR, mlvl); // B Skill (2)
+            return battleutils::GetMaxSkill(SKILL_STAFF, JOB_WAR, mlvl); // B Skill (2)
         case 3:
-            return battleutils::GetMaxSkill(xi::SkillType::Evasion, JOB_WAR, mlvl); // C Skill (3)
+            return battleutils::GetMaxSkill(SKILL_EVASION, JOB_WAR, mlvl); // C Skill (3)
         case 4:
-            return battleutils::GetMaxSkill(xi::SkillType::Archery, JOB_WAR, mlvl); // D Skill (4)
+            return battleutils::GetMaxSkill(SKILL_ARCHERY, JOB_WAR, mlvl); // D Skill (4)
         case 5:
-            return battleutils::GetMaxSkill(xi::SkillType::Throwing, JOB_MNK, mlvl); // E Skill (5)
+            return battleutils::GetMaxSkill(SKILL_THROWING, JOB_MNK, mlvl); // E Skill (5)
     }
 
     ShowError("mobutils::GetBaseSkill rank (%d) is out of bounds for mob (%u) ", rank, PMob->id);
@@ -556,108 +587,10 @@ bool CheckSubJobZone(CMobEntity* PMob)
 
 /************************************************************************
  *                                                                       *
- *  Calculate base mob HP from job grades and levels                     *
- *                                                                       *
- ************************************************************************/
-static uint32 CalculateBaseMobHP(uint8 mLvl, uint8 baseHP, uint8 jobScale, uint8 scaleXHP)
-{
-    // HP formula has multiple parts based on level ranges:
-    // Levels 1-5: Base HP + scaling per level
-    // Levels 5-30: Additional scaling with conditional multiplier
-    // Levels 30+: Increased scaling with special modifiers
-    if (mLvl == 0)
-    {
-        return 0;
-    }
-
-    const uint8 level5Scaling  = std::min(mLvl, static_cast<uint8>(5));
-    const uint8 level30Scaling = std::min(mLvl, static_cast<uint8>(30));
-
-    uint32 hp = baseHP + (level5Scaling - 1) * (jobScale + 5);
-
-    // Additional bonuses based on scaling thresholds
-    uint32 riBonus = 0;
-    switch (level5Scaling)
-    {
-        case 0:
-        case 1:
-        case 2:
-            riBonus = 0;
-            break;
-        case 3:
-            riBonus = 3;
-            break;
-        case 4:
-            riBonus = 7;
-            break;
-        default: // 5
-            riBonus = 14;
-            break;
-    }
-
-    hp += riBonus;
-
-    if (mLvl > 5)
-    {
-        uint32 level5Bonus = (level30Scaling - 5) * (2 * jobScale + level30Scaling + 6) / 2;
-        hp += level5Bonus;
-    }
-
-    if (mLvl > 30)
-    {
-        uint32 level30Bonus = (mLvl - 30) * (63 + scaleXHP) + (mLvl - 31) * (jobScale + 6);
-        hp += level30Bonus;
-    }
-
-    return hp;
-}
-
-/************************************************************************
- *                                                                       *
- *  Calculate subjob HP contribution                                     *
- *                                                                       *
- ************************************************************************/
-static uint32 CalculateSubjobHP(uint8 mLvl, uint8 sjJobScale, uint8 sjScaleXHP)
-{
-    // Subjob HP contribution varies by main job level:
-    // 50+   = 100% of subjob stats
-    // 40-49 = 75% of subjob stats
-    // 31-39 = 50% of subjob stats
-    // 25-30 = 25% of subjob stats
-    // 1-24  = 0% of subjob stats
-    int sjScale = 0;
-    if (mLvl > 49)
-    {
-        sjScale = mLvl;
-    }
-    else if (mLvl > 39)
-    {
-        sjScale = (mLvl * 3) / 4;
-    }
-    else if (mLvl > 30)
-    {
-        sjScale = mLvl / 2;
-    }
-    else if (mLvl > 24)
-    {
-        sjScale = mLvl / 4;
-    }
-
-    const double sjHp =
-        sjJobScale * std::max(sjScale - 1, 0) +
-        (0.5 + 0.5 * sjScaleXHP) * std::max(sjScale - 10, 0) +
-        std::max(sjScale - 30, 0) +
-        std::max(sjScale - 50, 0) +
-        std::max(sjScale - 70, 0);
-
-    return static_cast<uint32>(std::ceil(sjHp / 2.0));
-}
-
-/************************************************************************
- *                                                                       *
  *  Calculate mob stats                                                  *
  *                                                                       *
  ************************************************************************/
+
 void CalculateMobStats(CMobEntity* PMob, bool recover)
 {
     // Reset modifiers to base values to prevent stacking
@@ -670,12 +603,12 @@ void CalculateMobStats(CMobEntity* PMob, bool recover)
         PMob->StatusEffectContainer->KillAllStatusEffect();
     }
 
-    bool         isNM     = (PMob->m_Type & xi::MobType::Notorious) != xi::MobType::Normal;
-    JOBTYPE      mJob     = PMob->GetMJob();
-    JOBTYPE      sJob     = PMob->GetSJob();
-    uint8        mLvl     = PMob->GetMLevel();
-    uint8        sLvl     = PMob->GetSLevel();
-    xi::ZoneType zoneType = PMob->loc.zone->GetTypeMask();
+    bool      isNM     = PMob->m_Type & MOBTYPE_NOTORIOUS;
+    JOBTYPE   mJob     = PMob->GetMJob();
+    JOBTYPE   sJob     = PMob->GetSJob();
+    uint8     mLvl     = PMob->GetMLevel();
+    uint8     sLvl     = PMob->GetSLevel();
+    ZONE_TYPE zoneType = PMob->loc.zone->GetTypeMask();
 
     uint8 mJobGrade = 0; // main jobs grade
     uint8 sJobGrade = 0; // subjobs grade
@@ -684,33 +617,90 @@ void CalculateMobStats(CMobEntity* PMob, bool recover)
     {
         if (PMob->HPmodifier == 0)
         {
-            // HP Calculations
-            mJobGrade = grade::GetJobGrade(mJob, 0);
-            sJobGrade = grade::GetJobGrade(sJob, 0);
+            uint32 mobHP = 1; // Set mob HP
 
-            // 1. Retrieve HP scaling values from job grades
-            // Index 0: Base HP
-            // Index 1: Job scaling
-            // Index 2: Modifier scale
-            uint8 BaseHP     = grade::GetMobHPScale(mJobGrade, 0);
-            uint8 JobScale   = grade::GetMobHPScale(mJobGrade, 1);
-            uint8 ScaleXHP   = grade::GetMobHPScale(mJobGrade, 2);
-            uint8 sjJobScale = grade::GetMobHPScale(sJobGrade, 1);
-            uint8 sjScaleXHP = grade::GetMobHPScale(sJobGrade, 2);
+            uint32 baseMobHP = 0; // Define base mobs hp
+            uint32 sjHP      = 0; // Define base subjob hp
 
-            // 2. Calculate base HP from main job
-            uint32 baseMobHP = CalculateBaseMobHP(mLvl, BaseHP, JobScale, ScaleXHP);
+            mJobGrade = grade::GetJobGrade(mJob, 0); // main jobs grade
+            sJobGrade = grade::GetJobGrade(sJob, 0); // subjobs grade
 
-            // 3. Calculate subjob HP contribution scaled by level range
-            uint32 sjHP = CalculateSubjobHP(mLvl, sjJobScale, sjScaleXHP);
+            uint8 base     = 0; // Column for base hp
+            uint8 jobScale = 1; // Column for job scaling
+            uint8 scaleX   = 2; // Column for modifier scale
 
-            // 4. Final mob HP before traits/family modifiers
-            uint32 mobHP = baseMobHP + sjHP;
+            uint8 BaseHP     = grade::GetMobHPScale(mJobGrade, base);     // Main job base HP
+            uint8 JobScale   = grade::GetMobHPScale(mJobGrade, jobScale); // Main job scaling
+            uint8 ScaleXHP   = grade::GetMobHPScale(mJobGrade, scaleX);   // Main job modifier scale
+            uint8 sjJobScale = grade::GetMobHPScale(sJobGrade, jobScale); // Sub job scaling
+            uint8 sjScaleXHP = grade::GetMobHPScale(sJobGrade, scaleX);   // Sub job modifier scale
 
-            // 5. Apply pet multiplier (pets are 30% of base mob HP)
+            uint8 RIgrade = std::min(mLvl, (uint8)5); // RI Grade
+            uint8 RIbase  = 1;                        // Column for RI base
+
+            uint8 RI = grade::GetMobRBI(RIgrade, RIbase); // Random Increment addition per grade vs. base
+
+            uint8 mLvlIf    = (PMob->GetMLevel() > 5 ? 1 : 0);
+            uint8 mLvlIf30  = (PMob->GetMLevel() > 30 ? 1 : 0);
+            uint8 raceScale = 6;
+            uint8 mLvlScale = 0;
+
+            if (mLvl > 0)
+            {
+                baseMobHP = BaseHP + (std::min(mLvl, (uint8)5) - 1) * (JobScale + raceScale - 1) + RI + mLvlIf * (std::min(mLvl, (uint8)30) - 5) * (2 * (JobScale + raceScale) + std::min(mLvl, (uint8)30) - 6) / 2 + mLvlIf30 * ((mLvl - 30) * (63 + ScaleXHP) + (mLvl - 31) * (JobScale + raceScale));
+            }
+
+            // 50+ = 1 hp sjstats
+            if (mLvl > 49)
+            {
+                mLvlScale = std::floor(mLvl);
+            }
+            // 40-49 = 3/4 hp sjstats
+            else if (mLvl > 39)
+            {
+                mLvlScale = std::floor(mLvl * 0.75);
+            }
+            // 31-39 = 1/2 hp sjstats
+            else if (mLvl > 30)
+            {
+                mLvlScale = std::floor(mLvl * 0.50);
+            }
+            // 25-30 = 1/4 hp sjstats
+            else if (mLvl > 24)
+            {
+                mLvlScale = std::floor(mLvl * 0.25);
+            }
+            // 1-24 = no hp sjstats
+            else
+            {
+                mLvlScale = 0;
+            }
+
+            sjHP = std::ceil((sjJobScale * (std::max((mLvlScale - 1), 0)) + (0.5 + 0.5 * sjScaleXHP) * (std::max(mLvlScale - 10, 0)) + std::max(mLvlScale - 30, 0) + std::max(mLvlScale - 50, 0) + std::max(mLvlScale - 70, 0)) / 2);
+
+            // Orcs 5% more hp
+            if ((PMob->m_Family == 189) || (PMob->m_Family == 190))
+            {
+                mobHP = (baseMobHP + sjHP) * 1.05;
+            }
+            // Quadavs 5% less hp
+            else if (PMob->m_Family == 202)
+            {
+                mobHP = (baseMobHP + sjHP) * 0.95;
+            }
+            // Manticore family has 50% more HP
+            else if (PMob->m_Family == 179)
+            {
+                mobHP = (baseMobHP + sjHP) * 1.5;
+            }
+            else
+            {
+                mobHP = baseMobHP + sjHP;
+            }
+
             if (PMob->PMaster != nullptr)
             {
-                mobHP = (uint32)(mobHP * 0.30f);
+                mobHP *= 0.30f; // Retail captures have all pets at 30% of the mobs family of the same level
             }
 
             PMob->health.maxhp = (int16)(mobHP);
@@ -720,21 +710,19 @@ void CalculateMobStats(CMobEntity* PMob, bool recover)
             PMob->health.maxhp = PMob->HPmodifier;
         }
 
-        // Apply NM/Mob HP multiplier from settings
         if (isNM)
         {
-            float hpMultiplierNM = settings::get<float>("map.NM_HP_MULTIPLIER");
-            hpMultiplierNM       = (hpMultiplierNM >= 0.1f && hpMultiplierNM <= 2.0f) ? hpMultiplierNM : 1.0f;
-            PMob->health.maxhp   = (int32)(PMob->health.maxhp * hpMultiplierNM);
+            auto hpMultiplierNM = settings::get<float>("map.NM_HP_MULTIPLIER");
+            hpMultiplierNM      = (hpMultiplierNM >= 0.1f && hpMultiplierNM <= 2.0f) ? hpMultiplierNM : 1.0f;
+            PMob->health.maxhp  = (int32)(PMob->health.maxhp * hpMultiplierNM);
         }
         else
         {
-            float hpMultiplierMob = settings::get<float>("map.MOB_HP_MULTIPLIER");
-            hpMultiplierMob       = (hpMultiplierMob >= 0.1f && hpMultiplierMob <= 2.0f) ? hpMultiplierMob : 1.0f;
-            PMob->health.maxhp    = (int32)(PMob->health.maxhp * hpMultiplierMob);
+            auto hpMultiplierMob = settings::get<float>("map.MOB_HP_MULTIPLIER");
+            hpMultiplierMob      = (hpMultiplierMob >= 0.1f && hpMultiplierMob <= 2.0f) ? hpMultiplierMob : 1.0f;
+            PMob->health.maxhp   = (int32)(PMob->health.maxhp * hpMultiplierMob);
         }
 
-        // MP Calculations
         bool hasMp = false;
 
         switch (mJob)
@@ -807,8 +795,8 @@ void CalculateMobStats(CMobEntity* PMob, bool recover)
         }
     }
 
-    ((CItemWeapon*)PMob->m_Weapons[SLOT_MAIN])->setDamage(GetBaseWeaponDamage(PMob, SLOT_MAIN));
-    ((CItemWeapon*)PMob->m_Weapons[SLOT_RANGED])->setDamage(GetBaseWeaponDamage(PMob, SLOT_RANGED));
+    ((CItemWeapon*)PMob->m_Weapons[SLOT_MAIN])->setDamage(GetWeaponDamage(PMob, SLOT_MAIN));
+    ((CItemWeapon*)PMob->m_Weapons[SLOT_RANGED])->setDamage(GetWeaponDamage(PMob, SLOT_RANGED));
 
     // reduce weapon delay of MNK
     if (PMob->GetMJob() == JOB_MNK)
@@ -900,9 +888,9 @@ void CalculateMobStats(CMobEntity* PMob, bool recover)
     }
 
     // cap all stats for mLvl / job
-    for (int i = static_cast<int>(xi::SkillType::DivineMagic); i <= static_cast<int>(xi::SkillType::BlueMagic); i++)
+    for (int i = SKILL_DIVINE_MAGIC; i <= SKILL_BLUE_MAGIC; i++)
     {
-        uint16 maxSkill = battleutils::GetMaxSkill((xi::SkillType)i, PMob->GetMJob(), mLvl > 99 ? 99 : mLvl);
+        uint16 maxSkill = battleutils::GetMaxSkill((SKILLTYPE)i, PMob->GetMJob(), mLvl > 99 ? 99 : mLvl);
         if (maxSkill != 0)
         {
             PMob->WorkingSkills.skill[i] = maxSkill;
@@ -910,7 +898,7 @@ void CalculateMobStats(CMobEntity* PMob, bool recover)
         else // if the mob is WAR/BLM and can cast spell
         {
             // set skill as high as main level, so their spells won't get resisted
-            uint16 maxSubSkill = battleutils::GetMaxSkill((xi::SkillType)i, PMob->GetSJob(), mLvl > 99 ? 99 : mLvl);
+            uint16 maxSubSkill = battleutils::GetMaxSkill((SKILLTYPE)i, PMob->GetSJob(), mLvl > 99 ? 99 : mLvl);
 
             if (maxSubSkill != 0)
             {
@@ -918,7 +906,7 @@ void CalculateMobStats(CMobEntity* PMob, bool recover)
             }
         }
     }
-    for (int i = static_cast<int>(xi::SkillType::HandToHand); i <= static_cast<int>(xi::SkillType::Staff); i++)
+    for (int i = SKILL_HAND_TO_HAND; i <= SKILL_STAFF; i++)
     {
         uint16 maxSkill = battleutils::GetMaxSkill(3, mLvl > 99 ? 99 : mLvl);
         if (maxSkill != 0)
@@ -941,13 +929,13 @@ void CalculateMobStats(CMobEntity* PMob, bool recover)
     // Fantoccini (not yet coded)
     if (PMob->getMobMod(MOBMOD_CAN_PARRY) > 0)
     {
-        PMob->WorkingSkills.skill[static_cast<uint8>(xi::SkillType::Parry)] = GetBaseSkill(PMob, PMob->getMobMod(MOBMOD_CAN_PARRY));
+        PMob->WorkingSkills.skill[SKILL_PARRY] = GetBaseSkill(PMob, PMob->getMobMod(MOBMOD_CAN_PARRY));
     }
 
     // Assume base guard for MNK and PUP mobs is the same as parry (Rank C)
     if ((PMob->GetMJob() == JOB_MNK || PMob->GetMJob() == JOB_PUP) && PMob->getMobMod(MOBMOD_CANNOT_GUARD) == 0)
     {
-        PMob->WorkingSkills.skill[static_cast<uint8>(xi::SkillType::Guard)] = GetBaseSkill(PMob, 3);
+        PMob->WorkingSkills.skill[SKILL_GUARD] = GetBaseSkill(PMob, 3);
     }
 
     // natural magic evasion
@@ -972,12 +960,12 @@ void CalculateMobStats(CMobEntity* PMob, bool recover)
     // If a mob is going to dual wield, then it needs to have a sub slot.
     // Assume it is the same damage as the main slot.
     // Ordering matters. This has to come after SetupJob
-    static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_SUB])->setDamage(PMob->IsDualWielding() ? GetBaseWeaponDamage(PMob, SLOT_MAIN) : 0);
+    static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_SUB])->setDamage(PMob->IsDualWielding() ? GetWeaponDamage(PMob, SLOT_MAIN) : 0);
 
     SetupRoaming(PMob);
 
     // All beastmen drop gil
-    if (PMob->m_EcoSystem == xi::Ecosystem::Beastmen)
+    if (PMob->m_EcoSystem == ECOSYSTEM::BEASTMAN)
     {
         PMob->defaultMobMod(MOBMOD_GIL_BONUS, 100);
     }
@@ -987,24 +975,32 @@ void CalculateMobStats(CMobEntity* PMob, bool recover)
         SetupPetSkills(PMob);
     }
 
-    PMob->m_Behavior |= static_cast<xi::Behavior>(PMob->getMobMod(MOBMOD_BEHAVIOR));
+    PMob->m_Behavior |= PMob->getMobMod(MOBMOD_BEHAVIOR);
 
-    if ((PMob->m_Type & xi::MobType::Battlefield) != xi::MobType::Normal)
+    if (zoneType & ZONE_TYPE::DUNGEON)
+    {
+        SetupDungeonMob(PMob);
+    }
+    else if (PMob->m_Type & MOBTYPE_BATTLEFIELD)
     {
         SetupBattlefieldMob(PMob);
     }
+    else if (zoneType & ZONE_TYPE::DYNAMIS)
+    {
+        SetupDynamisMob(PMob);
+    }
 
-    if ((PMob->m_Type & xi::MobType::Notorious) != xi::MobType::Normal)
+    if (PMob->m_Type & MOBTYPE_NOTORIOUS)
     {
         PMob->setMobMod(MOBMOD_NO_DESPAWN, 1);
     }
 
-    if ((zoneType & xi::ZoneType::Instanced) != xi::ZoneType::Unknown)
+    if (zoneType & ZONE_TYPE::INSTANCED)
     {
         SetupDungeonInstanceMob(PMob);
     }
 
-    if ((PMob->m_Type & xi::MobType::Event) != xi::MobType::Normal)
+    if (PMob->m_Type & MOBTYPE_EVENT)
     {
         SetupEventMob(PMob);
     }
@@ -1046,11 +1042,11 @@ void SetupJob(CMobEntity* PMob)
     JOBTYPE sJob = PMob->GetSJob();
     JOBTYPE job{};
 
-    if (grade::GetJobGrade(mJob, 1) > 0 || mJob == JOB_NIN || mJob == JOB_BRD) // Check if main job is a caster.
+    if (grade::GetJobGrade(mJob, 1) > 0 || mJob == JOB_NIN) // check if mainjob gives mp or is NIN
     {
         job = mJob;
     }
-    else // If main job is not a caster, check sub job.
+    else // if mainjob had no MP (and isn't NIN), use subjob in switch cases.
     {
         job = sJob;
     }
@@ -1119,7 +1115,7 @@ void SetupJob(CMobEntity* PMob)
     {
         case JOB_THF:
             // thfs drop more gil
-            if (PMob->m_EcoSystem == xi::Ecosystem::Beastmen)
+            if (PMob->m_EcoSystem == ECOSYSTEM::BEASTMAN)
             {
                 // 50% bonus
                 PMob->defaultMobMod(MOBMOD_GIL_BONUS, 150);
@@ -1215,7 +1211,7 @@ void SetupRoaming(CMobEntity* PMob)
     uint16 cool     = 20;
     uint16 rate     = 15;
 
-    if (PMob->m_EcoSystem == xi::Ecosystem::Beastmen)
+    if (PMob->m_EcoSystem == ECOSYSTEM::BEASTMAN)
     {
         distance = 20;
         turns    = 5;
@@ -1228,7 +1224,7 @@ void SetupRoaming(CMobEntity* PMob)
     PMob->defaultMobMod(MOBMOD_ROAM_COOL, cool);
     PMob->defaultMobMod(MOBMOD_ROAM_RATE, rate);
 
-    if ((PMob->m_roamFlags & xi::RoamFlag::Ambush) != xi::RoamFlag::None)
+    if (PMob->m_roamFlags & ROAMFLAG_AMBUSH)
     {
         PMob->m_specialFlags |= SPECIALFLAG_HIDDEN;
         // always stay close to spawn
@@ -1237,7 +1233,7 @@ void SetupRoaming(CMobEntity* PMob)
         PMob->setMobMod(MOBMOD_ROAM_TURNS, 1);
     }
 
-    if ((PMob->m_roamFlags & xi::RoamFlag::Scripted) != xi::RoamFlag::None)
+    if (PMob->m_roamFlags & ROAMFLAG_SCRIPTED)
     {
         PMob->setMobMod(MOBMOD_ROAM_RESET_FACING, 1);
     }
@@ -1283,19 +1279,23 @@ uint8 JobSkillRankToBaseEvaRank(JOBTYPE mjob, JOBTYPE sjob)
 {
     // Pick the best rank between the two jobs
     // Lower is better
-    uint8 mainEvasionSkillRank = battleutils::GetSkillRank(xi::SkillType::Evasion, mjob);
-    uint8 subEvasionSkillRank  = battleutils::GetSkillRank(xi::SkillType::Evasion, sjob);
+    uint8 mainEvasionSkillRank = battleutils::GetSkillRank(SKILL_EVASION, mjob);
+    uint8 evasionSkillRank     = mainEvasionSkillRank;
 
-    if (sjob == JOB_NON)
+    // JOB_NON (and MON) are not loaded in skill_ranks; g_SkillRanks[*][0] reads as 0 and must not be mixed into min().
+    if (sjob != JOB_NON && sjob != JOB_MON)
     {
-        subEvasionSkillRank = mainEvasionSkillRank;
+        uint8 subEvasionSkillRank = battleutils::GetSkillRank(SKILL_EVASION, sjob);
+        evasionSkillRank          = std::min(mainEvasionSkillRank, subEvasionSkillRank);
     }
 
-    switch (std::min(mainEvasionSkillRank, subEvasionSkillRank))
+    switch (evasionSkillRank)
     {
+        case 0:
+            return 1; // A- (skill_caps r0)
         case 1:
         case 2:
-            return 1; // A, A+; A- doesnt exist anymore
+            return 1; // A, A+
         case 3:
         case 4:
         case 5:
@@ -1307,13 +1307,39 @@ uint8 JobSkillRankToBaseEvaRank(JOBTYPE mjob, JOBTYPE sjob)
         case 9:
             return 4; // D
         case 10:
-            return 5; // E
+        case 11:
+            return 5; // E, F
         default:
-            ShowError("JobSkillRankToBaseEvaRank: rank not implemented. Job xi::SkillType::Evasion rank is likely not valid or no longer exists (A- rank in particular.)");
+            ShowError("JobSkillRankToBaseEvaRank: SKILL_EVASION rank %u not mapped for mjob=%u sjob=%u", evasionSkillRank, mjob, sjob);
     }
 
     return 3; // Give them C rank as a fallback.
 };
+
+void SetupDynamisMob(CMobEntity* PMob)
+{
+    // no gil drop and no mugging!
+    PMob->setMobMod(MOBMOD_GIL_MAX, -1);
+    PMob->setMobMod(MOBMOD_MUG_GIL, -1);
+
+    // boost dynamis mobs weapon damage
+    PMob->setMobMod(MOBMOD_WEAPON_BONUS, 30); // Add approximately 30 flat damage until proven otherwise (In-line with the 35% added previously)
+    ((CItemWeapon*)PMob->m_Weapons[SLOT_MAIN])->setDamage(GetWeaponDamage(PMob, SLOT_MAIN));
+    ((CItemWeapon*)PMob->m_Weapons[SLOT_RANGED])->setDamage(GetWeaponDamage(PMob, SLOT_RANGED));
+
+    // job resist traits are much more powerful in dynamis
+    // according to wiki
+    for (auto&& PTrait : PMob->TraitList)
+    {
+        Mod type = PTrait->getMod();
+
+        if (type >= Mod::SLEEPRES && type <= Mod::DEATHRES)
+        {
+            // give mob a total of x4 the regular rate
+            PMob->addModifier(type, PTrait->getValue() * 3);
+        }
+    }
+}
 
 void SetupBattlefieldMob(CMobEntity* PMob)
 {
@@ -1334,9 +1360,9 @@ void SetupBattlefieldMob(CMobEntity* PMob)
     }
 
     // do not roam around
+    PMob->m_roamFlags |= ROAMFLAG_SCRIPTED;
     PMob->setMobMod(MOBMOD_ROAM_RESET_FACING, 1);
-    PMob->setMobMod(MOBMOD_ROAM_DISTANCE, 0);
-    PMob->m_maxRoamDistance = 0.0f;
+    PMob->m_maxRoamDistance = 0.5f;
     if ((PMob->m_bcnmID != 864) && (PMob->m_bcnmID != 704) && (PMob->m_bcnmID != 706))
     {
         // bcnmID 864 (desires of emptiness), 704 (darkness named), and 706 (waking dreams) don't superlink
@@ -1346,10 +1372,14 @@ void SetupBattlefieldMob(CMobEntity* PMob)
     }
 }
 
+void SetupDungeonMob(CMobEntity* PMob)
+{
+}
+
 void SetupEventMob(CMobEntity* PMob)
 {
     // event mob types will always have scripted roaming (any mob can have it scripted, but these ALWAYS do)
-    PMob->m_roamFlags |= xi::RoamFlag::Scripted;
+    PMob->m_roamFlags |= ROAMFLAG_SCRIPTED;
     PMob->setMobMod(MOBMOD_ROAM_RESET_FACING, 1);
     PMob->m_maxRoamDistance = 0.5f; // always go back to spawn
 
@@ -1715,7 +1745,7 @@ auto InstantiateAlly(uint32 groupid, uint16 zoneID, CInstance* instance) -> CMob
         PMob->packetName.insert(0, rset->get<std::string>("packet_name"));
 
         PMob->m_RespawnTime = std::chrono::seconds(rset->get<uint32>("respawntime"));
-        PMob->m_SpawnType   = rset->get<xi::SpawnType>("spawntype");
+        PMob->m_SpawnType   = rset->get<SPAWNTYPE>("spawntype");
         PMob->m_DropID      = rset->get<uint32>("dropid");
 
         PMob->HPmodifier = rset->get<uint32>("HP");
@@ -1732,16 +1762,16 @@ auto InstantiateAlly(uint32 groupid, uint16 zoneID, CInstance* instance) -> CMob
         PMob->SetSJob(rset->get<uint8>("sJob"));
 
         static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setMaxHit(1);
-        static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setSkillType(rset->get<xi::SkillType>("cmbSkill"));
+        static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setSkillType(rset->get<uint8>("cmbSkill"));
         PMob->m_dmgMult = rset->get<uint16>("cmbDmgMult");
         static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setDelay(rset->get<uint16>("cmbDelay"));
         static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setBaseDelay(rset->get<uint16>("cmbDelay"));
 
-        PMob->m_Behavior  = rset->get<xi::Behavior>("behavior");
+        PMob->m_Behavior  = rset->get<uint16>("behavior");
         PMob->m_Link      = rset->get<uint8>("links");
-        PMob->m_Type      = rset->get<xi::MobType>("mobType");
-        PMob->m_Immunity  = rset->get<xi::Immunity>("immunity");
-        PMob->m_EcoSystem = rset->get<xi::Ecosystem>("ecosystemID");
+        PMob->m_Type      = rset->get<uint8>("mobType");
+        PMob->m_Immunity  = rset->get<IMMUNITY>("immunity");
+        PMob->m_EcoSystem = rset->get<ECOSYSTEM>("ecosystemID");
 
         PMob->baseSpeed      = rset->get<uint8>("speed"); // Overwrites baseentity.cpp's defined baseSpeed
         PMob->animationSpeed = rset->get<uint8>("speed"); // Overwrites baseentity.cpp's defined animationSpeed
@@ -1796,7 +1826,7 @@ auto InstantiateAlly(uint32 groupid, uint16 zoneID, CInstance* instance) -> CMob
         PMob->m_Element     = rset->get<uint8>("Element");
         PMob->m_Species     = rset->get<uint16>("speciesid");
         PMob->m_name_prefix = rset->get<uint8>("name_prefix");
-        PMob->m_flags       = rset->get<xi::EntityFlags>("entityFlags");
+        PMob->m_flags       = rset->get<uint32>("entityFlags");
 
         // Special sub animation for Mob (yovra, jailer of love, phuabo)
         // yovra 1: On top/in the sky, 2: , 3: On top/in the sky
@@ -1811,8 +1841,8 @@ auto InstantiateAlly(uint32 groupid, uint16 zoneID, CInstance* instance) -> CMob
 
         PMob->m_Pool = rset->get<uint32>("poolid");
 
-        PMob->allegiance      = rset->get<xi::Allegiance>("allegiance");
-        PMob->namevis         = rset->get<xi::NameVis>("namevis");
+        PMob->allegiance      = rset->get<ALLEGIANCE_TYPE>("allegiance");
+        PMob->namevis         = rset->get<uint8>("namevis");
         PMob->modelHitboxSize = std::max<float>(0.0f, rset->getOrDefault<float>("modelHitboxSize", 0) / 10.f);
         PMob->modelSize       = rset->getOrDefault<uint8>("modelSize", 0);
         PMob->m_Aggro         = rset->get<bool>("aggro");
@@ -1820,12 +1850,7 @@ auto InstantiateAlly(uint32 groupid, uint16 zoneID, CInstance* instance) -> CMob
         PMob->m_TrueDetection = rset->get<bool>("true_detection");
         PMob->setMobMod(MOBMOD_DETECTION, rset->get<int16>("detects"));
 
-        if (instance)
-        {
-            instance->AssignDynamicTargIDandLongID(PMob);
-            instance->InsertMOB(PMob);
-        }
-        else if (CZone* PZone = zoneutils::GetZone(zoneID))
+        if (CZone* PZone = zoneutils::GetZone(zoneID))
         {
             PZone->GetZoneEntities()->AssignDynamicTargIDandLongID(PMob);
             PZone->GetZoneEntities()->InsertMOB(PMob);
@@ -1893,7 +1918,7 @@ auto InstantiateDynamicMob(uint32 groupid, uint16 groupZoneId, uint16 targetZone
         PMob->packetName.insert(0, rset->get<std::string>("packet_name"));
 
         PMob->m_RespawnTime = std::chrono::seconds(rset->get<uint32>("respawntime"));
-        PMob->m_SpawnType   = rset->get<xi::SpawnType>("spawntype");
+        PMob->m_SpawnType   = rset->get<SPAWNTYPE>("spawntype");
         PMob->m_DropID      = rset->get<uint32>("dropid");
 
         PMob->HPmodifier = rset->get<uint32>("HP");
@@ -1907,16 +1932,16 @@ auto InstantiateDynamicMob(uint32 groupid, uint16 groupZoneId, uint16 targetZone
         PMob->SetSJob(rset->get<uint8>("sJob"));
 
         static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setMaxHit(1);
-        static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setSkillType(rset->get<xi::SkillType>("cmbSkill"));
+        static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setSkillType(rset->get<uint8>("cmbSkill"));
         PMob->m_dmgMult = rset->get<uint16>("cmbDmgMult");
         static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setDelay(rset->get<uint16>("cmbDelay"));
         static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setBaseDelay(rset->get<uint16>("cmbDelay"));
 
-        PMob->m_Behavior  = rset->get<xi::Behavior>("behavior");
+        PMob->m_Behavior  = rset->get<uint16>("behavior");
         PMob->m_Link      = rset->get<uint8>("links");
-        PMob->m_Type      = rset->get<xi::MobType>("mobType");
-        PMob->m_Immunity  = rset->get<xi::Immunity>("immunity");
-        PMob->m_EcoSystem = rset->get<xi::Ecosystem>("ecosystemID");
+        PMob->m_Type      = rset->get<uint8>("mobType");
+        PMob->m_Immunity  = rset->get<IMMUNITY>("immunity");
+        PMob->m_EcoSystem = rset->get<ECOSYSTEM>("ecosystemID");
 
         PMob->baseSpeed      = rset->get<uint8>("speed"); // Overwrites baseentity.cpp's defined baseSpeed
         PMob->animationSpeed = rset->get<uint8>("speed"); // Overwrites baseentity.cpp's defined animationSpeed
@@ -1962,7 +1987,7 @@ auto InstantiateDynamicMob(uint32 groupid, uint16 groupZoneId, uint16 targetZone
         PMob->m_Element     = rset->get<uint8>("Element");
         PMob->m_Species     = rset->get<uint16>("speciesid");
         PMob->m_name_prefix = rset->get<uint8>("name_prefix");
-        PMob->m_flags       = rset->get<xi::EntityFlags>("entityFlags");
+        PMob->m_flags       = rset->get<uint32>("entityFlags");
 
         PMob->animationsub = rset->get<uint32>("animationsub");
 
@@ -1974,8 +1999,8 @@ auto InstantiateDynamicMob(uint32 groupid, uint16 groupZoneId, uint16 targetZone
 
         PMob->m_Pool = rset->get<uint32>("poolid");
 
-        PMob->allegiance      = rset->get<xi::Allegiance>("allegiance");
-        PMob->namevis         = rset->get<xi::NameVis>("namevis");
+        PMob->allegiance      = rset->get<ALLEGIANCE_TYPE>("allegiance");
+        PMob->namevis         = rset->get<uint8>("namevis");
         PMob->modelHitboxSize = std::max<float>(0.0f, rset->getOrDefault<float>("modelHitboxSize", 0) / 10.f);
         PMob->modelSize       = rset->getOrDefault<uint8>("modelSize", 0);
         PMob->m_Aggro         = rset->get<bool>("aggro");
@@ -2014,11 +2039,11 @@ void WeaknessTrigger(CBaseEntity* PTarget, WeaknessType level)
         .actiontype = ActionCategory::MobSkillFinish,
         .targets    = {
             {
-                .actorId = PTarget->id,
-                .results = {
+                   .actorId = PTarget->id,
+                   .results = {
                     {
-                        .animation = animationID,
-                        .param     = 2582,
+                           .animation = animationID,
+                           .param     = 2582,
                     },
                 },
             },

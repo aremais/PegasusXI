@@ -28,10 +28,16 @@ xi.settings.network =
 
     MAP_PORT = 54230,
 
+    -- If non-empty, login and zone changes (0x00B) tell clients to use this IP for map UDP (fixes FFXI-3001 when
+    -- zone_settings.zoneip is 127.0.0.1 or a LAN address but players connect from the internet). Ports still come
+    -- from zone_settings. Override via XI_NETWORK_MAP_PUBLIC_IP.
+    MAP_PUBLIC_IP = '',
+
     SEARCH_PORT = 54002,
 
     -- DB queries will attempt each query once, and reconnect and retry up to `SQL_QUERY_RETRY_COUNT` times.
-    SQL_QUERY_RETRY_COUNT = 1,
+    -- Search/map idle threads often hit a dead server-side connection (wait_timeout); extra retries avoid terminate().
+    SQL_QUERY_RETRY_COUNT = 3,
 
     ENABLE_HTTP = false,
     HTTP_HOST   = 'localhost',

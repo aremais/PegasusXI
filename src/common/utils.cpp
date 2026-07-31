@@ -496,7 +496,8 @@ void EncodeStringLinkshell(const std::string& signature, char* target)
     leftover = (leftover == 8 || leftover == 2 ? 6 : leftover);
     packBitsLE(encodedSignature, 0xFF, 6 * chars, leftover);
 
-    strncpy(target, reinterpret_cast<const char*>(encodedSignature), LinkshellStringLength);
+    // Binary payload; do not use strncpy — encoded bytes may contain 0x00 before the end.
+    std::memcpy(target, encodedSignature, LinkshellStringLength);
 }
 
 void DecodeStringLinkshell(const std::string& signature, char* target)

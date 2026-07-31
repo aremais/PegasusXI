@@ -21,7 +21,14 @@
 
 #include "0x0c4_group_comlink_active.h"
 
+#include "common/logging.h"
+#include "common/utils.h"
+
+#include <cctype>
+#include <string>
+
 #include "entities/char_entity.h"
+#include "enums/chat_message_type.h"
 #include "enums/item_lockflg.h"
 #include "enums/msg_std.h"
 #include "item_container.h"
@@ -31,6 +38,7 @@
 #include "packets/char_status.h"
 #include "packets/s2c/0x01d_item_same.h"
 #include "packets/s2c/0x01f_item_list.h"
+#include "packets/s2c/0x017_chat_std.h"
 #include "packets/s2c/0x020_item_attr.h"
 #include "packets/s2c/0x0e0_group_comlink.h"
 #include "utils/charutils.h"
@@ -39,17 +47,47 @@
 namespace
 {
 
+bool IsDisplayLinkshellNameCharsetOk(const std::string& name)
+{
+    if (name.empty() || name.size() > 20)
+    {
+        return false;
+    }
+    for (unsigned char c : name)
+    {
+        if (std::isalnum(c) == 0)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 const auto createLinkshell = [](CCharEntity* PChar, CItemLinkshell* PItemLinkshell, const GP_CLI_COMMAND_GROUP_COMLINK_ACTIVE& data)
 {
     uint32_t       linkshellId    = 0;
     const uint16_t linkshellColor = (data.a << 12) | (data.b << 8) | (data.g << 4) | data.r;
 
-    char       DecodedName[DecodeStringLength] = {};
-    const auto encodedRawName                  = asStringFromUntrustedSource(data.sComLinkName, sizeof(data.sComLinkName));
+    char DecodedName[DecodeStringLength] = {};
+
+    const auto encodedRawName = asStringFromUntrustedSource(data.sComLinkName, sizeof(data.sComLinkName));
 
     DecodeStringLinkshell(encodedRawName, DecodedName);
+    const std::string decodedNameStr(DecodedName);
+    if (!IsDisplayLinkshellNameCharsetOk(decodedNameStr))
+    {
+        ShowWarningFmt("createLinkshell: invalid name from client (charset/length): '{}' ({})",
+                        decodedNameStr,
+                        PChar->getName());
+        PChar->pushPacket<GP_SERV_COMMAND_CHAT_STD>(
+            PChar,
+            CHAT_MESSAGE_TYPE::MESSAGE_SYSTEM_1,
+            "Linkshell names may only use letters and numbers (A-Z, a-z, 0-9), up to 20 characters.");
+        PChar->pushPacket<GP_SERV_COMMAND_MESSAGE>(MsgStd::LinkshellUnavailable);
+        return;
+    }
 
-    const auto safeName = db::escapeString(DecodedName);
+    const auto safeName = db::escapeString(decodedNameStr);
     linkshellId         = linkshell::RegisterNewLinkshell(safeName, linkshellColor);
 
     if (linkshellId != 0)
@@ -68,7 +106,8 @@ const auto createLinkshell = [](CCharEntity* PChar, CItemLinkshell* PItemLinkshe
         PChar->getStorage(data.Category)->InsertItem(std::move(PItem), data.ItemIndex);
         PItemLinkshell->SetLSID(linkshellId);
         PItemLinkshell->SetLSType(LSTYPE_LINKSHELL);
-        PItemLinkshell->setSignature(DecodedName);
+        // setSignature() expects the decoded display name and encodes into item exdata (not raw packet bytes).
+        PItemLinkshell->setSignature(decodedNameStr);
         PItemLinkshell->SetLSColor(linkshellColor);
 
         const auto rset = db::preparedStmt("UPDATE char_inventory SET signature = ?, extra = ?, itemId = 513 WHERE charid = ? AND location = ? AND slot = ? LIMIT 1",
@@ -185,25 +224,24 @@ const auto unequipLinkshell = [](CCharEntity* PChar, CItemLinkshell* PItemLinksh
 auto GP_CLI_COMMAND_GROUP_COMLINK_ACTIVE::validate(MapSession* PSession, const CCharEntity* PChar) const -> PacketValidationResult
 {
     return PacketValidator(PChar)
-        .blockedBy({ BlockedState::InEvent })
-        .range("r", this->r, 0, 15)
-        .range("g", this->g, 0, 15)
-        .range("b", this->b, 0, 15)
-        .mustEqual(this->a, 15, "a not 15")
-        .oneOf<GP_CLI_COMMAND_GROUP_COMLINK_ACTIVE_ACTIVEFLG>(this->ActiveFlg)
-        .oneOf<GP_CLI_COMMAND_GROUP_COMLINK_ACTIVE_LINKSHELLID>(this->LinkshellId);
+        .range("r", r, 0, 15)
+        .range("g", g, 0, 15)
+        .range("b", b, 0, 15)
+        .mustEqual(a, 15, "a not 15")
+        .oneOf<GP_CLI_COMMAND_GROUP_COMLINK_ACTIVE_ACTIVEFLG>(ActiveFlg)
+        .oneOf<GP_CLI_COMMAND_GROUP_COMLINK_ACTIVE_LINKSHELLID>(LinkshellId);
 }
 
 void GP_CLI_COMMAND_GROUP_COMLINK_ACTIVE::process(MapSession* PSession, CCharEntity* PChar) const
 {
-    auto* PItemLinkshell = static_cast<CItemLinkshell*>(PChar->getStorage(this->Category)->GetItem(this->ItemIndex));
+    auto* PItemLinkshell = static_cast<CItemLinkshell*>(PChar->getStorage(Category)->GetItem(ItemIndex));
 
     if (!PItemLinkshell || !PItemLinkshell->isType(ITEM_LINKSHELL))
     {
         return;
     }
 
-    switch (static_cast<GP_CLI_COMMAND_GROUP_COMLINK_ACTIVE_ACTIVEFLG>(this->ActiveFlg))
+    switch (static_cast<GP_CLI_COMMAND_GROUP_COMLINK_ACTIVE_ACTIVEFLG>(ActiveFlg))
     {
         case GP_CLI_COMMAND_GROUP_COMLINK_ACTIVE_ACTIVEFLG::EquipOrCreate:
         {

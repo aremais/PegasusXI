@@ -51,7 +51,7 @@ zones[xi.zone.THE_BOYAHDA_TREE] =
     },
     npc =
     {
-        STRANGE_HAPPENINGS_CHEST = GetFirstID('Treasure_Chest'),
+        STRANGE_HAPPENINGS_CHEST = 17404356, -- Treasure_Chest (npc_list)
         TREASURE_COFFER          = GetFirstID('Treasure_Coffer'),
     },
 }

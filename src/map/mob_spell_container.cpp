@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -20,8 +20,6 @@
 */
 
 #include <algorithm>
-
-#include "entities/pet_entity.h"
 
 #include "mob_modifier.h"
 #include "mob_spell_container.h"
@@ -112,7 +110,7 @@ void CMobSpellContainer::RemoveSpell(SpellID spellId)
 {
     auto findAndRemove = [](std::vector<SpellID>& list, SpellID id)
     {
-        std::erase(list, id);
+        list.erase(std::remove(list.begin(), list.end(), id), list.end());
     };
 
     findAndRemove(m_gaList, spellId);
@@ -132,12 +130,12 @@ Maybe<SpellID> CMobSpellContainer::GetAvailable(SpellID spellId)
 {
     auto* spell    = spell::GetSpell(spellId);
     bool  enoughMP = spell->getMPCost() <= m_PMob->health.mp ||
-                     spell->getSkillType() == xi::SkillType::Ninjutsu ||
-                     spell->getSkillType() == xi::SkillType::Singing ||
-                     spell->getSkillType() == xi::SkillType::WindInstrument ||
-                     spell->getSkillType() == xi::SkillType::StringInstrument ||
-                     spell->getSkillType() == xi::SkillType::Geomancy ||
-                     m_PMob->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Manafont);
+                    spell->getSkillType() == SKILL_NINJUTSU ||
+                    spell->getSkillType() == SKILL_SINGING ||
+                    spell->getSkillType() == SKILL_WIND_INSTRUMENT ||
+                    spell->getSkillType() == SKILL_STRING_INSTRUMENT ||
+                    spell->getSkillType() == SKILL_GEOMANCY ||
+                    m_PMob->StatusEffectContainer->HasStatusEffect(EFFECT_MANAFONT);
 
     bool isNotInRecast = !m_PMob->PRecastContainer->Has(RECAST_MAGIC, static_cast<Recast>(spellId));
 
@@ -152,15 +150,15 @@ Maybe<SpellID> CMobSpellContainer::GetBestAvailable(SPELLFAMILY family)
     {
         for (auto id : list)
         {
-            auto* spell         = spell::GetSpell(id);
-            bool  sameFamily    = (family == SPELLFAMILY_NONE) ? true : spell->getSpellFamily() == family;
-            bool  enoughMP      = spell->getMPCost() <= m_PMob->health.mp ||
-                                  spell->getSkillType() == xi::SkillType::Ninjutsu ||
-                                  spell->getSkillType() == xi::SkillType::Singing ||
-                                  spell->getSkillType() == xi::SkillType::WindInstrument ||
-                                  spell->getSkillType() == xi::SkillType::StringInstrument ||
-                                  spell->getSkillType() == xi::SkillType::Geomancy;
-            bool  isNotInRecast = !m_PMob->PRecastContainer->Has(RECAST_MAGIC, static_cast<Recast>(id));
+            auto* spell      = spell::GetSpell(id);
+            bool  sameFamily = (family == SPELLFAMILY_NONE) ? true : spell->getSpellFamily() == family;
+            bool  enoughMP   = spell->getMPCost() <= m_PMob->health.mp ||
+                            spell->getSkillType() == SKILL_NINJUTSU ||
+                            spell->getSkillType() == SKILL_SINGING ||
+                            spell->getSkillType() == SKILL_WIND_INSTRUMENT ||
+                            spell->getSkillType() == SKILL_STRING_INSTRUMENT ||
+                            spell->getSkillType() == SKILL_GEOMANCY;
+            bool isNotInRecast = !m_PMob->PRecastContainer->Has(RECAST_MAGIC, static_cast<Recast>(id));
             if (sameFamily && enoughMP && isNotInRecast)
             {
                 matches.emplace_back(id);
@@ -191,16 +189,25 @@ Maybe<SpellID> CMobSpellContainer::GetBestAvailable(SPELLFAMILY family)
 
 Maybe<SpellID> CMobSpellContainer::GetBestIndiSpell(CBattleEntity* PTarget)
 {
-    auto mJob          = PTarget->GetMJob();
-    auto mTarget       = PTarget->GetBattleTarget();
-    auto hitrate       = battleutils::GetHitRate(PTarget, mTarget);
+    auto mJob    = PTarget->GetMJob();
+    auto mTarget = PTarget->GetBattleTarget();
+
+    // No battle target (e.g. player idle at vendor): GetHitRate and defender mods must not run.
+    uint8 hitrate = 100;
+    int32 tInt    = 0;
+    int32 tMaeva  = 0;
+    if (mTarget != nullptr)
+    {
+        hitrate = battleutils::GetHitRate(PTarget, mTarget);
+        tInt    = mTarget->getMod(Mod::INT);
+        tMaeva  = mTarget->getMod(Mod::MEVA);
+    }
+
     bool accBuffNeeded = hitrate < 65 ? true : false;
     auto mInt          = PTarget->getMod(Mod::INT);
-    auto tInt          = mTarget->getMod(Mod::INT);
     auto intDiff       = mInt - tInt + 10;
     auto macc          = PTarget->getMod(Mod::MACC);
-    auto tMaeva        = mTarget->getMod(Mod::MEVA);
-    auto mSkill        = PTarget->GetSkill(xi::SkillType::ElementalMagic);
+    auto mSkill        = PTarget->GetSkill(SKILL_ELEMENTAL_MAGIC);
     auto maccFromInt   = mInt;
 
     if (mInt > tInt + 10)
@@ -895,31 +902,31 @@ Maybe<SpellID> CMobSpellContainer::GetNaSpell()
     }
 
     // paralyna
-    if (HasNaSpell(SpellID::Paralyna) && m_PMob->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Paralysis))
+    if (HasNaSpell(SpellID::Paralyna) && m_PMob->StatusEffectContainer->HasStatusEffect(EFFECT_PARALYSIS))
     {
         return SpellID::Paralyna;
     }
 
     // cursna
-    if (HasNaSpell(SpellID::Cursna) && m_PMob->StatusEffectContainer->HasStatusEffect({ xi::StatusEffect::CurseI, xi::StatusEffect::CurseIi }))
+    if (HasNaSpell(SpellID::Cursna) && m_PMob->StatusEffectContainer->HasStatusEffect({ EFFECT_CURSE, EFFECT_CURSE_II }))
     {
         return SpellID::Cursna;
     }
 
     // erase
-    if (HasNaSpell(SpellID::Erase) && m_PMob->StatusEffectContainer->HasStatusEffectByFlag(xi::StatusEffectFlag::Erasable))
+    if (HasNaSpell(SpellID::Erase) && m_PMob->StatusEffectContainer->HasStatusEffectByFlag(EFFECTFLAG_ERASABLE))
     {
         return SpellID::Erase;
     }
 
     // blindna
-    if (HasNaSpell(SpellID::Blindna) && m_PMob->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Blindness))
+    if (HasNaSpell(SpellID::Blindna) && m_PMob->StatusEffectContainer->HasStatusEffect(EFFECT_BLINDNESS))
     {
         return SpellID::Blindna;
     }
 
     // poisona
-    if (HasNaSpell(SpellID::Poisona) && m_PMob->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Poison))
+    if (HasNaSpell(SpellID::Poisona) && m_PMob->StatusEffectContainer->HasStatusEffect(EFFECT_POISON))
     {
         return SpellID::Poisona;
     }

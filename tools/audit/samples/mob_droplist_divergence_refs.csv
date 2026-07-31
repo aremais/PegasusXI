@@ -1,0 +1,4 @@
+dropId,groupId,itemId,item_name,mob_names,status,changes,local_dropType,upstream_dropType,local_groupRate,upstream_groupRate,local_itemRate,upstream_itemRate,ffxidb_avg_pct,ffxidb_th0_pct,ffxidb_th1_pct,ffxidb_th2_pct,ffxidb_th3_pct,ffxidb_kills,ffxidb_confidence,ffxidb_url,bgwiki_drop_pct,bgwiki_kills,bgwiki_confidence,bgwiki_url
+1,0,1000,goblin_tooth,Goblin_Tinkerer,changed,itemRate,0,0,1000,1000,150,100,,,,,,,,,10.0,100,medium,https://www.bg-wiki.com/ffxi/Goblin_Tinkerer
+1,0,1002,,Goblin_Tinkerer,only_upstream,(missing locally),,0,,1000,,50,,,,,,,,,,,,
+2,0,2000,crab_shell,River_Crab,only_local,(local-only),0,,1000,,250,,,,,,,,,,26.97,456,medium,https://www.bg-wiki.com/ffxi/River_Crab

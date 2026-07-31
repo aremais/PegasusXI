@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2018 Darkstar Dev Teams
@@ -19,7 +19,9 @@
 ===========================================================================
 */
 
-#include <map/entities/trust_entity.h>
+#include "trustentity.h"
+
+#include "items/item_equipment.h"
 
 #include "action/action.h"
 #include "action/interrupts.h"
@@ -27,35 +29,38 @@
 #include "ai/controllers/trust_controller.h"
 #include "ai/helpers/pathfind.h"
 #include "ai/helpers/targetfind.h"
+#include "ai/states/ability_state.h"
+#include "ai/states/attack_state.h"
 #include "ai/states/magic_state.h"
+#include "ai/states/mobskill_state.h"
+#include "ai/states/range_state.h"
 #include "ai/states/weaponskill_state.h"
+#include "attack.h"
 #include "enmity_container.h"
-#include "mob_modifier.h"
+#include "mob_spell_container.h"
+#include "mob_spell_list.h"
 #include "packets/entity_set_name.h"
+#include "packets/entity_update.h"
+#include "packets/s2c/0x029_battle_message.h"
 #include "packets/s2c/0x0df_group_attr.h"
 #include "recast_container.h"
 #include "status_effect_container.h"
 #include "utils/battleutils.h"
+#include "utils/charutils.h"
+#include "utils/messageutils.h"
+#include "utils/trustutils.h"
+#include <algorithm>
 
-namespace
-{
-
-constexpr int8 kTrustDefaultShieldSize = 3;
-
-} // namespace
-
-CTrustEntity::CTrustEntity(CCharEntity* PChar, uint32 trustId, IsPassiveTrust isPassiveTrust)
+CTrustEntity::CTrustEntity(CCharEntity* PChar)
 : CMobEntity()
-, trustID_(trustId)
-, passiveTrust_(isPassiveTrust)
 {
     objtype                     = TYPE_TRUST;
-    m_EcoSystem                 = xi::Ecosystem::Unclassified;
-    allegiance                  = xi::Allegiance::Player;
+    m_EcoSystem                 = ECOSYSTEM::UNCLASSIFIED;
+    allegiance                  = ALLEGIANCE_TYPE::PLAYER;
     m_MobSkillList              = 0;
     PMaster                     = PChar;
     m_bReleaseTargIDOnDisappear = true;
-    spawnAnimation              = xi::SpawnAnimation::Special; // Initial spawn has the special spawn-in animation
+    spawnAnimation              = SPAWN_ANIMATION::SPECIAL; // Initial spawn has the special spawn-in animation
 
     PAI = std::make_unique<CAIContainer>(this,
                                          std::make_unique<CPathFind>(this),
@@ -68,30 +73,22 @@ CTrustEntity::~CTrustEntity()
     TracyZoneScoped;
 }
 
-auto CTrustEntity::trustID() -> uint32
+auto CTrustEntity::getShieldSize() -> int8
 {
-    return trustID_;
-}
+    if (auto* PItem = m_Weapons[SLOT_SUB])
+    {
+        if (PItem->IsShield())
+        {
+            return static_cast<int8>(PItem->getShieldSize());
+        }
+    }
 
-auto CTrustEntity::shieldSize() -> int8
-{
-    const auto shieldSizeMod = static_cast<int8>(getMobMod(MOBMOD_TRUST_SHIELD_SIZE));
-    return shieldSizeMod > 0 ? shieldSizeMod : kTrustDefaultShieldSize;
-}
+    if (GetMJob() == JOB_PLD)
+    {
+        return m_defaultShieldSize;
+    }
 
-auto CTrustEntity::released() -> bool
-{
-    return released_;
-}
-
-void CTrustEntity::setReleased(bool released)
-{
-    released_ = released;
-}
-
-auto CTrustEntity::passiveTrust() -> IsPassiveTrust
-{
-    return passiveTrust_;
+    return 0;
 }
 
 void CTrustEntity::PostTick()
@@ -100,7 +97,7 @@ void CTrustEntity::PostTick()
     // TODO: Calling a grand-parent's impl. of an overridden function is bad
     CBattleEntity::PostTick();
     timer::time_point now = timer::now();
-    if (loc.zone && updatemask && status != xi::Status::Disappear && now > m_nextUpdateTimer)
+    if (loc.zone && updatemask && status != STATUS_TYPE::DISAPPEAR && now > m_nextUpdateTimer)
     {
         m_nextUpdateTimer = now + 250ms;
         loc.zone->UpdateEntityPacket(this, ENTITY_UPDATE, updatemask);
@@ -146,12 +143,34 @@ void CTrustEntity::Spawn()
     CBattleEntity::Spawn();
     luautils::OnMobSpawn(this);
 
-    // Recompute derived HP/MP after spawn-time modifiers (e.g. HPP/MPP)
-    // and force current HP/MP to max so trusts start in a fully synchronized state.
-    UpdateHealth();
-    health.hp = GetMaxHP();
-    health.mp = GetMaxMP();
-    updatemask |= UPDATE_HP;
+    auto* PMasterChar = dynamic_cast<CCharEntity*>(PMaster);
+
+    if (PMasterChar && PMasterChar->GetMLevel() >= 99)
+    {
+        const uint8 avgItemLevel = charutils::getItemLevelDifference(PMasterChar) + 99;
+        const uint8 bonus        = std::clamp<uint8>(avgItemLevel - 99, 0, 20);
+
+        if (bonus > 0)
+        {
+            addModifier(Mod::ACC, bonus * 8);
+            addModifier(Mod::EVA, bonus * 8);
+            addModifier(Mod::MACC, bonus * 8);
+            addModifier(Mod::MEVA, bonus * 8);
+            addModifier(Mod::ATT, bonus * 6);
+            addModifier(Mod::DEF, bonus * 6);
+
+            addModifier(Mod::STR, bonus * 2);
+            addModifier(Mod::DEX, bonus * 2);
+            addModifier(Mod::VIT, bonus * 2);
+            addModifier(Mod::AGI, bonus * 2);
+            addModifier(Mod::INT, bonus * 2);
+            addModifier(Mod::MND, bonus * 2);
+            addModifier(Mod::CHR, bonus * 2);
+
+            addModifier(Mod::HPP, bonus * 2);
+            addModifier(Mod::MPP, bonus);
+        }
+    }
 
     static_cast<CCharEntity*>(PMaster)->pushPacket<CEntitySetNamePacket>(this);
 }
@@ -159,7 +178,7 @@ void CTrustEntity::Spawn()
 bool CTrustEntity::ValidTarget(CBattleEntity* PInitiator, uint16 targetFlags)
 {
     // Passive GEO trusts like Sakura etc are basically walking indicolures and cant be targeted
-    if (passiveTrust_)
+    if (m_isPassiveTrust)
     {
         return false;
     }
@@ -171,7 +190,7 @@ bool CTrustEntity::ValidTarget(CBattleEntity* PInitiator, uint16 targetFlags)
 
     if ((targetFlags & TARGET_PLAYER_PARTY_PIANISSIMO) && PInitiator->allegiance == allegiance && PMaster && PInitiator != this)
     {
-        if (PInitiator->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Pianissimo))
+        if (PInitiator->StatusEffectContainer->HasStatusEffect(EFFECT_PIANISSIMO))
         {
             return true;
         }
@@ -320,7 +339,7 @@ void CTrustEntity::OnWeaponSkillFinished(CWeaponSkillState& state, action_t& act
 bool CTrustEntity::GetUntargetable() const
 {
     // Passive GEO trusts like Sakura etc are basically walking indicolures and cant be targeted
-    if (passiveTrust_)
+    if (m_isPassiveTrust)
     {
         return true;
     }

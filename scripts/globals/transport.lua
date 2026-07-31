@@ -171,8 +171,14 @@ local scheduleTable =
 
 xi.transport.captainMessage = function(npc, triggerID, messages)
     local playersInZone = npc:getZone():getPlayers()
+    local body          = messages[triggerID]
     for _, player in pairs(playersInZone) do
-        player:showText(player, messages[triggerID])
+        if type(body) == 'string' then
+            player:printToPlayer(body, xi.msg.channel.SAY, npc:getName())
+        else
+            -- Numeric zone text ID: NPC speaker, no turn (helm pose).
+            player:showText(npc, body, nil, nil, nil, nil, false, false)
+        end
     end
 end
 
@@ -202,7 +208,7 @@ end
 -----------------------------------
 -- NPC functions
 -----------------------------------
-xi.transport.onBoatTimekeeperTrigger = function(player, route, travelMessage, arrivingMessage)
+xi.transport.onBoatTimekeeperTrigger = function(player, npc, route, destName)
     local currentTime = VanadielHour() * 60 + VanadielMinute()
     local timeDiff    = 0
 
@@ -214,11 +220,27 @@ xi.transport.onBoatTimekeeperTrigger = function(player, route, travelMessage, ar
         end
     end
 
-    local message   = timeDiff < 30 and arrivingMessage or travelMessage
     local earthMins = math.ceil(timeDiff / 25)
     local gameHours = math.floor(timeDiff / 60)
+    local minLabel    = earthMins == 1 and 'minute' or 'minutes'
+    local hourLabel   = gameHours == 1 and 'hour' or 'hours'
+    local body
 
-    player:messageSpecial(message, earthMins, gameHours)
+    -- DAT-based zone MesNum resolves incorrectly on some clients (wrong language). Use explicit English.
+    if timeDiff < 30 then
+        body = string.format('We are on our way to %s. We will be arriving soon.', destName)
+    else
+        body = string.format(
+            "We are on our way to %s. We should arrive in about %d Earth %s (~%d Vana'diel %s until arrival).",
+            destName,
+            earthMins,
+            minLabel,
+            gameHours,
+            hourLabel
+        )
+    end
+
+    player:printToPlayer(body, xi.msg.channel.SAY, npc:getName())
 end
 
 xi.transport.onDockTimekeeperTrigger = function(player, npc)

@@ -8,6 +8,94 @@ require('scripts/globals/npc_util')
 xi = xi or {}
 xi.dynamis = xi.dynamis or {}
 
+--[[
+    Dynamis - Jeuno timed Goblin NMs (Roving Bijou): xi.mob.phOnDespawn lottery parameters.
+    Retail reference: https://www.bg-wiki.com/ffxi/Dynamis_-_Jeuno (Notorious Monsters / farming flowchart).
+    Square Enix does not publish exact lottery % or cooldown; values follow LSB city-Dynamis convention.
+    Odious cup/die/mask/grenade on specific Vanguard jobs are data-driven via mob_groups dropid (2562/2543/2544/2563).
+]]
+xi.dynamis.jeunoTimedGoblinLottery =
+{
+    chancePercentScaled = 10,   -- phOnDespawn: ~10% success per eligible PH despawn (see scripts/globals/mobs.lua)
+    cooldownSeconds     = 1200, -- seconds after timed NM death before lottery can award that slot again
+}
+
+-- English notices via printToPlayer (messageSpecial text comes from the client's language DATs).
+local dynamisMsgChannel = xi.msg.channel.SYSTEM_3
+
+local dynamisNameByCsBit =
+{
+    [1]  = "San d'Oria",
+    [2]  = 'Bastok',
+    [3]  = 'Windurst',
+    [4]  = 'Jeuno',
+    [5]  = 'Beaucedine',
+    [6]  = 'Xarcabard',
+    [7]  = 'Valkurm',
+    [8]  = 'Buburimu',
+    [9]  = 'Qufim',
+    [10] = 'Tavnazia',
+}
+
+xi.dynamis.printTimeBeginEnglish = function(player)
+    player:printToPlayer(
+        'The sands of the prismatic hourglass have begun to fall. You have 60 minutes (Earth time) remaining in Dynamis.',
+        dynamisMsgChannel)
+end
+
+xi.dynamis.printTimeExtendEnglish = function(player, minutes)
+    local unit = minutes == 1 and 'minute' or 'minutes'
+    player:printToPlayer(
+        string.format('Your stay in Dynamis has been extended by %d %s.', minutes, unit),
+        dynamisMsgChannel)
+end
+
+xi.dynamis.printTimeExpireWarningEnglish = function(target, time, minutes)
+    local msg
+    if minutes == 1 then
+        local unit = time == 1 and 'minute' or 'minutes'
+        msg = string.format('You will be expelled from Dynamis in %d %s (Earth time).', time, unit)
+    else
+        local unit = time == 1 and 'second' or 'seconds'
+        msg = string.format('You will be expelled from Dynamis in %d %s (Earth time).', time, unit)
+    end
+
+    target:printToPlayer(msg, dynamisMsgChannel)
+end
+
+xi.dynamis.printTimeExpiredEnglish = function(target)
+    target:printToPlayer('The sands of the hourglass have emptied...', dynamisMsgChannel)
+end
+
+xi.dynamis.printSubUnlockedEnglish = function(player)
+    player:printToPlayer('Memories of skills long forgotten come flooding back to you...', dynamisMsgChannel)
+end
+
+xi.dynamis.printOminousPresenceEnglish = function(player, itemId)
+    local itemName = GetItemByID(itemId):getName()
+    player:printToPlayer(
+        string.format('You feel an ominous presence, as if something might happen if you possessed %s.', itemName),
+        dynamisMsgChannel)
+end
+
+xi.dynamis.printEntryLevelTooLowEnglish = function(player)
+    player:printToPlayer(
+        string.format('Players who have not reached level %u are prohibited from entering Dynamis.', xi.settings.main.DYNA_LEVEL_MIN),
+        dynamisMsgChannel)
+end
+
+xi.dynamis.printEntryDefaultEnglish = function(player)
+    player:printToPlayer('There is an unusual arrangement of branches here.', dynamisMsgChannel)
+end
+
+xi.dynamis.printCannotEnterDynamisEnglish = function(player, dayRemaining, csBit)
+    local name = dynamisNameByCsBit[csBit] or 'this area'
+    local dayWord = dayRemaining == 1 and 'day' or 'days'
+    player:printToPlayer(
+        string.format('You cannot enter Dynamis - %s for %d %s (Vana\'diel time).', name, dayRemaining, dayWord),
+        dynamisMsgChannel)
+end
+
 local entryInfo =
 {
     --[[
@@ -311,7 +399,6 @@ end
 xi.dynamis.entryNpcOnTrigger = function(player, npc)
     local zoneId        = player:getZoneID()
     local info          = entryInfo[zoneId]
-    local ID            = zones[zoneId]
     local dynaMask      = player:getCharVar('Dynamis_Status')
     local unlockingDyna = utils.mask.getBit(dynaMask, 0)
     local tavnaziaFirst = false
@@ -331,10 +418,10 @@ xi.dynamis.entryNpcOnTrigger = function(player, npc)
         player:hasKeyItem(xi.ki.PRISMATIC_HOURGLASS) and
         player:getMainLvl() < xi.settings.main.DYNA_LEVEL_MIN
     then
-        player:messageSpecial(ID.text.PLAYERS_HAVE_NOT_REACHED_LEVEL)
+        xi.dynamis.printEntryLevelTooLowEnglish(player)
     -- default message always prints except in cases above and not for shrouded sand or winning cs
     elseif not unlockingDyna and player:getCharVar(info.beatVar) ~= 1 then
-        player:messageSpecial(ID.text.DYNA_NPC_DEFAULT_MESSAGE)
+        xi.dynamis.printEntryDefaultEnglish(player)
     end
 
     -- all cutscenes and menus are blocked behind base requirements; 'unlockingDyna' needs to be checked to access shroud cs after zoning into xarcabard
@@ -369,7 +456,7 @@ xi.dynamis.entryNpcOnTrigger = function(player, npc)
                 player:startEvent(info.csMenu, info.csBit, arg3(player, info.csBit), xi.ki.PRISMATIC_HOURGLASS, sjobOption, 0, xi.ki.VIAL_OF_SHROUDED_SAND, 4236, 4237)
             else
                 local dayRemaining = math.floor(((dynaWaitxDay + xi.settings.main.BETWEEN_2DYNA_WAIT_TIME * 60 * 60) - realDay) / 3456)
-                player:messageSpecial(ID.text.YOU_CANNOT_ENTER_DYNAMIS, dayRemaining, info.csBit)
+                xi.dynamis.printCannotEnterDynamisEnglish(player, dayRemaining, info.csBit)
             end
         end
     end
@@ -417,7 +504,7 @@ xi.dynamis.zoneOnInitialize = function(zone)
 
     -- spawn one of each grouped TEs
     if timeExtensionMobs then
-        for _, v in pairs(timeExtensionMobs) do
+        for _, v in ipairs(timeExtensionMobs) do
             local group = {}
 
             if type(v.mob) == 'number' then
@@ -428,22 +515,32 @@ xi.dynamis.zoneOnInitialize = function(zone)
 
             local teId = group[math.randomInt(1, #group)]
             DisallowRespawn(teId, false)
-            SpawnMob(teId)
+            local teMob = SpawnMob(teId)
+            if teMob == nil then
+                printf('[xi.dynamis.zoneOnInitialize] zone %u: TIME_EXTENSION mob %u not found (check mob_spawn_points vs mob_groups.zoneid).', zoneId, teId)
+            elseif not teMob:isSpawned() then
+                printf('[xi.dynamis.zoneOnInitialize] zone %u: TIME_EXTENSION mob %u failed to spawn.', zoneId, teId)
+            end
         end
     end
 
     -- spawn one of each grouped refill statue
     if refillMobs then
-        for _, g in pairs(refillMobs) do
+        for _, g in ipairs(refillMobs) do
             local group = {}
 
-            for _, m in pairs(g) do
+            for _, m in ipairs(g) do
                 table.insert(group, m.mob)
             end
 
             local spawnId = group[math.randomInt(1, #group)]
             DisallowRespawn(spawnId, false)
-            SpawnMob(spawnId)
+            local refillMob = SpawnMob(spawnId)
+            if refillMob == nil then
+                printf('[xi.dynamis.zoneOnInitialize] zone %u: REFILL_STATUE mob %u not found (check mob_spawn_points vs mob_groups.zoneid).', zoneId, spawnId)
+            elseif not refillMob:isSpawned() then
+                printf('[xi.dynamis.zoneOnInitialize] zone %u: REFILL_STATUE mob %u failed to spawn.', zoneId, spawnId)
+            end
         end
     end
 
@@ -455,7 +552,6 @@ end
 xi.dynamis.zoneOnZoneIn = function(player, prevZone)
     local zoneId = player:getZoneID()
     local info   = dynaInfo[zoneId]
-    local ID     = zones[zoneId]
 
     local cs = -1
 
@@ -466,7 +562,7 @@ xi.dynamis.zoneOnZoneIn = function(player, prevZone)
 
         player:addStatusEffect(xi.effect.DYNAMIS, { duration = 3600, origin = player, tick = 3, icon = 0 })
         player:timer(5500, function(playerArg)
-            playerArg:messageSpecial(ID.text.DYNAMIS_TIME_BEGIN, 60, xi.ki.PRISMATIC_HOURGLASS)
+            xi.dynamis.printTimeBeginEnglish(playerArg)
         end)
 
         player:setCharVar('Dynamis_Entry', 0)
@@ -508,14 +604,13 @@ end
 xi.dynamis.somnialThresholdOnEventFinish = function(player, csid, option, npc)
     local zoneId = player:getZoneID()
     local info   = dynaInfo[zoneId]
-    local ID     = zones[zoneId]
 
     if csid == 100 then
         player:setPos(unpack(info.ejectPos))
     elseif option == 1 then
         player:startEvent(100)
     elseif option == 2 then
-        player:messageSpecial(ID.text.DYNAMIS_SUB_UNLOCKED)
+        xi.dynamis.printSubUnlockedEnglish(player)
         player:delStatusEffectSilent(xi.effect.SJ_RESTRICTION)
     end
 end
@@ -577,7 +672,7 @@ xi.dynamis.timeExtensionOnDeath = function(mob, player, optParams)
                 local oldDuration = effect:getDuration()
                 effect:setDuration(oldDuration + te.minutes * 60 * 1000)
                 player:setLocalVar('dynamis_lasttimeupdate', effect:getTimeRemaining() / 1000)
-                player:messageSpecial(ID.text.DYNAMIS_TIME_EXTEND, te.minutes)
+                xi.dynamis.printTimeExtendEnglish(player, te.minutes)
             end
 
             -- spawn a new mob in this group
@@ -755,7 +850,7 @@ xi.dynamis.qmOnTrigger = function(player, npc)
                 type(info.trade[1].item) == 'number' and
                 ID.text.OMINOUS_PRESENCE
             then
-                player:messageSpecial(ID.text.OMINOUS_PRESENCE, info.trade[1].item)
+                xi.dynamis.printOminousPresenceEnglish(player, info.trade[1].item)
             end
         else
             printf('[xi.dynamis.qmOnTrigger] called on in zone %i on npc %i (%s) that does not appear in QM data.', zoneId, npcId, npc:getName())

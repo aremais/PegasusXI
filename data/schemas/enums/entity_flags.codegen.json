@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/entity_flags.codegen.json",
+  "description": "GENERATED from data/enums/entity_flags.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "none",
+    "info_icon",
+    "hide_name",
+    "call_for_help",
+    "hide_model",
+    "hide_hp",
+    "untargetable"
+  ]
+}

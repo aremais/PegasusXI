@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -21,20 +21,154 @@
 #include <cstring>
 
 #include "common/database.h"
-#include "common/earth_time.h"
 #include "common/logging.h"
 #include "common/mmo.h"
 #include "common/settings.h"
 
 #include <algorithm>
+#include <unordered_map>
 
 #include "data_loader.h"
 #include "search.h"
+
+#include "common/synchronized.h"
+
+#include <chrono>
 
 namespace
 {
 
 uint8 JOB_MON = 23;
+
+struct AhCategoryCacheEntry
+{
+    std::vector<ahItem>                   items;
+    std::chrono::steady_clock::time_point expiresAt;
+};
+
+SynchronizedShared<std::unordered_map<std::string, AhCategoryCacheEntry>> ahCategoryCache;
+
+std::string makeAhCategoryCacheKey(uint8 ahCategoryID, const std::string& orderByString)
+{
+    return fmt::format("{}:{}", ahCategoryID, orderByString);
+}
+
+std::vector<ahItem*> cloneAhItems(const std::vector<ahItem>& items)
+{
+    std::vector<ahItem*> out;
+    out.reserve(items.size());
+    for (const auto& item : items)
+    {
+        out.emplace_back(new ahItem(item));
+    }
+    return out;
+}
+
+Maybe<std::vector<ahItem>> tryGetCachedAhCategory(uint8 ahCategoryID, const std::string& orderByString)
+{
+    if (!settings::get<bool>("search.AH_CACHE_ENABLED"))
+    {
+        return std::nullopt;
+    }
+
+    const auto key = makeAhCategoryCacheKey(ahCategoryID, orderByString);
+    return ahCategoryCache.read(
+        [&](const auto& cache) -> Maybe<std::vector<ahItem>>
+        {
+            const auto it = cache.find(key);
+            if (it == cache.end())
+            {
+                return std::nullopt;
+            }
+
+            if (std::chrono::steady_clock::now() >= it->second.expiresAt)
+            {
+                return std::nullopt;
+            }
+
+            return it->second.items;
+        });
+}
+
+void putCachedAhCategory(uint8 ahCategoryID, const std::string& orderByString, std::vector<ahItem> items)
+{
+    if (!settings::get<bool>("search.AH_CACHE_ENABLED"))
+    {
+        return;
+    }
+
+    const auto ttlSeconds = std::max<uint32>(1, settings::get<uint32>("search.AH_CACHE_TTL_SECONDS"));
+    const auto key        = makeAhCategoryCacheKey(ahCategoryID, orderByString);
+
+    ahCategoryCache.write(
+        [&](auto& cache)
+        {
+            cache[key] = AhCategoryCacheEntry{
+                .items     = std::move(items),
+                .expiresAt = std::chrono::steady_clock::now() + std::chrono::seconds(ttlSeconds),
+            };
+        });
+}
+
+std::vector<ahItem> fetchAhItemsToCategory(uint8 ahCategoryID, const std::string& orderByString)
+{
+    ShowTraceFmt("Try find category: {}", ahCategoryID);
+
+    std::vector<ahItem> itemList;
+
+    const auto rset = [&]()
+    {
+        const auto subQuery = "(SELECT item_basic.* "
+                              "FROM item_basic "
+                              "INNER JOIN auction_house_items ON item_basic.itemid = auction_house_items.itemid"
+                              ") AS item_basic ";
+
+        const auto fromTable = settings::get<bool>("search.OMIT_NO_HISTORY") ? subQuery : "item_basic";
+
+        const auto queryStr = fmt::format(
+            "SELECT ah.itemid, ah.stackSize, ah.ah_singles, ah.ah_stacks "
+            "FROM ( "
+            "  SELECT item_basic.itemid, item_basic.stackSize, "
+            "    COUNT(*)-SUM(stack) AS ah_singles, "
+            "    SUM(stack) AS ah_stacks "
+            "  FROM {} "
+            "  LEFT JOIN auction_house ON item_basic.itemId = auction_house.itemid AND auction_house.buyer_name IS NULL "
+            "  WHERE item_basic.aH = ? "
+            "  GROUP BY item_basic.itemid "
+            ") AS ah "
+            "LEFT JOIN item_basic ON ah.itemid = item_basic.itemid "
+            "LEFT JOIN item_equipment ON ah.itemid = item_equipment.itemid "
+            "LEFT JOIN item_weapon ON ah.itemid = item_weapon.itemid "
+            "{}",
+            fromTable,
+            orderByString);
+
+        return db::preparedStmt(queryStr, ahCategoryID);
+    }();
+
+    if (rset && rset->rowsCount())
+    {
+        while (rset->next())
+        {
+            ahItem item = {};
+
+            item.ItemID = rset->get<uint16>("itemid");
+
+            item.SingleAmount = rset->getOrDefault<uint32>("ah_singles", 0);
+            item.StackAmount  = rset->getOrDefault<uint32>("ah_stacks", 0);
+            item.Category     = ahCategoryID;
+
+            if (rset->get<uint32>("stackSize") == 1)
+            {
+                item.StackAmount = static_cast<uint32>(-1);
+            }
+
+            itemList.emplace_back(item);
+        }
+    }
+
+    return itemList;
+}
 
 } // namespace
 
@@ -83,6 +217,16 @@ std::vector<ahHistory*> CDataLoader::GetAHItemHistory(uint16 ItemID, bool stack)
     return HistoryList;
 }
 
+auto CDataLoader::GetAHItemHistoryAsync(Scheduler& scheduler, uint16 ItemID, bool stack) -> Task<std::pair<std::vector<ahHistory*>, ahItem>>
+{
+    co_return co_await scheduler.spawnOnWorkerThread(
+        [ItemID, stack]() -> std::pair<std::vector<ahHistory*>, ahItem>
+        {
+            CDataLoader loader;
+            return { loader.GetAHItemHistory(ItemID, stack), loader.GetAHItemFromItemID(ItemID) };
+        });
+}
+
 /************************************************************************
  *                                                                       *
  *  The list of items sold in this category                              *
@@ -91,60 +235,42 @@ std::vector<ahHistory*> CDataLoader::GetAHItemHistory(uint16 ItemID, bool stack)
 
 std::vector<ahItem*> CDataLoader::GetAHItemsToCategory(uint8 ahCategoryID, const std::string& orderByString)
 {
-    ShowDebugFmt("Try find category: {}", ahCategoryID);
-
-    std::vector<ahItem*> ItemList;
-
-    const auto rset = [&]()
+    if (const auto cached = tryGetCachedAhCategory(ahCategoryID, orderByString))
     {
-        const auto subQuery = "(SELECT item_basic.* "
-                              "FROM item_basic "
-                              "INNER JOIN auction_house_items ON item_basic.itemid = auction_house_items.itemid"
-                              ") AS item_basic ";
-
-        const auto fromTable = settings::get<bool>("search.OMIT_NO_HISTORY") ? subQuery : "item_basic";
-
-        // Build the query string with optional subquery and order-by statements before passing it to the prepared statement.
-        //
-        // NOTE: We normally don't want to build a prepared statement with fmt::format,
-        //     : but this query is entirely internal, so it's OK.
-        const auto queryStr = fmt::format("SELECT item_basic.itemid, item_basic.stackSize, COUNT(*)-SUM(stack), SUM(stack) "
-                                          "FROM {} "
-                                          "LEFT JOIN auction_house ON item_basic.itemId = auction_house.itemid AND auction_house.buyer_name IS NULL "
-                                          "LEFT JOIN item_equipment ON item_basic.itemid = item_equipment.itemid "
-                                          "LEFT JOIN item_weapon ON item_basic.itemid = item_weapon.itemid "
-                                          "WHERE aH = ? "
-                                          "GROUP BY item_basic.itemid "
-                                          "{}",
-                                          fromTable,
-                                          orderByString);
-
-        // We will now populate the ? in the prepared statement.
-        return db::preparedStmt(queryStr, ahCategoryID);
-    }();
-
-    if (rset && rset->rowsCount())
-    {
-        while (rset->next())
-        {
-            ahItem* PAHItem = new ahItem;
-
-            PAHItem->ItemID = rset->get<uint16>("itemid");
-
-            PAHItem->SingleAmount = rset->getOrDefault<uint32>("COUNT(*)-SUM(stack)", 0);
-            PAHItem->StackAmount  = rset->getOrDefault<uint32>("SUM(stack)", 0);
-            PAHItem->Category     = ahCategoryID;
-
-            if (rset->get<uint32>("stackSize") == 1)
-            {
-                PAHItem->StackAmount = -1;
-            }
-
-            ItemList.emplace_back(PAHItem);
-        }
+        ShowTraceFmt("AH category {} cache hit ({} items)", ahCategoryID, cached->size());
+        return cloneAhItems(*cached);
     }
 
-    return ItemList;
+    auto items = fetchAhItemsToCategory(ahCategoryID, orderByString);
+    putCachedAhCategory(ahCategoryID, orderByString, items);
+    return cloneAhItems(items);
+}
+
+auto CDataLoader::GetAHItemsToCategoryAsync(Scheduler& scheduler, uint8 ahCategoryID, const std::string& orderByString) -> Task<std::vector<ahItem*>>
+{
+    if (const auto cached = tryGetCachedAhCategory(ahCategoryID, orderByString))
+    {
+        ShowTraceFmt("AH category {} cache hit ({} items)", ahCategoryID, cached->size());
+        co_return cloneAhItems(*cached);
+    }
+
+    auto items = co_await scheduler.spawnOnWorkerThread(
+        [ahCategoryID, orderByString]()
+        {
+            return fetchAhItemsToCategory(ahCategoryID, orderByString);
+        });
+
+    putCachedAhCategory(ahCategoryID, orderByString, items);
+    co_return cloneAhItems(items);
+}
+
+void CDataLoader::InvalidateAHCategoryCache()
+{
+    ahCategoryCache.write(
+        [](auto& cache)
+        {
+            cache.clear();
+        });
 }
 
 // Return single item including category and how many are listed
@@ -742,65 +868,57 @@ std::string CDataLoader::GetSearchComment(uint32 playerId)
     return std::string();
 }
 
-struct ListingToExpire
-{
-    uint32      saleID     = 0;
-    uint32      itemID     = 0;
-    uint8       itemStack  = 0;
-    uint8       ahStack    = 0;
-    uint32      sellerID   = 0;
-    std::string sellerName = "?";
-};
-
 void CDataLoader::ExpireAHItems(uint16 expireAgeInDays)
 {
     ShowInfoFmt("Expiring auction house listings over {} days old", expireAgeInDays);
 
-    std::vector<ListingToExpire> listingsToExpire;
+    // Join chars in one query instead of N+1 charname lookups per expired listing.
+    const auto rset0 = db::preparedStmt(
+        "SELECT T0.id, T0.itemid, T1.stackSize, T0.stack, T0.seller, COALESCE(chars.charname, '?') AS charname "
+        "FROM auction_house T0 "
+        "INNER JOIN item_basic T1 ON T0.itemid = T1.itemid "
+        "LEFT JOIN chars ON T0.seller = chars.charid "
+        "WHERE T0.buyer_name IS NULL AND T0.`date` < "
+        "UNIX_TIMESTAMP(DATE_ADD(DATE_SUB(CURDATE(), INTERVAL ? DAY), INTERVAL 1 DAY))",
+        expireAgeInDays);
 
-    const auto cutoff = earth_time::timestamp() - static_cast<uint32>(expireAgeInDays) * 86400u;
-    const auto rset0  = db::preparedStmt("SELECT T0.id,T0.itemid,T1.stacksize, T0.stack, T0.seller FROM auction_house T0 INNER JOIN item_basic T1 ON "
-                                         "T0.itemid = T1.itemid WHERE T0.buyer_name IS NULL AND T0.date <= ?",
-                                         cutoff);
+    if (!rset0)
+    {
+        ShowWarning("ExpireAHItems: failed to query expired listings (see prior DB error log).");
+        return;
+    }
 
     const auto expiredAuctions = rset0->rowsCount();
+    uint32     expiredCount    = 0;
 
-    if (rset0 && expiredAuctions > 0)
+    if (expiredAuctions > 0)
     {
         while (rset0->next())
         {
-            // Collect the items we're going to expire
-            uint32 saleID    = rset0->get<uint32>("id");
-            uint32 itemID    = rset0->get<uint32>("itemid");
-            uint8  itemStack = rset0->get<uint8>("stacksize");
-            uint8  ahStack   = rset0->get<uint8>("stack");
-            uint32 sellerID  = rset0->get<uint32>("seller");
-            // NOTE: seller name left out for now, we'll populate this later
-
-            listingsToExpire.emplace_back(ListingToExpire{ saleID, itemID, itemStack, ahStack, sellerID, "?" });
-        }
-
-        for (auto listing : listingsToExpire)
-        {
-            // Populate name now
-            const auto rset1 = db::preparedStmt("SELECT charname FROM chars WHERE charid = ?", listing.sellerID);
-            if (rset1 && rset1->rowsCount() && rset1->next())
-            {
-                listing.sellerName = rset1->get<std::string>("charname");
-            }
+            const uint32 saleID     = rset0->get<uint32>("id");
+            const uint32 itemID     = rset0->get<uint32>("itemid");
+            const uint8  itemStack  = rset0->get<uint8>("stackSize");
+            const uint8  ahStack    = rset0->get<uint8>("stack");
+            const uint32 sellerID   = rset0->get<uint32>("seller");
+            const auto   sellerName = rset0->get<std::string>("charname");
 
             const auto rset2 = db::preparedStmt("INSERT INTO delivery_box (charid, charname, box, itemid, itemsubid, quantity, senderid, sender) VALUES "
                                                 "(?, ?, 1, ?, 0, ?, 0, 'AH-Jeuno')",
-                                                listing.sellerID,
-                                                listing.sellerName,
-                                                listing.itemID,
-                                                listing.ahStack == 1 ? listing.itemStack : 1);
+                                                sellerID,
+                                                sellerName,
+                                                itemID,
+                                                ahStack == 1 ? itemStack : 1);
             if (rset2 && rset2->rowsAffected())
             {
-                // delete the item from the auction house
-                db::preparedStmt("DELETE FROM auction_house WHERE id = ?", listing.saleID);
+                if (db::preparedStmt("DELETE FROM auction_house WHERE id = ?", saleID))
+                {
+                    ++expiredCount;
+                }
             }
         }
+
+        InvalidateAHCategoryCache();
     }
-    ShowInfoFmt("Sent {} expired auction house listings back to sellers", expiredAuctions);
+
+    ShowInfoFmt("Sent {} expired auction house listings back to sellers", expiredCount);
 }

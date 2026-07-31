@@ -88,6 +88,19 @@ CREATE TRIGGER char_insert
     BEFORE INSERT ON chars
     FOR EACH ROW
 BEGIN
+    -- Clear orphan child rows left by failed character creation (same charid, no chars row).
+    -- Otherwise INSERT below hits Duplicate entry 'N-0' on char_inventory PRIMARY (charid,location,slot).
+    DELETE FROM `char_equip`     WHERE `charid` = NEW.charid;
+    DELETE FROM `char_exp`       WHERE `charid` = NEW.charid;
+    DELETE FROM `char_history`   WHERE `charid` = NEW.charid;
+    DELETE FROM `char_inventory` WHERE `charid` = NEW.charid;
+    DELETE FROM `char_jobs`      WHERE `charid` = NEW.charid;
+    DELETE FROM `char_pet`       WHERE `charid` = NEW.charid;
+    DELETE FROM `char_points`    WHERE `charid` = NEW.charid;
+    DELETE FROM `char_profile`   WHERE `charid` = NEW.charid;
+    DELETE FROM `char_storage`   WHERE `charid` = NEW.charid;
+    DELETE FROM `char_unlocks`   WHERE `charid` = NEW.charid;
+
     INSERT INTO `char_equip`     SET `charid` = NEW.charid;
     INSERT INTO `char_exp`       SET `charid` = NEW.charid;
     INSERT INTO `char_history`   SET `charid` = NEW.charid;

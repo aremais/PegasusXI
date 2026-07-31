@@ -51,7 +51,6 @@ return {
     ['Romualdo']          = { event = 705 },
     ['Salim']             = { event = 400 },
     ['Striking_Snake']    = { event = 153 },
-    ['Taulluque']         = { event = 771 },
     ['Topuru-Kuperu']     = { event = 251 },
     ['Unlucky_Rat']       = { event = 550 },
     ['Veit']              = { event = 152 },

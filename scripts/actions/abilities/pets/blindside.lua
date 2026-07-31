@@ -1,7 +1,12 @@
 -----------------------------------
 -- Blindside
--- Family: Avatar (Diabolos)
--- Description: Deals Physical damage to a single target.
+-- Avatar: Diabolos
+-- Level: 99
+-- Blood Pact: Rage
+-- Single-hit physical slashing attack. Damage varies with TP.
+-- Skillchain: Gravitation / Transfixion
+-- Stat Mod: Avatar's STR & MND
+-- https://www.bg-wiki.com/ffxi/Blindside
 -----------------------------------
 ---@type TAbilityPet
 local abilityObject = {}
@@ -13,26 +18,17 @@ end
 abilityObject.onPetAbility = function(target, pet, petskill, summoner, action)
     xi.job_utils.summoner.onUseBloodPact(target, petskill, summoner, action)
 
-    local params = {}
+    local numhits = 1
+    local accmod  = 1
+    local dmgmod  = 5.0
 
-    params.baseDamage        = pet:getWeaponDmg()
-    params.numHits           = 1
-    params.fTP               = { 2.0, 2.0, 2.0 } -- TODO: Capture fTPs
-    params.fTPSubsequentHits = { 2.0, 2.0, 2.0 }
-    -- params.str_wSC           = 0.20 -- TODO: Capture wSCs
-    -- params.mnd_wSC           = 0.20
-    params.attackType        = xi.attackType.PHYSICAL
-    params.damageType        = xi.damageType.BLUNT
-    params.shadowBehavior    = xi.mobskills.shadowBehavior.NUMSHADOWS_1
-    params.primaryMessage    = xi.msg.basic.USES_JA_TAKE_DAMAGE
+    local info        = xi.summon.avatarPhysicalMove(pet, target, petskill, numhits, accmod, dmgmod, 0, xi.mobskills.physicalTpBonus.DMG_VARIES, 1.0, 1.5, 2.0)
+    local totaldamage = xi.summon.avatarFinalAdjustments(info, pet, petskill, target, xi.attackType.PHYSICAL, xi.damageType.SLASHING, numhits)
 
-    local info = xi.mobskills.mobPhysicalMove(pet, target, petskill, action, params)
+    target:takeDamage(totaldamage, pet, xi.attackType.PHYSICAL, xi.damageType.SLASHING)
+    target:updateEnmityFromDamage(pet, totaldamage)
 
-    if xi.mobskills.processDamage(pet, target, petskill, action, info) then
-        target:takeDamage(info.damage, pet, info.attackType, info.damageType)
-    end
-
-    return info.damage
+    return totaldamage
 end
 
 return abilityObject

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/effect_overwrite.codegen.json",
+  "description": "GENERATED from data/enums/effect_overwrite.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "equal_higher",
+    "higher",
+    "never",
+    "always",
+    "ignore_duplicate",
+    "tier_higher"
+  ]
+}

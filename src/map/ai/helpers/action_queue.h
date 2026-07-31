@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -22,60 +22,69 @@
 #ifndef _ACTIONQUEUE_H
 #define _ACTIONQUEUE_H
 
+#include "common/cbasetypes.h"
+#include "common/mmo.h"
 #include "common/timer.h"
-
-#include "common/types/fn.h"
-#include "common/types/heap.h"
+#include <functional>
+#include <memory>
+#include <queue>
 
 class CBaseEntity;
 
 struct queueAction_t
 {
-    // Move-only: queued actions can capture move-only state, and pushing/popping
-    // moves the callable instead of copying it.
-    using EntityFunc_t = Fn<void(CBaseEntity*)>;
+    using EntityFunc_t = std::function<void(CBaseEntity*)>;
 
-    timer::time_point deadline;
+    timer::time_point start_time{ timer::now() };
+    timer::duration   delay{ 0ms };
     bool              checkState{ false };
     EntityFunc_t      func{};
 
-    queueAction_t(timer::duration _ms, bool _checkstate, EntityFunc_t _func)
-    : deadline(timer::now() + _ms)
+    queueAction_t(timer::duration _ms, bool _checkstate, std::function<void(CBaseEntity*)> _func)
+    : delay(_ms)
     , checkState(_checkstate)
-    , func(std::move(_func))
+    , func(_func)
     {
     }
 };
 
-// Min-heap ordering: the action with the soonest deadline is at the top.
-struct QueueActionDeadlineGreater
+inline bool operator<(const queueAction_t& lhs, const queueAction_t& rhs) noexcept
 {
-    bool operator()(const queueAction_t& lhs, const queueAction_t& rhs) const noexcept
-    {
-        return lhs.deadline > rhs.deadline;
-    }
-};
+    return lhs.start_time + lhs.delay < rhs.start_time + rhs.delay;
+}
+inline bool operator>(const queueAction_t& lhs, const queueAction_t& rhs) noexcept
+{
+    return rhs < lhs;
+}
+inline bool operator<=(const queueAction_t& lhs, const queueAction_t& rhs) noexcept
+{
+    return !(lhs > rhs);
+}
+inline bool operator>=(const queueAction_t& lhs, const queueAction_t& rhs) noexcept
+{
+    return !(lhs < rhs);
+}
 
 class CAIActionQueue
 {
 public:
-    explicit CAIActionQueue(CBaseEntity*);
+    CAIActionQueue(CBaseEntity*);
 
     void pushAction(queueAction_t&&);
     void checkAction(timer::time_point tick);
 
-    void clearActionQueue();
-    void clearTimerQueue();
-    bool isEmpty() const;
-
-private:
     void handleAction(queueAction_t& action);
 
-    using ActionHeap_t = Heap<queueAction_t, QueueActionDeadlineGreater>;
+    void clearActionQueue();
+    void clearTimerQueue();
+    bool isEmpty();
+
+private:
+    using ActionPQ_t = std::priority_queue<queueAction_t, std::vector<queueAction_t>, std::greater<queueAction_t>>;
 
     CBaseEntity* PEntity;
-    ActionHeap_t actionQueue;
-    ActionHeap_t timerQueue;
+    ActionPQ_t   actionQueue;
+    ActionPQ_t   timerQueue;
 };
 
 #endif

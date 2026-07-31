@@ -33,6 +33,10 @@ xi.settings.map =
     -- Game settings
     -- --------------------------------
 
+    -- PacketGuard will block and report any packets that aren't in the allow-list for a
+    -- player's current state.
+    PACKETGUARD_ENABLED = true,
+
     -- Minimal number of 0x3A packets which uses for detect lightluggage (set 0 for disable)
     LIGHTLUGGAGE_BLOCK = 4,
 
@@ -209,7 +213,8 @@ xi.settings.map =
     -- Adjust the recast time for abilities. Acts as a multiplier, so default is 1
     ABILITY_RECAST_MULTIPLIER = 1.0,
 
-    -- Maximum spell recast reduction percentage. Current retail is 80. Older eras used 50.
+    -- Spell recast reduction cap (percent of base cast time you may shave off). Retail caps net reduction at 80%
+    -- (see SCH Alacrity / Celerity, grimoire); minimum recast floor uses this in battleutils::CalculateSpellRecastTime.
     SPELL_RECAST_REDUCTION_CAP = 80,
 
     -- Enable/disable shared blood pact timer
@@ -290,7 +295,7 @@ xi.settings.map =
     AUDIT_PLAYER_DBOX   = false,
     AUDIT_PLAYER_VENDOR = false,
 
-    -- Maximum number of in-flight items (slots) allowed in a player's delivery box for PC-to-PC transfers.
+    -- Maximum number of in-flight items allowed in a player's delivery box for PC-to-PC transfers.
     DELIVERY_BOX_MAX_INFLIGHT = 128,
 
     -- Seconds between healing ticks. Default is 10

@@ -8,33 +8,36 @@ zones[xi.zone.KING_RANPERRES_TOMB] =
     text =
     {
         CONQUEST_BASE                 = 0,     -- Tallying conquest results...
-        ITEM_CANNOT_BE_OBTAINED       = 6545,  -- You cannot obtain the <item>. Come back after sorting your inventory.
-        ITEM_OBTAINED                 = 6553,  -- Obtained: <item>.
-        GIL_OBTAINED                  = 6554,  -- Obtained <number> gil.
-        KEYITEM_OBTAINED              = 6556,  -- Obtained key item: <keyitem>.
-        FELLOW_MESSAGE_OFFSET         = 6582,  -- I'm ready. I suppose.
-        CARRIED_OVER_POINTS           = 7164,  -- You have carried over <number> login point[/s].
-        LOGIN_CAMPAIGN_UNDERWAY       = 7165,  -- The [/January/February/March/April/May/June/July/August/September/October/November/December] <number> Login Campaign is currently underway!
-        LOGIN_NUMBER                  = 7166,  -- In celebration of your most recent login (login no. <number>), we have provided you with <number> points! You currently have a total of <number> points.
-        GEOMAGNETRON_ATTUNED          = 7175,  -- Your <keyitem> has been attuned to a geomagnetic fount in the corresponding locale.
-        MEMBERS_LEVELS_ARE_RESTRICTED = 7186,  -- Your party is unable to participate because certain members' levels are restricted.
-        HERE_LIES_KING_RANPERRE       = 7269,  -- Here lies King Ranperre. May he rest in peace.
-        NOTHING_HAPPENS               = 7271,  -- Nothing happens.
-        CHANGE_WATER                  = 7272,  -- You change the water.
-        WATER_ALREADY_CHANGED         = 7273,  -- The water has already been changed.
-        ALREADY_WATER_HERE            = 7274,  -- There is already water here.
-        WATERSKIN_LYING_HERE          = 7275,  -- A waterskin is lying here.
-        CHEST_UNLOCKED                = 7302,  -- You unlock the chest!
-        SENSE_SOMETHING_EVIL          = 7329,  -- You sense something evil.
-        HEAVY_DOOR                    = 7330,  -- It is a solid stone door.
-        FINAL_RESTING_PLACE           = 7334,  -- It appears to be the true resting place of King Ranperre.
-        PLAYER_OBTAINS_ITEM           = 8268,  -- <name> obtains <item>!
-        UNABLE_TO_OBTAIN_ITEM         = 8269,  -- You were unable to obtain the item.
-        PLAYER_OBTAINS_TEMP_ITEM      = 8270,  -- <name> obtains the temporary item: <item>!
-        ALREADY_POSSESS_TEMP          = 8271,  -- You already possess that temporary item.
-        NO_COMBINATION                = 8276,  -- You were unable to enter a combination.
-        REGIME_REGISTERED             = 10354, -- New training regime registered!
-        COMMON_SENSE_SURVIVAL         = 11441, -- It appears that you have arrived at a new survival guide provided by the Adventurers' Mutual Aid Network. Common sense dictates that you should now be able to teleport here from similar tomes throughout the world.
+        ITEM_CANNOT_BE_OBTAINED       = 6544,  -- You cannot obtain the <item>. Come back after sorting your inventory.
+        ITEM_OBTAINED                 = 6550,  -- Obtained: <item>.
+        GIL_OBTAINED                  = 6551,  -- Obtained <number> gil.
+        KEYITEM_OBTAINED              = 6553,  -- Obtained key item: <keyitem>.
+        NOTHING_OUT_OF_ORDINARY       = 6564,  -- There is nothing out of the ordinary here.
+        FELLOW_MESSAGE_OFFSET         = 6579,  -- I'm ready. I suppose.
+        CARRIED_OVER_POINTS           = 7161,  -- You have carried over <number> login point[/s].
+        LOGIN_CAMPAIGN_UNDERWAY       = 7162,  -- The [/January/February/March/April/May/June/July/August/September/October/November/December] <number> Login Campaign is currently underway!
+        LOGIN_NUMBER                  = 7163,  -- In celebration of your most recent login (login no. <number>), we have provided you with <number> points! You currently have a total of <number> points.
+        GEOMAGNETRON_ATTUNED          = 7172,  -- Your <keyitem> has been attuned to a geomagnetic fount in the corresponding locale.
+        MEMBERS_LEVELS_ARE_RESTRICTED = 7183,  -- Your party is unable to participate because certain members' levels are restricted.
+        HERE_LIES_KING_RANPERRE       = 7266,  -- Here lies King Ranperre. May he rest in peace.
+        NOTHING_HAPPENS               = 7268,  -- Nothing happens.
+        CHANGE_WATER                  = 7269,  -- You change the water.
+        WATER_ALREADY_CHANGED         = 7270,  -- The water has already been changed.
+        ALREADY_WATER_HERE            = 7271,  -- There is already water here.
+        WATERSKIN_LYING_HERE          = 7272,  -- A waterskin is lying here.
+        CHEST_UNLOCKED                = 7299,  -- You unlock the chest!
+        SENSE_SOMETHING_EVIL          = 7326,  -- You sense something evil.
+        HEAVY_DOOR                    = 7327,  -- It is a solid stone door.
+        FINAL_RESTING_PLACE           = 7331,  -- It appears to be the true resting place of King Ranperre.
+        ITEMS_ITEMS_LA_LA             = 7332,  -- You can hear a strange voice... Items, items, la la la la la
+        GOBLIN_SLIPPED_AWAY           = 7338,  -- The Goblin slipped away when you were not looking...
+        PLAYER_OBTAINS_ITEM           = 8265,  -- <name> obtains <item>!
+        UNABLE_TO_OBTAIN_ITEM         = 8266,  -- You were unable to obtain the item.
+        PLAYER_OBTAINS_TEMP_ITEM      = 8267,  -- <name> obtains the temporary item: <item>!
+        ALREADY_POSSESS_TEMP          = 8268,  -- You already possess that temporary item.
+        NO_COMBINATION                = 8273,  -- You were unable to enter a combination.
+        REGIME_REGISTERED             = 10351, -- New training regime registered!
+        COMMON_SENSE_SURVIVAL         = 11438, -- It appears that you have arrived at a new survival guide provided by the Adventurers' Mutual Aid Network. Common sense dictates that you should now be able to teleport here from similar tomes throughout the world.
     },
     mob =
     {
@@ -50,7 +53,9 @@ zones[xi.zone.KING_RANPERRES_TOMB] =
     },
     npc =
     {
-        TREASURE_CHEST = GetFirstID('Treasure_Chest'),
+        TREASURE_CHEST       = GetFirstID('Treasure_Chest'),
+        -- Cutscene dragoon (San d'Oria M6-2); must match sql/npc_list.sql for zone 190
+        LEAUTE_CS_ACTOR_ID = 17556002,
     },
 }
 

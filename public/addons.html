@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Addons - PegasusXI | PegasusXI</title>
+  <meta name="description" content="PegasusXI approved and prohibited addons for Ashita and Windower" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Force header layout on live (overrides cached/different CSS) */
+    header .nav { display: flex !important; flex-wrap: nowrap !important; align-items: center !important; }
+    header .brand-wrap { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: center !important; gap: 8px !important; }
+    header .brand-icon { width: 48px !important; height: 48px !important; max-width: 48px !important; max-height: 48px !important; display: block !important; object-fit: contain !important; }
+    header nav ul { display: flex !important; flex-wrap: nowrap !important; flex-direction: row !important; align-items: center !important; }
+    header .nav-dropdown { display: flex !important; flex-direction: column !important; align-items: flex-start !important; }
+    header .nav-dropdown .dropdown-menu { display: block !important; position: absolute !important; top: 100% !important; left: 0 !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+    header .nav-dropdown:hover .dropdown-menu, header .nav-dropdown.open .dropdown-menu { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+    header .nav-dropdown .dropdown-menu li { display: block !important; width: 100% !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="nav">
+        <div class="brand-wrap">
+          <a class="brand" href="index.html" aria-label="PegasusXI Home">
+            <img src="images/icon.png" alt="PegasusXI" class="brand-icon" width="48" height="48" />
+          </a>
+          <a class="brand-play" href="play-now.html">Play Now</a>
+        </div>
+        <nav aria-label="Primary"><ul>
+          <li class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">About <span class="chevron" aria-hidden="true">▼</span></button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="server-info.html">Server Info</a></li>
+              <li><a href="addons.html">Addons</a></li>
+            </ul>
+          </li>
+          <li><a href="rules.html">Rules</a></li>
+          <li><a href="news.html">News</a></li>
+          <li class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">Tools <span class="chevron" aria-hidden="true">▼</span></button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="players.html">Players</a></li>
+              <li><a href="seeking.html">Seeking</a></li>
+              <li><a href="items.html">Items</a></li>
+              <li><a href="bazaar.html">Bazaar</a></li>
+              <li><a href="bcnm-ranking.html">BCNM Ranking</a></li>
+              <li><a href="wiki.html">Wiki</a></li>
+              <li><a href="yells.html">Yells</a></li>
+            </ul>
+          </li>
+        </ul></nav>
+        <div class="nav-right">
+          <div id="navStatus" class="nav-status" aria-live="polite">
+            <span class="dot ok"></span><span class="nav-status-text">— Online</span>
+          </div>
+          <span class="nav-game-icon" aria-hidden="true"></span>
+          <span class="nav-sep" aria-hidden="true"></span>
+          <a class="nav-link" href="login.html">Login</a>
+          <a class="nav-link" href="register.html">Register</a>
+          <button class="btn hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">Menu</button>
+        </div>
+      </div>
+      <div id="mobileMenu" class="mobile-menu" aria-label="Mobile navigation" style="display:none">
+        <a href="server-info.html">Server Info</a>
+        <a href="addons.html">Addons</a>
+        <a href="rules.html">Rules</a>
+        <a href="news.html">News</a>
+        <a href="players.html">Players</a>
+        <a href="seeking.html">Seeking</a>
+        <a href="items.html">Items</a>
+        <a href="bazaar.html">Bazaar</a>
+        <a href="bcnm-ranking.html">BCNM Ranking</a>
+        <a href="wiki.html">Wiki</a>
+        <a href="yells.html">Yells</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 18px 0 0;">
+    <section class="card pad">
+      <h1 class="h1">Addons</h1>
+      <h2 class="sub" style="font-size:16px; margin:0 0 12px;">PegasusXI Approved Addons and Plugins</h2>
+      <p class="sub">
+        As per the Server Rules, the only permissible addons that adventurers may utilize are those listed under the Approved Addons lists (found below) for either Ashita or Windower. For the sake of transparency, we have also listed all of the addons that PegasusXI staff have reviewed and deemed prohibited. That said, unlisted addons should be considered prohibited and the use of said addons is punishable.
+      </p>
+      <p class="sub">
+        PegasusXI staff recognize that there may be new, unlisted addons that adventurers would like to have reviewed for potential approval. This process is outlined below.
+      </p>
+
+      <div class="addon-callout">
+        <strong>Addon Approval Requests</strong><br />
+        If an adventurer would like to request that PegasusXI staff review an unlisted addon for potential approval, the adventurer can submit a ticket via the Addon Request Ticket found in the <a href="https://discord.gg/DZC7RM9y" target="_blank" rel="noopener">#support channel on our Discord</a>. Please note that any custom addons submitted for review must be publicly hosted. Additionally, please allow up to one week (7 days) for review. Tickets regarding addons already listed as approved or prohibited will be closed.
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="addon-section">
+        <h3>Ashita – Approved Addons</h3>
+        <ul class="addon-list">
+          <li>ZoneTimer</li>
+          <li>ZoneName</li>
+          <li>Zoom</li>
+          <li>Yield</li>
+          <li>Xivui <span class="note">(use at your own risk, known to be crash prone)</span></li>
+          <li>XivHotbar2</li>
+          <li>XIVHotbar</li>
+          <li>Xivbar</li>
+          <li>XITools (including cast, craft, fishe, inv, me, pet, tgt, tracker, treas, us, and week)</li>
+          <li>Xipivot</li>
+          <li>XivParty</li>
+          <li>XIChats</li>
+          <li>Xicamera</li>
+          <li>WhoGot</li>
+          <li>Watchexp</li>
+          <li>tTimers</li>
+          <li>TreasurePool</li>
+          <li>Translataru</li>
+          <li>Tparty</li>
+          <li>Toon</li>
+          <li>Timers</li>
+          <li>Timestamp</li>
+          <li>Ticker</li>
+          <li>tHotBar</li>
+          <li>tCrossbar</li>
+          <li>Targetlines</li>
+          <li>TargetInfo</li>
+          <li>Stylist</li>
+          <li>Stfu</li>
+          <li>Statustimers</li>
+          <li>Status</li>
+          <li>Skillchains</li>
+          <li>Skillchain</li>
+          <li>Singlerace</li>
+          <li>Simplelog</li>
+          <li>Shorthand <span class="note">(using this add-on to claim monsters or using shorthand in a manner that gives a player an unfair advantage is forbidden)</span></li>
+          <li>Sexchange</li>
+          <li>Sequencer</li>
+          <li>Scoreboard</li>
+          <li>RSVP</li>
+          <li>Rest</li>
+          <li>Recast</li>
+          <li>Rcheck</li>
+          <li>Quicksets</li>
+          <li>PriceCheck</li>
+          <li>Points</li>
+          <li>PlayerInfo</li>
+          <li>PetMe</li>
+          <li>Petinfo (including the updated PetInfo by Ayechonk)</li>
+          <li>Pbar</li>
+          <li>Partybuffs</li>
+          <li>Parse</li>
+          <li>Packrat</li>
+          <li>Packetflow <span class="note">(known to cause odd issues, use at your own risk)</span></li>
+          <li>NoName</li>
+          <li>NoMount</li>
+          <li>Nolock</li>
+          <li>Nocombat</li>
+          <li>NinjaTool <span class="note">(provided it is never modified to automate the elemental wheel or stepping up/down between Ichi/Ni spells)</span></li>
+          <li>Nameplate</li>
+          <li>Namecolors</li>
+          <li>Move</li>
+          <li>Mountmuzzle</li>
+          <li>MobDB</li>
+          <li>Mipmap</li>
+          <li>Minimapmon</li>
+          <li>Minimap-helper</li>
+          <li>Minimap</li>
+          <li>Metrics</li>
+          <li>Meteorologist</li>
+          <li>Mapdot</li>
+          <li>MacroMaster</li>
+          <li>Macrofix</li>
+          <li>Luashitacast</li>
+          <li>lschat</li>
+          <li>Lootz</li>
+          <li>Logger</li>
+          <li>Logincmd</li>
+          <li>Logs</li>
+          <li>Links</li>
+          <li>Legacyac</li>
+          <li>Kparser</li>
+          <li>Itemwatch</li>
+          <li>InventoryCounter</li>
+          <li>InvTracker</li>
+          <li>InstantChat <span class="note">(use at own risk, known to be crash prone)</span></li>
+          <li>Instantah</li>
+          <li>Imguistyle</li>
+          <li>Ime</li>
+          <li>Ibar</li>
+          <li>HXIFish</li>
+          <li>HXIClam</li>
+          <li>Hush</li>
+          <li>HTicks</li>
+          <li>HitPoints</li>
+          <li>Hideparty</li>
+          <li>Hideconsole</li>
+          <li>HGather</li>
+          <li>Hardwaremouse</li>
+          <li>GlamourUI</li>
+          <li>Giltracker</li>
+          <li>Gearlock</li>
+          <li>GearFinder</li>
+          <li>GBinder</li>
+          <li>Fps</li>
+          <li>FishingInfo</li>
+          <li>Fishaid</li>
+          <li>Findall</li>
+          <li>Find</li>
+          <li>Filters</li>
+          <li>Filterless</li>
+          <li>Fillmode <span class="note">(players are not allowed to initiate actions that would be impossible without using fillmode)</span></li>
+          <li>Fastswap</li>
+          <li>FastCS</li>
+          <li>Fadeout</li>
+          <li>Expmon</li>
+          <li>EventTracker</li>
+          <li>Equipmon</li>
+          <li>Equipviewer</li>
+          <li>Enternity</li>
+          <li>ENMs</li>
+          <li>EnemyBuffs</li>
+          <li>emotes</li>
+          <li>Duration</li>
+          <li>Drawdistance</li>
+          <li>Don't Drop The Soap</li>
+          <li>DKPBids</li>
+          <li>Distance</li>
+          <li>DiscordRPC</li>
+          <li>DigDig</li>
+          <li>Deeps</li>
+          <li>Debuffed</li>
+          <li>Customhud</li>
+          <li>CurrentTime</li>
+          <li>CTimers</li>
+          <li>Crosshair</li>
+          <li>Crossbar</li>
+          <li>Craftmon</li>
+          <li>Cosplay</li>
+          <li>ConsolidatedUI (also known as "HXUI")</li>
+          <li>Config</li>
+          <li>ClockVana</li>
+          <li>Clock</li>
+          <li>Clearpartybars</li>
+          <li>CleanCS</li>
+          <li>Clammy</li>
+          <li>Claimbar</li>
+          <li>Checker</li>
+          <li>Chatmon <span class="note">(only approved in its default script state)</span></li>
+          <li>Changecall</li>
+          <li>Chaintimer</li>
+          <li>Chains (HorizonXI Edition)</li>
+          <li>Chains</li>
+          <li>Cfhblock</li>
+          <li>calc</li>
+          <li>BigMode</li>
+          <li>Battlemod</li>
+          <li>Barfiller <span class="note">(use at your own risk, known to cause crashes)</span></li>
+          <li>Balloon</li>
+          <li>AutoFPS</li>
+          <li>Attendance</li>
+          <li>Aspect</li>
+          <li>ASCII-Joy</li>
+          <li>AshitaFishAid</li>
+          <li>Ashitacast</li>
+          <li>Antiemote</li>
+          <li>Allmaps</li>
+        </ul>
+      </div>
+
+      <div class="addon-section">
+        <h3>Ashita – Prohibited Addons</h3>
+        <ul class="addon-list">
+          <li>XITools (specifically the Wheel component)</li>
+          <li>Windowerinput</li>
+          <li>Widescantool</li>
+          <li>Wheel (part of XITools)</li>
+          <li>Watchdog</li>
+          <li>TrueSight</li>
+          <li>Trade</li>
+          <li>Tellaphone</li>
+          <li>Synplicity</li>
+          <li>Stepdown</li>
+          <li>SkillWatch</li>
+          <li>Skeletonkey</li>
+          <li>Servo</li>
+          <li>SendTarget</li>
+          <li>Scenthound</li>
+          <li>RFKAway (and related forks)</li>
+          <li>Repeater</li>
+          <li>Repeat</li>
+          <li>Pull</li>
+          <li>pirates</li>
+          <li>Peekaboo</li>
+          <li>PartyPull</li>
+          <li>Paranormal</li>
+          <li>Packer</li>
+          <li>OnEvent</li>
+          <li>NpcIt</li>
+          <li>Nomad</li>
+          <li>nokb</li>
+          <li>No-ckback</li>
+          <li>NinjaCast</li>
+          <li>Multisend</li>
+          <li>MobAbility</li>
+          <li>Lotomatic</li>
+          <li>Lootwhore</li>
+          <li>LootTable</li>
+          <li>ja0wait, or any addon that functions similarly (bypassing animation lock for abilities)</li>
+          <li>Herald</li>
+          <li>Helmscan</li>
+          <li>HasteCancelBlock</li>
+          <li>Gmcommand</li>
+          <li>Gateway</li>
+          <li>EnemyCastBar</li>
+          <li>FinalAlert</li>
+          <li>Filterscan</li>
+          <li>FFXIFocusTarget</li>
+          <li>Fastfollow</li>
+          <li>Debuff (Cancel is not allowed)</li>
+          <li>Dats</li>
+          <li>Crafty</li>
+          <li>cookiemonster</li>
+          <li>CombatMessages</li>
+          <li>Chamcham</li>
+          <li>Casper</li>
+          <li>Capture addons (all)</li>
+          <li>Captain</li>
+          <li>ButterFeet</li>
+          <li>BoxDestroyer</li>
+          <li>Bellhop</li>
+          <li>Autorespond</li>
+          <li>Autojoin</li>
+          <li>Auctioneer</li>
+          <li>ApRadar</li>
+          <li>Alertaru</li>
+          <li>Ahgo</li>
+        </ul>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="addon-section">
+        <h3>Windower – Approved Addons</h3>
+        <ul class="addon-list">
+          <li>Zonetimer</li>
+          <li>Zonename</li>
+          <li>Xipivot</li>
+          <li>xivpetbar</li>
+          <li>XivParty</li>
+          <li>XivHotbar2</li>
+          <li>Xivhotbar</li>
+          <li>Xivcrossbar</li>
+          <li>Xicamera</li>
+          <li>Wireframe <span class="note">(players are not allowed to initiate actions that would be impossible without using wireframe)</span></li>
+          <li>WinControl</li>
+          <li>VisibleFavor</li>
+          <li>Update</li>
+          <li>TreasurePool</li>
+          <li>Translate</li>
+          <li>TParty</li>
+          <li>Timestamp</li>
+          <li>Timers</li>
+          <li>Tickle</li>
+          <li>TargetInfo</li>
+          <li>Targetbar</li>
+          <li>Stopwatch</li>
+          <li>SpellChecker</li>
+          <li>SpeedChecker</li>
+          <li>Skillchains</li>
+          <li>Shorthand <span class="note">(using to claim monsters or unfair advantage is forbidden)</span></li>
+          <li>Shortcuts</li>
+          <li>Silence</li>
+          <li>Sh_tlist</li>
+          <li>SetBGM</li>
+          <li>Search</li>
+          <li>Scoreboard</li>
+          <li>ruptchat</li>
+          <li>Revisible</li>
+          <li>Porter</li>
+          <li>Pointwatch</li>
+          <li>Plugin Manager</li>
+          <li>PetTP</li>
+          <li>PartyHints</li>
+          <li>Partybuffs</li>
+          <li>Parse</li>
+          <li>Nostrum</li>
+          <li>MobLevel</li>
+          <li>MacroChanger</li>
+          <li>Lookup</li>
+          <li>Logger</li>
+          <li>Linker</li>
+          <li>Kparser</li>
+          <li>Juggler</li>
+          <li>InventoryCounter</li>
+          <li>InvTracker</li>
+          <li>InstaLS</li>
+          <li>InfoBar</li>
+          <li>hxigather</li>
+          <li>hxiclam</li>
+          <li>Highlight</li>
+          <li>Giltracker</li>
+          <li>GearSwap</li>
+          <li>Gametime</li>
+          <li>ffxifeesh</li>
+          <li>Ffxidb</li>
+          <li>Findall</li>
+          <li>FastCS</li>
+          <li>Expmon</li>
+          <li>EraMobDrops</li>
+          <li>Equipviewer</li>
+          <li>Enternity</li>
+          <li>EnemyList</li>
+          <li>Enemybarbasic</li>
+          <li>EnemyBar</li>
+          <li>Dressup</li>
+          <li>DParty</li>
+          <li>DistancePlus</li>
+          <li>Distance</li>
+          <li>Digger</li>
+          <li>DelayMeNot</li>
+          <li>Debuffed</li>
+          <li>CTimers</li>
+          <li>ConsoleBG</li>
+          <li>Config</li>
+          <li>Clock</li>
+          <li>Chatmon <span class="note">(only approved in its default script state)</span></li>
+          <li>ChatLink</li>
+          <li>Chars</li>
+          <li>CellHelp</li>
+          <li>Blist</li>
+          <li>BitsXP</li>
+          <li>Battlestations</li>
+          <li>Battlemod</li>
+          <li>Barfiller <span class="note">(use at your own risk, known to cause crashes)</span></li>
+          <li>Balloon Story Addon</li>
+          <li>Attendance</li>
+          <li>Allmaps</li>
+        </ul>
+      </div>
+
+      <div class="addon-section">
+        <h3>Windower – Prohibited Addons</h3>
+        <ul class="addon-list">
+          <li>Yush</li>
+          <li>WarnMe</li>
+          <li>VWHL</li>
+          <li>Voidwatch</li>
+          <li>UNM2.0</li>
+          <li>UnityNPC</li>
+          <li>Treasury</li>
+          <li>TradeNPC</li>
+          <li>Trade</li>
+          <li>THTracker</li>
+          <li>Text</li>
+          <li>Temps</li>
+          <li>Superwarp</li>
+          <li>SubTarget</li>
+          <li>STNA</li>
+          <li>Sparks</li>
+          <li>Smeagol</li>
+          <li>Shopper</li>
+          <li>Send</li>
+          <li>SellNPC</li>
+          <li>Roller</li>
+          <li>Rhombus</li>
+          <li>Respond</li>
+          <li>Reive</li>
+          <li>React</li>
+          <li>RAWR</li>
+          <li>QuickTrade</li>
+          <li>Quetz</li>
+          <li>Pouches</li>
+          <li>Plasmon</li>
+          <li>Organizer</li>
+          <li>Omen</li>
+          <li>OhShi</li>
+          <li>ObiAway</li>
+          <li>Naga</li>
+          <li>MobCompass</li>
+          <li>Maga</li>
+          <li>LatentChecker</li>
+          <li>JobChange</li>
+          <li>ja0wait, or any addon that functions similarly (bypassing animation lock for abilities)</li>
+          <li>Itemizer</li>
+          <li>InfoReplacer</li>
+          <li>FinalAlert</li>
+          <li>Fisher</li>
+          <li>FFXItargeter</li>
+          <li>FFXIFocusTarget</li>
+          <li>Eval</li>
+          <li>EnemyCastBar</li>
+          <li>EnemyBar2</li>
+          <li>EasyFarm-master</li>
+          <li>DynamisHelper</li>
+          <li>CurePlease</li>
+          <li>Craft</li>
+          <li>CombatMessages</li>
+          <li>ChatPorter</li>
+          <li>CapeTrader</li>
+          <li>Cancel</li>
+          <li>BoxDestroyer</li>
+          <li>Bidder</li>
+          <li>Azi</li>
+          <li>AutoRA</li>
+          <li>AutoJoin</li>
+          <li>AutoInvite</li>
+          <li>Autoenterkey</li>
+          <li>AutoControl</li>
+          <li>AuctionHelper</li>
+          <li>ApRadar</li>
+          <li>AnsweringMachine</li>
+          <li>AnnounceTarget</li>
+          <li>Anchor</li>
+          <li>AEcho</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <div id="siteFooter"></div>
+  <script src="app.js"></script>
+</body>
+</html>

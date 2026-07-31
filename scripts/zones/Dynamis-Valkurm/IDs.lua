@@ -139,18 +139,18 @@ zones[xi.zone.DYNAMIS_VALKURM] =
     {
         QM =
         {
-            -- [16937586] =
-            -- {
-            --     param = { 3456, 3470, 3471, 3472, 3473 },
-            --     trade =
-            --     {
-            --         { item = 3456,                     mob = 16936961 }, -- Cirrate Christelle
-            --         { item = { 3470, 3471, 3472, 3473 }, mob = 16937290 }, -- Arch Christelle
-            --     }
-            -- },
-            -- [16937587] = { trade = { { item = 3461, mob = 16937311 } } }, -- Lost Nant'ina
-            -- [16937588] = { trade = { { item = 3460, mob = 16937432 } } }, -- Lost Fairy Ring
-            -- [16937589] = { trade = { { item = 3462, mob = 16937415 } } }, -- Lost Stcemqestcint
+            [16937586] =
+            {
+                param = { 3456, 3470, 3471, 3472, 3473 },
+                trade =
+                {
+                    { item = 3456,                     mob = 16936961 }, -- Cirrate Christelle (creeper's juju)
+                    { item = { 3470, 3471, 3472, 3473 }, mob = 16937290 }, -- Arch Christelle (Fiendish Tome II ch.1–4)
+                },
+            },
+            [16937587] = { trade = { { item = 3461, mob = 16937311 } } }, -- Lost Nant'ina (nightmare bud)
+            [16937588] = { trade = { { item = 3460, mob = 16937432 } } }, -- Lost Fairy Ring (nightmare log)
+            [16937589] = { trade = { { item = 3462, mob = 16937415 } } }, -- Lost Stcemqestcint (nightmare water)
         },
     },
 }

@@ -11,8 +11,6 @@ mixins =
 ---@type TMobEntity
 local entity = {}
 
-entity.onMobSpawn = function(mob)
-    xi.dynamis.mobInfo(mob)
-end
+-- Retail (BG-Wiki Dynamis - Jeuno): Odious Grenade on this job via mob_groups drop table; not a PH for a timed Goblin NM.
 
 return entity

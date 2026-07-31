@@ -1,11 +1,14 @@
 -----------------------------------
 -- Chronoshift
+-- Avatar: Atomos only
 -----------------------------------
 ---@type TAbilityPet
 local abilityObject = {}
 
 abilityObject.onAbilityCheck = function(player, target, ability)
-    return 0, 0
+    -- Chronoshift is automatically performed by Atomos when summoned.
+    -- It cannot be triggered manually under any circumstances.
+    return xi.msg.basic.UNABLE_TO_USE_JA2, 0
 end
 
 abilityObject.onPetAbility = function(target, pet, petskill, summoner, action)

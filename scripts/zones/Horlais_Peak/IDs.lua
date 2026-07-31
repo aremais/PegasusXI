@@ -53,7 +53,8 @@ zones[xi.zone.HORLAIS_PEAK] =
     },
     mob =
     {
-        ARMSMASTER_DEKBUK       = GetFirstID('Armsmaster_Dekbuk'),
+        ARMSMASTER_DEKBUK       = GetFirstID('Armsmaster_Dekbuk'), -- Tier I  BCNM60
+        ARMSMASTER_DEKBUK_II    = 17346927,                        -- Tier II SKCNM (level 110)
         ATORI_TUTORI            = GetFirstID('Atori-Tutori_qm'),
         DAROKBOK_OF_CLAN_REAPER = GetFirstID('Darokbok_of_Clan_Reaper'),
         HELLTAIL_HARRY          = GetFirstID('Helltail_Harry'),

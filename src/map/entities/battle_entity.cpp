@@ -3133,8 +3133,10 @@ void CBattleEntity::OnMobSkillFinished(CMobSkillState& state, action_t& action)
         }
     };
 
-    // Process self first if present in targets
-    if (selfTarget)
+    const bool offensiveMobSkill = (PSkill->getValidTargets() & TARGET_ENEMY) != 0;
+
+    // Process self first if present in targets for non-offensive skills only.
+    if (selfTarget && !offensiveMobSkill)
     {
         processTarget(selfTarget);
     }

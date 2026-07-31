@@ -1,8 +1,6 @@
 -----------------------------------
 -- Zone: Open_sea_route_to_Mhaura (47)
 -----------------------------------
-local ID = zones[xi.zone.OPEN_SEA_ROUTE_TO_MHAURA]
------------------------------------
 ---@type TZone
 local zoneObject = {}
 
@@ -26,7 +24,7 @@ end
 
 zoneObject.onTransportEvent = function(player, prevZoneId, transportId)
     player:startEvent(1028)
-    player:messageSpecial(ID.text.DOCKING_IN_MHAURA)
+    player:printToPlayer('We are now docking in Mhaura.', xi.msg.channel.SYSTEM_3)
 end
 
 zoneObject.onEventUpdate = function(player, csid, option, npc)

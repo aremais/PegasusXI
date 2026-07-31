@@ -159,7 +159,11 @@ add_definitions(
 # For external libs
 set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
 
-option(PCH_ENABLE "Enable precompiled headers." ON)
+set(PCH_ENABLE_DEFAULT ON)
+if(MSVC)
+    set(PCH_ENABLE_DEFAULT OFF)
+endif()
+option(PCH_ENABLE "Enable precompiled headers." ${PCH_ENABLE_DEFAULT})
 message(STATUS "PCH_ENABLE: ${PCH_ENABLE}")
 
 # Tracy flags

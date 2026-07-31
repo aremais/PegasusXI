@@ -15,13 +15,19 @@ local content = BattlefieldQuest:new({
     index            = 1,
     entryNpc         = 'EP_Entrance',
     exitNpc          = 'Earth_Protocrystal',
-    requiredItems    = { xi.item.EARTH_PENDULUM, keep = true },
+    requiredItems    = { xi.item.EARTH_PENDULUM },
     requiredVar      = 'Quest[2][81]Prog',
     requiredValue    = 1,
 
     questArea = xi.questLog.WINDURST,
     quest     = xi.quest.id.windurst.THE_PUPPET_MASTER,
 })
+
+function content:onEventFinishWin(player, csid, option, npc)
+    if player:getVar('Quest[2][81]Prog') == 1 then
+        player:setVar('Quest[2][81]Prog', 2)
+    end
+end
 
 content.groups =
 {

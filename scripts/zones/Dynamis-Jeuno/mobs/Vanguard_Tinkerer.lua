@@ -17,7 +17,7 @@ entity.onMobSpawn = function(mob)
 end
 
 entity.onMobDespawn = function(mob)
-    xi.mob.phOnDespawn(mob, ID.mob.TYMEXOX_NINEFINGERS, 10, 1200) -- 20 minute cooldown and 10% lottery chance values ASSUMED same as Dynamis-Beaucedine/Xarcabard, needs final verification
+    xi.mob.phOnDespawn(mob, ID.mob.TYMEXOX_NINEFINGERS, xi.dynamis.jeunoTimedGoblinLottery.chancePercentScaled, xi.dynamis.jeunoTimedGoblinLottery.cooldownSeconds) -- timed Goblin NM (Roving Bijou); see xi.dynamis.jeunoTimedGoblinLottery / BG-Wiki Dynamis - Jeuno
 end
 
 return entity

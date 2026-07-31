@@ -10,7 +10,6 @@ return {
     ['Akta']                 = { event = 116 },
     ['Albiona']              = { event = 146 },
     ['Anoop']                = { event = 154 },
-    ['Archanne']             = { event = 10007 },
     ['Arenuel']              = { event = 120 },
     ['Auchefort']            = { event = 145 },
     ['Baran']                = { event = 150 },

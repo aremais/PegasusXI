@@ -7,6 +7,30 @@ require('scripts/events/login_campaign')
 require('scripts/quests/full_speed_ahead')
 -----------------------------------
 
+local eschaSiltZones =
+{
+    [xi.zone.ESCHA_ZITAH] = true,
+    [xi.zone.ESCHA_RUAUN] = true,
+    [xi.zone.REISENJIMA] = true,
+}
+
+local function addEschaSiltFromExperience(player, expGained)
+    if
+        expGained <= 0 or
+        not eschaSiltZones[player:getZoneID()]
+    then
+        return
+    end
+
+    local silt = math.floor(expGained * 0.01)
+
+    if silt > 0 then
+        player:addCurrency('escha_silt', silt)
+    end
+end
+
+-----------------------------------
+
 local startingRaceInfo =
 {
     [xi.race.HUME_M  ] = { gear = { body = xi.item.HUME_TUNIC,        hand = xi.item.HUME_M_GLOVES,     leg = xi.item.HUME_SLACKS,       feet = xi.item.HUME_M_BOOTS       }, homeNation = xi.nation.BASTOK   },
@@ -169,7 +193,26 @@ xi.player.onGameIn = function(player, firstLogin, zoning)
     end
 
     local zoneID    = player:getZoneID()
-    local questVars = player:getCharVarsWithSuffix(']mustZone')
+    local questVars = {}
+
+    -- Clear mustZone char vars when the player is in a different zone than recorded.
+    -- Names look like Quest[a][b]mustZone, Mission[a][b]mustZone, or legacy [a][b]mustZone / [qm1]mustZone.
+    -- Use prefix scans only: avoids depending on getCharVarsWithSuffix (some builds lacked the Lua binding).
+    local function addVarsEndingInMustZone(source)
+        if not source then
+            return
+        end
+
+        for tag, value in pairs(source) do
+            if type(tag) == 'string' and tag:sub(-9) == ']mustZone' then
+                questVars[tag] = value
+            end
+        end
+    end
+
+    addVarsEndingInMustZone(player:getCharVarsWithPrefix('Quest['))
+    addVarsEndingInMustZone(player:getCharVarsWithPrefix('Mission['))
+    addVarsEndingInMustZone(player:getCharVarsWithPrefix('['))
 
     for tag, value in pairs(questVars) do
         if value ~= zoneID then
@@ -243,16 +286,28 @@ xi.player.onGameIn = function(player, firstLogin, zoning)
         player:setGMHidden(true)
     end
 
+    -- Persist custom movement speed override configured by @aremais.
+    local permMoveSpeed = player:getCharVar('AremaisPermMoveSpeed')
+    if permMoveSpeed > 0 then
+        player:setMod(xi.mod.MOVE_SPEED_OVERRIDE, permMoveSpeed)
+        player:recalculateStats()
+    end
+
     -- remember time player zoned in (e.g., to support zone-in delays)
     player:setLocalVar('ZoneInTime', GetSystemTime())
     player:setLocalVar('ZoningIn', 1)
 
-    -- Slight delay to ensure player is fully logged in
-    player:timer(2500, function(playerArg)
-        player:setLocalVar('ZoningIn', 0)
-        -- Login Campaign rewards points once daily
-        xi.events.loginCampaign.onGameIn(playerArg)
-    end)
+    -- Clearing ZoningIn + login campaign after 2.5s is scheduled from C++ (luautils::OnGameIn) to avoid
+    -- sol::function timer crashes on some environments.
+
+    player:removeListener('ESCHA_SILT_EXP')
+    player:addListener(
+        'EXPERIENCE_POINTS',
+        'ESCHA_SILT_EXP',
+        function(playerObj, mobObj, expGained)
+            addEschaSiltFromExperience(playerObj, expGained)
+        end
+    )
 
     -- Enforce that gameLogin is always set to 0 once this method exits
     -- This assists with ensuring Abyssea visitant status is handled properly on logins

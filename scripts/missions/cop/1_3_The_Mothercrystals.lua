@@ -44,7 +44,7 @@ local shatteredTelepointOnTrigger = function(player, npc)
     then
         local zoneId = player:getZoneID()
 
-        player:setLocalVar('toPromyvion', xi.cop.helpers.shatteredTelepointInfo[zoneId][1])
+        mission:setVar(player, 'HallWarp', xi.cop.helpers.shatteredTelepointInfo[zoneId][1])
         return mission:progressEvent(xi.cop.helpers.shatteredTelepointInfo[zoneId][2] - 1)
     else
         return xi.cop.helpers.shatteredTelepointOnTrigger(mission, player, npc)
@@ -122,12 +122,11 @@ mission.sections =
 
             onZoneIn = function(player, prevZone)
                 if
-                    xi.cop.helpers.shatteredTelepointInfo[prevZone] ~= nil and
                     xi.cop.helpers.numPromyvionCompleted(player) == 2 and
                     not xi.cop.helpers.hasCompletedPromyvion(player, prevZone) and
                     mission:getVar(player, 'Status') == 0
                 then
-                    player:setLocalVar('toPromyvion', xi.cop.helpers.shatteredTelepointInfo[prevZone][1])
+                    mission:setVar(player, 'HallWarp', xi.cop.helpers.shatteredTelepointInfo[prevZone][1])
                     return 155
                 end
             end,
@@ -141,7 +140,17 @@ mission.sections =
                 [155] = function(player, csid, option, npc)
                     -- This event only happens once since there is no sealing component.
                     mission:setVar(player, 'Status', 1)
-                    xi.cop.helpers.sendToPromyvionZone(player, player:getLocalVar('toPromyvion'))
+
+                    local dest = mission:getVar(player, 'HallWarp')
+                    if dest == 0 then
+                        local info = xi.cop.helpers.shatteredTelepointInfo[player:getPreviousZone()]
+                        if info then
+                            dest = info[1]
+                        end
+                    end
+
+                    xi.cop.helpers.sendToPromyvionZone(player, dest)
+                    mission:setVar(player, 'HallWarp', 0)
                 end,
             },
         },

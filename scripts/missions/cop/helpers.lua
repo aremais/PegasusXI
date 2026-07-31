@@ -64,7 +64,12 @@ end
 
 xi.cop.helpers.sendToZoneOnFinish = function(player, csid, option, npc)
     if option == 0 then
-        xi.cop.helpers.sendToPromyvionZone(player, player:getLocalVar('toPromyvion'))
+        local copLog   = xi.mission.log_id.COP
+        local motherId = xi.mission.id.cop.THE_MOTHERCRYSTALS
+        local dest     = xi.mission.getVar(player, copLog, motherId, 'HallWarp')
+
+        xi.cop.helpers.sendToPromyvionZone(player, dest)
+        xi.mission.setVar(player, copLog, motherId, 'HallWarp', 0)
     end
 end
 

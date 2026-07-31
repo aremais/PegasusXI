@@ -19,6 +19,8 @@ zoneObject.onZoneIn = function(player, prevZone)
         player:setPos(position, -2.100, 3.250, 64)
     end
 
+    xi.pirates.onZoneIn(player)
+
     return cs
 end
 

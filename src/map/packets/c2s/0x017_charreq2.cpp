@@ -21,98 +21,22 @@
 
 #include "0x017_charreq2.h"
 
-#include "common/utils.h"
-
-#include <algorithm>
-#include <array>
-
 #include "entities/char_entity.h"
-#include "packets/char_sync.h"
-#include "packets/char_update.h"
-#include "utils/zoneutils.h"
-
-namespace
-{
-
-constexpr float CHARREQ2_SYNC_RANGE = 50.0f;
-
-auto resolveByUniqueNo(const uint32 uniqueNo) -> CBaseEntity*
-{
-    if (uniqueNo == 0)
-    {
-        return nullptr;
-    }
-
-    if (auto* PEntity = zoneutils::GetEntity(uniqueNo))
-    {
-        return PEntity;
-    }
-
-    return zoneutils::GetChar(uniqueNo);
-}
-
-} // namespace
 
 auto GP_CLI_COMMAND_CHARREQ2::validate(MapSession* PSession, const CCharEntity* PChar) const -> PacketValidationResult
 {
-    return PacketValidator(PChar);
+    // Not implemented.
+    return PacketValidator(PChar)
+        .blockedBy({ BlockedState::InEvent });
 }
 
 void GP_CLI_COMMAND_CHARREQ2::process(MapSession* PSession, CCharEntity* PChar) const
 {
-    const std::array targets{
-        this->ActIndex ? PChar->GetEntity(this->ActIndex) : nullptr,
-        resolveByUniqueNo(this->UniqueNo2),
-        resolveByUniqueNo(this->UniqueNo3),
-    };
-
-    ShowWarningFmt("GP_CLI_COMMAND_CHARREQ2 from {}: ActIndex={} UniqueNo2={} UniqueNo3={} Flg={} Flg2={}",
-                   PChar->getName(),
-                   this->ActIndex,
-                   this->UniqueNo2,
-                   this->UniqueNo3,
-                   this->Flg,
-                   this->Flg2);
-
-    for (size_t i = 0; i < targets.size(); ++i)
-    {
-        auto* PTarget = targets[i];
-        if (PTarget == nullptr)
-        {
-            continue;
-        }
-
-        const auto seen = std::ranges::subrange(targets.begin(), targets.begin() + i);
-        if (std::ranges::find(seen, PTarget) != seen.end())
-        {
-            continue;
-        }
-
-        const float dist = distance(PChar->loc.p, PTarget->loc.p);
-        if (dist > CHARREQ2_SYNC_RANGE)
-        {
-            ShowWarningFmt("GP_CLI_COMMAND_CHARREQ2 from {}: target {} ({}) is {:.1f}y away (beyond {}y)", PChar->getName(), PTarget->getName(), PTarget->id, dist, CHARREQ2_SYNC_RANGE);
-        }
-
-        if (PTarget->objtype == TYPE_PC)
-        {
-            auto* PTargetChar = static_cast<CCharEntity*>(PTarget);
-            if (PTargetChar->m_isGMHidden)
-            {
-                continue;
-            }
-
-            PChar->updateEntityPacket(PTargetChar, ENTITY_SPAWN, UPDATE_ALL_CHAR);
-
-            if (dist <= CHARREQ2_SYNC_RANGE)
-            {
-                PChar->pushPacket<CCharSyncPacket>(PTargetChar);
-                PChar->pushPacket<CCharUpdatePacket>(PTargetChar, ENTITY_UPDATE, static_cast<uint8>(UPDATE_NAME));
-            }
-        }
-        else
-        {
-            PChar->updateEntityPacket(PTarget, ENTITY_UPDATE, static_cast<uint8>(UPDATE_ALL_MOB));
-        }
-    }
+    // Client probes entities during zoning; we do not emulate retail NPC state here. Keep at debug to avoid warning spam.
+    ShowDebugFmt("GP_CLI_COMMAND_CHARREQ2: unhandled NPC target ActIndex={} UniqueNo2={} Flg={} ({})",
+                  this->ActIndex,
+                  this->UniqueNo2,
+                  this->Flg,
+                  PChar ? PChar->getName() : "?");
+    (void)PSession;
 }

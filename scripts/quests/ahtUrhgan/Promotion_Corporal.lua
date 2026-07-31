@@ -51,7 +51,9 @@ quest.sections =
                 onTrigger = function(player, npc)
                     player:delKeyItem(xi.ki.QUARTZ_TRANSMITTER)
                     quest:setVar(player, 'Prog', 2)
-                    return quest:messageSpecial(zones[player:getZoneID()].text.WARHORSE_HOOFPRINT + 1, xi.ki.QUARTZ_TRANSMITTER)
+                    local zoneText = zones[player:getZoneID()].text
+                    local placeMsg = zoneText.WARHORSE_HOOFPRINT_SET or (zoneText.WARHORSE_HOOFPRINT + 1)
+                    return quest:messageSpecial(placeMsg, 0, xi.ki.QUARTZ_TRANSMITTER)
                 end,
             },
         },
@@ -62,7 +64,9 @@ quest.sections =
                 onTrigger = function(player, npc)
                     player:delKeyItem(xi.ki.QUARTZ_TRANSMITTER)
                     quest:setVar(player, 'Prog', 4)
-                    return quest:messageSpecial(zones[player:getZoneID()].text.WARHORSE_HOOFPRINT + 1, xi.ki.QUARTZ_TRANSMITTER)
+                    local zoneText = zones[player:getZoneID()].text
+                    local placeMsg = zoneText.WARHORSE_HOOFPRINT_SET or (zoneText.WARHORSE_HOOFPRINT + 1)
+                    return quest:messageSpecial(placeMsg, 0, xi.ki.QUARTZ_TRANSMITTER)
                 end,
             },
         },
@@ -73,7 +77,9 @@ quest.sections =
                 onTrigger = function(player, npc)
                     player:delKeyItem(xi.ki.QUARTZ_TRANSMITTER)
                     quest:setVar(player, 'Prog', 3)
-                    return quest:messageSpecial(zones[player:getZoneID()].text.WARHORSE_HOOFPRINT + 1, xi.ki.QUARTZ_TRANSMITTER)
+                    local zoneText = zones[player:getZoneID()].text
+                    local placeMsg = zoneText.WARHORSE_HOOFPRINT_SET or (zoneText.WARHORSE_HOOFPRINT + 1)
+                    return quest:messageSpecial(placeMsg, 0, xi.ki.QUARTZ_TRANSMITTER)
                 end,
             },
         },
@@ -84,7 +90,9 @@ quest.sections =
                 onTrigger = function(player, npc)
                     player:delKeyItem(xi.ki.QUARTZ_TRANSMITTER)
                     quest:setVar(player, 'Prog', 1)
-                    return quest:messageSpecial(zones[player:getZoneID()].text.WARHORSE_HOOFPRINT + 1, xi.ki.QUARTZ_TRANSMITTER)
+                    local zoneText = zones[player:getZoneID()].text
+                    local placeMsg = zoneText.WARHORSE_HOOFPRINT_SET or (zoneText.WARHORSE_HOOFPRINT + 1)
+                    return quest:messageSpecial(placeMsg, 0, xi.ki.QUARTZ_TRANSMITTER)
                 end,
             },
         },

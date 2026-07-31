@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -20,6 +20,9 @@
 */
 
 #include "zoneutils.h"
+
+#include "common/scheduler.h"
+#include "map_config.h"
 
 #include "ai/ai_container.h"
 #include "aman.h"
@@ -47,6 +50,8 @@
 #include <execution>
 #include <future>
 #include <ranges>
+#include <thread>
+#include <vector>
 
 #include <fmt/ranges.h>
 
@@ -56,6 +61,12 @@ namespace zoneutils
 {
 
 detail::LazyLoadState lazyLoad;
+
+namespace
+{
+Scheduler*       g_loginScheduler     = nullptr;
+const MapConfig* g_loginMapConfig = nullptr;
+} // namespace
 
 /************************************************************************
  *                                                                       *
@@ -113,6 +124,22 @@ auto GetZone(uint16 zoneId) -> CZone*
     }
 
     return nullptr;
+}
+
+auto IsRegisteredZone(const CZone* zone) -> bool
+{
+    if (zone == nullptr)
+    {
+        return false;
+    }
+    for (const auto* PZone : g_PZoneList | std::views::values)
+    {
+        if (PZone == zone)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 auto GetEntity(const uint32 id, const uint8 filter) -> CBaseEntity*
@@ -355,7 +382,11 @@ auto LoadNPCList(Scheduler& scheduler, const std::vector<uint16>& zoneIds) -> Ta
                                     // Required for NPCs missing from the client's zone name DAT (blank/"NPC").
                                     // Skip equipped NPCs whose polutils_name is only underscores→spaces: those
                                     // usually have full DAT names, and forcing a packet name hits the 15-char
-                                    // PC name limit (e.g. "Synergy Enthusiast" → "Synergy Enthusi").
+                                    // 0x00E limit (e.g. "Synergy Enthusiast" → "Synergy Enthusi").
+                                    // Long names on non-equipped NPCs still need isRenamed (DAT often missing);
+                                    // CCharEntity::updateEntityPacket follows up with 0x67 for the full string.
+                                    // Never rename doors/ships/elevators: 0x0E bytes at 0x34+ hold mesh/trigger
+                                    // identity (internal name), not a display string — overwriting breaks them.
                                     if (!PNpc->packetName.empty() && PNpc->packetName != PNpc->name)
                                     {
                                         auto spacedName = PNpc->name;
@@ -363,7 +394,10 @@ auto LoadNPCList(Scheduler& scheduler, const std::vector<uint16>& zoneIds) -> Ta
                                         const bool simpleSpacedVariant = PNpc->packetName == spacedName;
                                         const bool equippedModel       = PNpc->look.size == MODEL_EQUIPPED ||
                                                                    PNpc->look.size == MODEL_CHOCOBO;
-                                        if (!(equippedModel && simpleSpacedVariant))
+                                        const bool specialModel = PNpc->look.size == MODEL_DOOR ||
+                                                                  PNpc->look.size == MODEL_SHIP ||
+                                                                  PNpc->look.size == MODEL_ELEVATOR;
+                                        if (!specialModel && !(equippedModel && simpleSpacedVariant))
                                         {
                                             PNpc->isRenamed = true;
                                         }
@@ -428,7 +462,7 @@ auto LoadMOBList(Scheduler& scheduler, const std::vector<uint16>& zoneIds) -> Ta
 
                         auto* PZone = g_PZoneList[zoneId];
 
-                        const auto query = "SELECT mobname, packet_name, mobid, pos_rot, pos_x, pos_y, pos_z, "
+                        const auto query = "SELECT mobname, mob_spawn_points.polutils_name AS polutils_name, packet_name, mobid, pos_rot, pos_x, pos_y, pos_z, "
                                            "respawntime, spawntype, dropid, mob_groups.HP, mob_groups.MP, mob_spawn_points.minLevel, mob_spawn_points.maxLevel, "
                                            "mob_spawn_points.spawnHour, mob_spawn_points.despawnHour, "
                                            "modelid, mJob, sJob, cmbSkill, cmbDmgMult, cmbDelay, behavior, links, mobType, immunity, "
@@ -472,8 +506,10 @@ auto LoadMOBList(Scheduler& scheduler, const std::vector<uint16>& zoneIds) -> Ta
                                 {
                                     CMobEntity* PMob = new CMobEntity;
 
-                                    PMob->name       = rset->get<std::string>("mobname");
-                                    PMob->packetName = rset->get<std::string>("packet_name");
+                                    PMob->name = rset->get<std::string>("mobname");
+                                    // Prefer polutils_name (human-readable) for the client; mob_pools.packet_name uses underscores.
+                                    const auto polutilsName = rset->getOrDefault<std::string>("polutils_name", "");
+                                    PMob->packetName        = !polutilsName.empty() ? polutilsName : rset->get<std::string>("packet_name");
                                     PMob->id         = rset->get<uint32>("mobid");
 
                                     PMob->targid = static_cast<uint16>(PMob->id & 0x0FFF);
@@ -775,7 +811,7 @@ auto CreateZone(Scheduler& scheduler, MapConfig config, uint16 ZoneID) -> CZone*
  *                                                                       *
  ************************************************************************/
 
-auto LoadZones(Scheduler& scheduler, MapConfig config, const std::vector<uint16>& zoneIds) -> Task<void>
+auto LoadZones(Scheduler& scheduler, const MapConfig& config, const std::vector<uint16>& zoneIds) -> Task<void>
 {
     std::vector<uint16> zonesIdsToLoad;
 
@@ -850,7 +886,7 @@ auto LoadZones(Scheduler& scheduler, MapConfig config, const std::vector<uint16>
     }
 }
 
-auto LoadZoneList(Scheduler& scheduler, MapConfig config) -> Task<void>
+auto LoadZoneList(Scheduler& scheduler, const MapConfig& config) -> Task<void>
 {
     TracyZoneScoped;
 
@@ -866,7 +902,7 @@ auto LoadZoneList(Scheduler& scheduler, MapConfig config) -> Task<void>
 }
 
 // Initialize zone loading: immediate (load all now) or lazy (load on-demand)
-auto Initialize(Scheduler& scheduler, MapConfig config) -> Task<void>
+auto Initialize(Scheduler& scheduler, const MapConfig& config) -> Task<void>
 {
     if (!config.lazyZones)
     {
@@ -885,7 +921,7 @@ auto Initialize(Scheduler& scheduler, MapConfig config) -> Task<void>
     co_return;
 }
 
-auto ProcessLoadQueue(Scheduler& scheduler, MapConfig config) -> Task<void>
+auto ProcessLoadQueue(Scheduler& scheduler, const MapConfig& config) -> Task<void>
 {
     TracyZoneScoped;
 
@@ -902,6 +938,77 @@ auto ProcessLoadQueue(Scheduler& scheduler, MapConfig config) -> Task<void>
 auto IsLazyLoadingEnabled() -> bool
 {
     return lazyLoad.enabled;
+}
+
+void SetLoginZoneLoadContext(Scheduler* scheduler, const MapConfig* config)
+{
+    g_loginScheduler = scheduler;
+    g_loginMapConfig = config;
+}
+
+void EnsureDestinationZoneLoaded(uint16 zoneId)
+{
+    if (zoneId >= MAX_ZONEID)
+    {
+        return;
+    }
+    if (GetZone(zoneId) != nullptr)
+    {
+        return;
+    }
+    if (!IsLazyLoadingEnabled())
+    {
+        return;
+    }
+    if (!lazyLoad.managedZones.contains(zoneId))
+    {
+        return;
+    }
+    if (g_loginScheduler == nullptr || g_loginMapConfig == nullptr)
+    {
+        ShowError("EnsureDestinationZoneLoaded: map runtime context not set");
+        return;
+    }
+
+    auto runLoad = [&]()
+    {
+        g_loginScheduler->blockOnMainThread(LoadZones(*g_loginScheduler, *g_loginMapConfig, std::vector<uint16>{ zoneId }));
+    };
+
+    try
+    {
+        if (std::this_thread::get_id() == g_loginScheduler->getMainThreadId())
+        {
+            runLoad();
+        }
+        else
+        {
+            std::promise<void> prom;
+            auto               fut = prom.get_future();
+            g_loginScheduler->postToMainThread(
+                [&]()
+                {
+                    try
+                    {
+                        runLoad();
+                        prom.set_value();
+                    }
+                    catch (...)
+                    {
+                        prom.set_exception(std::current_exception());
+                    }
+                });
+            fut.get();
+        }
+    }
+    catch (const std::exception& e)
+    {
+        ShowError("EnsureDestinationZoneLoaded: %s", e.what());
+    }
+    catch (...)
+    {
+        ShowError("EnsureDestinationZoneLoaded: unknown exception");
+    }
 }
 
 // Returns all zones managed by this process (ID and name)
@@ -937,7 +1044,7 @@ auto GetManagedZones() -> std::vector<std::pair<uint16, std::string>>
 // TODO:
 // This shouldn't have side effects, it should be const and the caller should be responsible
 // for requesting the zone is loaded if it isn't ready.
-auto IsZoneReady(Scheduler& scheduler, MapConfig config, uint16 zoneId) -> Task<bool>
+auto IsZoneReady(Scheduler& scheduler, const MapConfig& config, uint16 zoneId) -> Task<bool>
 {
     // Zone already loaded, or lazy loading disabled (all zones loaded at startup)
     if (GetZone(zoneId) || !lazyLoad.enabled)

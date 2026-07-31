@@ -57,3 +57,5 @@ xi.mobPool =
     AWZDEI_FAST_R          = 7097, -- Aw'zdei fast right rotation
     AWZDEI_FAST_L          = 7098, -- Aw'zdei fast left rotation
 }
+
+return xi.mobPool

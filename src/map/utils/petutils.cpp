@@ -22,6 +22,8 @@
 #include "common/timer.h"
 #include "common/utils.h"
 
+#include <vector>
+
 #include "ability.h"
 #include "battleutils.h"
 #include "charutils.h"
@@ -32,13 +34,14 @@
 #include "items/item_weapon.h"
 #include "job_points.h"
 #include "latent_effect_container.h"
-#include "lua/luautils.h"
 #include "mob_spell_list.h"
 #include "notoriety_container.h"
 #include "petutils.h"
 
+#include "map_engine.h"
 #include "puppetutils.h"
 #include "status_effect_container.h"
+#include "zone_instance.h"
 
 #include "ai/ai_container.h"
 #include "ai/controllers/automaton_controller.h"
@@ -69,7 +72,7 @@ void LoadPetList()
                        "minLevel, "
                        "maxLevel, "
                        "time, "
-                       "ecosystemID, "
+                       "mob_species_system.ecosystemID, "
                        "mob_pools.speciesid, "
                        "mob_pools.mJob, "
                        "mob_pools.sJob, "
@@ -81,7 +84,7 @@ void LoadPetList()
                        "mob_species_system.DEX, "
                        "mob_species_system.VIT, "
                        "mob_species_system.AGI, "
-                       "mob_species_system.INT, "
+                       "mob_species_system.`INT`, "
                        "mob_species_system.MND, "
                        "mob_species_system.CHR, "
                        "mob_species_system.DEF, "
@@ -94,7 +97,7 @@ void LoadPetList()
                        "fire_res_rank, ice_res_rank, wind_res_rank, earth_res_rank, lightning_res_rank, water_res_rank, light_res_rank, dark_res_rank, "
                        "paralyze_res_rank, bind_res_rank, silence_res_rank, slow_res_rank, poison_res_rank, light_sleep_res_rank, dark_sleep_res_rank, blind_res_rank, "
                        "cmbDelay, name_prefix, mob_pools.skill_list_id, damageType, "
-                       "mob_pools.modelSize, mob_pools.modelHitboxSize "
+                       "mob_pools.modelSize, mob_pools.modelHitboxSize, mob_pools.cmbDmgMult "
                        "FROM pet_list, mob_pools, mob_resistances, mob_species_system "
                        "WHERE pet_list.poolid = mob_pools.poolid AND mob_resistances.resist_id = mob_pools.resist_id AND mob_pools.speciesid = mob_species_system.speciesID";
 
@@ -112,7 +115,8 @@ void LoadPetList()
         Pet->time            = std::chrono::seconds(rset->get<uint32>("time"));
         Pet->modelSize       = rset->getOrDefault<uint8>("modelSize", 0);
         Pet->modelHitboxSize = std::max<float>(0.0f, rset->getOrDefault<float>("modelHitboxSize", 0) / 10.f);
-        Pet->EcoSystem       = rset->get<xi::Ecosystem>("ecosystemID");
+        Pet->dmgMult         = rset->get<uint16>("cmbDmgMult");
+        Pet->EcoSystem       = rset->get<ECOSYSTEM>("ecosystemID");
         Pet->m_Species       = rset->get<uint16>("speciesid");
         Pet->mJob            = rset->get<uint8>("mJob");
         Pet->sJob            = rset->get<uint8>("sJob");
@@ -177,7 +181,7 @@ void LoadPetList()
         Pet->cmbDelay       = rset->get<uint16>("cmbDelay");
         Pet->name_prefix    = rset->get<uint8>("name_prefix");
         Pet->m_MobSkillList = rset->get<uint16>("skill_list_id");
-        Pet->m_dmgType      = rset->get<xi::DamageType>("damageType");
+        Pet->m_dmgType      = rset->get<DAMAGE_TYPE>("damageType");
 
         g_PPetList.emplace_back(Pet);
     }
@@ -227,9 +231,9 @@ void RetreatToMaster(CBattleEntity* PMaster)
 uint16 GetJugWeaponDamage(CPetEntity* PPet)
 {
     float MainLevel = PPet->GetMLevel();
-    return (uint16)(MainLevel * (MainLevel < 40 ? 1.4 - MainLevel / 100 : 1));
+    float baseDmg   = MainLevel * (MainLevel < 40 ? 1.4 - MainLevel / 100 : 1);
+    return (uint16)(baseDmg * PPet->m_dmgMult / 100.0f);
 }
-
 uint16 GetJugBase(CPetEntity* PMob, uint8 rank)
 {
     uint8 lvl = PMob->GetMLevel();
@@ -275,7 +279,6 @@ uint16 GetJugBase(CPetEntity* PMob, uint8 rank)
     }
     return 0;
 }
-
 uint16 GetBaseToRank(uint8 rank, uint16 lvl)
 {
     switch (rank)
@@ -367,6 +370,7 @@ void LoadJugStats(CPetEntity* PMob, Pet_t* petStats)
     PMob->setModifier(Mod::ATT, GetJugBase(PMob, petStats->attRank));
     PMob->setModifier(Mod::ACC, GetJugBase(PMob, petStats->accRank));
 
+    PMob->m_dmgMult = petStats->dmgMult;
     static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setDamage(GetJugWeaponDamage(PMob));
 
     // reduce weapon delay of MNK
@@ -400,20 +404,20 @@ void LoadJugStats(CPetEntity* PMob, Pet_t* petStats)
     PMob->stats.CHR = (uint16)((fCHR + mCHR) * 0.9f);
 }
 
-void LoadAutomatonStats(CCharEntity* PMaster, CPetEntity* PPet, Pet_t* petStats, uint8 mlvl)
+void LoadAutomatonStats(CCharEntity* PMaster, CPetEntity* PPet, Pet_t* petStats, uint8 mlvl, JOBTYPE mjob, JOBTYPE sjob)
 {
-    auto& tempSkills = PMaster->automatonInfo_.automatonSkills;
-    auto& tempStats  = PMaster->automatonInfo_.automatonStats;
-    auto& tempHealth = PMaster->automatonInfo_.automatonHealth;
+    skills_t& tempSkills = PMaster->automatonInfo.automatonSkills;
+    stats_t&  tempStats  = PMaster->automatonInfo.automatonStats;
+    health_t& tempHealth = PMaster->automatonInfo.automatonHealth;
 
-    tempSkills.automaton_melee  = std::min(puppetutils::getSkillCap(PMaster, xi::SkillType::AutomatonMelee, mlvl), PMaster->GetSkill(xi::SkillType::AutomatonMelee));
-    tempSkills.automaton_ranged = std::min(puppetutils::getSkillCap(PMaster, xi::SkillType::AutomatonRanged, mlvl), PMaster->GetSkill(xi::SkillType::AutomatonRanged));
-    tempSkills.automaton_magic  = std::min(puppetutils::getSkillCap(PMaster, xi::SkillType::AutomatonMagic, mlvl), PMaster->GetSkill(xi::SkillType::AutomatonMagic));
+    tempSkills.automaton_melee  = std::min(puppetutils::getSkillCap(PMaster, SKILL_AUTOMATON_MELEE, mlvl), PMaster->GetSkill(SKILL_AUTOMATON_MELEE));
+    tempSkills.automaton_ranged = std::min(puppetutils::getSkillCap(PMaster, SKILL_AUTOMATON_RANGED, mlvl), PMaster->GetSkill(SKILL_AUTOMATON_RANGED));
+    tempSkills.automaton_magic  = std::min(puppetutils::getSkillCap(PMaster, SKILL_AUTOMATON_MAGIC, mlvl), PMaster->GetSkill(SKILL_AUTOMATON_MAGIC));
 
     // Set capped flags
     for (int i = 22; i <= 24; ++i)
     {
-        if ((tempSkills.skill[i] & 0x7FFF) == (puppetutils::getSkillCap(PMaster, (xi::SkillType)i, mlvl)))
+        if ((tempSkills.skill[i] & 0x7FFF) == (puppetutils::getSkillCap(PMaster, (SKILLTYPE)i, mlvl)))
         {
             tempSkills.skill[i] |= 0x8000;
         }
@@ -431,12 +435,12 @@ void LoadAutomatonStats(CCharEntity* PMaster, CPetEntity* PPet, Pet_t* petStats,
     int32 meritbonus = PMaster->PMeritPoints->GetMeritValue(MERIT_AUTOMATON_SKILLS, PMaster);
 
     // If skill rank is 0, merit bonus needs to be added to be displayed like retail does
-    if (puppetutils::getSkillCap(PMaster, xi::SkillType::AutomatonRanged, mlvl) == 0)
+    if (puppetutils::getSkillCap(PMaster, SKILL_AUTOMATON_RANGED, mlvl) == 0)
     {
         tempSkills.automaton_ranged = meritbonus + PMaster->getMod(Mod::AUTO_RANGED_SKILL);
     }
 
-    if (puppetutils::getSkillCap(PMaster, xi::SkillType::AutomatonMagic, mlvl) == 0)
+    if (puppetutils::getSkillCap(PMaster, SKILL_AUTOMATON_MAGIC, mlvl) == 0)
     {
         auto modBonus = PMaster->getMod(Mod::AUTO_MAGIC_SKILL);
 
@@ -448,212 +452,122 @@ void LoadAutomatonStats(CCharEntity* PMaster, CPetEntity* PPet, Pet_t* petStats,
         tempSkills.dark            = meritbonus + modBonus;
     }
 
-    const auto frame      = static_cast<uint8>(PMaster->getAutomatonFrame());
-    const auto statsLevel = std::min<uint8>(mlvl, 99);
+    // Declaration of variables needed for calculation.
+    float raceStat          = 0; // Final HP for level based on race.
+    float jobStat           = 0; // Final number of HP for the level based on the primary profession.
+    float sJobStat          = 0; // Finite number of HP for the level based on the secondary profession.
+    int32 bonusStat         = 0; // Bonus number of HP that is added under certain conditions.
+    int32 baseValueColumn   = 0; // Number of the column with the base amount of HP
+    int32 scaleTo60Column   = 1; // Column number with modifier up to level 60
+    int32 scaleOver30Column = 2; // Column number with modifier after level 30
+    int32 scaleOver60Column = 3; // Column number with modifier after level 60
+    int32 scaleOver75Column = 4; // Column number with modifier after level 75
+    int32 scaleOver60       = 2; // Column number with a modifier for calculating MP after level 60
+    // int32 scaleOver75       = 3; // Column number with a modifier for calculating Stats after level 75
 
-    const auto maybeFrameStats = lua["xi"]["pets"]["automaton"]["frameStats"].get<sol::optional<sol::table>>();
-    if (!maybeFrameStats)
-    {
-        ShowError("LoadAutomatonStats: Missing xi.pets.automaton.frameStats");
-        return;
-    }
+    uint8 grade = 0;
 
-    const auto& frameStats = *maybeFrameStats;
+    // Calculate HP gain from main job
+    int32 mainLevelOver30     = std::clamp(mlvl - 30, 0, 30); // Calculate condition +1HP every lvl after level 30
+    int32 mainLevelUpTo60     = (mlvl < 60 ? mlvl - 1 : 59);  // First calculation mode up to level 60 (Used the same for MP)
+    int32 mainLevelOver60To75 = std::clamp(mlvl - 60, 0, 15); // Second calculation mode after level 60
+    int32 mainLevelOver75     = (mlvl < 75 ? 0 : mlvl - 75);  // Third calculation mode after level 75
 
-    const auto maybeFrameData = frameStats[frame].get<sol::optional<sol::table>>();
-    if (!maybeFrameData)
-    {
-        ShowErrorFmt("LoadAutomatonStats: Missing automaton frame stats for frame {}", static_cast<uint16>(frame));
-        return;
-    }
+    // Calculate the bonus amount of HP
+    int32 mainLevelOver10           = (mlvl < 10 ? 0 : mlvl - 10);  // +2HP on every level after 10
+    int32 mainLevelOver50andUnder60 = std::clamp(mlvl - 50, 0, 10); // +2HP at each level between level 50 and 60
+    int32 mainLevelOver60           = (mlvl < 60 ? 0 : mlvl - 60);
 
-    const auto& frameData = *maybeFrameData;
+    // Calculate raceStat jobStat bonusStat sJobStat
+    // Calculate by race
 
-    const auto maybeLevelData = frameData[statsLevel].get<sol::optional<sol::table>>();
-    if (!maybeLevelData)
-    {
-        ShowErrorFmt("LoadAutomatonStats: Missing automaton frame stats for frame {} level {}", static_cast<uint16>(frame), static_cast<uint16>(statsLevel));
-        return;
-    }
+    grade = 4;
 
-    const auto& levelData = *maybeLevelData;
+    raceStat = grade::GetHPScale(grade, baseValueColumn) + (grade::GetHPScale(grade, scaleTo60Column) * mainLevelUpTo60) +
+               (grade::GetHPScale(grade, scaleOver30Column) * mainLevelOver30) + (grade::GetHPScale(grade, scaleOver60Column) * mainLevelOver60To75) +
+               (grade::GetHPScale(grade, scaleOver75Column) * mainLevelOver75);
 
-    const auto getLevelStat = [&levelData](const char* key) -> uint16
-    {
-        return levelData[key].get<uint16>();
-    };
+    // raceStat = (int32)(statScale[grade][baseValueColumn] + statScale[grade][scaleTo60Column] * (mlvl - 1));
 
-    tempHealth.maxhp = getLevelStat("maxHP");
+    // Calculation by main job
+    grade = grade::GetJobGrade(mjob, 0);
+
+    jobStat = grade::GetHPScale(grade, baseValueColumn) + (grade::GetHPScale(grade, scaleTo60Column) * mainLevelUpTo60) +
+              (grade::GetHPScale(grade, scaleOver30Column) * mainLevelOver30) + (grade::GetHPScale(grade, scaleOver60Column) * mainLevelOver60To75) +
+              (grade::GetHPScale(grade, scaleOver75Column) * mainLevelOver75);
+
+    // Calculate Bonus HP
+    bonusStat        = (mainLevelOver10 + mainLevelOver50andUnder60) * 2;
+    tempHealth.maxhp = (int32)((raceStat + jobStat + bonusStat + sJobStat) * petStats->HPscale);
     tempHealth.hp    = tempHealth.maxhp;
-    tempHealth.maxmp = getLevelStat("maxMP");
+
+    // Start MP calculation
+    raceStat = 0;
+    jobStat  = 0;
+    sJobStat = 0;
+
+    // Calculate the MP for the race.
+    grade = 4;
+
+    // If the main job doesn't have an MP rating, calculate the racial bonus based on the level of the subjob's level (assuming it has an MP rating)
+    if (!(grade::GetJobGrade(mjob, 1) == 0 && grade::GetJobGrade(sjob, 1) == 0))
+    {
+        // calculate normal racial bonus
+        raceStat = grade::GetMPScale(grade, 0) + grade::GetMPScale(grade, scaleTo60Column) * mainLevelUpTo60 +
+                   grade::GetMPScale(grade, scaleOver60) * mainLevelOver60;
+    }
+
+    // For the main profession
+    grade = grade::GetJobGrade(mjob, 1);
+    if (grade > 0)
+    {
+        jobStat = grade::GetMPScale(grade, 0) + grade::GetMPScale(grade, scaleTo60Column) * mainLevelUpTo60 +
+                  grade::GetMPScale(grade, scaleOver60) * mainLevelOver60;
+    }
+
+    grade = grade::GetJobGrade(sjob, 1);
+    if (grade > 0)
+    {
+        sJobStat = grade::GetMPScale(grade, 0) + grade::GetMPScale(grade, scaleTo60Column) * mainLevelUpTo60 +
+                   grade::GetMPScale(grade, scaleOver60) * mainLevelOver60;
+    }
+
+    tempHealth.maxmp = (int32)((raceStat + jobStat + sJobStat) * petStats->MPscale);
     tempHealth.mp    = tempHealth.maxmp;
 
-    // Handle Auto-Repair Kits, HP boost provided is shown in the automaton equipment menu, which means it needs to be calculated here.
-    const bool hasAutoRepairKit    = PMaster->hasAutomatonAttachment(static_cast<uint8>(AutomatonAttachment::AutoRepairKit));
-    const bool hasAutoRepairKitII  = PMaster->hasAutomatonAttachment(static_cast<uint8>(AutomatonAttachment::AutoRepairKitII));
-    const bool hasAutoRepairKitIII = PMaster->hasAutomatonAttachment(static_cast<uint8>(AutomatonAttachment::AutoRepairKitIII));
-    const bool hasAutoRepairKitIV  = PMaster->hasAutomatonAttachment(static_cast<uint8>(AutomatonAttachment::AutoRepairKitIV));
+    uint16 slvl = std::floor<uint16>(mlvl / 2);
 
-    if (hasAutoRepairKit || hasAutoRepairKitII || hasAutoRepairKitIII || hasAutoRepairKitIV)
-    {
-        const auto maybeRepairKit = lua["xi"]["automaton"]["repairKit"].get<sol::optional<sol::table>>();
-        if (!maybeRepairKit)
-        {
-            ShowError("LoadAutomatonStats: Missing xi.automaton.repairKit");
-            return;
-        }
+    uint16 fSTR = GetBaseToRank(petStats->strRank, mlvl);
+    uint16 fDEX = GetBaseToRank(petStats->dexRank, mlvl);
+    uint16 fVIT = GetBaseToRank(petStats->vitRank, mlvl);
+    uint16 fAGI = GetBaseToRank(petStats->agiRank, mlvl);
+    uint16 fINT = GetBaseToRank(petStats->intRank, mlvl);
+    uint16 fMND = GetBaseToRank(petStats->mndRank, mlvl);
+    uint16 fCHR = GetBaseToRank(petStats->chrRank, mlvl);
 
-        const auto& repairKit = *maybeRepairKit;
+    uint16 mSTR = GetBaseToRank(grade::GetJobGrade(mjob, 2), mlvl);
+    uint16 mDEX = GetBaseToRank(grade::GetJobGrade(mjob, 3), mlvl);
+    uint16 mVIT = GetBaseToRank(grade::GetJobGrade(mjob, 4), mlvl);
+    uint16 mAGI = GetBaseToRank(grade::GetJobGrade(mjob, 5), mlvl);
+    uint16 mINT = GetBaseToRank(grade::GetJobGrade(mjob, 6), mlvl);
+    uint16 mMND = GetBaseToRank(grade::GetJobGrade(mjob, 7), mlvl);
+    uint16 mCHR = GetBaseToRank(grade::GetJobGrade(mjob, 8), mlvl);
 
-        const auto maybeRepairKitData = repairKit["data"].get<sol::optional<sol::table>>();
-        if (!maybeRepairKitData)
-        {
-            ShowError("LoadAutomatonStats: Missing xi.automaton.repairKit.data");
-            return;
-        }
+    uint16 sSTR = GetBaseToRank(grade::GetJobGrade(sjob, 2), slvl);
+    uint16 sDEX = GetBaseToRank(grade::GetJobGrade(sjob, 3), slvl);
+    uint16 sVIT = GetBaseToRank(grade::GetJobGrade(sjob, 4), slvl);
+    uint16 sAGI = GetBaseToRank(grade::GetJobGrade(sjob, 5), slvl);
+    uint16 sINT = GetBaseToRank(grade::GetJobGrade(sjob, 6), slvl);
+    uint16 sMND = GetBaseToRank(grade::GetJobGrade(sjob, 7), slvl);
+    uint16 sCHR = GetBaseToRank(grade::GetJobGrade(sjob, 8), slvl);
 
-        const auto& repairKitData = *maybeRepairKitData;
-
-        uint8 repairKitTier = 0;
-
-        for (const auto& repairKitDataEntry : repairKitData)
-        {
-            if (!repairKitDataEntry.second.is<sol::table>())
-            {
-                ShowError("LoadAutomatonStats: Invalid xi.automaton.repairKit.data entry");
-                return;
-            }
-
-            const auto repairKitEntry = repairKitDataEntry.second.as<sol::table>();
-
-            const auto maybeId = repairKitEntry["id"].get<sol::optional<uint8>>();
-            if (!maybeId)
-            {
-                ShowError("LoadAutomatonStats: Missing id in xi.automaton.repairKit.data");
-                return;
-            }
-
-            const auto maybeHPBoost = repairKitEntry["hpBoost"].get<sol::optional<uint8>>();
-            if (!maybeHPBoost)
-            {
-                ShowErrorFmt("LoadAutomatonStats: Missing hpBoost for attachment {} in xi.automaton.repairKit.data", *maybeId);
-                return;
-            }
-
-            if (PMaster->hasAutomatonAttachment(*maybeId))
-            {
-                repairKitTier += *maybeHPBoost;
-            }
-        }
-
-        const auto maybeFrameDivisors = repairKit["frameDivisors"].get<sol::optional<sol::table>>();
-        if (!maybeFrameDivisors)
-        {
-            ShowError("LoadAutomatonStats: Missing xi.automaton.repairKit.frameDivisors");
-            return;
-        }
-
-        const auto& frameDivisors = *maybeFrameDivisors;
-
-        const auto maybeDivisor = frameDivisors[frame].get<sol::optional<uint16>>();
-        if (!maybeDivisor || *maybeDivisor == 0)
-        {
-            ShowErrorFmt("LoadAutomatonStats: Missing Auto-Repair Kit divisor for frame {}", static_cast<uint16>(frame));
-            return;
-        }
-
-        tempHealth.maxhp += tempHealth.maxhp * repairKitTier / *maybeDivisor;
-        tempHealth.hp = tempHealth.maxhp;
-    }
-
-    // Handle Mana Tanks, MP boost provided is shown in the automaton equipment menu, which means it needs to be calculated here.
-    const bool hasManaTank    = PMaster->hasAutomatonAttachment(static_cast<uint8>(AutomatonAttachment::ManaTank));
-    const bool hasManaTankII  = PMaster->hasAutomatonAttachment(static_cast<uint8>(AutomatonAttachment::ManaTankII));
-    const bool hasManaTankIII = PMaster->hasAutomatonAttachment(static_cast<uint8>(AutomatonAttachment::ManaTankIII));
-    const bool hasManaTankIV  = PMaster->hasAutomatonAttachment(static_cast<uint8>(AutomatonAttachment::ManaTankIV));
-
-    // Only calculate if the automaton has a mana pool to boost, even if the attachment is equipped.
-    if ((hasManaTank || hasManaTankII || hasManaTankIII || hasManaTankIV) && tempHealth.maxmp > 0)
-    {
-        const auto maybeManaTank = lua["xi"]["automaton"]["manaTank"].get<sol::optional<sol::table>>();
-        if (!maybeManaTank)
-        {
-            ShowError("LoadAutomatonStats: Missing xi.automaton.manaTank");
-            return;
-        }
-
-        const auto& manaTank = *maybeManaTank;
-
-        const auto maybeManaTankData = manaTank["data"].get<sol::optional<sol::table>>();
-        if (!maybeManaTankData)
-        {
-            ShowError("LoadAutomatonStats: Missing xi.automaton.manaTank.data");
-            return;
-        }
-
-        const auto& manaTankData = *maybeManaTankData;
-
-        uint8 manaTankTier = 0;
-
-        for (const auto& manaTankDataEntry : manaTankData)
-        {
-            if (!manaTankDataEntry.second.is<sol::table>())
-            {
-                ShowError("LoadAutomatonStats: Invalid xi.automaton.manaTank.data entry");
-                return;
-            }
-
-            const auto manaTankEntry = manaTankDataEntry.second.as<sol::table>();
-
-            const auto maybeId = manaTankEntry["id"].get<sol::optional<uint8>>();
-            if (!maybeId)
-            {
-                ShowError("LoadAutomatonStats: Missing id in xi.automaton.manaTank.data");
-                return;
-            }
-
-            const auto maybeMPBoost = manaTankEntry["mpBoost"].get<sol::optional<uint8>>();
-            if (!maybeMPBoost)
-            {
-                ShowErrorFmt("LoadAutomatonStats: Missing mpBoost for attachment {} in xi.automaton.manaTank.data", *maybeId);
-                return;
-            }
-
-            if (PMaster->hasAutomatonAttachment(*maybeId))
-            {
-                manaTankTier += *maybeMPBoost;
-            }
-        }
-
-        const auto maybeFrameDivisors = manaTank["frameDivisors"].get<sol::optional<sol::table>>();
-        if (!maybeFrameDivisors)
-        {
-            ShowError("LoadAutomatonStats: Missing xi.automaton.manaTank.frameDivisors");
-            return;
-        }
-
-        const auto& frameDivisors = *maybeFrameDivisors;
-
-        const auto maybeDivisor = frameDivisors[frame].get<sol::optional<uint16>>();
-        if (!maybeDivisor || *maybeDivisor == 0)
-        {
-            ShowErrorFmt("LoadAutomatonStats: Missing Mana Tank divisor for frame {}", static_cast<uint16>(frame));
-            return;
-        }
-
-        tempHealth.maxmp += tempHealth.maxmp * manaTankTier / *maybeDivisor;
-        tempHealth.mp = tempHealth.maxmp;
-    }
-
-    tempStats = {
-        getLevelStat("STR"),
-        getLevelStat("DEX"),
-        getLevelStat("VIT"),
-        getLevelStat("AGI"),
-        getLevelStat("INT"),
-        getLevelStat("MND"),
-        getLevelStat("CHR"),
-    };
+    tempStats.STR = fSTR + mSTR + sSTR;
+    tempStats.DEX = fDEX + mDEX + sDEX;
+    tempStats.VIT = fVIT + mVIT + sVIT;
+    tempStats.AGI = fAGI + mAGI + sAGI;
+    tempStats.INT = fINT + mINT + sINT;
+    tempStats.MND = fMND + mMND + sMND;
+    tempStats.CHR = fCHR + mCHR + sCHR;
 
     if (PPet)
     {
@@ -663,41 +577,49 @@ void LoadAutomatonStats(CCharEntity* PMaster, CPetEntity* PPet, Pet_t* petStats,
         PPet->stats         = tempStats;
         PPet->health        = tempHealth;
 
-        PAutomaton->setEquip(PMaster->automatonInfo_.equip);
+        PAutomaton->m_Equip = PMaster->automatonInfo.m_Equip;
+        PPet->look          = PMaster->automatonInfo.automatonLook;
+        PPet->name          = PMaster->automatonInfo.m_automatonName;
+        PPet->look.size     = MODEL_AUTOMATON;
 
-        PPet->look      = PMaster->automatonInfo_.automatonLook;
-        PPet->name      = PMaster->automatonInfo_.automatonName;
-        PPet->look.size = MODEL_AUTOMATON;
-
-        static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_MAIN])->setSkillType(xi::SkillType::AutomatonMelee);
+        static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_MAIN])->setSkillType(SKILL_AUTOMATON_MELEE);
         static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_MAIN])->setDelay(petStats->cmbDelay); // every pet should use this eventually
         static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_MAIN])->setBaseDelay(petStats->cmbDelay);
-        static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_MAIN])->setDamage(static_cast<uint16>(std::floor((PPet->GetSkill(xi::SkillType::AutomatonMelee) / 8.7f) * 2.0f + 3.0f)));
+        static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_MAIN])->setDamage((PPet->GetSkill(SKILL_AUTOMATON_MELEE) / 9) * 2 + 3);
 
-        static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_RANGED])->setSkillType(xi::SkillType::AutomatonRanged);
-        static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_RANGED])->setDamage(static_cast<uint16>(std::floor((PPet->GetSkill(xi::SkillType::AutomatonRanged) / 8.7f) * 2.0f + 3.0f)));
-        static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_RANGED])->setDmgType(xi::DamageType::Piercing);
+        static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_RANGED])->setSkillType(SKILL_AUTOMATON_RANGED);
+        static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_RANGED])->setDamage((PPet->GetSkill(SKILL_AUTOMATON_RANGED) / 9) * 2 + 3);
+        static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_RANGED])->setDmgType(DAMAGE_TYPE::PIERCING);
 
         // Automatons are hard to interrupt
         PPet->addModifier(Mod::SPELLINTERRUPT, 85);
 
-        switch (PAutomaton->frame())
+        switch (PAutomaton->getFrame())
         {
             default: // case AutomatonFrame::Harlequin:
-                PPet->WorkingSkills.evasion = battleutils::GetMaxSkill(4, mlvl > 99 ? 99 : mlvl);
-                PPet->setModifier(Mod::DEF, battleutils::GetMaxSkill(11, mlvl > 99 ? 99 : mlvl));
+                tempSkills.evasion = battleutils::GetMaxSkill(2, mlvl > 99 ? 99 : mlvl);
+                PPet->setModifier(Mod::DEF, battleutils::GetMaxSkill(10, mlvl > 99 ? 99 : mlvl));
+                PPet->setModifier(Mod::DMG, -625);
                 break;
             case AutomatonFrame::Valoredge:
-                PPet->WorkingSkills.evasion = battleutils::GetMaxSkill(7, mlvl > 99 ? 99 : mlvl);
-                PPet->setModifier(Mod::DEF, battleutils::GetMaxSkill(8, mlvl > 99 ? 99 : mlvl));
+                PPet->setModifier(Mod::SHIELDBLOCKRATE, 45);
+                PPet->setMobMod(MOBMOD_CAN_SHIELD_BLOCK, 1);
+                PPet->setModifier(Mod::DMG, -1250);
+                tempSkills.evasion = battleutils::GetMaxSkill(5, mlvl > 99 ? 99 : mlvl);
+                PPet->setModifier(Mod::DEF, battleutils::GetMaxSkill(5, mlvl > 99 ? 99 : mlvl));
                 break;
             case AutomatonFrame::Sharpshot:
-                PPet->WorkingSkills.evasion = battleutils::GetMaxSkill(2, mlvl > 99 ? 99 : mlvl);
-                PPet->setModifier(Mod::DEF, battleutils::GetMaxSkill(12, mlvl > 99 ? 99 : mlvl));
+                tempSkills.evasion = battleutils::GetMaxSkill(1, mlvl > 99 ? 99 : mlvl);
+                PPet->setModifier(Mod::DEF, battleutils::GetMaxSkill(11, mlvl > 99 ? 99 : mlvl));
+                PPet->setModifier(Mod::PIERCE_SDT, 8750);
+                PPet->setModifier(Mod::DMGBREATH, -1250);
+                PPet->setModifier(Mod::DMGMAGIC, -1250);
                 break;
             case AutomatonFrame::Stormwaker:
-                PPet->WorkingSkills.evasion = battleutils::GetMaxSkill(10, mlvl > 99 ? 99 : mlvl);
+                tempSkills.evasion = battleutils::GetMaxSkill(10, mlvl > 99 ? 99 : mlvl);
                 PPet->setModifier(Mod::DEF, battleutils::GetMaxSkill(12, mlvl > 99 ? 99 : mlvl));
+                PPet->setModifier(Mod::DMGBREATH, -2500);
+                PPet->setModifier(Mod::DMGMAGIC, -2500);
                 break;
         }
 
@@ -718,7 +640,6 @@ void LoadAutomatonStats(CCharEntity* PMaster, CPetEntity* PPet, Pet_t* petStats,
 
 void LoadAvatarStats(CBattleEntity* PMaster, CPetEntity* PPet)
 {
-    // TODO: Audit Avatar HP Scale
     // Declaration of variables needed for calculation.
     float raceStat          = 0; // final HP for level based on race.
     float jobStat           = 0; // final number of HP for the level based on the primary profession.
@@ -769,7 +690,7 @@ void LoadAvatarStats(CBattleEntity* PMaster, CPetEntity* PPet)
 
     // Bonus HP calculation
     bonusStat = (mainLevelOver10 + mainLevelOver50andUnder60) * 2;
-    if (PPet->petID() == PETID_ODIN || PPet->petID() == PETID_ALEXANDER)
+    if (PPet->m_PetID == PETID_ODIN || PPet->m_PetID == PETID_ALEXANDER)
     {
         bonusStat += 6800;
     }
@@ -801,7 +722,7 @@ void LoadAvatarStats(CBattleEntity* PMaster, CPetEntity* PPet)
     PPet->health.mp    = PPet->health.maxmp;
 
     // add in evasion from skill
-    int16 evaskill = PPet->GetSkill(xi::SkillType::Evasion);
+    int16 evaskill = PPet->GetSkill(SKILL_EVASION);
     int16 eva      = evaskill;
     if (evaskill > 200)
     { // Evasion skill is 0.9 evasion post-200
@@ -850,7 +771,7 @@ void LoadAvatarStats(CBattleEntity* PMaster, CPetEntity* PPet)
 
 void CalculateAvatarStats(CBattleEntity* PMaster, CPetEntity* PPet)
 {
-    uint32 petID = PPet->petID();
+    uint32 petID = PPet->m_PetID;
 
     // clang-format off
         auto maybePetData = std::find_if(g_PPetList.begin(), g_PPetList.end(), [petID](Pet_t* t)
@@ -890,9 +811,7 @@ void CalculateAvatarStats(CBattleEntity* PMaster, CPetEntity* PPet)
         PPet->SetMLevel(mLvl);
     }
     else
-    { // TODO: How does this interact since all jobs can use it?
-      // https://www.bg-wiki.com/ffxi/Poseidon%27s_Ring
-
+    { // should never happen
         ShowDebug("%s summoned an avatar but is not SMN main or SMN sub! Please report. ", PMaster->getName());
         PPet->SetMLevel(1);
     }
@@ -921,29 +840,43 @@ void CalculateAvatarStats(CBattleEntity* PMaster, CPetEntity* PPet)
     {
         PPet->setModifier(Mod::MATT, 20);
     }
+    static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_MAIN])->setDelay(320);
 
-    static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_MAIN])->setDelay(PPetData->cmbDelay);
-    static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_MAIN])->setBaseDelay(PPetData->cmbDelay);
-    static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_RANGED])->setBaseDelay(360); // Used for titan's ranged skills TP returns.
+    if (petID == PETID_FENRIR)
+    {
+        static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_MAIN])->setDelay(280);
+    }
 
     // In a 2014 update SE updated Avatar base damage
-    uint16 weaponDamage = mLvl + 2;
+    // Based on testing this value appears to be Level now instead of Level * 0.74f
+    uint16 weaponDamage = 1 + mLvl;
+    if (petID == PETID_CARBUNCLE || petID == PETID_CAIT_SITH)
+    {
+        weaponDamage = static_cast<uint16>(floor(mLvl * 0.9f));
+    }
 
     static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_MAIN])->setDamage(weaponDamage);
-
+    static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_MAIN])->setBaseDelay(PPetData->cmbDelay);
     // Set B+ weapon skill (assumed capped for level derp)
     // attack is madly high for avatars (roughly x2)
-    PPet->setModifier(Mod::ATT, 2 * battleutils::GetMaxSkill(xi::SkillType::Club, JOB_WHM, mLvl > 99 ? 99 : mLvl));
-    PPet->setModifier(Mod::ACC, battleutils::GetMaxSkill(xi::SkillType::Club, JOB_WHM, mLvl > 99 ? 99 : mLvl));
+    PPet->setModifier(Mod::ATT, 2 * battleutils::GetMaxSkill(SKILL_CLUB, JOB_WHM, mLvl > 99 ? 99 : mLvl));
+    PPet->setModifier(Mod::ACC, battleutils::GetMaxSkill(SKILL_CLUB, JOB_WHM, mLvl > 99 ? 99 : mLvl));
+
+    // Fenrir has a documented +30% Attack bonus on top of the base avatar ATT.
+    if (petID == PETID_FENRIR)
+    {
+        int16 fenrirAttBonus = static_cast<int16>(std::floor(2 * battleutils::GetMaxSkill(SKILL_CLUB, JOB_WHM, mLvl > 99 ? 99 : mLvl) * 0.30f));
+        PPet->addModifier(Mod::ATT, fenrirAttBonus);
+    }
 
     // Set E evasion and def
-    PPet->setModifier(Mod::EVA, battleutils::GetMaxSkill(xi::SkillType::Throwing, JOB_WHM, mLvl > 99 ? 99 : mLvl));
-    PPet->setModifier(Mod::DEF, battleutils::GetMaxSkill(xi::SkillType::Throwing, JOB_WHM, mLvl > 99 ? 99 : mLvl));
+    PPet->setModifier(Mod::EVA, battleutils::GetMaxSkill(SKILL_THROWING, JOB_WHM, mLvl > 99 ? 99 : mLvl));
+    PPet->setModifier(Mod::DEF, battleutils::GetMaxSkill(SKILL_THROWING, JOB_WHM, mLvl > 99 ? 99 : mLvl));
 
     // cap all magic skills so they play nice with spell scripts
-    for (int i = static_cast<int>(xi::SkillType::DivineMagic); i <= static_cast<int>(xi::SkillType::BlueMagic); i++)
+    for (int i = SKILL_DIVINE_MAGIC; i <= SKILL_BLUE_MAGIC; i++)
     {
-        uint16 maxSkill = battleutils::GetMaxSkill((xi::SkillType)i, PPet->GetMJob(), mLvl > 99 ? 99 : mLvl);
+        uint16 maxSkill = battleutils::GetMaxSkill((SKILLTYPE)i, PPet->GetMJob(), mLvl > 99 ? 99 : mLvl);
         if (maxSkill != 0)
         {
             PPet->WorkingSkills.skill[i] = maxSkill;
@@ -951,7 +884,7 @@ void CalculateAvatarStats(CBattleEntity* PMaster, CPetEntity* PPet)
         else // if the mob is WAR/BLM and can cast spell
         {
             // set skill as high as main level, so their spells won't get resisted
-            uint16 maxSubSkill = battleutils::GetMaxSkill((xi::SkillType)i, PPet->GetSJob(), mLvl > 99 ? 99 : mLvl);
+            uint16 maxSubSkill = battleutils::GetMaxSkill((SKILLTYPE)i, PPet->GetSJob(), mLvl > 99 ? 99 : mLvl);
 
             if (maxSubSkill != 0)
             {
@@ -1013,11 +946,11 @@ void CalculateWyvernStats(CBattleEntity* PMaster, CPetEntity* PPet)
     static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_MAIN])->setBaseDelay(320);
     static_cast<CItemWeapon*>(PPet->m_Weapons[SLOT_MAIN])->setDamage((uint16)(floor(mLvl / 2) + 3));
     // Set A+ weapon skill
-    PPet->setModifier(Mod::ATT, battleutils::GetMaxSkill(xi::SkillType::GreatAxe, JOB_WAR, mLvl > 99 ? 99 : mLvl));
-    PPet->setModifier(Mod::ACC, battleutils::GetMaxSkill(xi::SkillType::GreatAxe, JOB_WAR, mLvl > 99 ? 99 : mLvl));
+    PPet->setModifier(Mod::ATT, battleutils::GetMaxSkill(SKILL_GREAT_AXE, JOB_WAR, mLvl > 99 ? 99 : mLvl));
+    PPet->setModifier(Mod::ACC, battleutils::GetMaxSkill(SKILL_GREAT_AXE, JOB_WAR, mLvl > 99 ? 99 : mLvl));
     // Set D evasion and def
-    PPet->setModifier(Mod::EVA, battleutils::GetMaxSkill(xi::SkillType::HandToHand, JOB_WAR, mLvl > 99 ? 99 : mLvl));
-    PPet->setModifier(Mod::DEF, battleutils::GetMaxSkill(xi::SkillType::HandToHand, JOB_WAR, mLvl > 99 ? 99 : mLvl));
+    PPet->setModifier(Mod::EVA, battleutils::GetMaxSkill(SKILL_HAND_TO_HAND, JOB_WAR, mLvl > 99 ? 99 : mLvl));
+    PPet->setModifier(Mod::DEF, battleutils::GetMaxSkill(SKILL_HAND_TO_HAND, JOB_WAR, mLvl > 99 ? 99 : mLvl));
 
     // https://www.bg-wiki.com/ffxi/Wyvern_(Dragoon_Pet)#Combat_Stats
     // innate -40 % DT, which does not contribute to the -50 % cap (this is a unique attribute to pets having a "higher" DT cap)
@@ -1053,7 +986,7 @@ void CalculateWyvernStats(CBattleEntity* PMaster, CPetEntity* PPet)
 
 void CalculateJugPetStats(CBattleEntity* PMaster, CPetEntity* PPet)
 {
-    uint32 petID = PPet->petID();
+    uint32 petID = PPet->m_PetID;
 
     // clang-format off
         auto maybePetData = std::find_if(g_PPetList.begin(), g_PPetList.end(), [petID](Pet_t* t)
@@ -1102,13 +1035,35 @@ void CalculateAutomatonStats(CBattleEntity* PMaster, CBattleEntity* PPet)
     // TODO: should CBattleEntity be able to load a real automaton?
     if (CCharEntity* PChar = dynamic_cast<CCharEntity*>(PMaster))
     {
-        // TODO: AUTOMATON_LEVEL_BONUS will raise the level of the automaton, but stats will be capped to 99. Needs retail captures.
+        JOBTYPE mjob = JOBTYPE::JOB_NON;
+        JOBTYPE sjob = JOBTYPE::JOB_NON;
+
+        switch (PChar->getAutomatonFrame())
+        {
+            default: // case AutomatonFrame::Harlequin:
+                mjob = JOB_WAR;
+                sjob = JOB_RDM;
+                break;
+            case AutomatonFrame::Valoredge:
+                mjob = JOB_PLD;
+                sjob = JOB_WAR;
+                break;
+            case AutomatonFrame::Sharpshot:
+                mjob = JOB_RNG;
+                sjob = JOB_PUP;
+                break;
+            case AutomatonFrame::Stormwaker:
+                mjob = JOB_RDM;
+                sjob = JOB_WHM;
+                break;
+        }
+
         uint8 mainLevel = PMaster->GetMJob() == JOB_PUP ? PMaster->GetMLevel() + PMaster->getMod(Mod::AUTOMATON_LVL_BONUS) : PMaster->GetSLevel();
 
         uint32 petID = 0;
         if (PAutomaton)
         {
-            petID = PAutomaton->petID();
+            petID = PAutomaton->m_PetID;
             // TEMP: should be MLevel when unsummoned, and PUP level when summoned
             PPet->SetMLevel(mainLevel);
             PPet->SetSLevel(mainLevel / 2); // Todo: SetSLevel() already reduces the level?
@@ -1133,7 +1088,7 @@ void CalculateAutomatonStats(CBattleEntity* PMaster, CBattleEntity* PPet)
             }
         }
 
-        LoadAutomatonStats(PChar, PAutomaton, g_PPetList.at(petID), mainLevel);
+        LoadAutomatonStats(PChar, PAutomaton, g_PPetList.at(petID), mainLevel, mjob, sjob); // temp
 
         if (PAutomaton)
         {
@@ -1158,7 +1113,7 @@ void CalculateLuopanStats(CBattleEntity* PMaster, CPetEntity* PPet)
     PPet->SetMLevel(PMaster->GetMLevel());
     PPet->health.maxhp = (uint32)floor((250 * PPet->GetMLevel()) / 15);
 
-    if (PMaster->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Bolster))
+    if (PMaster->StatusEffectContainer->HasStatusEffect(EFFECT_BOLSTER))
     {
         uint8 bolsterJPVal = static_cast<CCharEntity*>(PMaster)->PJobPoints->GetJobPointValue(JP_BOLSTER_EFFECT);
         PPet->health.maxhp += (uint32)floor(PPet->health.maxhp * (0.03 * bolsterJPVal));
@@ -1169,7 +1124,7 @@ void CalculateLuopanStats(CBattleEntity* PMaster, CPetEntity* PPet)
     // This sets the correct visual size for the luopan as pets currently
     // do not make use of the entity flags in the database
     // TODO: make pets use entity flags
-    PPet->m_flags = static_cast<xi::EntityFlags>(0x0000008B);
+    PPet->m_flags = 0x0000008B;
     // Just sit, do nothing
     PPet->baseSpeed = 0;
     PPet->UpdateSpeed();
@@ -1216,7 +1171,7 @@ void SetupPetWithMaster(CBattleEntity* PMaster, CPetEntity* PPet)
     if (auto* PMasterChar = dynamic_cast<CCharEntity*>(PMaster))
     {
         charutils::BuildingCharAbilityTable(PMasterChar);
-        charutils::BuildingCharPetAbilityTable(PMasterChar, PPet, PPet->petID());
+        charutils::BuildingCharPetAbilityTable(PMasterChar, PPet, PPet->m_PetID);
 
         PMasterChar->pushPacket<CCharStatusPacket>(PMasterChar);
         PMasterChar->pushPacket<CPetSyncPacket>(PMasterChar);
@@ -1235,17 +1190,17 @@ void SetupPetWithMaster(CBattleEntity* PMaster, CPetEntity* PPet)
         // clang-format on
     }
 
-    if (PMaster->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Debilitation))
+    if (PMaster->StatusEffectContainer->HasStatusEffect(EFFECT_DEBILITATION))
     {
-        PPet->StatusEffectContainer->AddStatusEffectSilent(xi::StatusEffect::Debilitation, static_cast<uint16>(xi::StatusEffect::Debilitation), PMaster->StatusEffectContainer->GetStatusEffect(xi::StatusEffect::Debilitation)->GetPower(), 0s, PMaster->StatusEffectContainer->GetStatusEffect(xi::StatusEffect::Debilitation)->GetDuration());
+        PPet->StatusEffectContainer->AddStatusEffect(new CStatusEffect(EFFECT_DEBILITATION, EFFECT_DEBILITATION, PMaster->StatusEffectContainer->GetStatusEffect(EFFECT_DEBILITATION)->GetPower(), 0s, PMaster->StatusEffectContainer->GetStatusEffect(EFFECT_DEBILITATION)->GetDuration()), EffectNotice::Silent);
     }
-    if (PMaster->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Omerta))
+    if (PMaster->StatusEffectContainer->HasStatusEffect(EFFECT_OMERTA))
     {
-        PPet->StatusEffectContainer->AddStatusEffectSilent(xi::StatusEffect::Omerta, static_cast<uint16>(xi::StatusEffect::Omerta), PMaster->StatusEffectContainer->GetStatusEffect(xi::StatusEffect::Omerta)->GetPower(), 0s, PMaster->StatusEffectContainer->GetStatusEffect(xi::StatusEffect::Omerta)->GetDuration());
+        PPet->StatusEffectContainer->AddStatusEffect(new CStatusEffect(EFFECT_OMERTA, EFFECT_OMERTA, PMaster->StatusEffectContainer->GetStatusEffect(EFFECT_OMERTA)->GetPower(), 0s, PMaster->StatusEffectContainer->GetStatusEffect(EFFECT_OMERTA)->GetDuration()), EffectNotice::Silent);
     }
-    if (PMaster->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Impairment))
+    if (PMaster->StatusEffectContainer->HasStatusEffect(EFFECT_IMPAIRMENT))
     {
-        PPet->StatusEffectContainer->AddStatusEffectSilent(xi::StatusEffect::Impairment, static_cast<uint16>(xi::StatusEffect::Impairment), PMaster->StatusEffectContainer->GetStatusEffect(xi::StatusEffect::Impairment)->GetPower(), 0s, PMaster->StatusEffectContainer->GetStatusEffect(xi::StatusEffect::Impairment)->GetDuration());
+        PPet->StatusEffectContainer->AddStatusEffect(new CStatusEffect(EFFECT_IMPAIRMENT, EFFECT_IMPAIRMENT, PMaster->StatusEffectContainer->GetStatusEffect(EFFECT_IMPAIRMENT)->GetPower(), 0s, PMaster->StatusEffectContainer->GetStatusEffect(EFFECT_IMPAIRMENT)->GetDuration()), EffectNotice::Silent);
     }
 }
 
@@ -1280,7 +1235,7 @@ void SpawnPet(CBattleEntity* PMaster, uint32 PetID, bool spawningFromZone)
 
         if (spawningFromZone)
         {
-            PPet->spawnAnimation = xi::SpawnAnimation::Normal; // Don't play special spawn animation on zone in
+            PPet->spawnAnimation = SPAWN_ANIMATION::NORMAL; // Don't play special spawn animation on zone in
         }
 
         PMaster->loc.zone->InsertPET(PPet);
@@ -1330,7 +1285,7 @@ void SpawnMobPet(CBattleEntity* PMaster, uint32 PetID)
         PMaster->StatusEffectContainer->CopyConfrontationEffect(PPet);
 
         // TODO: Lets not do this here.
-        if (PPet->m_EcoSystem == xi::Ecosystem::Elemental)
+        if (PPet->m_EcoSystem == ECOSYSTEM::ELEMENTAL)
         {
             // assuming elemental spawn
             PPet->setModifier(Mod::DMGPHYS, -5000); //-50% PDT
@@ -1440,11 +1395,9 @@ void DetachPet(CBattleEntity* PMaster)
         }
 
         PMob->isCharmed  = false;
-        PMob->allegiance = xi::Allegiance::Mob;
+        PMob->allegiance = ALLEGIANCE_TYPE::MOB;
         PMob->charmTime  = timer::time_point::min();
         PMob->PMaster    = nullptr;
-
-        PMob->setMobMod(MOBMOD_BODYGUARD, 0);
 
         PMob->PAI->SetController(std::make_unique<CMobController>(PMob));
 
@@ -1864,11 +1817,11 @@ void LoadPet(CBattleEntity* PMaster, uint32 PetID, bool spawningFromZone)
     CPetEntity* PPet = nullptr;
     if (petType == PET_TYPE::AUTOMATON && PMaster->objtype == TYPE_PC)
     {
-        PPet = new CAutomatonEntity(PPetData->PetID);
+        PPet = new CAutomatonEntity();
     }
     else
     {
-        PPet = new CPetEntity(petType, PPetData->PetID);
+        PPet = new CPetEntity(petType);
         PPet->saveModifiers();
     }
 
@@ -1904,6 +1857,7 @@ void LoadPet(CBattleEntity* PMaster, uint32 PetID, bool spawningFromZone)
     PPet->m_MobSkillList = PPetData->m_MobSkillList;
     PPet->SetMJob(PPetData->mJob);
     PPet->m_Element = PPetData->m_Element;
+    PPet->m_PetID   = PPetData->PetID;
 
     if (PPet->getPetType() == PET_TYPE::AVATAR)
     {
@@ -1936,7 +1890,7 @@ void LoadPet(CBattleEntity* PMaster, uint32 PetID, bool spawningFromZone)
     }
 
     PPet->setSpawnLevel(PPet->GetMLevel());
-    PPet->status          = xi::Status::Normal;
+    PPet->status          = STATUS_TYPE::NORMAL;
     PPet->modelSize       = PPetData->modelSize;
     PPet->modelHitboxSize = PPetData->modelHitboxSize;
     PPet->m_EcoSystem     = PPetData->EcoSystem;
@@ -1971,7 +1925,7 @@ bool CheckPetModType(CBattleEntity* PPet, PetModType petmod)
         }
         if (petmod >= PetModType::Automaton && petmod <= PetModType::Stormwaker && PPetEntity->getPetType() == PET_TYPE::AUTOMATON)
         {
-            if (petmod == PetModType::Automaton || (uint16)petmod + 28 == (uint16) static_cast<CAutomatonEntity*>(PPetEntity)->frame())
+            if (petmod == PetModType::Automaton || (uint16)petmod + 28 == (uint16) static_cast<CAutomatonEntity*>(PPetEntity)->getFrame())
             {
                 return true;
             }

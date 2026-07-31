@@ -46,7 +46,14 @@ WorldEngine::WorldEngine(Scheduler& scheduler, ZMQService& zmqService, EnableHTT
         kTimeServerTickInterval,
         [this]() -> Task<void>
         {
-            co_await time_server(this);
+            try
+            {
+                co_await time_server(this);
+            }
+            catch (const std::exception& e)
+            {
+                ShowErrorFmt("time_server tick failed: {}", e.what());
+            }
         });
 
     pumpQueuesToken_ = scheduler_.intervalOnMainThread(

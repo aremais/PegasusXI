@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -19,13 +19,15 @@
 ===========================================================================
 */
 
-#include "lua_base_entity.h"
+#include "lua_baseentity.h"
 
+#include "lua_battlefield.h"
 #include "lua_instance.h"
-
-#include "items/exdata/worn_item.h"
+#include "lua_item.h"
 #include "lua_spell.h"
 #include "lua_statuseffect.h"
+#include "lua_trade_container.h"
+#include "lua_zone.h"
 #include "luautils.h"
 
 #include "common/logging.h"
@@ -37,13 +39,15 @@
 #include "alliance.h"
 #include "aman.h"
 #include "battlefield.h"
-#include "conquest_system.h"
+#include "daily_system.h"
 #include "enmity_container.h"
 #include "fishingcontest.h"
 #include "guild.h"
 #include "instance.h"
 #include "ipc_client.h"
 #include "item_container.h"
+#include "items.h"
+#include "items/exdata.h"
 #include "job_points.h"
 #include "latent_effect_container.h"
 #include "linkshell.h"
@@ -61,6 +65,7 @@
 #include "timetriggers.h"
 #include "trade_container.h"
 #include "transport.h"
+#include "treasure_pool.h"
 #include "weapon_skill.h"
 #include "zone.h"
 
@@ -86,6 +91,7 @@
 
 #include "entities/automaton_entity.h"
 #include "entities/char_entity.h"
+#include "entities/fellow_entity.h"
 #include "entities/mob_entity.h"
 #include "entities/npc_entity.h"
 #include "entities/pet_entity.h"
@@ -93,10 +99,8 @@
 #include "enums/automaton.h"
 #include "enums/chat_message_area.h"
 #include "enums/item_lockflg.h"
-#include "items/exdata.h"
 #include "items/item_furnishing.h"
 #include "items/item_linkshell.h"
-#include "items/item_puppet.h"
 
 #include "packets/char_status.h"
 #include "packets/char_sync.h"
@@ -128,6 +132,7 @@
 #include "packets/s2c/0x052_eventucoff.h"
 #include "packets/s2c/0x053_systemmes.h"
 #include "packets/s2c/0x055_scenarioitem.h"
+#include "packets/s2c/0x056_mission.h"
 #include "packets/s2c/0x05a_motionmes.h"
 #include "packets/s2c/0x05b_wpos.h"
 #include "packets/s2c/0x05c_pendingnum.h"
@@ -139,7 +144,6 @@
 #include "packets/s2c/0x063_miscdata_job_points.h"
 #include "packets/s2c/0x063_miscdata_merits.h"
 #include "packets/s2c/0x063_miscdata_monstrosity.h"
-#include "packets/s2c/0x069_chocobo_racing.h"
 #include "packets/s2c/0x075_battlefield.h"
 #include "packets/s2c/0x077_entity_vis.h"
 #include "packets/s2c/0x086_guild_open.h"
@@ -167,6 +171,8 @@
 #include "utils/zoneutils.h"
 
 #include <magic_enum/magic_enum.hpp>
+
+extern std::unordered_map<uint32, std::unordered_map<uint16, std::vector<std::pair<uint16, uint8>>>> PacketMods;
 
 //======================================================//
 
@@ -223,7 +229,7 @@ void CLuaBaseEntity::showText(CLuaBaseEntity* entity, uint16 messageID, const so
     }
     else if (m_PBaseEntity->loc.zone)
     {
-        m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUMWORK>(PBaseEntity, messageID, param0, param1, param3, showName));
+        m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUMWORK>(PBaseEntity, messageID, param0, param1, param2, param3, showName));
     }
 }
 
@@ -236,9 +242,9 @@ void CLuaBaseEntity::showText(CLuaBaseEntity* entity, uint16 messageID, const so
 
 void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageID, const sol::object& arg2, const sol::object& arg3)
 {
-    if (PLuaBaseEntity == nullptr)
+    if (PLuaBaseEntity == nullptr || PLuaBaseEntity->m_PBaseEntity == nullptr)
     {
-        ShowError("CLuaBaseEntity::messageText() - argument 1 of CLuaBaseEntity* was nullptr");
+        ShowError("CLuaBaseEntity::messageText() - target entity was nullptr");
         return;
     }
 
@@ -249,7 +255,8 @@ void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageI
     bool  faceGiven = false;
     uint8 face      = 0;
 
-    // TODO: Clean this up.  We could potentially accept two int vals for optional args, which could cause unexpected showName behavior.
+    // TODO: Clean this up. We could potentially accept two int vals for optional args,
+    // which could cause unexpected showName behavior.
     if (arg2 != sol::lua_nil)
     {
         if (arg2.is<bool>())
@@ -264,19 +271,16 @@ void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageI
         {
             auto table   = arg2.as<sol::table>();
             auto faceArg = table.get<sol::object>("face");
-            faceGiven    = true;
 
             if (faceArg.get_type() == sol::type::number)
             {
-                face = faceArg.as<uint8>();
+                face      = faceArg.as<uint8>();
+                faceGiven = true;
             }
-            else if (faceArg.get_type() == sol::type::number)
+            else if (faceArg.get_type() == sol::type::boolean && faceArg.as<bool>())
             {
-                face = worldAngle(PTarget->loc.p, m_PBaseEntity->loc.p);
-            }
-            else
-            {
-                faceGiven = false;
+                face      = worldAngle(PTarget->loc.p, m_PBaseEntity->loc.p);
+                faceGiven = true;
             }
 
             showName = table.get_or("showName", true);
@@ -296,13 +300,14 @@ void CLuaBaseEntity::messageText(CLuaBaseEntity* PLuaBaseEntity, uint16 messageI
         PTarget->updatemask |= UPDATE_POS;
     }
 
-    if (auto player = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    if (auto* player = dynamic_cast<CCharEntity*>(m_PBaseEntity))
     {
         player->gotMessage = true;
         player->pushPacket<GP_SERV_COMMAND_TALKNUM>(PTarget, messageID, showName, mode);
     }
-    else
-    { // broadcast in range
+    else if (m_PBaseEntity->loc.zone)
+    {
+        // Broadcast in range
         m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUM>(PTarget, messageID, showName, mode));
     }
 }
@@ -457,7 +462,17 @@ void CLuaBaseEntity::messageBasic(uint16 messageID, const sol::object& p0, const
     uint32 param0 = (p0 != sol::lua_nil) ? p0.as<uint32>() : 0;
     uint32 param1 = (p1 != sol::lua_nil) ? p1.as<uint32>() : 0;
 
-    auto* PTarget = (target != sol::lua_nil) ? target.as<CLuaBaseEntity*>()->m_PBaseEntity : m_PBaseEntity;
+    CBaseEntity* PTarget = m_PBaseEntity;
+    if (target != sol::lua_nil)
+    {
+        if (auto* luaTarget = target.as<CLuaBaseEntity*>())
+        {
+            if (luaTarget->m_PBaseEntity)
+            {
+                PTarget = luaTarget->m_PBaseEntity;
+            }
+        }
+    }
 
     if (m_PBaseEntity->objtype == TYPE_PC)
     {
@@ -473,11 +488,11 @@ void CLuaBaseEntity::messageBasic(uint16 messageID, const sol::object& p0, const
 /************************************************************************
  *  Function: messageName()
  *  Purpose : Message displayed with an entity's name in it
- *  Example : target:messageName(messageID, entity, param0, param1, param2, param3, chatType);
- *  Notes   : Used in Doom countdown messages, as an example
+ *  Example : target:messageName(messageID, entity, param0, param1, param2, param3, chatType, showSender);
+ *  Notes   : Used in Doom countdown messages, as an example. showSender=true sends raw MesNum (no 0x8000) for zone text with a name prefix.
  ************************************************************************/
 
-void CLuaBaseEntity::messageName(uint16 messageID, const sol::object& entity, const sol::object& p0, const sol::object& p1, const sol::object& p2, const sol::object& p3, const sol::object& chat)
+void CLuaBaseEntity::messageName(uint16 messageID, const sol::object& entity, const sol::object& p0, const sol::object& p1, const sol::object& p2, const sol::object& p3, const sol::object& chat, const sol::object& showSender)
 {
     CLuaBaseEntity* PLuaEntity  = (entity != sol::lua_nil) ? entity.as<CLuaBaseEntity*>() : nullptr;
     CBaseEntity*    PNameEntity = PLuaEntity ? PLuaEntity->m_PBaseEntity : nullptr;
@@ -487,15 +502,16 @@ void CLuaBaseEntity::messageName(uint16 messageID, const sol::object& entity, co
     int32 param2 = (p2 != sol::lua_nil) ? p2.as<int32>() : 0;
     int32 param3 = (p3 != sol::lua_nil) ? p3.as<int32>() : 0;
 
-    int32 chatType = (chat != sol::lua_nil) ? chat.as<int32>() : 4;
+    int32 chatType     = (chat != sol::lua_nil) ? chat.as<int32>() : 4;
+    bool  useRawMesNum = (showSender != sol::lua_nil) && showSender.as<bool>();
 
     if (CCharEntity* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
     {
-        PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK2>(PChar, messageID, PNameEntity, param0, param1, param2, param3, chatType);
+        PChar->pushPacket<GP_SERV_COMMAND_TALKNUMWORK2>(PChar, messageID, PNameEntity, param0, param1, param2, param3, chatType, useRawMesNum);
     }
     else if (m_PBaseEntity->loc.zone)
     {
-        m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUMWORK2>(m_PBaseEntity, messageID, PNameEntity, param0, param1, param2, param3, chatType));
+        m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, std::make_unique<GP_SERV_COMMAND_TALKNUMWORK2>(m_PBaseEntity, messageID, PNameEntity, param0, param1, param2, param3, chatType, useRawMesNum));
     }
 }
 
@@ -657,8 +673,8 @@ auto CLuaBaseEntity::getCharVarsWithPrefix(const std::string& prefix) -> sol::ta
 
 /************************************************************************
  *  Function: getCharVarsWithSuffix()
- *  Purpose :
- *  Example : local vars = player:getCharVarsWithSuffix("]mustZone")
+ *  Purpose : Returns all char_vars whose names end with the given suffix (SQL LIKE %suffix).
+ *  Example : local vars = player:getCharVarsWithSuffix(']mustZone')
  *  Notes   :
  ************************************************************************/
 
@@ -689,6 +705,11 @@ void CLuaBaseEntity::setCharVar(const std::string& varName, int32 value, const s
     if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
     {
         uint32 varTimestamp = expiry.is<uint32>() ? expiry.as<uint32>() : 0;
+
+        if (value != 0 && varName == "CONQUEST_RING_RECHARGE" && varTimestamp == 0)
+        {
+            varTimestamp = luautils::NextJstWeek();
+        }
 
         if (varTimestamp > 0 && varTimestamp <= earth_time::timestamp())
         {
@@ -751,6 +772,11 @@ void CLuaBaseEntity::setVolatileCharVar(const std::string& varName, int32 value,
     {
         uint32 varTimestamp = expiry.is<uint32>() ? expiry.as<uint32>() : 0;
 
+        if (value != 0 && varName == "CONQUEST_RING_RECHARGE" && varTimestamp == 0)
+        {
+            varTimestamp = luautils::NextJstWeek();
+        }
+
         if (varTimestamp > 0 && varTimestamp <= earth_time::timestamp())
         {
             ShowWarning(fmt::format("Attempting to set variable '{}' with an expired time: {}", varName, varTimestamp));
@@ -798,7 +824,7 @@ uint32 CLuaBaseEntity::getLocalVar(const std::string& var)
 /************************************************************************
  *  Function: setLocalVar()
  *  Purpose : Assigns a local variable to an entity
- *  Example : mob:setLocalVar("pop", GetSystemTime() + math.randomInt(1200, 7200));
+ *  Example : mob:setLocalVar("pop", GetSystemTime() + math.random(1200,7200));
  *  Notes   :
  ************************************************************************/
 
@@ -946,14 +972,14 @@ void CLuaBaseEntity::injectActionPacket(const uint32 inTargetID, uint16 inCatego
         .actionid   = inActionParam,
         .targets    = {
             {
-                .actorId = inTargetID,
-                .results = {
+                   .actorId = inTargetID,
+                   .results = {
                     {
-                        .resolution = reaction,
-                        .animation  = static_cast<ActionAnimation>(inAnimationID),
-                        .info       = info,
-                        .param      = inParam,
-                        .messageID  = static_cast<MsgBasic>(inMessage),
+                           .resolution = reaction,
+                           .animation  = static_cast<ActionAnimation>(inAnimationID),
+                           .info       = info,
+                           .param      = inParam,
+                           .messageID  = static_cast<MsgBasic>(inMessage),
                     },
                 },
             },
@@ -1065,8 +1091,8 @@ void CLuaBaseEntity::sendLinkshellConcierge(const sol::table& data) const
         return;
     }
 
-    const auto   yourSlotRaw = data.get<sol::optional<uint8>>("yourSlot");
-    Maybe<uint8> yourSlot;
+    const auto           yourSlotRaw = data.get<sol::optional<uint8>>("yourSlot");
+    std::optional<uint8> yourSlot;
     if (yourSlotRaw)
     {
         yourSlot = *yourSlotRaw;
@@ -1115,92 +1141,6 @@ void CLuaBaseEntity::sendLinkshellConcierge(const sol::table& data) const
 }
 
 /************************************************************************
- *  Function: sendChocoboRace()
- *  Purpose : Send the entire chocobo race content to the player.
- *  Note    : Complex API, see chocobo_racing.lua for usage.
- ************************************************************************/
-void CLuaBaseEntity::sendChocoboRace(const sol::table& race) const
-{
-    auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity);
-    if (!PChar)
-    {
-        return;
-    }
-
-    // Read a 1-indexed lua table of per-chocobo values (positions or places) into a fixed array.
-    const auto readNibbles = [](const sol::table& values) -> std::array<uint8, GP_SERV_COMMAND_CHOCOBO_RACING::kNumRacers>
-    {
-        std::array<uint8, GP_SERV_COMMAND_CHOCOBO_RACING::kNumRacers> out{};
-        for (uint8 racer = 0; racer < GP_SERV_COMMAND_CHOCOBO_RACING::kNumRacers; ++racer)
-        {
-            out[racer] = values.get_or<uint8>(racer + 1, 0);
-        }
-
-        return out;
-    };
-
-    // Mode 1: Race parameters
-    PChar->pushPacket<GP_SERV_COMMAND_CHOCOBO_RACING::RACINGPARAMS>(race.get_or<uint32>("weather", 1), race.get_or<uint32>("counter", 0)); // 1 = xi.weather.SUNSHINE (clear)
-
-    // Mode 2: Racing Chocobos
-    if (const auto chocobos = race.get<sol::optional<sol::table>>("chocobos"))
-    {
-        const auto                                                count = std::min<size_t>(chocobos->size(), GP_SERV_COMMAND_CHOCOBO_RACING::kNumRacers);
-        std::vector<GP_SERV_COMMAND_CHOCOBO_RACING::ChocoboParam> entries(count);
-
-        for (size_t idx = 1; idx <= count; ++idx)
-        {
-            entries[idx - 1] = GP_SERV_COMMAND_CHOCOBO_RACING::ChocoboParam::fromLua(chocobos->get<sol::table>(idx));
-        }
-
-        PChar->pushPacket<GP_SERV_COMMAND_CHOCOBO_RACING::CHOCOBOPARAMS>(entries);
-    }
-
-    // Mode 3: Racing sections, 16 sections per packet.
-    if (const auto raceSections = race.get<sol::optional<sol::table>>("sections"))
-    {
-        const size_t                                              sectionCount = std::min<size_t>(raceSections->size(), GP_SERV_COMMAND_CHOCOBO_RACING::kMaxSections);
-        std::vector<GP_SERV_COMMAND_CHOCOBO_RACING::SectionParam> sections(sectionCount);
-
-        for (size_t idx = 1; idx <= sectionCount; ++idx)
-        {
-            const auto sec     = raceSections->get<sol::table>(idx);
-            auto&      section = sections[idx - 1];
-
-            GP_SERV_COMMAND_CHOCOBO_RACING::packNibbles(section.From, readNibbles(sec.get<sol::table>("from")));
-            GP_SERV_COMMAND_CHOCOBO_RACING::packNibbles(section.To, readNibbles(sec.get<sol::table>("to")));
-
-            if (const auto event = sec.get<sol::optional<sol::table>>("trigger"))
-            {
-                section.Trigger.User    = event->get_or<uint8>("user", 0);
-                section.Trigger.Targets = event->get_or<uint8>("targets", 0);
-                section.Trigger.Param   = event->get_or<uint8>("param", 0);
-                section.Trigger.Type    = static_cast<GP_SERV_COMMAND_CHOCOBO_RACING::SectionEventType>(event->get_or<uint8>("type", 0));
-            }
-        }
-
-        // Each packet carries up to kSectionsPerPacket sections;
-        // ParamIndex is the starting section index.
-        for (size_t offset = 0; offset < sections.size(); offset += GP_SERV_COMMAND_CHOCOBO_RACING::kSectionsPerPacket)
-        {
-            const auto end = std::min(offset + GP_SERV_COMMAND_CHOCOBO_RACING::kSectionsPerPacket, sections.size());
-
-            std::vector<GP_SERV_COMMAND_CHOCOBO_RACING::SectionParam> chunk(sections.begin() + offset, sections.begin() + end);
-            PChar->pushPacket<GP_SERV_COMMAND_CHOCOBO_RACING::SECTIONPARAMS>(static_cast<uint8>(offset), chunk);
-        }
-    }
-
-    // Mode 4: Final race results.
-    if (const auto places = race.get<sol::optional<sol::table>>("places"))
-    {
-        PChar->pushPacket<GP_SERV_COMMAND_CHOCOBO_RACING::RESULTPARAMS>(readNibbles(*places));
-    }
-
-    // Mode 5: Notify client exchange is done.
-    PChar->pushPacket<GP_SERV_COMMAND_CHOCOBO_RACING::END>();
-}
-
-/************************************************************************
  *  Helper function for the lua bindings that start events.
  ************************************************************************/
 void CLuaBaseEntity::StartEventHelper(int32 EventID, sol::variadic_args va, EVENT_TYPE eventType)
@@ -1218,7 +1158,7 @@ void CLuaBaseEntity::StartEventHelper(int32 EventID, sol::variadic_args va, EVEN
         ShowError("CLuaBaseEntity::StartEventHelper: Could not start event, Character Entity already triggered.");
         return;
     }
-    PChar->StatusEffectContainer->DelStatusEffect(xi::StatusEffect::Boost);
+    PChar->StatusEffectContainer->DelStatusEffect(EFFECT_BOOST);
 
     PChar->queueEvent(ParseEvent(EventID, va, PChar->eventPreparation, eventType));
 }
@@ -1274,7 +1214,6 @@ EventInfo* CLuaBaseEntity::ParseEvent(int32 EventID, sol::variadic_args va, Even
         eventToStart->interruptText = table.get_or<int16>("interrupt_text", 0);
         eventToStart->eventFlags    = table.get_or<uint32>("flags", 0);
         eventToStart->canSkip       = table.get_or("canSkip", false);
-        eventToStart->isHidden      = table.get_or("isHidden", false);
 
         sol::object csOption = table["cs_option"];
         if (csOption.is<int32>())
@@ -1320,8 +1259,8 @@ EventInfo* CLuaBaseEntity::ParseEvent(int32 EventID, sol::variadic_args va, Even
             currentIndex++;
         }
 
-        // Finally parse out an optional last argument as text_table
-        eventToStart->textTable = va.get_type(8) == sol::type::number ? va.get<int16>(8) : -1;
+        // Finally parse out an optional last argument as text_table.
+        eventToStart->textTable = va.get_type(currentIndex) == sol::type::number ? va.get<int16>(currentIndex) : -1;
     }
 
     if (eventType == OPTIONAL_CUTSCENE)
@@ -1648,30 +1587,12 @@ void CLuaBaseEntity::setMoghouseFlag(uint16 flag)
 
 bool CLuaBaseEntity::needToZone(const sol::object& arg0)
 {
-    if (m_PBaseEntity->objtype != TYPE_PC)
+    if (arg0 != sol::lua_nil)
     {
-        ShowWarning("Attempting call needToZone from invalid entity type (%s).", m_PBaseEntity->getName());
-        return false;
+        m_PBaseEntity->loc.zoning = arg0.as<bool>();
     }
 
-    if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
-    {
-        bool writeZoning = false;
-        if (arg0 != sol::lua_nil)
-        {
-            writeZoning = arg0.as<bool>();
-        }
-
-        if (writeZoning)
-        {
-            PChar->setCharVar("[generic]mustZone", PChar->getZone());
-            return true;
-        }
-
-        return PChar->getCharVar("[generic]mustZone") != 0;
-    }
-
-    return false;
+    return m_PBaseEntity->loc.zoning;
 }
 
 /************************************************************************
@@ -1812,7 +1733,7 @@ bool CLuaBaseEntity::isFellow() const
 bool CLuaBaseEntity::isAlly() const
 {
     const auto isMob          = m_PBaseEntity->objtype == TYPE_MOB;
-    const auto playerAlliance = m_PBaseEntity->allegiance == xi::Allegiance::Player;
+    const auto playerAlliance = m_PBaseEntity->allegiance == ALLEGIANCE_TYPE::PLAYER;
     return isMob && playerAlliance;
 }
 
@@ -1843,7 +1764,10 @@ void CLuaBaseEntity::initNpcAi()
 
 void CLuaBaseEntity::resetAI()
 {
-    m_PBaseEntity->PAI->Reset();
+    if (m_PBaseEntity->PAI)
+    {
+        m_PBaseEntity->PAI->Reset();
+    }
 }
 
 /************************************************************************
@@ -1853,9 +1777,9 @@ void CLuaBaseEntity::resetAI()
  *  Notes   :
  ************************************************************************/
 
-auto CLuaBaseEntity::getStatus() -> xi::Status
+uint8 CLuaBaseEntity::getStatus()
 {
-    return m_PBaseEntity->status;
+    return static_cast<uint8>(m_PBaseEntity->status);
 }
 
 /************************************************************************
@@ -1865,9 +1789,9 @@ auto CLuaBaseEntity::getStatus() -> xi::Status
  *  Notes   :
  ************************************************************************/
 
-void CLuaBaseEntity::setStatus(xi::Status status)
+void CLuaBaseEntity::setStatus(uint8 status)
 {
-    m_PBaseEntity->status = status;
+    m_PBaseEntity->status = static_cast<STATUS_TYPE>(status);
     m_PBaseEntity->updatemask |= UPDATE_HP;
 }
 
@@ -1884,6 +1808,12 @@ uint8 CLuaBaseEntity::getCurrentAction()
     if (m_PBaseEntity->objtype == TYPE_NPC)
     {
         ShowWarning("Invalid Entity (NPC: %s) calling function.", m_PBaseEntity->getName());
+        return 0;
+    }
+
+    if (m_PBaseEntity->PAI == nullptr)
+    {
+        ShowWarning("getCurrentAction: PAI was nullptr for %s", m_PBaseEntity->getName());
         return 0;
     }
 
@@ -1921,6 +1851,10 @@ uint8 CLuaBaseEntity::getCurrentAction()
     {
         action = 27;
     }
+    else if (m_PBaseEntity->PAI->IsCurrentState<CDeathState>() && m_PBaseEntity->objtype == TYPE_PC && static_cast<CCharEntity*>(m_PBaseEntity)->m_hasRaise)
+    {
+        action = 37;
+    }
     else if (m_PBaseEntity->PAI->IsCurrentState<CDeathState>())
     {
         action = 22;
@@ -1928,10 +1862,6 @@ uint8 CLuaBaseEntity::getCurrentAction()
     else if (m_PBaseEntity->PAI->IsCurrentState<CDespawnState>())
     {
         action = 24;
-    }
-    else if (m_PBaseEntity->PAI->IsCurrentState<CDeathState>() && m_PBaseEntity->objtype == TYPE_PC && static_cast<CCharEntity*>(m_PBaseEntity)->m_hasRaise)
-    {
-        action = 37;
     }
     else if (m_PBaseEntity->PAI->IsCurrentState<CMobSkillState>())
     {
@@ -1965,14 +1895,19 @@ bool CLuaBaseEntity::canUseAbilities()
 {
     if (auto* PEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity))
     {
-        return !(PEntity->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::SleepI) ||
-                 PEntity->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Impairment) ||
-                 PEntity->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::SleepIi) ||
-                 PEntity->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Stun) ||
-                 PEntity->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Amnesia) ||
-                 PEntity->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Lullaby) ||
-                 PEntity->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Petrification) ||
-                 PEntity->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Terror) ||
+        if (m_PBaseEntity->PAI == nullptr)
+        {
+            return false;
+        }
+
+        return !(PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_SLEEP) ||
+                 PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_IMPAIRMENT) ||
+                 PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_SLEEP_II) ||
+                 PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_STUN) ||
+                 PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_AMNESIA) ||
+                 PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_LULLABY) ||
+                 PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_PETRIFICATION) ||
+                 PEntity->StatusEffectContainer->HasStatusEffect(EFFECT_TERROR) ||
                  !(m_PBaseEntity->PAI->CanChangeState()));
     }
 
@@ -1989,21 +1924,38 @@ bool CLuaBaseEntity::canUseAbilities()
 
 void CLuaBaseEntity::lookAt(const sol::object& arg0, const sol::object& arg1, const sol::object& arg2)
 {
-    position_t point;
+    position_t point{};
 
-    if ((arg0 != sol::lua_nil) && (arg0.is<double>()))
+    if ((arg0 != sol::lua_nil) && arg0.is<double>())
     {
+        if (!(arg1.is<double>() && arg2.is<double>()))
+        {
+            ShowError("CLuaBaseEntity::lookAt() requires x, y, z when first argument is numeric");
+            return;
+        }
+
         point.x = arg0.as<float>();
         point.y = arg1.as<float>();
         point.z = arg2.as<float>();
     }
-    else
+    else if (arg0.get_type() == sol::type::table)
     {
         auto position = arg0.as<std::map<std::string, float>>();
+
+        if (!position.contains("x") || !position.contains("y") || !position.contains("z"))
+        {
+            ShowError("CLuaBaseEntity::lookAt() table argument must contain x, y, z");
+            return;
+        }
 
         point.x = position["x"];
         point.y = position["y"];
         point.z = position["z"];
+    }
+    else
+    {
+        ShowError("CLuaBaseEntity::lookAt() received invalid arguments");
+        return;
     }
 
     // Avoid unpredictable results if we're too close.
@@ -2602,13 +2554,13 @@ void CLuaBaseEntity::showNPC(const sol::object& seconds)
 
     uint32 showTime = (seconds != sol::lua_nil) ? seconds.as<uint32>() * 1000 : 15000;
 
-    m_PBaseEntity->status = xi::Status::Normal;
+    m_PBaseEntity->status = STATUS_TYPE::NORMAL;
     m_PBaseEntity->loc.zone->UpdateEntityPacket(m_PBaseEntity, ENTITY_UPDATE, UPDATE_COMBAT);
 
     // clang-format off
     m_PBaseEntity->PAI->QueueAction(queueAction_t(std::chrono::milliseconds(showTime), false, [](CBaseEntity* PNpc)
     {
-        PNpc->status = xi::Status::Disappear;
+        PNpc->status = STATUS_TYPE::DISAPPEAR;
         if (PNpc->loc.zone)
         {
             PNpc->loc.zone->UpdateEntityPacket(PNpc, ENTITY_DESPAWN, UPDATE_NONE);
@@ -2637,17 +2589,17 @@ void CLuaBaseEntity::hideNPC(const sol::object& seconds)
         return;
     }
 
-    if (m_PBaseEntity->status == xi::Status::Normal)
+    if (m_PBaseEntity->status == STATUS_TYPE::NORMAL)
     {
         uint32 hideTime = (seconds != sol::lua_nil) ? seconds.as<uint32>() * 1000 : 15000;
 
-        m_PBaseEntity->status = xi::Status::Disappear;
+        m_PBaseEntity->status = STATUS_TYPE::DISAPPEAR;
         m_PBaseEntity->loc.zone->UpdateEntityPacket(m_PBaseEntity, ENTITY_DESPAWN, UPDATE_NONE);
 
         // clang-format off
         m_PBaseEntity->PAI->QueueAction(queueAction_t(std::chrono::milliseconds(hideTime), false, [](CBaseEntity* PNpc)
         {
-            PNpc->status = xi::Status::Normal;
+            PNpc->status = STATUS_TYPE::NORMAL;
             if (PNpc->loc.zone)
             {
                 PNpc->loc.zone->UpdateEntityPacket(PNpc, ENTITY_UPDATE, UPDATE_COMBAT);
@@ -2672,14 +2624,14 @@ void CLuaBaseEntity::updateNPCHideTime(const sol::object& seconds)
         return;
     }
 
-    if (m_PBaseEntity->status == xi::Status::Disappear)
+    if (m_PBaseEntity->status == STATUS_TYPE::DISAPPEAR)
     {
         uint32 hideTime = (seconds != sol::lua_nil) ? seconds.as<uint32>() * 1000 : 15000;
 
         // clang-format off
         m_PBaseEntity->PAI->QueueAction(queueAction_t(std::chrono::milliseconds(hideTime), false, [](CBaseEntity* PNpc)
         {
-            PNpc->status = xi::Status::Normal;
+            PNpc->status = STATUS_TYPE::NORMAL;
             if (PNpc->loc.zone)
             {
                 PNpc->loc.zone->UpdateEntityPacket(PNpc, ENTITY_UPDATE, UPDATE_COMBAT);
@@ -2697,7 +2649,7 @@ void CLuaBaseEntity::updateNPCHideTime(const sol::object& seconds)
 
 auto CLuaBaseEntity::getWeather(const sol::object& ignoreScholar) const -> uint8
 {
-    auto weather = xi::Weather::None;
+    auto weather = Weather::None;
 
     if (m_PBaseEntity->objtype & TYPE_PC || m_PBaseEntity->objtype & TYPE_MOB)
     {
@@ -2706,7 +2658,7 @@ auto CLuaBaseEntity::getWeather(const sol::object& ignoreScholar) const -> uint8
     }
     else
     {
-        weather = zoneutils::GetZone(m_PBaseEntity->getZone())->weather().current();
+        weather = zoneutils::GetZone(m_PBaseEntity->getZone())->GetWeather();
     }
 
     return static_cast<uint8>(weather);
@@ -2719,9 +2671,9 @@ auto CLuaBaseEntity::getWeather(const sol::object& ignoreScholar) const -> uint8
  *  Notes   : Only used for GM command: scripts/commands/setweather.lua
  ************************************************************************/
 
-void CLuaBaseEntity::setWeather(xi::Weather weatherType)
+void CLuaBaseEntity::setWeather(Weather weatherType)
 {
-    if (magic_enum::enum_contains<xi::Weather>(weatherType))
+    if (magic_enum::enum_contains<Weather>(weatherType))
     {
         zoneutils::GetZone(m_PBaseEntity->getZone())->SetWeather(weatherType);
         luautils::OnZoneWeatherChange(m_PBaseEntity->getZone(), weatherType);
@@ -2782,84 +2734,51 @@ void CLuaBaseEntity::sendMenu(uint32 menu)
 }
 
 /************************************************************************
- *  Function: openGuildShop()
- *  Purpose : Opens a lua guild shop and remembers the NPC the PC opened it with
- *  Example : if player:openGuildShop(npc, 8, 23) then
+ *  Function: sendGuild()
+ *  Purpose : Sends a guild menu to the PC (Ex: Cooking, Smithing, etc)
+ *  Example : if player:sendGuild(60426,1,18,6) then
+ *  Notes   : L2 and L3 only need simplified 24-hour time format (1,2,etc)
  ************************************************************************/
 
-auto CLuaBaseEntity::openGuildShop(CLuaBaseEntity* PNpc, uint8 open, uint8 close, sol::optional<uint8> holiday) const -> bool
+auto CLuaBaseEntity::sendGuild(const uint16 guildId, uint8 open, uint8 close, uint8 holiday) const -> bool
 {
-    auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity);
-    if (!PChar)
+    if (m_PBaseEntity->objtype != TYPE_PC)
     {
-        ShowWarningFmt("Invalid entity type calling function ({}).", m_PBaseEntity->getName());
+        ShowWarning("Invalid entity type calling function (%s).", m_PBaseEntity->getName());
         return false;
     }
 
-    if (PNpc == nullptr || PNpc->GetBaseEntity() == nullptr)
+    if (open > close)
     {
-        ShowWarning("Invalid guild shop NPC passed to openGuildShop().");
+        ShowWarning("Open Time (%d) exceeds Close Time (%d)", open, close);
         return false;
     }
 
-    const bool isHoliday = holiday.has_value() && holiday.value() == vanadiel_time::get_weekday(vanadiel_time::now());
+    const vanadiel_time::time_point vanaTime     = vanadiel_time::now();
+    const uint8                     VanadielHour = static_cast<uint8>(vanadiel_time::get_hour(vanaTime));
 
-    const uint8 vanadielHour = static_cast<uint8>(vanadiel_time::get_hour(vanadiel_time::now()));
-    const bool  isOpen       = !isHoliday && vanadielHour >= open && vanadielHour < close;
+    auto status = GP_SERV_COMMAND_GUILD_OPEN_STAT::Open;
 
-    auto status = GP_SERV_COMMAND_GUILD_OPEN_STAT::Close;
-    if (isHoliday)
+    // Guild holiday - Removed in 2014
+    // uint8 vanadielDay = static_cast<uint8>(vanadiel_time::get_weekday(vanaTime));
+    //
+    // if (vanadielDay == holiday)
+    // {
+    //     status = GUILD_HOLYDAY;
+    // }
+
+    if ((VanadielHour < open) || (VanadielHour >= close))
     {
-        status = GP_SERV_COMMAND_GUILD_OPEN_STAT::Holiday;
-    }
-    else if (isOpen)
-    {
-        status = GP_SERV_COMMAND_GUILD_OPEN_STAT::Open;
-    }
-
-    const auto* PNpcEntity = PNpc->GetBaseEntity();
-
-    PChar->guildShopNpc_.id     = PNpcEntity->id;
-    PChar->guildShopNpc_.targid = PNpcEntity->targid;
-    PChar->pushPacket<GP_SERV_COMMAND_GUILD_OPEN>(status, open, close, holiday.value_or(0));
-
-    return isOpen;
-}
-
-/************************************************************************
- *  Function: clearGuildShop()
- *  Purpose : Clears the PC's open guild shop handle
- *  Example : player:clearGuildShop()
- ************************************************************************/
-
-void CLuaBaseEntity::clearGuildShop() const
-{
-    auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity);
-    if (!PChar)
-    {
-        ShowWarningFmt("Invalid entity type calling function ({}).", m_PBaseEntity->getName());
-        return;
+        status = GP_SERV_COMMAND_GUILD_OPEN_STAT::Close;
     }
 
-    PChar->guildShopNpc_.clean();
-}
+    CItemContainer* PGuildShop = guildutils::GetGuildShop(guildId);
+    auto*           PChar      = static_cast<CCharEntity*>(m_PBaseEntity);
 
-/************************************************************************
- *  Function: sendGuildClose()
- *  Purpose : Sends the guild-open packet with a Close status to the PC
- *  Example : player:sendGuildClose(8, 23)
- ************************************************************************/
+    PChar->PGuildShop = PGuildShop;
+    PChar->pushPacket<GP_SERV_COMMAND_GUILD_OPEN>(status, open, close, holiday);
 
-void CLuaBaseEntity::sendGuildClose(uint8 open, uint8 close) const
-{
-    auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity);
-    if (!PChar)
-    {
-        ShowWarningFmt("Invalid entity type calling function ({}).", m_PBaseEntity->getName());
-        return;
-    }
-
-    PChar->pushPacket<GP_SERV_COMMAND_GUILD_OPEN>(GP_SERV_COMMAND_GUILD_OPEN_STAT::Close, open, close, 0);
+    return status == GP_SERV_COMMAND_GUILD_OPEN_STAT::Open;
 }
 
 /************************************************************************
@@ -2896,7 +2815,7 @@ void CLuaBaseEntity::leaveGame()
     {
         // Because we can't detect if this is happening in the middle of an effect wearing off or not,
         // this can be processed after player tick in CZoneEntities::ZoneServer
-        PChar->status = xi::Status::Shutdown;
+        PChar->status = STATUS_TYPE::SHUTDOWN;
     }
 }
 
@@ -3317,7 +3236,7 @@ void CLuaBaseEntity::clearPlayerTriggerAreas()
 *  Notes   : Currently only used for port bastok drawbridge as
              setAnimation() only updates for chars in range.
 ************************************************************************/
-void CLuaBaseEntity::updateToEntireZone(xi::Status statusID, uint8 animation, const sol::object& matchTime)
+void CLuaBaseEntity::updateToEntireZone(uint8 statusID, uint8 animation, const sol::object& matchTime)
 {
     if (m_PBaseEntity->objtype != TYPE_NPC)
     {
@@ -3328,7 +3247,7 @@ void CLuaBaseEntity::updateToEntireZone(xi::Status statusID, uint8 animation, co
     auto* PNpc          = static_cast<CNpcEntity*>(m_PBaseEntity);
     bool  updateForTime = (matchTime != sol::lua_nil) ? matchTime.as<bool>() : false;
 
-    PNpc->status    = statusID;
+    PNpc->status    = static_cast<STATUS_TYPE>(statusID);
     PNpc->animation = animation;
 
     // If this flag is high, update the NPC's name to match the current time
@@ -3375,6 +3294,14 @@ void CLuaBaseEntity::forceRezone()
     if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
     {
         charutils::ForceRezone(PChar);
+    }
+}
+
+void CLuaBaseEntity::forceLogout()
+{
+    if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    {
+        charutils::ForceLogout(PChar);
     }
 }
 
@@ -3557,16 +3484,11 @@ void CLuaBaseEntity::setPos(sol::variadic_args va)
     m_PBaseEntity->loc.p.z        = z;
     m_PBaseEntity->loc.p.rotation = rotation;
 
-    if (m_PBaseEntity->loc.zone != nullptr)
-    {
-        m_PBaseEntity->loc.zone->onEntityMoved(m_PBaseEntity);
-    }
-
     // Zoning
     if (m_PBaseEntity->objtype == TYPE_PC)
     {
         auto* PChar = ((CCharEntity*)m_PBaseEntity);
-        if (va[4].is<uint8>() && PChar->status == xi::Status::Disappear)
+        if (va[4].is<uint8>() && PChar->status == STATUS_TYPE::DISAPPEAR)
         {
             // do not modify zone/position if the character is already zoning
             return;
@@ -3594,7 +3516,7 @@ void CLuaBaseEntity::setPos(sol::variadic_args va)
             }
 
             PChar->loc.destination     = zoneid;
-            PChar->status              = xi::Status::Disappear;
+            PChar->status              = STATUS_TYPE::DISAPPEAR;
             PChar->loc.boundary        = 0;
             PChar->m_moghouseID        = 0;
             PChar->requestedZoneChange = true;
@@ -3605,7 +3527,7 @@ void CLuaBaseEntity::setPos(sol::variadic_args va)
                 PChar->setPetZoningInfo();
             }
         }
-        else if (PChar->status != xi::Status::Disappear)
+        else if (PChar->status != STATUS_TYPE::DISAPPEAR)
         {
             PChar->pushPacket<GP_SERV_COMMAND_WPOS>(PChar, PChar->loc.p);
         }
@@ -4445,24 +4367,24 @@ uint32 CLuaBaseEntity::getItemCount(uint16 itemID)
  *  Notes   : See format and variable options below
  ************************************************************************/
 
-auto CLuaBaseEntity::addItem(sol::variadic_args va) const -> CItem*
+bool CLuaBaseEntity::addItem(sol::variadic_args va)
 {
     if (m_PBaseEntity->objtype != TYPE_PC)
     {
         ShowWarning("Invalid entity type calling function (%s).", m_PBaseEntity->getName());
-        return nullptr;
+        return false;
     }
 
-    uint8  SlotID    = ERROR_SLOTID;
-    CItem* AddedItem = nullptr;
+    uint8 SlotID = ERROR_SLOTID;
 
-    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
+    CCharEntity* PChar = (CCharEntity*)m_PBaseEntity;
 
     /* FORMAT 1:
     player:addItem({ id = itemID, quantity  = quantity               }) -- add quantity of itemID
     player:addItem({ id = itemID, silent    = true                   }) -- silently add 1 of itemID
     player:addItem({ id = itemID, signature = "Char"                 }) -- add 1 signed of itemID
-    player:addItem({ id = itemID, exdata    = { ... }                }) -- add 1 of itemID with typed exdata (falls back to raw byte indices)
+    player:addItem({ id = itemID, augments  = { [4] = 5, [10] = 10 } }) -- add 1 of itemID with augment id 4 and 10, with values of 5 and 10, respectively
+    player:addItem({ id = itemID, exdata    = { [10] = 10 }          }) -- add 1 item of itemID, with the exdata at index 10 (0-indexed!) set to 10
     */
 
     if (va.get_type(0) == sol::type::table)
@@ -4472,7 +4394,7 @@ auto CLuaBaseEntity::addItem(sol::variadic_args va) const -> CItem*
         if (!table["id"].valid())
         {
             ShowError("AddItem: id is nil");
-            return nullptr;
+            return false;
         }
         uint16 id = table.get<uint16>("id");
 
@@ -4484,65 +4406,92 @@ auto CLuaBaseEntity::addItem(sol::variadic_args va) const -> CItem*
 
         while (PChar->getStorage(LOC_INVENTORY)->GetFreeSlotsCount() != 0 && quantity > 0)
         {
-            auto PItem = xi::items::spawn(id);
-            if (PItem == nullptr)
+            if (auto PItem = xi::items::spawn(id))
+            {
+                PItem->setQuantity(quantity);
+                quantity -= PItem->getStackSize();
+
+                bool silent = table.get_or("silent", false);
+
+                std::string signature;
+                sol::object signatureObj = table["signature"];
+                if (signatureObj.valid() && signatureObj.is<std::string>())
+                {
+                    signature = signatureObj.as<std::string>();
+                }
+
+                if (!signature.empty())
+                {
+                    char encoded[SignatureStringLength];
+
+                    std::memset(&encoded, 0, sizeof(encoded));
+                    PItem->setSignature(EncodeStringSignature(signature, encoded));
+                }
+
+                sol::object appraisalObj = table["appraisal"];
+                if (appraisalObj.get_type() == sol::type::number)
+                {
+                    PItem->setAppraisalID(appraisalObj.as<uint8>());
+                }
+
+                if (PItem->isType(ITEM_EQUIPMENT))
+                {
+                    uint16 trial = table.get_or("trial", 0);
+                    if (trial != 0)
+                    {
+                        static_cast<CItemEquipment*>(PItem.get())->setTrialNumber(trial);
+                    }
+
+                    sol::object augmentsObj = table["augments"];
+                    if (augmentsObj.is<sol::table>())
+                    {
+                        auto augmentsTable = augmentsObj.as<sol::table>();
+                        for (const auto& entryPair : augmentsTable)
+                        {
+                            auto   pair   = entryPair.second.as<sol::table>();
+                            uint16 augid  = pair[0];
+                            uint8  augval = pair[1];
+                            static_cast<CItemEquipment*>(PItem.get())->PushAugment(augid, augval);
+                        }
+                    }
+                }
+
+                sol::object exdataObj = table["exdata"];
+                if (exdataObj.is<sol::table>())
+                {
+                    auto exdataTable = exdataObj.as<sol::table>();
+
+                    // Typed exdata tables are the preferred script API for augments, trials, and other item metadata.
+                    if (!Exdata::fromTable(PItem.get(), exdataTable))
+                    {
+                        for (const auto& entryPair : exdataTable)
+                        {
+                            uint8 index = entryPair.first.as<uint8>();
+                            uint8 value = entryPair.second.as<uint8>();
+
+                            if (index < CItem::extra_size)
+                            {
+                                PItem->m_extra[index] = value;
+                            }
+                            else
+                            {
+                                ShowWarning("AddItem: Trying to write to invalid exdata index: <%i>", index);
+                            }
+                        }
+                    }
+                }
+
+                SlotID = charutils::AddItem(PChar, LOC_INVENTORY, std::move(PItem), silent);
+                if (SlotID == ERROR_SLOTID)
+                {
+                    break;
+                }
+            }
+            else
             {
                 ShowWarning("AddItem: Item <%i> is not found in a database", id);
                 break;
             }
-
-            PItem->setQuantity(quantity);
-            quantity -= PItem->getStackSize();
-
-            bool silent = table.get_or("silent", false);
-
-            std::string signature;
-            sol::object signatureObj = table["signature"];
-            if (signatureObj.valid() && signatureObj.is<std::string>())
-            {
-                signature = signatureObj.as<std::string>();
-            }
-
-            if (!signature.empty())
-            {
-                PItem->setSignature(signature);
-            }
-
-            sol::object appraisalObj = table["appraisal"];
-            if (appraisalObj.get_type() == sol::type::number)
-            {
-                PItem->setAppraisalID(appraisalObj.as<uint8>());
-            }
-
-            sol::object exdataObj = table["exdata"];
-            if (exdataObj.is<sol::table>())
-            {
-                auto exdataTable = exdataObj.as<sol::table>();
-                if (!Exdata::fromTable(PItem.get(), exdataTable))
-                {
-                    for (const auto& [keyObj, valObj] : exdataTable)
-                    {
-                        uint8 index = keyObj.as<uint8>();
-                        uint8 value = valObj.as<uint8>();
-
-                        if (index < CItem::extra_size)
-                        {
-                            PItem->m_extra[index] = value;
-                        }
-                        else
-                        {
-                            ShowWarning("AddItem: Trying to write to invalid exdata index: <%i>", index);
-                        }
-                    }
-                }
-            }
-
-            SlotID = charutils::AddItem(PChar, LOC_INVENTORY, std::move(PItem), silent);
-            if (SlotID == ERROR_SLOTID)
-            {
-                break;
-            }
-            AddedItem = PChar->getStorage(LOC_INVENTORY)->GetItem(SlotID);
         }
     }
     else
@@ -4572,30 +4521,63 @@ auto CLuaBaseEntity::addItem(sol::variadic_args va) const -> CItem*
             }
         }
 
+        uint16 augment0    = va.get_type(2) == sol::type::number ? va.get<uint16>(2) : 0;
+        uint8  augment0val = va.get_type(3) == sol::type::number ? va.get<uint8>(3) : 0;
+        uint16 augment1    = va.get_type(4) == sol::type::number ? va.get<uint16>(4) : 0;
+        uint8  augment1val = va.get_type(5) == sol::type::number ? va.get<uint8>(5) : 0;
+        uint16 augment2    = va.get_type(6) == sol::type::number ? va.get<uint16>(6) : 0;
+        uint8  augment2val = va.get_type(7) == sol::type::number ? va.get<uint8>(7) : 0;
+        uint16 augment3    = va.get_type(8) == sol::type::number ? va.get<uint16>(8) : 0;
+        uint8  augment3val = va.get_type(9) == sol::type::number ? va.get<uint8>(9) : 0;
+        uint16 trialNumber = va.get_type(10) == sol::type::number ? va.get<uint16>(10) : 0;
+
         while (PChar->getStorage(LOC_INVENTORY)->GetFreeSlotsCount() != 0 && quantity > 0)
         {
-            auto PItem = xi::items::spawn(itemID);
-            if (PItem == nullptr)
+            if (auto PItem = xi::items::spawn(itemID))
+            {
+                PItem->setQuantity(quantity);
+                quantity -= PItem->getStackSize();
+
+                if (PItem->isType(ITEM_EQUIPMENT))
+                {
+                    if (augment0 != 0)
+                    {
+                        static_cast<CItemEquipment*>(PItem.get())->setAugment(0, augment0, augment0val);
+                    }
+                    if (augment1 != 0)
+                    {
+                        static_cast<CItemEquipment*>(PItem.get())->setAugment(1, augment1, augment1val);
+                    }
+                    if (augment2 != 0)
+                    {
+                        static_cast<CItemEquipment*>(PItem.get())->setAugment(2, augment2, augment2val);
+                    }
+                    if (augment3 != 0)
+                    {
+                        static_cast<CItemEquipment*>(PItem.get())->setAugment(3, augment3, augment3val);
+                    }
+                    if (trialNumber != 0)
+                    {
+                        static_cast<CItemEquipment*>(PItem.get())->setTrialNumber(trialNumber);
+                    }
+                }
+                SlotID = charutils::AddItem(PChar, LOC_INVENTORY, std::move(PItem), silence);
+
+                // Paranoid check
+                if (SlotID == ERROR_SLOTID)
+                {
+                    break;
+                }
+            }
+            else
             {
                 ShowWarning("AddItem: Item <%i> is not found in a database", itemID);
                 break;
             }
-
-            PItem->setQuantity(quantity);
-            quantity -= PItem->getStackSize();
-
-            SlotID = charutils::AddItem(PChar, LOC_INVENTORY, std::move(PItem), silence);
-
-            // Paranoid check
-            if (SlotID == ERROR_SLOTID)
-            {
-                break;
-            }
-            AddedItem = PChar->getStorage(LOC_INVENTORY)->GetItem(SlotID);
         }
     }
 
-    return AddedItem;
+    return SlotID != ERROR_SLOTID;
 }
 
 /************************************************************************
@@ -4696,8 +4678,8 @@ bool CLuaBaseEntity::delContainerItems(const sol::object& containerID)
     // ensure we unequip equipped items before deletion
     for (uint8 equipmentSlot = 0; equipmentSlot <= 15; equipmentSlot++)
     {
-        auto eloc = PChar->equipLocation(equipmentSlot);
-        if (eloc && static_cast<uint8>(eloc->Container) == location)
+        const auto equipLocation = PChar->equipLocation(equipmentSlot);
+        if (equipLocation && equipLocation->Container == location)
         {
             // UnequipItem doesn't consider SLOT_MAIN removing SLOT_SUB, so we say to Equip nothing in this equipment slot
             // this is the same thing that equipset_set packet does to remove a slot
@@ -4741,20 +4723,24 @@ bool CLuaBaseEntity::addUsedItem(uint16 itemID)
     if (PChar->getStorage(LOC_INVENTORY)->GetFreeSlotsCount() != 0)
     {
         auto PItem = xi::items::spawn(itemID);
-        if (PItem == nullptr)
+
+        if (PItem != nullptr)
         {
-            ShowWarning("AddItem: Item <%i> is not found in a database", itemID);
-        }
-        else if (!PItem->isSubType(ITEM_CHARGED))
-        {
-            ShowWarning("addUsedItem: tried to setLastUseTime but itemID <%i> is not type ITEM_CHARGED", itemID);
+            if (PItem->isSubType(ITEM_CHARGED))
+            {
+                auto* PUsable = static_cast<CItemUsable*>(PItem.get());
+                PUsable->setQuantity(1);
+                PUsable->setLastUseTime(timer::now());
+                SlotID = charutils::AddItem(PChar, LOC_INVENTORY, std::move(PItem), false);
+            }
+            else
+            {
+                ShowWarning("addUsedItem: tried to setLastUseTime but itemID <%i> is not type ITEM_CHARGED", itemID);
+            }
         }
         else
         {
-            auto* PUsable = static_cast<CItemUsable*>(PItem.get());
-            PUsable->setQuantity(1);
-            PUsable->setLastUseTime(timer::now());
-            SlotID = charutils::AddItem(PChar, LOC_INVENTORY, std::move(PItem), false);
+            ShowWarning("AddItem: Item <%i> is not found in a database", itemID);
         }
     }
 
@@ -4768,16 +4754,18 @@ bool CLuaBaseEntity::addUsedItem(uint16 itemID)
  *  Notes   : Used mainly for Testimonies and BCNM orbs
  ************************************************************************/
 
-auto CLuaBaseEntity::getWornUses(const uint16 itemID) const -> uint8
+uint8 CLuaBaseEntity::getWornUses(uint16 itemID)
 {
-    const auto* PChar  = static_cast<CCharEntity*>(m_PBaseEntity);
-    const uint8 slotID = PChar->getStorage(LOC_INVENTORY)->SearchItem(itemID);
+    auto* PChar  = static_cast<CCharEntity*>(m_PBaseEntity);
+    uint8 slotID = PChar->getStorage(LOC_INVENTORY)->SearchItem(itemID);
+
     if (slotID != ERROR_SLOTID)
     {
         CItem* PItem = PChar->getStorage(LOC_INVENTORY)->GetItem(slotID);
+
         if (PItem != nullptr)
         {
-            return PItem->exdata<Exdata::WornItem>().UseCount;
+            return PItem->m_extra[0];
         }
     }
 
@@ -4791,23 +4779,35 @@ auto CLuaBaseEntity::getWornUses(const uint16 itemID) const -> uint8
  *  Notes   : Prevent Orbs and Testimonies from being used again
  ************************************************************************/
 
-auto CLuaBaseEntity::incrementItemWear(const uint16 itemID) const -> uint8
+uint8 CLuaBaseEntity::incrementItemWear(uint16 itemID)
 {
-    const auto* PChar  = static_cast<CCharEntity*>(m_PBaseEntity);
-    const uint8 slotID = PChar->getStorage(LOC_INVENTORY)->SearchItem(itemID);
+    auto* PChar  = static_cast<CCharEntity*>(m_PBaseEntity);
+    uint8 slotID = PChar->getStorage(LOC_INVENTORY)->SearchItem(itemID);
+
     if (slotID != ERROR_SLOTID)
     {
         CItem* PItem = PChar->getStorage(LOC_INVENTORY)->GetItem(slotID);
+
         if (PItem == nullptr)
         {
             return 0;
         }
 
-        auto& useCount = PItem->exdata<Exdata::WornItem>().UseCount;
-        useCount       = std::min<uint8>(useCount + 1, UINT8_MAX);
-        PItem->setDirty(true);
+        if (PItem->m_extra[0] == UINT8_MAX)
+        {
+            return PItem->m_extra[0];
+        }
 
-        return useCount;
+        ++PItem->m_extra[0];
+
+        const char* Query = "UPDATE char_inventory "
+                            "SET extra = ? "
+                            "WHERE charid = ? AND location = ? AND slot = ? "
+                            "LIMIT 1";
+
+        db::preparedStmt(Query, PItem->m_extra, PChar->id, PItem->getLocationID(), PItem->getSlotID());
+
+        return PItem->m_extra[0];
     }
 
     return 0;
@@ -4836,14 +4836,16 @@ bool CLuaBaseEntity::addTempItem(uint16 itemID, const sol::object& arg1)
     if (PChar->getStorage(LOC_TEMPITEMS)->GetFreeSlotsCount() != 0 && quantity != 0)
     {
         auto PItem = xi::items::spawn(itemID);
-        if (PItem == nullptr)
+
+        if (PItem != nullptr)
         {
-            ShowWarning("AddItem: Item <%i> is not found in a database", itemID);
+            PItem->setQuantity(quantity);
+
+            SlotID = charutils::AddItem(PChar, LOC_TEMPITEMS, std::move(PItem));
         }
         else
         {
-            PItem->setQuantity(quantity);
-            SlotID = charutils::AddItem(PChar, LOC_TEMPITEMS, std::move(PItem));
+            ShowWarning("AddItem: Item <%i> is not found in a database", itemID);
         }
     }
 
@@ -5015,14 +5017,13 @@ void CLuaBaseEntity::createShop(uint8 size, const sol::object& arg1)
 /************************************************************************
  *  Function: addShopItem()
  *  Purpose : Adds an item and established price to an existing shop
- *          : Optionally accepts a job/level or guild/rank requirement
- *  Example : addShopItem(512, 8000)                                                                   -- Regular item
- *          : addShopItem(512, 8000, { job   = xi.job.PUP,          level = 80 })                      -- Job-locked item
- *          : addShopItem(512, 8000, { guild = xi.skill.CLOTHCRAFT, rank  = xi.craftRank.JOURNEYMAN }) -- Guild-rank locked item
+ *          : Optionally accepts a GuildID + Guild Rank requirement
+ *  Example : addShopItem(512, 8000)                                                   --Regular item
+ *          : addShopItem(512, 8000, xi.skill.CLOTHCRAFT, xi.craftRank.JOURNEYMAN)   --Guild-rank locked item
  *  Notes   : Use with createShop() - 16 Max Items in Shop
  ************************************************************************/
 
-void CLuaBaseEntity::addShopItem(const uint16 itemID, const double rawPrice, sol::optional<sol::table> requirements) const
+void CLuaBaseEntity::addShopItem(uint16 itemID, double rawPrice, const sol::object& arg2, const sol::object& arg3)
 {
     if (m_PBaseEntity->objtype != TYPE_PC)
     {
@@ -5030,9 +5031,9 @@ void CLuaBaseEntity::addShopItem(const uint16 itemID, const double rawPrice, sol
         return;
     }
 
-    const auto*  PChar  = static_cast<CCharEntity*>(m_PBaseEntity);
-    const uint8  slotID = PChar->Container->getItemsCount();
-    const uint32 price  = static_cast<uint32>(rawPrice);
+    CCharEntity* PChar  = static_cast<CCharEntity*>(m_PBaseEntity);
+    uint8        slotID = PChar->Container->getItemsCount();
+    uint32       price  = static_cast<uint32>(rawPrice);
 
     PChar->Container->setItem(slotID, itemID, 0, price);
 
@@ -5040,20 +5041,13 @@ void CLuaBaseEntity::addShopItem(const uint16 itemID, const double rawPrice, sol
     // so track the shop's number of items separately from the container's size.
     PChar->Container->setExSize(PChar->Container->getExSize() + 1);
 
-    if (requirements)
+    if (arg2.is<int>() && arg3.is<int>())
     {
-        if (auto job = requirements->get<sol::optional<uint8>>("job"))
-        {
-            // Job-locked: player cannot purchase unless they have the given job at the specified level.
-            const auto level = std::clamp<uint8>(requirements->get_or<uint8>("level", 1), 1, 99);
-            PChar->Container->setRestriction(slotID, JobRestriction{ *job, level });
-        }
-        else if (auto guild = requirements->get<sol::optional<uint8>>("guild"))
-        {
-            // Guild-locked: player cannot purchase unless they have the given guild rank.
-            const auto rank = requirements->get_or<uint16>("rank", 0);
-            PChar->Container->setRestriction(slotID, GuildRestriction{ *guild, rank });
-        }
+        uint8  guildID   = arg2.as<uint8>();
+        uint16 guildRank = arg3.as<uint16>();
+
+        static_cast<CCharEntity*>(m_PBaseEntity)->Container->setGuildID(slotID, guildID);
+        static_cast<CCharEntity*>(m_PBaseEntity)->Container->setGuildRank(slotID, guildRank);
     }
 }
 
@@ -5129,53 +5123,164 @@ bool CLuaBaseEntity::addLinkpearl(const std::string& lsname, bool equip)
         return false;
     }
 
-    CCharEntity* PChar  = (CCharEntity*)m_PBaseEntity;
-    auto         PItem  = xi::items::spawn(PChar->m_GMlevel > 0 ? 514 : 515);
-    LSTYPE       lstype = PChar->m_GMlevel > 0 ? LSTYPE_PEARLSACK : LSTYPE_LINKPEARL;
-    if (PItem == nullptr)
+    CCharEntity* PChar          = (CCharEntity*)m_PBaseEntity;
+    auto         linkPearlItem  = xi::items::spawn(PChar->m_GMlevel > 0 ? 514 : 515);
+    auto*        PItemLinkPearl = dynamic_cast<CItemLinkshell*>(linkPearlItem.get());
+    LSTYPE       lstype         = PChar->m_GMlevel > 0 ? LSTYPE_PEARLSACK : LSTYPE_LINKPEARL;
+    if (PItemLinkPearl != nullptr)
     {
+        const auto rset = db::preparedStmt("SELECT linkshellid, color FROM linkshells WHERE name = ? AND broken = 0", lsname);
+        if (rset && rset->rowsCount() && rset->next())
+        {
+            // setSignature() expects decoded name; it encodes into exdata.
+            ((CItem*)PItemLinkPearl)->setSignature(lsname);
+            PItemLinkPearl->SetLSID(rset->get<uint32>("linkshellid"));
+            PItemLinkPearl->SetLSColor(rset->get<uint16>("color"));
+            PItemLinkPearl->SetLSType(lstype);
+            PItemLinkPearl->setQuantity(1);
+            if (charutils::AddItem(PChar, LOC_INVENTORY, std::move(linkPearlItem)) != ERROR_SLOTID)
+            {
+                // equip linkpearl to slot 2
+                if (equip)
+                {
+                    linkshell::AddOnlineMember(PChar, PItemLinkPearl, 2);
+                    PItemLinkPearl->setSubType(ITEM_LOCKED);
+                    charutils::EquipItem(PChar, PItemLinkPearl->getSlotID(), SLOT_LINK2, LOC_INVENTORY);
+                    PChar->pushPacket<GP_SERV_COMMAND_ITEM_LIST>(PItemLinkPearl, ItemLockFlg::Linkshell);
+                    charutils::SaveCharEquip(PChar);
+                    PChar->pushPacket<GP_SERV_COMMAND_GROUP_COMLINK>(PChar, 2);
+                    PChar->pushPacket<GP_SERV_COMMAND_ITEM_ATTR>(PItemLinkPearl, LOC_INVENTORY, PItemLinkPearl->getSlotID());
+                    PChar->pushPacket<GP_SERV_COMMAND_ITEM_SAME>(PChar);
+                    charutils::LoadInventory(PChar);
+                }
+                return true;
+            }
+        }
+        else
+        {
+            // Linkshell not found.
+        }
+    }
+    return false;
+}
+
+/************************************************************************
+ *  Function: addLinkshellHolder()
+ *  Purpose : Grants the physical linkshell item (513) for an existing shell in `linkshells`,
+ *            optionally equipping it to LS1 or LS2 (default 1). This is the "owner" item.
+ *  Example : player:addLinkshellHolder("PegasusXI", 1)
+ ************************************************************************/
+
+bool CLuaBaseEntity::addLinkshellHolder(const std::string& lsname, sol::optional<uint8> equipSlot)
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowWarning("Invalid entity type calling addLinkshellHolder (%s).", m_PBaseEntity->getName());
         return false;
     }
-    auto* PItemLinkPearl = static_cast<CItemLinkshell*>(PItem.get());
+
+    uint8 lsNum = equipSlot.value_or(1);
+    if (lsNum < 1 || lsNum > 2)
+    {
+        lsNum = 1;
+    }
+
+    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
 
     const auto rset = db::preparedStmt("SELECT linkshellid, color FROM linkshells WHERE name = ? AND broken = 0", lsname);
     if (!rset || !rset->rowsCount() || !rset->next())
     {
+        ShowWarning("addLinkshellHolder: linkshell '%s' not found or broken.", lsname.c_str());
         return false;
     }
 
-    PItemLinkPearl->setSignature(lsname);
-    PItemLinkPearl->SetLSID(rset->get<uint32>("linkshellid"));
-    PItemLinkPearl->SetLSColor(rset->get<uint16>("color"));
-    PItemLinkPearl->SetLSType(lstype);
-    PItemLinkPearl->setQuantity(1);
-
-    const uint8 slotID = charutils::AddItem(PChar, LOC_INVENTORY, std::move(PItem));
-    if (slotID == ERROR_SLOTID)
+    auto  shellItem  = xi::items::spawn(ITEMID::LINKSHELL);
+    auto* PItemShell = dynamic_cast<CItemLinkshell*>(shellItem.get());
+    if (PItemShell == nullptr)
     {
         return false;
     }
 
-    if (equip)
+    PItemShell->setSignature(lsname);
+    PItemShell->SetLSID(rset->get<uint32>("linkshellid"));
+    PItemShell->SetLSColor(rset->get<uint16>("color"));
+    PItemShell->SetLSType(LSTYPE_LINKSHELL);
+    PItemShell->setQuantity(1);
+
+    const SLOTTYPE lsEquipSlot = (lsNum == 1) ? SLOT_LINK1 : SLOT_LINK2;
+
+    if (auto* POldItem = PChar->getEquip(lsEquipSlot))
     {
-        auto* PInserted = static_cast<CItemLinkshell*>(PChar->getStorage(LOC_INVENTORY)->GetItem(slotID));
-        linkshell::AddOnlineMember(PChar, PInserted, 2);
-        PInserted->setSubType(ITEM_LOCKED);
-        if (!PChar->bindEquip(SLOT_LINK2, PInserted))
+        if (auto* POldLs = dynamic_cast<CItemLinkshell*>(POldItem);
+            POldLs != nullptr && POldLs->isType(ITEM_LINKSHELL))
         {
-            linkshell::DelOnlineMember(PChar, PInserted);
-            PInserted->setSubType(ITEM_UNLOCKED);
-            return false;
+            linkshell::DelOnlineMember(PChar, POldLs);
+            POldLs->setSubType(ITEM_UNLOCKED);
+            PChar->pushPacket<GP_SERV_COMMAND_ITEM_LIST>(POldLs, ItemLockFlg::Normal);
         }
+    }
 
-        PChar->pushPacket<GP_SERV_COMMAND_ITEM_LIST>(PInserted, ItemLockFlg::Linkshell);
-        charutils::SaveCharEquip(PChar);
-        PChar->pushPacket<GP_SERV_COMMAND_GROUP_COMLINK>(PChar, PInserted->GetLSID());
-        PChar->pushPacket<GP_SERV_COMMAND_ITEM_ATTR>(PInserted, LOC_INVENTORY, PInserted->getSlotID());
-        PChar->pushPacket<GP_SERV_COMMAND_ITEM_SAME>(PChar);
-        charutils::LoadInventory(PChar);
+    if (charutils::AddItem(PChar, LOC_INVENTORY, std::move(shellItem)) == ERROR_SLOTID)
+    {
+        ShowWarning("addLinkshellHolder: could not add linkshell item for '%s' (inventory full, duplicate rare linkshell item, etc.).", PChar->getName().c_str());
+        return false;
+    }
+
+    linkshell::AddOnlineMember(PChar, PItemShell, lsNum);
+    PItemShell->setSubType(ITEM_LOCKED);
+    charutils::EquipItem(PChar, PItemShell->getSlotID(), lsEquipSlot, LOC_INVENTORY);
+
+    PChar->pushPacket<GP_SERV_COMMAND_ITEM_LIST>(PItemShell, ItemLockFlg::Linkshell);
+    charutils::SaveCharEquip(PChar);
+    PChar->pushPacket<GP_SERV_COMMAND_GROUP_COMLINK>(PChar, lsNum);
+    PChar->pushPacket<GP_SERV_COMMAND_ITEM_ATTR>(PItemShell, LOC_INVENTORY, PItemShell->getSlotID());
+    PChar->pushPacket<GP_SERV_COMMAND_ITEM_SAME>(PChar);
+    charutils::LoadInventory(PChar);
+
+    if (lsNum == 1)
+    {
+        PChar->updatemask |= UPDATE_HP;
+        PChar->pushPacket<CCharStatusPacket>(PChar);
     }
     return true;
+}
+
+auto CLuaBaseEntity::addSoulPlate(const std::string& name, uint32 interestData, uint8 zeni, uint16 skillIndex, uint8 fp) -> CItem*
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowWarning("Invalid entity type calling function (%s).", m_PBaseEntity->getName());
+        return nullptr;
+    }
+
+    if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    {
+        // Deduct Blank Plate
+        battleutils::RemoveAmmo(PChar);
+
+        PChar->pushPacket<GP_SERV_COMMAND_ITEM_SAME>(PChar);
+
+        // Used Soul Plate
+        auto PItem = xi::items::spawn(ITEMID::SOUL_PLATE);
+
+        if (PItem == nullptr)
+        {
+            ShowError("PItem was null for soulplate");
+            return nullptr;
+        }
+
+        PItem->setQuantity(1);
+        PItem->setSoulPlateData(name, interestData, zeni, skillIndex, fp);
+        auto* PItemRaw = PItem.get();
+        auto  SlotID   = charutils::AddItem(PChar, LOC_INVENTORY, std::move(PItem), true);
+        if (SlotID == ERROR_SLOTID)
+        {
+            return nullptr;
+        }
+
+        return PChar->getStorage(LOC_INVENTORY)->GetItem(SlotID) ? PItemRaw : nullptr;
+    }
+    return nullptr;
 }
 
 /************************************************************************
@@ -5559,7 +5664,7 @@ int8 CLuaBaseEntity::getShieldSize()
         }
         case TYPE_TRUST:
         {
-            return static_cast<CTrustEntity*>(m_PBaseEntity)->shieldSize();
+            return static_cast<CTrustEntity*>(m_PBaseEntity)->getShieldSize();
         }
         default:
         {
@@ -6150,7 +6255,7 @@ void CLuaBaseEntity::setCostume(uint16 costume)
 
     auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
 
-    if (PChar->m_Costume != costume && PChar->status != xi::Status::Shutdown && PChar->status != xi::Status::Disappear)
+    if (PChar->m_Costume != costume && PChar->status != STATUS_TYPE::SHUTDOWN && PChar->status != STATUS_TYPE::DISAPPEAR)
     {
         PChar->m_Costume = costume;
         PChar->updatemask |= UPDATE_LOOK;
@@ -6193,14 +6298,13 @@ void CLuaBaseEntity::setCostume2(uint16 costume)
 
     auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
 
-    if (PChar->m_Costume2 != costume && PChar->status != xi::Status::Shutdown && PChar->status != xi::Status::Disappear)
+    if (PChar->m_Costume2 != costume && PChar->status != STATUS_TYPE::SHUTDOWN && PChar->status != STATUS_TYPE::DISAPPEAR)
     {
         PChar->m_Costume2 = costume;
         PChar->updatemask |= UPDATE_LOOK;
         PChar->pushPacket<GP_SERV_COMMAND_GRAP_LIST>(PChar);
     }
 }
-
 /************************************************************************
  *  Function: getAnimation()
  *  Purpose : Returns the assigned default animation of an entity
@@ -6270,9 +6374,9 @@ void CLuaBaseEntity::setAnimationSub(uint8 animationsub, const sol::object& send
     }
 }
 
-void CLuaBaseEntity::setSpawnAnimation(xi::SpawnAnimation spawnAnimation)
+void CLuaBaseEntity::setSpawnAnimation(uint8 spawnAnimation)
 {
-    m_PBaseEntity->spawnAnimation = spawnAnimation;
+    m_PBaseEntity->spawnAnimation = static_cast<SPAWN_ANIMATION>(spawnAnimation);
 }
 
 /************************************************************************
@@ -6388,9 +6492,9 @@ void CLuaBaseEntity::setNation(uint8 nation)
  *  Example : if target:getAllegiance() == caster:getAllegiance() then
  ************************************************************************/
 
-auto CLuaBaseEntity::getAllegiance() -> xi::Allegiance
+uint8 CLuaBaseEntity::getAllegiance()
 {
-    return m_PBaseEntity->allegiance;
+    return static_cast<uint8>(m_PBaseEntity->allegiance);
 }
 
 /************************************************************************
@@ -6399,9 +6503,9 @@ auto CLuaBaseEntity::getAllegiance() -> xi::Allegiance
  *  Example : target:setAllegiance(???)
  ************************************************************************/
 
-void CLuaBaseEntity::setAllegiance(xi::Allegiance allegiance)
+void CLuaBaseEntity::setAllegiance(uint8 allegiance)
 {
-    m_PBaseEntity->allegiance = allegiance;
+    m_PBaseEntity->allegiance = static_cast<ALLEGIANCE_TYPE>(allegiance);
     m_PBaseEntity->updatemask |= UPDATE_HP | UPDATE_NAME;
 }
 
@@ -6772,7 +6876,7 @@ void CLuaBaseEntity::jail()
  *  Notes   : Checks if specified MISC flag is set in current zone
  ************************************************************************/
 
-bool CLuaBaseEntity::canUseMisc(xi::ZoneMisc misc)
+bool CLuaBaseEntity::canUseMisc(uint16 misc)
 {
     if (m_PBaseEntity->loc.zone == nullptr)
     {
@@ -6957,7 +7061,6 @@ void CLuaBaseEntity::changeJob(uint8 newJob)
         PChar->jobs.unlocked |= (1 << newJob);
         PChar->SetMJob(newJob);
         charutils::ApplyAllEquipMods(PChar);
-        puppetutils::LoadAutomaton(PChar);
 
         if (newJob == JOB_BLU)
         {
@@ -6971,6 +7074,7 @@ void CLuaBaseEntity::changeJob(uint8 newJob)
             blueutils::UnequipAllBlueSpells(PChar);
         }
 
+        puppetutils::LoadAutomaton(PChar);
         charutils::SetStyleLock(PChar, false);
         luautils::CheckForGearSet(PChar); // check for gear set on gear change
         jobpointutils::RefreshGiftMods(PChar);
@@ -7003,7 +7107,6 @@ void CLuaBaseEntity::changeJob(uint8 newJob)
         PChar->pushPacket<GP_SERV_COMMAND_ABIL_RECAST>(PChar);
         PChar->pushPacket<GP_SERV_COMMAND_COMMAND_DATA>(PChar);
         PChar->pushPacket<CCharStatusPacket>(PChar);
-        charutils::SendExtendedJobPackets(PChar);
         PChar->pushPacket<GP_SERV_COMMAND_MISCDATA::MERITS>(PChar);
         PChar->pushPacket<GP_SERV_COMMAND_MISCDATA::MONSTROSITY1>(PChar);
         PChar->pushPacket<GP_SERV_COMMAND_MISCDATA::MONSTROSITY2>(PChar);
@@ -7014,65 +7117,65 @@ void CLuaBaseEntity::changeJob(uint8 newJob)
         PMob->SetMJob(newJob);
 
         // Change weapon type based on new job
-        CItemWeapon* PWeapon = std::make_unique<CItemWeapon>(0).release();
-        PWeapon->setDelay(240);
-        PWeapon->setBaseDelay(240);
+        CItemWeapon* PWeapon = new CItemWeapon(0);
+        PWeapon->setDelay(4000);
+        PWeapon->setBaseDelay(4000);
 
         switch (newJob)
         {
             case JOB_MNK:
             case JOB_PUP:
-                PWeapon->setSkillType(xi::SkillType::HandToHand);
-                PWeapon->setBaseDelay(480);
-                PWeapon->setDelay(480);
+                PWeapon->setSkillType(SKILL_HAND_TO_HAND);
+                PWeapon->setBaseDelay(8000);
+                PWeapon->setDelay(8000);
                 break;
             case JOB_THF:
             case JOB_BRD:
             case JOB_RNG:
             case JOB_COR:
-                PWeapon->setSkillType(xi::SkillType::Dagger);
+                PWeapon->setSkillType(SKILL_DAGGER);
                 break;
             case JOB_RDM:
             case JOB_PLD:
             case JOB_BLU:
-                PWeapon->setSkillType(xi::SkillType::Sword);
+                PWeapon->setSkillType(SKILL_SWORD);
                 break;
             case JOB_RUN:
-                PWeapon->setSkillType(xi::SkillType::GreatSword);
-                PWeapon->setDelay(480);
-                PWeapon->setBaseDelay(480);
+                PWeapon->setSkillType(SKILL_GREAT_SWORD);
+                PWeapon->setDelay(8000);
+                PWeapon->setBaseDelay(8000);
                 break;
             case JOB_WAR:
             case JOB_BST:
-                PWeapon->setSkillType(xi::SkillType::Axe);
+                PWeapon->setSkillType(SKILL_AXE);
                 break;
             case JOB_DRK:
-                PWeapon->setSkillType(xi::SkillType::Scythe);
-                PWeapon->setDelay(480);
-                PWeapon->setBaseDelay(480);
+                PWeapon->setSkillType(SKILL_SCYTHE);
+                PWeapon->setDelay(8000);
+                PWeapon->setBaseDelay(8000);
                 break;
             case JOB_DRG:
-                PWeapon->setSkillType(xi::SkillType::Polearm);
-                PWeapon->setDelay(480);
-                PWeapon->setBaseDelay(480);
+                PWeapon->setSkillType(SKILL_POLEARM);
+                PWeapon->setDelay(8000);
+                PWeapon->setBaseDelay(8000);
                 break;
             case JOB_NIN:
-                PWeapon->setSkillType(xi::SkillType::Katana);
+                PWeapon->setSkillType(SKILL_KATANA);
                 break;
             case JOB_SAM:
-                PWeapon->setSkillType(xi::SkillType::GreatKatana);
-                PWeapon->setDelay(480);
-                PWeapon->setBaseDelay(480);
+                PWeapon->setSkillType(SKILL_GREAT_KATANA);
+                PWeapon->setDelay(8000);
+                PWeapon->setBaseDelay(8000);
                 break;
             case JOB_WHM:
             case JOB_BLM:
             case JOB_GEO:
-                PWeapon->setSkillType(xi::SkillType::Club);
+                PWeapon->setSkillType(SKILL_CLUB);
                 break;
             case JOB_SMN:
-                PWeapon->setSkillType(xi::SkillType::Staff);
-                PWeapon->setDelay(480);
-                PWeapon->setBaseDelay(480);
+                PWeapon->setSkillType(SKILL_STAFF);
+                PWeapon->setDelay(8000);
+                PWeapon->setBaseDelay(8000);
                 break;
             default:
                 break;
@@ -7107,7 +7210,6 @@ void CLuaBaseEntity::changesJob(uint8 subJob)
 
     PChar->jobs.unlocked |= (1 << subJob);
     PChar->SetSJob(subJob);
-    puppetutils::LoadAutomaton(PChar);
     charutils::UpdateSubJob(PChar);
 
     if (subJob == JOB_BLU)
@@ -7119,7 +7221,7 @@ void CLuaBaseEntity::changesJob(uint8 subJob)
         blueutils::UnequipAllBlueSpells(PChar);
     }
 
-    charutils::SendExtendedJobPackets(PChar);
+    puppetutils::LoadAutomaton(PChar);
 }
 
 /************************************************************************
@@ -7446,7 +7548,7 @@ uint8 CLuaBaseEntity::levelRestriction(const sol::object& level)
             // Update the character's Automaton capacity bonus regardless if the pet is out or not
             PChar->setAutomatonElementalCapacityBonus(PChar->getMod(Mod::AUTO_ELEM_CAPACITY));
 
-            if (PChar->status != xi::Status::Disappear)
+            if (PChar->status != STATUS_TYPE::DISAPPEAR)
             {
                 PChar->pushPacket<GP_SERV_COMMAND_JOB_INFO>(PChar);
                 PChar->pushPacket<GP_SERV_COMMAND_CLISTATUS>(PChar);
@@ -7737,9 +7839,6 @@ void CLuaBaseEntity::addTitle(uint16 titleID)
     }
 
     auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
-
-    PChar->profile.title = titleID;
-    PChar->pushPacket<GP_SERV_COMMAND_CLISTATUS>(PChar);
 
     charutils::addTitle(PChar, titleID);
     charutils::SaveTitles(PChar);
@@ -8633,7 +8732,6 @@ uint32 CLuaBaseEntity::getMissionStatus(MissionLog logId, const sol::object& mis
     ShowError("Lua::getMissionStatus: missionLogID %i is invalid", static_cast<uint8_t>(logId));
     return 0;
 }
-
 /************************************************************************
  *  Function: sendPartialMissionLog()
  *  Purpose : Sends the packet for mission log
@@ -9336,7 +9434,7 @@ void CLuaBaseEntity::unseenKeyItem(const KeyItem keyItemID) const
 /************************************************************************
  *  Function: addExp()
  *  Purpose : Adds a set amount of XP to the player
- *  Example : player:addExp(math.randomInt(500, 1000))
+ *  Example : player:addExp(math.random(500,1000))
  *  Notes   : Used in Dynamis Pages, etc
  ************************************************************************/
 
@@ -9899,32 +9997,6 @@ void CLuaBaseEntity::delCP(int32 cp)
 }
 
 /************************************************************************
- *  Function: gainConquestInfluence()
- *  Purpose : Adds conquest influence to the player's nation and current region
- *  Example : player:gainConquestInfluence(50)
- *  Notes   : Applies the player's Moghancement region bonus.
- ************************************************************************/
-
-void CLuaBaseEntity::gainConquestInfluence(int32 points)
-{
-    if (m_PBaseEntity->objtype != TYPE_PC)
-    {
-        ShowWarning("Invalid entity type calling function (%s).", m_PBaseEntity->getName());
-        return;
-    }
-
-    if (points <= 0)
-    {
-        ShowWarning("gainConquestInfluence: non-positive amount (%d) ignored.", points);
-        return;
-    }
-
-    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
-
-    conquest::GainInfluencePoints(PChar, static_cast<uint32>(points));
-}
-
-/************************************************************************
  *  Function: getSeals()
  *  Purpose : Returns the current seal balance for a player
  *  Example : player:getSeals(type)
@@ -10279,9 +10351,9 @@ int32 CLuaBaseEntity::addHP(int32 hpAdd)
     int32 result = PBattle->addHP(hpAdd);
 
     // will always remove sleep effect
-    PBattle->StatusEffectContainer->DelStatusEffect(xi::StatusEffect::SleepI);
-    PBattle->StatusEffectContainer->DelStatusEffect(xi::StatusEffect::SleepIi);
-    PBattle->StatusEffectContainer->DelStatusEffect(xi::StatusEffect::Lullaby);
+    PBattle->StatusEffectContainer->DelStatusEffect(EFFECT_SLEEP);
+    PBattle->StatusEffectContainer->DelStatusEffect(EFFECT_SLEEP_II);
+    PBattle->StatusEffectContainer->DelStatusEffect(EFFECT_LULLABY);
 
     return result;
 }
@@ -10453,8 +10525,8 @@ void CLuaBaseEntity::takeDamage(int32 damage, const sol::object& attacker, const
 
     // Check to see if the target has a nightmare effect active, reset wakeUp accordingly
     // see mobskills/nightmare.lua for full explanation
-    if (PDefender->StatusEffectContainer->GetStatusEffect(xi::StatusEffect::SleepI) &&
-        PDefender->StatusEffectContainer->GetStatusEffect(xi::StatusEffect::SleepI)->GetTier() >= 4) // Tier 4 = Player Avatar Nightmare
+    if (PDefender->StatusEffectContainer->GetStatusEffect(EFFECT_SLEEP) &&
+        PDefender->StatusEffectContainer->GetStatusEffect(EFFECT_SLEEP)->GetTier() >= 4) // Tier 4 = Player Avatar Nightmare
     {
         // Don't break nightmare sleep from any dmg that doesn't break bind (DoT damage)
         if (breakBind == false)
@@ -10465,20 +10537,20 @@ void CLuaBaseEntity::takeDamage(int32 damage, const sol::object& attacker, const
         // Diabolos NM/mob ability
         // "Damage will not wake you up from Nightmare, only Cure and Benediction (Benediction will also remove the Bio effect)."
         if (wakeUp == true &&
-            PDefender->StatusEffectContainer->GetStatusEffect(xi::StatusEffect::SleepI)->GetTier() >= 11) // Tier 11 = Diabolos NM Nightmare
+            PDefender->StatusEffectContainer->GetStatusEffect(EFFECT_SLEEP)->GetTier() >= 11) // Tier 11 = Diabolos NM Nightmare
         {
             wakeUp = false;
         }
     }
 
-    if (PDefender->StatusEffectContainer->GetStatusEffect(xi::StatusEffect::Petrification) &&
-        PDefender->StatusEffectContainer->GetStatusEffect(xi::StatusEffect::Petrification)->GetSubPower() == 1)
+    if (PDefender->StatusEffectContainer->GetStatusEffect(EFFECT_PETRIFICATION) &&
+        PDefender->StatusEffectContainer->GetStatusEffect(EFFECT_PETRIFICATION)->GetSubPower() == 1)
     {
         removePetrify = true;
     }
 
-    xi::AttackType attackType = (atkType != sol::lua_nil) ? static_cast<xi::AttackType>(atkType.as<uint8>()) : xi::AttackType::None;
-    xi::DamageType damageType = (dmgType != sol::lua_nil) ? static_cast<xi::DamageType>(dmgType.as<uint8>()) : xi::DamageType::None;
+    ATTACK_TYPE attackType = (atkType != sol::lua_nil) ? static_cast<ATTACK_TYPE>(atkType.as<uint8>()) : ATTACK_TYPE::NONE;
+    DAMAGE_TYPE damageType = (dmgType != sol::lua_nil) ? static_cast<DAMAGE_TYPE>(dmgType.as<uint8>()) : DAMAGE_TYPE::NONE;
 
     PDefender->takeDamage(damage, PAttacker, attackType, damageType);
 
@@ -10492,7 +10564,7 @@ void CLuaBaseEntity::takeDamage(int32 damage, const sol::object& attacker, const
 
         if (removePetrify)
         {
-            PDefender->StatusEffectContainer->DelStatusEffect(xi::StatusEffect::Petrification);
+            PDefender->StatusEffectContainer->DelStatusEffect(EFFECT_PETRIFICATION);
         }
     }
 
@@ -10524,7 +10596,7 @@ void CLuaBaseEntity::hideHP(bool value)
     }
     else if (m_PBaseEntity->objtype == TYPE_NPC)
     {
-        static_cast<CNpcEntity*>(m_PBaseEntity)->hideHP(value);
+        static_cast<CNpcEntity*>(m_PBaseEntity)->HideHP(value);
     }
     m_PBaseEntity->updatemask |= UPDATE_HP;
 }
@@ -10831,12 +10903,12 @@ void CLuaBaseEntity::capSkill(uint8 skill)
         // CItemWeapon* PItem = ((CBattleEntity*)m_PBaseEntity)->m_Weapons[SLOT_MAIN];
         /* let's just ignore this part for the moment
         //remove modifiers if valid
-        if(skill>=1 && skill<=12 && PItem!=nullptr && static_cast<uint8>(PItem->getSkillType())==skill){
+        if(skill>=1 && skill<=12 && PItem!=nullptr && PItem->getSkillType()==skill){
             PChar->delModifier(Mod::ATT, PChar->GetSkill(skill));
             PChar->delModifier(Mod::ACC, PChar->GetSkill(skill));
         }
         */
-        uint16 maxSkill                   = 10 * battleutils::GetMaxSkill((xi::SkillType)skill, PChar->GetMJob(), PChar->GetMLevel());
+        uint16 maxSkill                   = 10 * battleutils::GetMaxSkill((SKILLTYPE)skill, PChar->GetMJob(), PChar->GetMLevel());
         PChar->RealSkills.skill[skill]    = maxSkill; // set to capped
         PChar->WorkingSkills.skill[skill] = maxSkill / 10;
         PChar->WorkingSkills.skill[skill] |= 0x8000; // set blue capped flag
@@ -10844,7 +10916,7 @@ void CLuaBaseEntity::capSkill(uint8 skill)
         charutils::CheckWeaponSkill(PChar, skill);
         /* and ignore this part
         //reapply modifiers if valid
-        if(skill>=1 && skill<=12 && PItem!=nullptr && static_cast<uint8>(PItem->getSkillType())==skill){
+        if(skill>=1 && skill<=12 && PItem!=nullptr && PItem->getSkillType()==skill){
             PChar->addModifier(Mod::ATT, PChar->GetSkill(skill));
             PChar->addModifier(Mod::ACC, PChar->GetSkill(skill));
         }
@@ -10864,7 +10936,7 @@ void CLuaBaseEntity::capAllSkills() const
 {
     if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
     {
-        for (uint8 i = static_cast<uint8>(xi::SkillType::HandToHand); i <= static_cast<uint8>(xi::SkillType::Handbell); ++i) // For xi::SkillType::HandToHand (1) - xi::SkillType::Handbell (45)
+        for (uint8 i = SKILL_HAND_TO_HAND; i <= SKILL_HANDBELL; ++i) // For SKILL_HAND_TO_HAND (1) - SKILL_HANDBELL (46)
         {
             const char* Query = "INSERT INTO char_skills "
                                 "SET "
@@ -10876,13 +10948,13 @@ void CLuaBaseEntity::capAllSkills() const
 
             db::preparedStmt(Query, PChar->id, i, 5000, PChar->RealSkills.rank[i], 5000, PChar->RealSkills.rank[i]);
 
-            uint16 maxSkill               = 10 * battleutils::GetMaxSkill(static_cast<xi::SkillType>(i), PChar->GetMJob(), PChar->GetMLevel());
+            uint16 maxSkill               = 10 * battleutils::GetMaxSkill(static_cast<SKILLTYPE>(i), PChar->GetMJob(), PChar->GetMLevel());
             PChar->RealSkills.skill[i]    = maxSkill; // set to capped
             PChar->WorkingSkills.skill[i] = maxSkill / 10;
             PChar->WorkingSkills.skill[i] |= 0x8000; // set blue capped flag
         }
 
-        charutils::CheckWeaponSkill(PChar, static_cast<uint8>(xi::SkillType::None));
+        charutils::CheckWeaponSkill(PChar, SKILL_NONE);
         PChar->pushPacket<GP_SERV_COMMAND_CLISTATUS2>(PChar);
         return;
     }
@@ -10911,7 +10983,7 @@ uint16 CLuaBaseEntity::getSkillLevel(uint16 skillId)
         return 0;
     }
 
-    return static_cast<CBattleEntity*>(m_PBaseEntity)->GetSkill(static_cast<xi::SkillType>(skillId));
+    return static_cast<CBattleEntity*>(m_PBaseEntity)->GetSkill(skillId);
 }
 
 /************************************************************************
@@ -10951,7 +11023,7 @@ void CLuaBaseEntity::setSkillLevel(uint8 SkillID, uint16 SkillAmount)
 
 uint16 CLuaBaseEntity::getMaxSkillLevel(uint8 level, uint8 jobId, uint8 skillId)
 {
-    auto skill = static_cast<xi::SkillType>(skillId);
+    auto skill = static_cast<SKILLTYPE>(skillId);
     auto job   = static_cast<JOBTYPE>(jobId);
 
     return battleutils::GetMaxSkill(skill, job, level);
@@ -11098,7 +11170,7 @@ void CLuaBaseEntity::trySkillUp(uint8 skill, uint8 level, const sol::object& for
     bool useSubSkill  = (useSubSkillObj != sol::lua_nil) ? forceSkillUpObj.as<bool>() : false;
 
     auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
-    charutils::TrySkillUP(PChar, static_cast<xi::SkillType>(skill), level, forceSkillUp, useSubSkill);
+    charutils::TrySkillUP(PChar, static_cast<SKILLTYPE>(skill), level, forceSkillUp, useSubSkill);
 }
 
 /************************************************************************
@@ -11317,6 +11389,14 @@ uint32 CLuaBaseEntity::canLearnSpell(uint16 spellID)
     {
         Message = 96;
     }
+    // Inundation (879): CanUseSpell(SpellID) bails out when PSpellList entry is missing (nullptr).
+    // Allow scroll / NPC learn when retail requirements are met anyway; addSpell has matching logic.
+    else if (spellID == static_cast<uint16>(SpellID::Inundation) &&
+             ((PChar->GetMJob() == JOB_RDM && PChar->GetMLevel() >= 64) ||
+              (PChar->GetSJob() == JOB_RDM && PChar->GetSLevel() >= 64)))
+    {
+        Message = 0;
+    }
     else if (!spell::CanUseSpell(PChar, static_cast<SpellID>(spellID)))
     {
         Message = 95;
@@ -11455,7 +11535,7 @@ void CLuaBaseEntity::recalculateAbilitiesTable()
     {
         auto* PPetEntity = static_cast<CPetEntity*>(PChar->PPet);
 
-        charutils::BuildingCharPetAbilityTable(PChar, PPetEntity, PPetEntity->petID());
+        charutils::BuildingCharPetAbilityTable(PChar, PPetEntity, PPetEntity->m_PetID);
     }
 
     PChar->pushPacket<GP_SERV_COMMAND_COMMAND_DATA>(PChar);
@@ -11804,13 +11884,17 @@ void CLuaBaseEntity::addPartyEffect(sol::variadic_args va)
         args[idx++] = v.get<uint16>();
     }
 
+    CStatusEffect* PEffect =
+        new CStatusEffect(static_cast<EFFECT>(args[0]), args[1], args[2], std::chrono::seconds(args[3]), std::chrono::seconds(args[4]), args[5], args[6]);
+
     CBattleEntity* PEntity = ((CBattleEntity*)m_PBaseEntity);
 
-    PEntity->ForParty(
-        [&](CBattleEntity* PMember)
-        {
-            PMember->StatusEffectContainer->AddStatusEffect(static_cast<xi::StatusEffect>(args[0]), args[1], args[2], std::chrono::seconds(args[3]), std::chrono::seconds(args[4]), args[5], args[6]);
-        });
+    // clang-format off
+    PEntity->ForParty([PEffect](CBattleEntity* PMember)
+    {
+        PMember->StatusEffectContainer->AddStatusEffect(PEffect);
+    });
+    // clang-format on
 }
 
 /************************************************************************
@@ -11837,7 +11921,7 @@ bool CLuaBaseEntity::hasPartyEffect(uint16 effectid)
             if (member->loc.zone == PChar->loc.zone)
             {
                 // Bail out if someone DOESN'T have the desired effect
-                if (!member->StatusEffectContainer->HasStatusEffect(static_cast<xi::StatusEffect>(effectid)))
+                if (!member->StatusEffectContainer->HasStatusEffect(static_cast<EFFECT>(effectid)))
                 {
                     return false;
                 }
@@ -11868,7 +11952,7 @@ void CLuaBaseEntity::removePartyEffect(uint16 effectid)
     {
         if (member->loc.zone == PChar->loc.zone)
         {
-            member->StatusEffectContainer->DelStatusEffect(static_cast<xi::StatusEffect>(effectid));
+            member->StatusEffectContainer->DelStatusEffect(static_cast<EFFECT>(effectid));
         }
     }
 }
@@ -12322,7 +12406,7 @@ auto CLuaBaseEntity::registerBattlefield(const sol::object& arg0, const sol::obj
         return BATTLEFIELD_RETURN_CODE_BATTLEFIELD_FULL;
     }
 
-    if (m_PBaseEntity->loc.zone->battlefieldHandler() == nullptr)
+    if (m_PBaseEntity->loc.zone->m_BattlefieldHandler == nullptr)
     {
         ShowWarning("m_BattlefieldHandler was null for %s.", m_PBaseEntity->getName());
         return BATTLEFIELD_RETURN_CODE_BATTLEFIELD_FULL;
@@ -12373,7 +12457,7 @@ auto CLuaBaseEntity::registerBattlefield(const sol::object& arg0, const sol::obj
         registration.rules |= battlefield.get<bool>("canLoseExp") ? RULES_LOSE_EXP : 0;
     }
 
-    return PZone->battlefieldHandler()->RegisterBattlefield(PChar, registration);
+    return PZone->m_BattlefieldHandler->RegisterBattlefield(PChar, registration);
 }
 
 auto CLuaBaseEntity::battlefieldAtCapacity(const int battlefieldID) const -> bool
@@ -12384,7 +12468,7 @@ auto CLuaBaseEntity::battlefieldAtCapacity(const int battlefieldID) const -> boo
         return true;
     }
 
-    if (m_PBaseEntity->loc.zone->battlefieldHandler() == nullptr)
+    if (m_PBaseEntity->loc.zone->m_BattlefieldHandler == nullptr)
     {
         ShowWarning("m_BattlefieldHandler was null for %s.", m_PBaseEntity->getName());
         return true;
@@ -12399,14 +12483,14 @@ auto CLuaBaseEntity::battlefieldAtCapacity(const int battlefieldID) const -> boo
     auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
     auto* PZone = PChar->loc.zone == nullptr ? zoneutils::GetZone(PChar->loc.destination) : PChar->loc.zone;
 
-    if (!PZone || PZone->battlefieldHandler() == nullptr)
+    if (!PZone || PZone->m_BattlefieldHandler == nullptr)
     {
         ShowWarning("CLuaBaseEntity::battlefieldAtCapacity() - Battlefield Handler is null.");
         return true; // NOTE: We were previously breaking here, so return full in this case.
     }
 
     bool full = false;
-    if (PZone->battlefieldHandler()->ReachedMaxCapacity(battlefieldID))
+    if (PZone->m_BattlefieldHandler->ReachedMaxCapacity(battlefieldID))
     {
         full = true;
     }
@@ -12429,7 +12513,7 @@ auto CLuaBaseEntity::enterBattlefield(const sol::object& area) const -> bool
         return false;
     }
 
-    if (m_PBaseEntity->objtype != TYPE_PC || m_PBaseEntity->loc.zone->battlefieldHandler() == nullptr)
+    if (m_PBaseEntity->objtype != TYPE_PC || m_PBaseEntity->loc.zone->m_BattlefieldHandler == nullptr)
     {
         ShowWarning("CLuaBaseEntity::enterBattlefield() - Non-PC calling function, or Battlefield Handler is null.");
         return false;
@@ -12438,11 +12522,11 @@ auto CLuaBaseEntity::enterBattlefield(const sol::object& area) const -> bool
     CBattlefield* PBattlefield = nullptr;
     if (area == sol::lua_nil)
     {
-        PBattlefield = m_PBaseEntity->loc.zone->battlefieldHandler()->GetBattlefield(m_PBaseEntity, true);
+        PBattlefield = m_PBaseEntity->loc.zone->m_BattlefieldHandler->GetBattlefield(m_PBaseEntity, true);
     }
     else
     {
-        PBattlefield = m_PBaseEntity->loc.zone->battlefieldHandler()->GetBattlefieldByArea(area.as<uint8>());
+        PBattlefield = m_PBaseEntity->loc.zone->m_BattlefieldHandler->GetBattlefieldByArea(area.as<uint8>());
     }
 
     return PBattlefield ? PBattlefield->InsertEntity(m_PBaseEntity, true) : false;
@@ -12463,13 +12547,13 @@ auto CLuaBaseEntity::leaveBattlefield(const uint8 leavecode) const -> bool
         return false;
     }
 
-    if (m_PBaseEntity->objtype == TYPE_NPC || m_PBaseEntity->loc.zone->battlefieldHandler() == nullptr)
+    if (m_PBaseEntity->objtype == TYPE_NPC || m_PBaseEntity->loc.zone->m_BattlefieldHandler == nullptr)
     {
         ShowWarning("CLuaBaseEntity::leaveBattlefield() - NPC calling function, or Battlefield Handler is null.");
         return false;
     }
 
-    return m_PBaseEntity->loc.zone->battlefieldHandler()->RemoveFromBattlefield(m_PBaseEntity, m_PBaseEntity->PBattlefield, leavecode);
+    return m_PBaseEntity->loc.zone->m_BattlefieldHandler->RemoveFromBattlefield(m_PBaseEntity, m_PBaseEntity->PBattlefield, leavecode);
 }
 
 /************************************************************************
@@ -12506,7 +12590,7 @@ void CLuaBaseEntity::setEnteredBattlefield(const bool entered) const
     }
 
     auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
-    if (PChar->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Battlefield))
+    if (PChar->StatusEffectContainer->HasStatusEffect(EFFECT_BATTLEFIELD))
     {
         CBattlefield::setPlayerEntered(PChar, entered);
     }
@@ -12748,11 +12832,10 @@ void CLuaBaseEntity::countdown(const sol::object& secondsObj) const
                 strongholdNameOverride = 0
             },
             fence = {
-                pos    = {x = 0.000, z = 0.000}, -- center of fence
-                radius = 25.00,                  -- radius from pos in yalms
-                render = 25.00,                  -- distance from fence it becomes visible
-                blue   = true,                   -- optional, turns default red fence bars blue
-                gateId = 13                      -- optional content culling ID (hides non-participants while inside)
+                pos = {x = 0.000, z = 0.000}, -- center of fence
+                radius = 25.00, -- radius from pos in yalms
+                render = 25.00, -- distance from fence it becomes visible
+                blue = true -- optional, turns default red fence bars blue
             },
             help = {
                 title = 1, -- string index from ROM\333\16.DAT
@@ -12846,9 +12929,8 @@ void CLuaBaseEntity::objectiveUtility(const sol::object& obj) const
             const float radius = fenceObj.as<sol::table>().get_or<float>("radius", 0.00);
             const float render = fenceObj.as<sol::table>().get_or<float>("render", 25.00);
             const bool  blue   = fenceObj.as<sol::table>().get_or<bool, std::string, bool>("blue", false);
-            const uint8 gateId = fenceObj.as<sol::table>().get_or<uint8>("gateId", PChar->StatusEffectContainer->GetConfrontationSubPower() & 0x0F);
 
-            packet->addFence(posX, posZ, radius, render, blue, gateId);
+            packet->addFence(posX, posZ, radius, render, blue);
         }
 
         const sol::object helpObj = obj.as<sol::table>()["help"];
@@ -12945,31 +13027,6 @@ void CLuaBaseEntity::disengage()
     }
 }
 
-namespace
-{
-
-// Adapts a Lua function into an action-queue callable, adding the
-// invoke-and-log-errors boilerplate.
-auto wrapLuaAction(sol::function func) -> queueAction_t::EntityFunc_t
-{
-    return [func = std::move(func)](CBaseEntity* PEntity)
-    {
-        if (!func.valid())
-        {
-            return;
-        }
-
-        auto result = func(PEntity);
-        if (!result.valid())
-        {
-            sol::error err = result;
-            ShowError("CAIActionQueue Lua action for %s (%i): %s", PEntity->name, PEntity->id, err.what());
-        }
-    };
-}
-
-} // namespace
-
 /************************************************************************
  *  Function: timer()
  *  Purpose : Inserts a pre-defined Lua fuction into the queue and executes
@@ -12980,7 +13037,30 @@ auto wrapLuaAction(sol::function func) -> queueAction_t::EntityFunc_t
 
 void CLuaBaseEntity::timer(int ms, sol::function func)
 {
-    m_PBaseEntity->PAI->QueueAction(queueAction_t(std::chrono::milliseconds(ms), false, wrapLuaAction(std::move(func))));
+    if (!func.valid())
+    {
+        ShowWarning("CLuaBaseEntity::timer: invalid lua function (%s).", m_PBaseEntity->getName().c_str());
+        return;
+    }
+
+    sol::function luaCallback = std::move(func);
+    m_PBaseEntity->PAI->QueueAction(queueAction_t(
+        std::chrono::milliseconds(ms),
+        false,
+        [luaCallback = std::move(luaCallback)](CBaseEntity* PEntity) mutable
+        {
+            if (!luaCallback.valid())
+            {
+                return;
+            }
+
+            const auto result = luaCallback(PEntity);
+            if (!result.valid())
+            {
+                sol::error err = result;
+                ShowError("CLuaBaseEntity::timer: %s", err.what());
+            }
+        }));
 }
 
 /************************************************************************
@@ -12995,7 +13075,30 @@ void CLuaBaseEntity::timer(int ms, sol::function func)
 
 void CLuaBaseEntity::queue(int ms, sol::function func)
 {
-    m_PBaseEntity->PAI->QueueAction(queueAction_t(std::chrono::milliseconds(ms), true, wrapLuaAction(std::move(func))));
+    if (!func.valid())
+    {
+        ShowWarning("CLuaBaseEntity::queue: invalid lua function (%s).", m_PBaseEntity->getName().c_str());
+        return;
+    }
+
+    sol::function luaCallback = std::move(func);
+    m_PBaseEntity->PAI->QueueAction(queueAction_t(
+        std::chrono::milliseconds(ms),
+        true,
+        [luaCallback = std::move(luaCallback)](CBaseEntity* PEntity) mutable
+        {
+            if (!luaCallback.valid())
+            {
+                return;
+            }
+
+            const auto result = luaCallback(PEntity);
+            if (!result.valid())
+            {
+                sol::error err = result;
+                ShowError("CLuaBaseEntity::queue: %s", err.what());
+            }
+        }));
 }
 
 /************************************************************************
@@ -13186,9 +13289,9 @@ void CLuaBaseEntity::wakeUp()
 
     auto* PEntity = static_cast<CBattleEntity*>(m_PBaseEntity);
 
-    PEntity->StatusEffectContainer->DelStatusEffect(xi::StatusEffect::SleepI);
-    PEntity->StatusEffectContainer->DelStatusEffect(xi::StatusEffect::SleepIi);
-    PEntity->StatusEffectContainer->DelStatusEffect(xi::StatusEffect::Lullaby);
+    PEntity->StatusEffectContainer->DelStatusEffect(EFFECT_SLEEP);
+    PEntity->StatusEffectContainer->DelStatusEffect(EFFECT_SLEEP_II);
+    PEntity->StatusEffectContainer->DelStatusEffect(EFFECT_LULLABY);
 }
 
 /************************************************************************
@@ -13343,7 +13446,7 @@ bool CLuaBaseEntity::isUsingH2H()
 
         if (PMainWeapon)
         {
-            if (PMainWeapon->getSkillType() == xi::SkillType::HandToHand)
+            if (PMainWeapon->getSkillType() == SKILLTYPE::SKILL_HAND_TO_HAND)
             {
                 return true;
             }
@@ -13356,7 +13459,7 @@ bool CLuaBaseEntity::isUsingH2H()
     else if (PBattleEntity)
     {
         CItemWeapon* PWeapon = dynamic_cast<CItemWeapon*>(PBattleEntity->m_Weapons[SLOT_MAIN]);
-        if (PWeapon && PWeapon->getSkillType() == xi::SkillType::HandToHand)
+        if (PWeapon && PWeapon->getSkillType() == SKILLTYPE::SKILL_HAND_TO_HAND)
         {
             return true;
         }
@@ -13401,23 +13504,40 @@ uint16 CLuaBaseEntity::getBaseWeaponDelay(uint16 slot)
  *  Notes   :
  ************************************************************************/
 
-auto CLuaBaseEntity::getBaseDelay() -> uint16
+uint16 CLuaBaseEntity::getBaseDelay()
 {
-    uint16 baseDelay = 0;
+    CCharEntity*   PCharEntity   = dynamic_cast<CCharEntity*>(m_PBaseEntity);
+    CBattleEntity* PBattleEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
+    uint16         baseDelay     = 480; // h2h "unequipped" base delay
 
-    if (m_PBaseEntity == nullptr)
+    if (PCharEntity)
     {
-        ShowWarning("CLuaBaseEntity::getBaseDelay() - Entity called is nullptr (%s).");
-        return 0;
-    }
+        CItemWeapon* PMainWeapon = dynamic_cast<CItemWeapon*>(PCharEntity->getEquip(SLOT_MAIN));
+        CItemWeapon* PSubWeapon  = dynamic_cast<CItemWeapon*>(PCharEntity->getEquip(SLOT_SUB));
 
-    if (CCharEntity* PCharEntity = dynamic_cast<CCharEntity*>(m_PBaseEntity))
-    {
-        baseDelay = battleutils::GetBaseDelay(PCharEntity);
+        if (PMainWeapon)
+        {
+            if (PMainWeapon->getSkillType() == SKILLTYPE::SKILL_HAND_TO_HAND)
+            {
+                baseDelay = PMainWeapon->getBaseDelay(); // h2h items include 480 base delay
+            }
+            else
+            {
+                baseDelay = PMainWeapon->getBaseDelay();
+                if (PSubWeapon)
+                {
+                    baseDelay += PSubWeapon->getBaseDelay();
+                }
+            }
+        }
     }
-    else if (CBattleEntity* PBattleEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity))
+    else if (PBattleEntity)
     {
-        baseDelay = battleutils::GetBaseDelay(PBattleEntity);
+        CItemWeapon* PWeapon = dynamic_cast<CItemWeapon*>(PBattleEntity->m_Weapons[SLOT_MAIN]);
+        if (PWeapon)
+        {
+            baseDelay = std::round(PWeapon->getBaseDelay() * 60.0 / 1000.0); // there is some precision loss that results in delays of 319.98 instead of 320, etc, so round to nearest.
+        }
     }
 
     return baseDelay;
@@ -13430,26 +13550,41 @@ auto CLuaBaseEntity::getBaseDelay() -> uint16
  *  Notes   :
  ************************************************************************/
 
-auto CLuaBaseEntity::getBaseRangedDelay() -> uint16
+uint16 CLuaBaseEntity::getBaseRangedDelay()
 {
-    uint16 baseRangedDelay = 0;
+    CCharEntity*   PCharEntity   = dynamic_cast<CCharEntity*>(m_PBaseEntity);
+    CBattleEntity* PBattleEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
+    uint16         baseDelay     = 0; // return 0 if not able to actually ranged attack
 
-    if (m_PBaseEntity == nullptr)
+    if (PCharEntity)
     {
-        ShowWarning("CLuaBaseEntity::getBaseRangedDelay() - Entity called is nullptr (%s).");
-        return 0;
+        CItemWeapon* PRangedWeapon = dynamic_cast<CItemWeapon*>(PCharEntity->getEquip(SLOT_RANGED));
+        CItemWeapon* PAmmo         = dynamic_cast<CItemWeapon*>(PCharEntity->getEquip(SLOT_AMMO));
+
+        if (PRangedWeapon && PRangedWeapon->isRanged())
+        {
+            if (PRangedWeapon->isThrowing()) // Throwing, like Chakram/Boomerang in ranged slot
+            {
+                baseDelay = PRangedWeapon->getBaseDelay();
+            }
+            else if (PAmmo) // Bow/gun etc, but only valid if Ammo is equipped.
+            {
+                baseDelay = PRangedWeapon->getBaseDelay() + PAmmo->getBaseDelay();
+            }
+        }
+        else if (PAmmo && PAmmo->isRanged()) // Throwing, Pebble/Shuriken in ammo slot
+        {
+            baseDelay = PAmmo->getBaseDelay();
+        }
+    }
+    else if (PBattleEntity)
+    {
+        baseDelay = 260; // TODO: There does not seem to be a real way to get the delay of a ranged attack of a non-PC.
+                         // 260 delay is derived from a Goblin Hunter using a ranged attack, using Dark Seal Absorb TP to reverse the delay.
+                         // The cast gave back 40 TP, which is half of 80 TP due to 50% dAGI penalty being maxed out.
     }
 
-    if (CCharEntity* PCharEntity = dynamic_cast<CCharEntity*>(m_PBaseEntity))
-    {
-        baseRangedDelay = battleutils::GetBaseRangedDelay(PCharEntity);
-    }
-    else if (CBattleEntity* PBattleEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity))
-    {
-        baseRangedDelay = battleutils::GetBaseRangedDelay(PBattleEntity);
-    }
-
-    return baseRangedDelay;
+    return baseDelay;
 }
 
 /************************************************************************
@@ -13459,12 +13594,12 @@ auto CLuaBaseEntity::getBaseRangedDelay() -> uint16
  *  Notes   :
  ************************************************************************/
 
-auto CLuaBaseEntity::checkLiementAbsorb(xi::DamageType damageType) -> float
+float CLuaBaseEntity::checkLiementAbsorb(uint16 damageType)
 {
     CBattleEntity* PBattleEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
     if (PBattleEntity)
     {
-        return battleutils::CheckLiementAbsorb(PBattleEntity, damageType);
+        return battleutils::CheckLiementAbsorb(PBattleEntity, (DAMAGE_TYPE)damageType);
     }
 
     return 1.0f;
@@ -13905,99 +14040,6 @@ sol::table CLuaBaseEntity::getNotorietyList()
 }
 
 /************************************************************************
- *  Function: getMasterThreatMob(rangeOverride)
- *  Purpose : Returns a mob in the master's notoriety list that threatens
- *            the master's owner, preferring non-master-target mobs first.
- *  Example : local target = entity:getMasterThreatMob(22)
- *  Notes   : Intended for trust combat scripts that need efficient target
- *            selection without Lua-side entity/enmity table iteration.
- ************************************************************************/
-
-auto CLuaBaseEntity::getMasterThreatMob(const sol::object& rangeOverride) -> CBaseEntity*
-{
-    auto* PBattleEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
-    if (!PBattleEntity)
-    {
-        ShowWarning("Attempting to get master threat target for invalid entity type (%s).", m_PBaseEntity->getName());
-        return nullptr;
-    }
-
-    auto* PMaster = PBattleEntity->PMaster;
-
-    if (!PMaster)
-    {
-        return nullptr;
-    }
-
-    const auto maxDistance = rangeOverride.is<float>() ? rangeOverride.as<float>() : 22.0f;
-    auto*      PMastersTarget{ PMaster->GetEntity(PMaster->GetBattleTargetID()) };
-
-    auto isMasterTopEnmityOnMob = [PMaster](CMobEntity* PMob) -> bool
-    {
-        if (!PMob)
-        {
-            return false;
-        }
-
-        auto* enmityList = PMob->PEnmityContainer->GetEnmityList();
-        if (!enmityList)
-        {
-            return false;
-        }
-
-        CBattleEntity* PTopEntity = nullptr;
-        int32          topHate    = std::numeric_limits<int32>::min();
-
-        for (const auto& [_, enmityObject] : *enmityList)
-        {
-            if (!enmityObject.active || !enmityObject.PEnmityOwner || !enmityObject.PEnmityOwner->isAlive())
-            {
-                continue;
-            }
-
-            const auto totalHate = enmityObject.CE + enmityObject.VE;
-            if (totalHate > topHate)
-            {
-                topHate    = totalHate;
-                PTopEntity = enmityObject.PEnmityOwner;
-            }
-        }
-
-        return PTopEntity && PTopEntity->id == PMaster->id;
-    };
-
-    CMobEntity* threateningTarget = nullptr;
-
-    for (auto* entity : *PMaster->PNotorietyContainer)
-    {
-        auto* PMob = dynamic_cast<CMobEntity*>(entity);
-        if (!PMob || !PMob->isAlive() || distance(PMaster->loc.p, PMob->loc.p) > maxDistance)
-        {
-            continue;
-        }
-
-        auto* PTarget            = PMob->GetEntity(PMob->GetBattleTargetID());
-        bool  isTargetingMaster  = PTarget && PTarget->id == PMaster->id;
-        bool  masterHasTopEnmity = isMasterTopEnmityOnMob(PMob);
-
-        if (isTargetingMaster || masterHasTopEnmity)
-        {
-            if (!PMastersTarget || PMob->id != PMastersTarget->id)
-            {
-                return PMob;
-            }
-
-            if (!threateningTarget)
-            {
-                threateningTarget = PMob;
-            }
-        }
-    }
-
-    return threateningTarget;
-}
-
-/************************************************************************
  *  Function: clearEnmityForEntity(...)
  *  Purpose :
  *  Example : mob:clearEnmityForEntity(player)
@@ -14025,7 +14067,7 @@ void CLuaBaseEntity::clearEnmityForEntity(CLuaBaseEntity* PEntity)
  *            })
  *  Notes   :
  ************************************************************************/
-auto CLuaBaseEntity::addStatusEffect(const xi::StatusEffect effectId, sol::table params) const -> bool
+auto CLuaBaseEntity::addStatusEffect(const EFFECT effectId, sol::table params) const -> bool
 {
     auto* PBattleEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
     if (!PBattleEntity)
@@ -14048,29 +14090,36 @@ auto CLuaBaseEntity::addStatusEffect(const xi::StatusEffect effectId, sol::table
     const auto flag            = params["flag"].get_or(0u);
     const auto sourceType      = params["sourceType"].get_or<uint16>(0);
     const auto sourceTypeParam = params["sourceTypeParam"].get_or(0u);
-    const auto slot            = params["slot"].get_or<uint8>(0);
     const auto silent          = params["silent"].get_or(false);
 
-    auto effectDuration = std::chrono::milliseconds(static_cast<uint64>(duration * 1000));
+    auto* PEffect = new CStatusEffect(
+        effectId,
+        icon,
+        power,
+        std::chrono::seconds(tick),
+        std::chrono::milliseconds(static_cast<uint64>(duration * 1000)),
+        subType,
+        subPower,
+        subIcon,
+        tier,
+        flag);
 
-    if (effectId == xi::StatusEffect::Food)
+    if (sourceType != EffectSourceType::SOURCE_NONE && sourceTypeParam > 0)
+    {
+        PEffect->SetSource(sourceType, sourceTypeParam);
+    }
+
+    PEffect->SetOriginID(originEntity.getID());
+
+    if (effectId == EFFECT_FOOD)
     {
         if (const auto durationModifier = PBattleEntity->getMod(Mod::FOOD_DURATION))
         {
-            effectDuration += std::chrono::floor<std::chrono::milliseconds>(effectDuration * (durationModifier / 100.0f));
+            PEffect->SetDuration(PEffect->GetDuration() + std::chrono::floor<std::chrono::milliseconds>(PEffect->GetDuration() * (durationModifier / 100.0f)));
         }
     }
 
-    auto& PSEC = PBattleEntity->StatusEffectContainer;
-
-    // The CStatusEffect constructor takes sourceType/sourceTypeParam/originID directly, so the
-    // previous SetSource/SetOriginID post-construction steps fold into the call.
-    if (silent)
-    {
-        return PSEC->AddStatusEffectSilent(effectId, icon, power, std::chrono::seconds(tick), effectDuration, subType, subPower, subIcon, tier, static_cast<xi::StatusEffectFlag>(flag), sourceType, sourceTypeParam, originEntity.getID(), slot);
-    }
-
-    return PSEC->AddStatusEffect(effectId, icon, power, std::chrono::seconds(tick), effectDuration, subType, subPower, subIcon, tier, static_cast<xi::StatusEffectFlag>(flag), sourceType, sourceTypeParam, originEntity.getID(), slot);
+    return PBattleEntity->StatusEffectContainer->AddStatusEffect(PEffect, silent ? EffectNotice::Silent : EffectNotice::ShowMessage);
 }
 
 /************************************************************************
@@ -14098,7 +14147,7 @@ auto CLuaBaseEntity::copyStatusEffect(const CLuaStatusEffect* PStatusEffect) con
         remainingDuration   = std::max(remainingDuration, 0s);
     }
 
-    return PBattleEntity->StatusEffectContainer->AddStatusEffect(
+    auto* PNewEffect = new CStatusEffect(
         POriginal->GetStatusID(),
         POriginal->GetIcon(),
         POriginal->GetPower(),
@@ -14106,12 +14155,13 @@ auto CLuaBaseEntity::copyStatusEffect(const CLuaStatusEffect* PStatusEffect) con
         remainingDuration,
         POriginal->GetSubID(),
         POriginal->GetSubPower(),
-        POriginal->GetSubIcon(),
         POriginal->GetTier(),
         POriginal->GetEffectFlags(),
         POriginal->GetSourceType(),
         POriginal->GetSourceTypeParam(),
         POriginal->GetOriginID());
+
+    return PBattleEntity->StatusEffectContainer->AddStatusEffect(PNewEffect);
 }
 
 /************************************************************************
@@ -14121,7 +14171,7 @@ auto CLuaBaseEntity::copyStatusEffect(const CLuaStatusEffect* PStatusEffect) con
  *  Notes   : Can specify Power of the Effect as an option or the Source (will use power if both specified)
  ************************************************************************/
 
-auto CLuaBaseEntity::getStatusEffect(xi::StatusEffect StatusID, const sol::object& SubType, const sol::object& SourceType, const sol::object& SourceTypeParam) -> CStatusEffect*
+auto CLuaBaseEntity::getStatusEffect(uint16 StatusID, const sol::object& SubType, const sol::object& SourceType, const sol::object& SourceTypeParam) -> CStatusEffect*
 {
     if (m_PBaseEntity->objtype == TYPE_NPC)
     {
@@ -14142,7 +14192,7 @@ auto CLuaBaseEntity::getStatusEffect(xi::StatusEffect StatusID, const sol::objec
     }
 
     CStatusEffect* PStatusEffect   = nullptr;
-    auto           effect_StatusID = StatusID;
+    auto           effect_StatusID = static_cast<EFFECT>(StatusID);
 
     if (SubType != sol::lua_nil)
     {
@@ -14170,7 +14220,7 @@ auto CLuaBaseEntity::getStatusEffect(xi::StatusEffect StatusID, const sol::objec
  *  Notes   :
  ************************************************************************/
 
-auto CLuaBaseEntity::getStatusEffectBySource(xi::StatusEffect StatusID, EffectSourceType SourceType, uint16 SourceTypeParam) -> CStatusEffect*
+auto CLuaBaseEntity::getStatusEffectBySource(uint16 StatusID, EffectSourceType SourceType, uint16 SourceTypeParam) -> CStatusEffect*
 {
     if (m_PBaseEntity->objtype == TYPE_NPC)
     {
@@ -14184,7 +14234,7 @@ auto CLuaBaseEntity::getStatusEffectBySource(xi::StatusEffect StatusID, EffectSo
         return nullptr;
     }
 
-    return PBattleEntity->StatusEffectContainer->GetStatusEffectBySource(StatusID, SourceType, SourceTypeParam);
+    return PBattleEntity->StatusEffectContainer->GetStatusEffectBySource(static_cast<EFFECT>(StatusID), SourceType, SourceTypeParam);
 }
 
 /************************************************************************
@@ -14209,13 +14259,13 @@ sol::table CLuaBaseEntity::getStatusEffects()
     }
 
     auto table = lua.create_table();
-
-    auto func = [&table](CStatusEffect& PEffect)
+    // clang-format off
+    static_cast<CBattleEntity*>(m_PBaseEntity)->StatusEffectContainer->ForEachEffect(
+    [&table](CStatusEffect* PEffect)
     {
-        table.add(CLuaStatusEffect(&PEffect));
-    };
-
-    static_cast<CBattleEntity*>(m_PBaseEntity)->StatusEffectContainer->ForEachEffect(func);
+        table.add(CLuaStatusEffect(PEffect));
+    });
+    // clang-format on
 
     return table;
 }
@@ -14245,7 +14295,7 @@ int16 CLuaBaseEntity::getStatusEffectElement(uint16 statusId)
  *  Notes   :
  ************************************************************************/
 
-auto CLuaBaseEntity::canGainStatusEffect(xi::StatusEffect effect, const sol::object& powerObj) -> bool
+bool CLuaBaseEntity::canGainStatusEffect(uint16 effect, const sol::object& powerObj)
 {
     if (m_PBaseEntity->objtype == TYPE_NPC)
     {
@@ -14261,7 +14311,7 @@ auto CLuaBaseEntity::canGainStatusEffect(xi::StatusEffect effect, const sol::obj
         return false;
     }
 
-    CStatusEffect statusEffect(effect, 0, power, 0s, 0s);
+    CStatusEffect statusEffect(static_cast<EFFECT>(effect), 0, power, 0s, 0s);
 
     return PBattleEntity->StatusEffectContainer->CanGainStatusEffect(&statusEffect);
 }
@@ -14273,7 +14323,7 @@ auto CLuaBaseEntity::canGainStatusEffect(xi::StatusEffect effect, const sol::obj
  *  Notes   : More specific in scope than hasStatusEffectByFlag()
  ************************************************************************/
 
-auto CLuaBaseEntity::hasStatusEffect(xi::StatusEffect StatusID, const sol::object& SubType) -> bool
+bool CLuaBaseEntity::hasStatusEffect(uint16 StatusID, const sol::object& SubType)
 {
     if (m_PBaseEntity->objtype == TYPE_NPC)
     {
@@ -14287,16 +14337,17 @@ auto CLuaBaseEntity::hasStatusEffect(xi::StatusEffect StatusID, const sol::objec
         return false;
     }
 
-    bool hasEffect = false;
+    bool hasEffect       = false;
+    auto effect_StatusID = static_cast<EFFECT>(StatusID);
 
     if (SubType != sol::lua_nil)
     {
         auto uint16_SubType = SubType.as<uint16>();
-        hasEffect           = PBattleEntity->StatusEffectContainer->HasStatusEffect(StatusID, uint16_SubType);
+        hasEffect           = PBattleEntity->StatusEffectContainer->HasStatusEffect(effect_StatusID, uint16_SubType);
     }
     else
     {
-        hasEffect = PBattleEntity->StatusEffectContainer->HasStatusEffect(StatusID);
+        hasEffect = PBattleEntity->StatusEffectContainer->HasStatusEffect(effect_StatusID);
     }
 
     return hasEffect;
@@ -14323,7 +14374,8 @@ bool CLuaBaseEntity::hasStatusEffectByFlag(uint16 StatusID)
         return 0;
     }
 
-    return PBattleEntity->StatusEffectContainer->HasStatusEffectByFlag(static_cast<xi::StatusEffectFlag>(StatusID));
+    auto effect_StatusID = static_cast<EFFECT>(StatusID);
+    return PBattleEntity->StatusEffectContainer->HasStatusEffectByFlag(effect_StatusID);
 }
 
 /************************************************************************
@@ -14333,7 +14385,7 @@ bool CLuaBaseEntity::hasStatusEffectByFlag(uint16 StatusID)
  *  Notes   :
  ************************************************************************/
 
-auto CLuaBaseEntity::countEffect(xi::StatusEffect StatusID) -> uint8
+uint8 CLuaBaseEntity::countEffect(uint16 StatusID)
 {
     if (m_PBaseEntity->objtype == TYPE_NPC)
     {
@@ -14347,12 +14399,12 @@ auto CLuaBaseEntity::countEffect(xi::StatusEffect StatusID) -> uint8
         return 0;
     }
 
-    auto effect_StatusID = StatusID;
+    auto effect_StatusID = static_cast<EFFECT>(StatusID);
     return PBattleEntity->StatusEffectContainer->GetEffectsCount(effect_StatusID);
 }
 
 /************************************************************************
- *  Function: countEffectWithFlag(xi::StatusEffectFlag)
+ *  Function: countEffectWithFlag(EFFECTFLAG)
  *  Purpose : Returns the number of Effects an Entity has in their container that matches the provided flag
  *  Example : if target:countEffectWithFlag(xi.effectFlag.DISPELABLE) > 3 then
  *  Notes   :
@@ -14372,7 +14424,7 @@ uint8 CLuaBaseEntity::countEffectWithFlag(uint32 flag)
         return 0;
     }
 
-    auto effectFlag = static_cast<xi::StatusEffectFlag>(flag);
+    auto effectFlag = static_cast<EFFECTFLAG>(flag);
     return PBattleEntity->StatusEffectContainer->GetEffectsCountWithFlag(effectFlag);
 }
 
@@ -14383,7 +14435,7 @@ uint8 CLuaBaseEntity::countEffectWithFlag(uint32 flag)
  *  Notes   : Can specify Power of the Effect as an option or the Source (will use power if both specified)
  ************************************************************************/
 
-auto CLuaBaseEntity::delStatusEffect(xi::StatusEffect StatusID, const sol::object& SubType, const sol::object& SourceType, const sol::object& SourceTypeParam) -> bool
+bool CLuaBaseEntity::delStatusEffect(uint16 StatusID, const sol::object& SubType, const sol::object& SourceType, const sol::object& SourceTypeParam)
 {
     if (m_PBaseEntity->objtype == TYPE_NPC)
     {
@@ -14404,7 +14456,7 @@ auto CLuaBaseEntity::delStatusEffect(xi::StatusEffect StatusID, const sol::objec
 
     bool result = false;
 
-    auto effect_StatusID = StatusID;
+    auto effect_StatusID = static_cast<EFFECT>(StatusID);
 
     if (SubType != sol::lua_nil)
     {
@@ -14428,7 +14480,7 @@ auto CLuaBaseEntity::delStatusEffect(xi::StatusEffect StatusID, const sol::objec
 /************************************************************************
  *  Function: delStatusEffectsByFlag()
  *  Purpose : Removes all Status Effects of a specified flag
- *  Example : target:delStatusEffectsByFlag(xi.effectFlag.DEATH)
+ *  Example : target:delEffectsByFlag(xi.effectFlag.DEATH)
  *  Notes   : Used for removal of multiple effects with matching flag
  ************************************************************************/
 
@@ -14448,31 +14500,7 @@ void CLuaBaseEntity::delStatusEffectsByFlag(uint32 flag, const sol::object& sile
 
     auto removalNotice = (silent.is<bool>() && silent.as<bool>()) ? EffectNotice::Silent : EffectNotice::ShowMessage;
 
-    PBattleEntity->StatusEffectContainer->DelStatusEffectsByFlag(static_cast<xi::StatusEffectFlag>(flag), removalNotice);
-}
-
-/************************************************************************
- *  Function: delStatusEffectsByType()
- *  Purpose : Removes all Status Effects of a specified type
- *  Example : target:delStatusEffectsByType(xi.effectType.SPIKES)
- *  Notes   : Used for removal of multiple effects with matching type
- ************************************************************************/
-
-void CLuaBaseEntity::delStatusEffectsByType(uint16 type)
-{
-    if (m_PBaseEntity->objtype == TYPE_NPC)
-    {
-        ShowWarning("Invalid Entity (NPC: %s) calling function.", m_PBaseEntity->getName());
-        return;
-    }
-
-    auto* PBattleEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
-    if (!PBattleEntity)
-    {
-        return;
-    }
-
-    PBattleEntity->StatusEffectContainer->DelStatusEffectsByType(type);
+    PBattleEntity->StatusEffectContainer->DelStatusEffectsByFlag(static_cast<EFFECTFLAG>(flag), removalNotice);
 }
 
 /************************************************************************
@@ -14482,7 +14510,7 @@ void CLuaBaseEntity::delStatusEffectsByType(uint16 type)
  *  Notes   : Used specifically for Status Effects that are not supposed to show a message once worn
  ************************************************************************/
 
-auto CLuaBaseEntity::delStatusEffectSilent(xi::StatusEffect StatusID) -> bool
+bool CLuaBaseEntity::delStatusEffectSilent(uint16 StatusID)
 {
     if (m_PBaseEntity->objtype == TYPE_NPC)
     {
@@ -14496,7 +14524,7 @@ auto CLuaBaseEntity::delStatusEffectSilent(xi::StatusEffect StatusID) -> bool
         return false;
     }
 
-    auto effect_StatusID = StatusID;
+    auto effect_StatusID = static_cast<EFFECT>(StatusID);
     return PBattleEntity->StatusEffectContainer->DelStatusEffectSilent(effect_StatusID);
 }
 
@@ -14570,9 +14598,9 @@ int32 CLuaBaseEntity::dispelStatusEffect(const sol::object& flagObj)
         return 0;
     }
 
-    uint32 flag = flagObj.is<uint32>() ? flagObj.as<uint32>() : (uint32)xi::StatusEffectFlag::Dispelable;
+    uint32 flag = flagObj.is<uint32>() ? flagObj.as<uint32>() : (uint32)EFFECTFLAG_DISPELABLE;
 
-    return static_cast<int32>(PBattleEntity->StatusEffectContainer->DispelStatusEffect(static_cast<xi::StatusEffectFlag>(flag)));
+    return PBattleEntity->StatusEffectContainer->DispelStatusEffect(static_cast<EFFECTFLAG>(flag));
 }
 
 /************************************************************************
@@ -14596,9 +14624,9 @@ uint8 CLuaBaseEntity::dispelAllStatusEffect(const sol::object& flagObj)
         return 0;
     }
 
-    uint32 flag = flagObj.is<uint32>() ? flagObj.as<uint32>() : (uint32)xi::StatusEffectFlag::Dispelable;
+    uint32 flag = flagObj.is<uint32>() ? flagObj.as<uint32>() : (uint32)EFFECTFLAG_DISPELABLE;
 
-    return PBattleEntity->StatusEffectContainer->DispelAllStatusEffect(static_cast<xi::StatusEffectFlag>(flag));
+    return PBattleEntity->StatusEffectContainer->DispelAllStatusEffect(static_cast<EFFECTFLAG>(flag));
 }
 
 /************************************************************************
@@ -14628,29 +14656,13 @@ uint16 CLuaBaseEntity::stealStatusEffect(CLuaBaseEntity* PTargetEntity, const so
         return 0;
     }
 
-    uint32 flag          = flagObj.is<uint32>() ? flagObj.as<uint32>() : (uint32)xi::StatusEffectFlag::Dispelable;
+    uint32 flag          = flagObj.is<uint32>() ? flagObj.as<uint32>() : (uint32)EFFECTFLAG_DISPELABLE;
     auto   removalNotice = (silentObj.is<bool>() && silentObj.as<bool>()) ? EffectNotice::Silent : EffectNotice::ShowMessage;
 
-    if (auto PStatusEffect = PTargetBattleEntity->StatusEffectContainer->StealStatusEffect(static_cast<xi::StatusEffectFlag>(flag), removalNotice))
+    if (CStatusEffect* PStatusEffect = PTargetBattleEntity->StatusEffectContainer->StealStatusEffect(static_cast<EFFECTFLAG>(flag), removalNotice))
     {
-        const auto stolenId = static_cast<uint16>(PStatusEffect->GetStatusID());
-
-        PBattleEntity->StatusEffectContainer->AddStatusEffect(
-            PStatusEffect->GetStatusID(),
-            PStatusEffect->GetIcon(),
-            PStatusEffect->GetPower(),
-            PStatusEffect->GetTickTime(),
-            PStatusEffect->GetDuration(),
-            PStatusEffect->GetSubID(),
-            PStatusEffect->GetSubPower(),
-            PStatusEffect->GetSubIcon(),
-            PStatusEffect->GetTier(),
-            PStatusEffect->GetEffectFlags(),
-            PStatusEffect->GetSourceType(),
-            PStatusEffect->GetSourceTypeParam(),
-            PStatusEffect->GetOriginID());
-
-        return stolenId;
+        PBattleEntity->StatusEffectContainer->AddStatusEffect(PStatusEffect);
+        return PStatusEffect->GetStatusID();
     }
     else
     {
@@ -14804,8 +14816,8 @@ void CLuaBaseEntity::addLatent(uint16 condID, uint16 conditionValue, uint16 mID,
         return;
     }
 
-    xi::Latent conditionID = static_cast<xi::Latent>(condID);
-    Mod        modID       = static_cast<Mod>(mID);
+    LATENT conditionID = static_cast<LATENT>(condID);
+    Mod    modID       = static_cast<Mod>(mID);
 
     static_cast<CCharEntity*>(m_PBaseEntity)->PLatentEffectContainer->AddLatentEffect(conditionID, conditionValue, modID, modValue);
 }
@@ -14817,7 +14829,7 @@ void CLuaBaseEntity::addLatent(uint16 condID, uint16 conditionValue, uint16 mID,
  *  Notes   :
  ************************************************************************/
 
-auto CLuaBaseEntity::delLatent(uint16 condID, uint16 conditionValue, uint16 mID, int16 modValue) -> bool
+bool CLuaBaseEntity::delLatent(uint16 condID, uint16 conditionValue, uint16 mID, int16 modValue)
 {
     if (m_PBaseEntity->objtype != TYPE_PC)
     {
@@ -14825,8 +14837,8 @@ auto CLuaBaseEntity::delLatent(uint16 condID, uint16 conditionValue, uint16 mID,
         return false;
     }
 
-    xi::Latent conditionID = static_cast<xi::Latent>(condID);
-    Mod        modID       = static_cast<Mod>(mID);
+    LATENT conditionID = static_cast<LATENT>(condID);
+    Mod    modID       = static_cast<Mod>(mID);
 
     return static_cast<CCharEntity*>(m_PBaseEntity)->PLatentEffectContainer->DelLatentEffect(conditionID, conditionValue, modID, modValue);
 }
@@ -14895,6 +14907,25 @@ int16 CLuaBaseEntity::getGearModFromSlot(uint8 slot, Mod modId)
 }
 
 /************************************************************************
+ *  Function: fold()
+ *  Purpose : Removes the most recent Phantom Roll or Bust effect
+ *  Example : target:fold()
+ *  Notes   : Calls the Fold member of CStatusEffectContainer for calculation
+ ************************************************************************/
+
+void CLuaBaseEntity::fold()
+{
+    if (auto* PEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity))
+    {
+        PEntity->StatusEffectContainer->Fold(PEntity->id);
+    }
+    else
+    {
+        ShowError("Invalid entity type calling function (%s).", m_PBaseEntity->getName());
+    }
+}
+
+/************************************************************************
  *  Function: doWildCard()
  *  Purpose : Executes the Wild Card two hour for a COR
  *  Example : caster:doWildCard(target,total)
@@ -14941,6 +14972,80 @@ bool CLuaBaseEntity::doRandomDeal(CLuaBaseEntity* PTarget)
 }
 
 /************************************************************************
+ *  Function: addCorsairRoll()
+ *  Purpose : Adds the Corsair Roll to the Target's Status Effect Container
+ *  Example : target:addCorsairRoll(caster:getMainJob(), caster:getMerit(xi.merit.BUST_DURATION), xi.effect.CHAOS_ROLL, effectpower, 0, duration, subType(MOD ID),
+ * rollTotal, 0, sourceType, sourceTypeParam, originID) Notes   : Returns true if success (Is range a factor?)
+ ************************************************************************/
+
+auto CLuaBaseEntity::addCorsairRoll(sol::variadic_args va) -> bool
+{
+    if (m_PBaseEntity->objtype == TYPE_NPC)
+    {
+        ShowWarning("Invalid Entity (NPC: %s) calling function.", m_PBaseEntity->getName());
+        return false;
+    }
+
+    if (va.size() < 12)
+    {
+        return false;
+    }
+
+    // Mandatory parameters
+    auto casterJob       = va[0].as<uint8>();
+    auto bustDuration    = va[1].as<uint8>();
+    auto effectID        = va[2].as<uint16>();
+    auto power           = static_cast<uint16>(va[3].as<double>());
+    auto tick            = static_cast<uint32>(va[4].as<double>());
+    auto duration        = static_cast<uint32>(va[5].as<double>());
+    auto subType         = va[6].is<uint32>() ? va[6].as<uint32>() : 0;
+    auto subPower        = va[7].is<double>() ? static_cast<uint16>(va[7].as<double>()) : 0;
+    auto tier            = va[8].is<uint16>() ? va[8].as<uint16>() : 0;
+    auto sourceType      = va[9].is<uint16>() ? va[9].as<uint16>() : 0;
+    auto sourceTypeParam = va[10].is<uint32>() ? va[10].as<uint32>() : 0;
+    auto originID        = va[11].is<uint32>() ? va[11].as<uint32>() : 0;
+
+    CStatusEffect* PEffect = new CStatusEffect(static_cast<EFFECT>(effectID),  // Effect ID
+                                               effectID,                       // Effect Icon (Associated with ID)
+                                               power,                          // Power (Mod power)
+                                               std::chrono::seconds(tick),     // Tick
+                                               std::chrono::seconds(duration), // Duration
+                                               subType,                        // SubType (Mod ID)
+                                               subPower,                       // SubPower (Roll #)
+                                               tier                            // Tier
+    );
+
+    PEffect->SetSource(sourceType, sourceTypeParam);
+    PEffect->SetOriginID(originID);
+
+    uint8 maxRolls = 2;
+    if (casterJob != JOB_COR)
+    {
+        maxRolls = 1;
+    }
+
+    return static_cast<CBattleEntity*>(m_PBaseEntity)->StatusEffectContainer->ApplyCorsairEffect(PEffect, maxRolls, bustDuration);
+}
+
+/************************************************************************
+ *  Function: hasCorsairEffect()
+ *  Purpose : Returns true if the Entity has Corsair Effect
+ *  Example : if target:hasCorsairEffect() then
+ *  Notes   :
+ ************************************************************************/
+
+bool CLuaBaseEntity::hasCorsairEffect()
+{
+    if (auto* PEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity))
+    {
+        return PEntity->StatusEffectContainer->HasCorsairEffect(PEntity->id);
+    }
+
+    ShowError("Invalid entity type calling function (%s).", m_PBaseEntity->getName());
+    return false;
+}
+
+/************************************************************************
  *  Function: hasBustEffect()
  *  Purpose : Returns true if an Entity has a Bust Effect of a specified type
  *  Example : if target:hasBustEffect(effect) then
@@ -14956,7 +15061,7 @@ bool CLuaBaseEntity::hasBustEffect(uint16 id)
     }
 
     auto* PBattleEntity = static_cast<CBattleEntity*>(m_PBaseEntity);
-    return PBattleEntity->StatusEffectContainer->HasBustEffect(static_cast<uint16>(id));
+    return PBattleEntity->StatusEffectContainer->HasBustEffect(static_cast<EFFECT>(id));
 }
 
 /************************************************************************
@@ -14975,7 +15080,7 @@ uint8 CLuaBaseEntity::numBustEffects()
     }
 
     auto* PBattleEntity = static_cast<CBattleEntity*>(m_PBaseEntity);
-    return PBattleEntity->StatusEffectContainer->GetEffectsCount(xi::StatusEffect::Bust);
+    return PBattleEntity->StatusEffectContainer->GetEffectsCount(EFFECT_BUST);
 }
 
 /************************************************************************
@@ -15004,7 +15109,7 @@ uint16 CLuaBaseEntity::healingWaltz()
  *  Notes   :
  ************************************************************************/
 
-auto CLuaBaseEntity::addBardSong(CLuaBaseEntity* PEntity, xi::StatusEffect effectID, uint16 power, uint16 tick, uint16 duration, uint16 subType, uint16 subPower, uint16 tier) -> bool
+bool CLuaBaseEntity::addBardSong(CLuaBaseEntity* PEntity, uint16 effectID, uint16 power, uint16 tick, uint16 duration, uint16 subType, uint16 subPower, uint16 tier)
 {
     auto* PBattle = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
     if (!PBattle)
@@ -15013,14 +15118,13 @@ auto CLuaBaseEntity::addBardSong(CLuaBaseEntity* PEntity, xi::StatusEffect effec
         return false;
     }
 
-    CStatusEffect* PEffect = new CStatusEffect(effectID,                       // Effect ID
-                                               static_cast<uint16>(effectID),  // Effect Icon (Associated with ID)
+    CStatusEffect* PEffect = new CStatusEffect(static_cast<EFFECT>(effectID),  // Effect ID
+                                               effectID,                       // Effect Icon (Associated with ID)
                                                power,                          // Power
                                                std::chrono::seconds(tick),     // Tick
                                                std::chrono::seconds(duration), // Duration
                                                subType,                        // SubType
                                                subPower,                       // SubPower
-                                               0,                              // SubIcon (songs have no sub-icon)
                                                tier                            // Tier
     );
 
@@ -15032,7 +15136,7 @@ auto CLuaBaseEntity::addBardSong(CLuaBaseEntity* PEntity, xi::StatusEffect effec
         CItemWeapon* PItem   = static_cast<CItemWeapon*>(PCaster->getEquip(SLOT_RANGED));
 
         if (PItem == nullptr || PItem->getID() == 65535 ||
-            !(PItem->getSkillType() == xi::SkillType::StringInstrument || PItem->getSkillType() == xi::SkillType::WindInstrument))
+            !(PItem->getSkillType() == SKILL_STRING_INSTRUMENT || PItem->getSkillType() == SKILL_WIND_INSTRUMENT))
         {
             maxSongs = 1;
         }
@@ -15149,7 +15253,7 @@ uint8 CLuaBaseEntity::getOverloadChance(uint8 element)
 {
     if (((CBattleEntity*)m_PBaseEntity)->PPet && ((CPetEntity*)((CBattleEntity*)m_PBaseEntity)->PPet)->getPetType() == PET_TYPE::AUTOMATON)
     {
-        return ((CAutomatonEntity*)((CBattleEntity*)m_PBaseEntity)->PPet)->overloadChance(element);
+        return ((CAutomatonEntity*)((CBattleEntity*)m_PBaseEntity)->PPet)->getOverloadChance(element);
     }
 
     return 0;
@@ -15402,7 +15506,7 @@ uint16 CLuaBaseEntity::getILvlParry()
  *            DamageType is optional and defaults to weapon type if not provided.
  ************************************************************************/
 
-auto CLuaBaseEntity::physicalDmgTaken(double damage, sol::variadic_args va) -> int32
+int32 CLuaBaseEntity::physicalDmgTaken(double damage, sol::variadic_args va)
 {
     if (m_PBaseEntity->objtype == TYPE_NPC)
     {
@@ -15410,7 +15514,7 @@ auto CLuaBaseEntity::physicalDmgTaken(double damage, sol::variadic_args va) -> i
         return 0;
     }
 
-    xi::DamageType damageType = va[0].is<uint32>() ? va[0].as<xi::DamageType>() : xi::DamageType::None;
+    DAMAGE_TYPE damageType = va[0].is<uint32>() ? va[0].as<DAMAGE_TYPE>() : DAMAGE_TYPE::NONE;
 
     return battleutils::PhysicalDmgTaken(static_cast<CBattleEntity*>(m_PBaseEntity), static_cast<int32>(damage), damageType);
 }
@@ -15422,7 +15526,7 @@ auto CLuaBaseEntity::physicalDmgTaken(double damage, sol::variadic_args va) -> i
  *  Notes   : Passes argument to RangedDmgTaken member of battleutils
  ************************************************************************/
 
-auto CLuaBaseEntity::rangedDmgTaken(double damage, sol::variadic_args va) -> int32
+int32 CLuaBaseEntity::rangedDmgTaken(double damage, sol::variadic_args va)
 {
     if (m_PBaseEntity->objtype == TYPE_NPC)
     {
@@ -15430,7 +15534,7 @@ auto CLuaBaseEntity::rangedDmgTaken(double damage, sol::variadic_args va) -> int
         return 0;
     }
 
-    xi::DamageType damageType = va[0].is<uint32>() ? va[0].as<xi::DamageType>() : xi::DamageType::None;
+    DAMAGE_TYPE damageType = va[0].is<uint32>() ? va[0].as<DAMAGE_TYPE>() : DAMAGE_TYPE::NONE;
 
     return battleutils::RangedDmgTaken(static_cast<CBattleEntity*>(m_PBaseEntity), static_cast<int32>(damage), damageType);
 }
@@ -15774,7 +15878,7 @@ uint8 CLuaBaseEntity::getWeaponSkillType(uint8 slotID)
 
         if (PWeapon)
         {
-            return static_cast<uint8>(PWeapon->getSkillType());
+            return PWeapon->getSkillType();
         }
         else
         {
@@ -15860,7 +15964,7 @@ auto CLuaBaseEntity::getWSSkillchainProp() -> std::tuple<uint8, uint8, uint8>
  *targetTPMult) Notes   : Global function of same name in weaponskills.lua, calls this member function from within
  ************************************************************************/
 
-auto CLuaBaseEntity::takeWeaponskillDamage(CLuaBaseEntity* attacker, int32 damage, uint8 atkType, xi::DamageType dmgType, uint8 slot, bool primary, float tpMultiplier, uint16 bonusTP, float targetTPMultiplier) -> int32
+int32 CLuaBaseEntity::takeWeaponskillDamage(CLuaBaseEntity* attacker, int32 damage, uint8 atkType, uint8 dmgType, uint8 slot, bool primary, float tpMultiplier, uint16 bonusTP, float targetTPMultiplier)
 {
     auto* PBattleDefender = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
     if (!PBattleDefender)
@@ -15876,9 +15980,10 @@ auto CLuaBaseEntity::takeWeaponskillDamage(CLuaBaseEntity* attacker, int32 damag
         return 0;
     }
 
-    xi::AttackType attackType = static_cast<xi::AttackType>(atkType);
+    ATTACK_TYPE attackType = static_cast<ATTACK_TYPE>(atkType);
+    DAMAGE_TYPE damageType = static_cast<DAMAGE_TYPE>(dmgType);
 
-    return battleutils::TakeWeaponskillDamage(PBattleAttacker, PBattleDefender, damage, attackType, dmgType, slot, primary, tpMultiplier, bonusTP, targetTPMultiplier);
+    return battleutils::TakeWeaponskillDamage(PBattleAttacker, PBattleDefender, damage, attackType, damageType, slot, primary, tpMultiplier, bonusTP, targetTPMultiplier);
 }
 
 /************************************************************************
@@ -15904,9 +16009,9 @@ void CLuaBaseEntity::takeSpellDamage(CLuaBaseEntity* caster, CLuaSpell* spell, i
         return;
     }
 
-    auto*          PSpell     = spell->GetSpell();
-    xi::AttackType attackType = static_cast<xi::AttackType>(atkType);
-    xi::DamageType damageType = static_cast<xi::DamageType>(dmgType);
+    auto*       PSpell     = spell->GetSpell();
+    ATTACK_TYPE attackType = static_cast<ATTACK_TYPE>(atkType);
+    DAMAGE_TYPE damageType = static_cast<DAMAGE_TYPE>(dmgType);
 
     battleutils::TakeSpellDamage(PBattleDefender, PBattleAttacker, PSpell, damage, attackType, damageType);
 }
@@ -15918,7 +16023,7 @@ void CLuaBaseEntity::takeSpellDamage(CLuaBaseEntity* caster, CLuaSpell* spell, i
  *  Notes   :
  ************************************************************************/
 
-auto CLuaBaseEntity::takeSwipeLungeDamage(CLuaBaseEntity* caster, int32 damage, uint8 atkType, xi::DamageType dmgType) -> int32
+int32 CLuaBaseEntity::takeSwipeLungeDamage(CLuaBaseEntity* caster, int32 damage, uint8 atkType, uint8 dmgType)
 {
     auto* PBattleDefender = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
     if (!PBattleDefender)
@@ -15934,9 +16039,10 @@ auto CLuaBaseEntity::takeSwipeLungeDamage(CLuaBaseEntity* caster, int32 damage, 
         return 0;
     }
 
-    xi::AttackType attackType = static_cast<xi::AttackType>(atkType);
+    ATTACK_TYPE attackType = static_cast<ATTACK_TYPE>(atkType);
+    DAMAGE_TYPE damageType = static_cast<DAMAGE_TYPE>(dmgType);
 
-    return battleutils::TakeSwipeLungeDamage(PBattleDefender, PBattleAttacker, damage, attackType, dmgType);
+    return battleutils::TakeSwipeLungeDamage(PBattleDefender, PBattleAttacker, damage, attackType, damageType);
 }
 
 /************************************************************************
@@ -16076,7 +16182,7 @@ uint32 CLuaBaseEntity::getTrustID()
         return 0;
     }
 
-    return static_cast<CTrustEntity*>(m_PBaseEntity)->trustID();
+    return static_cast<CTrustEntity*>(m_PBaseEntity)->m_TrustID;
 }
 
 /************************************************************************
@@ -16372,7 +16478,7 @@ bool CLuaBaseEntity::hasPet()
 
     auto* PTarget = static_cast<CBattleEntity*>(m_PBaseEntity);
 
-    return PTarget->PPet != nullptr && PTarget->PPet->status != xi::Status::Disappear;
+    return PTarget->PPet != nullptr && PTarget->PPet->status != STATUS_TYPE::DISAPPEAR;
 }
 
 /************************************************************************
@@ -16392,7 +16498,7 @@ bool CLuaBaseEntity::hasJugPet()
 
     auto* PBattle = static_cast<CBattleEntity*>(m_PBaseEntity);
 
-    if (auto* PPet = dynamic_cast<CPetEntity*>(PBattle->PPet); PPet && PPet->status != xi::Status::Disappear)
+    if (auto* PPet = dynamic_cast<CPetEntity*>(PBattle->PPet); PPet && PPet->status != STATUS_TYPE::DISAPPEAR)
     {
         return PPet->getPetType() == PET_TYPE::JUG_PET;
     }
@@ -16430,7 +16536,7 @@ uint32 CLuaBaseEntity::getPetID()
 {
     if (m_PBaseEntity->objtype == TYPE_PET)
     {
-        return static_cast<CPetEntity*>(m_PBaseEntity)->petID();
+        return static_cast<CPetEntity*>(m_PBaseEntity)->m_PetID;
     }
 
     return 0;
@@ -16447,7 +16553,7 @@ bool CLuaBaseEntity::isAutomaton()
 {
     if (m_PBaseEntity->objtype == TYPE_PET)
     {
-        uint32 petID = static_cast<CPetEntity*>(m_PBaseEntity)->petID();
+        uint32 petID = static_cast<CPetEntity*>(m_PBaseEntity)->m_PetID;
         if (petID >= PETID_HARLEQUINFRAME && petID <= PETID_STORMWAKERFRAME)
         {
             return true;
@@ -16468,7 +16574,7 @@ bool CLuaBaseEntity::isAvatar()
 {
     if (m_PBaseEntity->objtype == TYPE_PET)
     {
-        uint32 petID = static_cast<CPetEntity*>(m_PBaseEntity)->petID();
+        uint32 petID = static_cast<CPetEntity*>(m_PBaseEntity)->m_PetID;
         if ((petID >= PETID_CARBUNCLE && petID <= PETID_CAIT_SITH) || petID == PETID_SIREN)
         {
             return true;
@@ -16489,7 +16595,7 @@ auto CLuaBaseEntity::isJugPet() -> bool
 {
     if (m_PBaseEntity->objtype == TYPE_PET)
     {
-        uint32 petID = static_cast<CPetEntity*>(m_PBaseEntity)->petID();
+        uint32 petID = static_cast<CPetEntity*>(m_PBaseEntity)->m_PetID;
         if ((petID >= PETID_SHEEP_FAMILIAR && petID <= PETID_TURBID_TOLOI) ||
             (petID >= PETID_SWEET_CAROLINE && petID <= PETID_ENERGIZED_SEFINA))
         {
@@ -16567,7 +16673,7 @@ uint8 CLuaBaseEntity::getMinimumPetLevel()
 
     if (PPet)
     {
-        Pet_t* petInfo = petutils::GetPetInfo(PPet->petID());
+        Pet_t* petInfo = petutils::GetPetInfo(PPet->m_PetID);
         if (petInfo)
         {
             return petInfo->minLevel;
@@ -16847,35 +16953,7 @@ auto CLuaBaseEntity::hasAttachment(const uint16 itemID) const -> bool
     }
 
     const CItem* PItem = xi::items::lookup(itemID);
-    if (PItem)
-    {
-        return puppetutils::HasAttachment(static_cast<CCharEntity*>(m_PBaseEntity), PItem);
-    }
-
-    return false;
-}
-
-/************************************************************************
- *  Function: hasAttachmentSet()
- *  Purpose : Returns true if automaton has attachment set (in current use)
- *  Example : if player:hasAttachmentSet() then
- *  Notes   :
- ************************************************************************/
-
-auto CLuaBaseEntity::hasAttachmentSet(const uint16 itemID) const -> bool
-{
-    if (m_PBaseEntity->objtype != TYPE_PET)
-    {
-        ShowWarning("Invalid entity type calling function (%s).", m_PBaseEntity->getName());
-        return false;
-    }
-
-    if (static_cast<CPetEntity*>(m_PBaseEntity)->getPetType() == PET_TYPE::AUTOMATON)
-    {
-        return static_cast<CAutomatonEntity*>(m_PBaseEntity)->hasAttachment(itemID - 0x2100);
-    }
-
-    return false;
+    return puppetutils::HasAttachment(static_cast<CCharEntity*>(m_PBaseEntity), PItem);
 }
 
 /************************************************************************
@@ -16928,7 +17006,7 @@ auto CLuaBaseEntity::getAutomatonFrame() const -> Maybe<AutomatonFrame>
 
     if (m_PBaseEntity->objtype == TYPE_PET && static_cast<CPetEntity*>(m_PBaseEntity)->getPetType() == PET_TYPE::AUTOMATON)
     {
-        return static_cast<CAutomatonEntity*>(m_PBaseEntity)->frame();
+        return static_cast<CAutomatonEntity*>(m_PBaseEntity)->getFrame();
     }
 
     ShowWarning("CLuaBaseEntity::getAutomatonFrame() - Entity is not a PC or an Automaton.");
@@ -16979,7 +17057,7 @@ auto CLuaBaseEntity::getAutomatonHead() const -> Maybe<AutomatonHead>
 
     if (m_PBaseEntity->objtype == TYPE_PET && static_cast<CPetEntity*>(m_PBaseEntity)->getPetType() == PET_TYPE::AUTOMATON)
     {
-        return static_cast<CAutomatonEntity*>(m_PBaseEntity)->head();
+        return static_cast<CAutomatonEntity*>(m_PBaseEntity)->getHead();
     }
 
     ShowWarning("CLuaBaseEntity::getAutomatonHead() - Entity is not a PC or an Automaton.");
@@ -17085,6 +17163,31 @@ void CLuaBaseEntity::removeAllManeuvers() const
 }
 
 /************************************************************************
+ *  Function: getAttachment(slotId)
+ *  Purpose : Gets the attachment of an automaton in the slot specified
+ *  Example : pet:getAttachment(1)
+ ************************************************************************/
+
+auto CLuaBaseEntity::getAttachment(const uint8 slotId) const -> const CItem*
+{
+    auto* PAutomaton = dynamic_cast<CAutomatonEntity*>(m_PBaseEntity);
+
+    if (PAutomaton == nullptr)
+    {
+        ShowWarning("Invalid Entity accessing function.");
+        return nullptr;
+    }
+
+    uint8 slotItem = PAutomaton->getAttachment(slotId);
+    if (slotItem != 0)
+    {
+        return xi::items::lookup(0x2100 + slotItem); // TODO: Stop storing by offset
+    }
+
+    return nullptr;
+}
+
+/************************************************************************
  *  Function: setAttachment(attachmentItemID, slotID)
  *  Purpose : Sets the attachment of an automaton in the slot specified
  *  Example : player:setAttachment(8465, 0)
@@ -17124,24 +17227,11 @@ auto CLuaBaseEntity::getAttachments() const -> sol::table
     auto attachmentTable = lua.create_table();
     for (uint8 attachmentSlot = 0; attachmentSlot < 12; ++attachmentSlot)
     {
-        uint8 attachmentItemId = PAutomaton->attachment(attachmentSlot);
+        uint8 attachmentItemId = PAutomaton->getAttachment(attachmentSlot);
 
         if (attachmentItemId != 0)
         {
-            const auto PAttachment = xi::items::lookup<CItemPuppet>(0x2100 + attachmentItemId);
-
-            if (PAttachment)
-            {
-                attachmentTable[attachmentSlot] = PAttachment->getName();
-            }
-            else
-            {
-                attachmentTable[attachmentSlot] = "";
-            }
-        }
-        else
-        {
-            attachmentTable[attachmentSlot] = "";
+            attachmentTable[attachmentSlot] = CLuaItem(xi::items::lookup(0x2100 + attachmentItemId));
         }
     }
 
@@ -17191,7 +17281,7 @@ void CLuaBaseEntity::reduceBurden(const float percentReduction, const sol::objec
         return;
     }
 
-    std::array<uint8, 8> burden = PAutomaton->burden();
+    std::array<uint8, 8> burden = PAutomaton->getBurden();
     for (int i = 0; i < 8; i++)
     {
         uint8 intReduction = (intReductionObj != sol::lua_nil) ? intReductionObj.as<uint8>() : 0;
@@ -17246,8 +17336,8 @@ auto CLuaBaseEntity::getAllRuneEffects() -> sol::table
         return sol::lua_nil;
     }
 
-    std::vector<xi::StatusEffect> runeEffectList = PEntity->StatusEffectContainer->GetAllRuneEffects();
-    auto                          table          = lua.create_table();
+    std::vector<EFFECT> runeEffectList = PEntity->StatusEffectContainer->GetAllRuneEffects();
+    auto                table          = lua.create_table();
     for (const auto& runeEffect : runeEffectList)
     {
         table.add(runeEffect);
@@ -17291,7 +17381,7 @@ uint16 CLuaBaseEntity::getHighestRuneEffect()
         return 0;
     }
 
-    return static_cast<uint16>(PEntity->StatusEffectContainer->GetHighestRuneEffect());
+    return PEntity->StatusEffectContainer->GetHighestRuneEffect();
 }
 
 /************************************************************************
@@ -17310,7 +17400,7 @@ uint16 CLuaBaseEntity::getNewestRuneEffect()
         return 0;
     }
 
-    return static_cast<uint16>(PEntity->StatusEffectContainer->GetNewestRuneEffect());
+    return PEntity->StatusEffectContainer->GetNewestRuneEffect();
 }
 
 /************************************************************************
@@ -17601,12 +17691,12 @@ uint16 CLuaBaseEntity::getSpecies()
 /************************************************************************
  *  Function: isMobType()
  *  Purpose : Returns true if a Mob is of a specified type (if !Mob->false)
- *  Example : if mob:isMobType(xi.mobType.NOTORIOUS) then
+ *  Example : if mob:isMobType(MOBTYPE_NOTORIOUS) then
  *  Notes   : Oddly, this is only being used to check if Mob is NM...?
  *  Notes   : To Do: This isn't the intended function for NM checks...
  ************************************************************************/
 
-auto CLuaBaseEntity::isMobType(const xi::MobType mobType) const -> bool
+auto CLuaBaseEntity::isMobType(const uint8 mobType) const -> bool
 {
     if (m_PBaseEntity->objtype != TYPE_MOB)
     {
@@ -17615,13 +17705,13 @@ auto CLuaBaseEntity::isMobType(const xi::MobType mobType) const -> bool
 
     const auto* PMob = static_cast<CMobEntity*>(m_PBaseEntity);
 
-    // Special case for isMobType(xi.mobType.NORMAL), else 0 & 0 returns false.
-    if (mobType == xi::MobType::Normal)
+    // Special case for isMobType(MOBTYPE_NORMAL), else 0 & 0 returns false.
+    if (mobType == MOBTYPE_NORMAL)
     {
-        return PMob->m_Type == xi::MobType::Normal;
+        return PMob->m_Type == MOBTYPE_NORMAL;
     }
 
-    return (PMob->m_Type & mobType) != xi::MobType::Normal;
+    return PMob->m_Type & mobType;
 }
 
 /************************************************************************
@@ -17630,7 +17720,7 @@ auto CLuaBaseEntity::isMobType(const xi::MobType mobType) const -> bool
  *  Example : if target:isUndead() then
  ************************************************************************/
 
-auto CLuaBaseEntity::isUndead() -> bool
+bool CLuaBaseEntity::isUndead()
 {
     if (m_PBaseEntity->objtype == TYPE_NPC)
     {
@@ -17638,7 +17728,7 @@ auto CLuaBaseEntity::isUndead() -> bool
         return false;
     }
 
-    return static_cast<CBattleEntity*>(m_PBaseEntity)->m_EcoSystem == xi::Ecosystem::Undead;
+    return static_cast<CBattleEntity*>(m_PBaseEntity)->m_EcoSystem == ECOSYSTEM::UNDEAD;
 }
 
 /************************************************************************
@@ -17649,7 +17739,7 @@ auto CLuaBaseEntity::isUndead() -> bool
 
 bool CLuaBaseEntity::isNM()
 {
-    if (m_PBaseEntity->objtype == TYPE_MOB && (static_cast<CMobEntity*>(m_PBaseEntity)->m_Type & xi::MobType::Notorious) != xi::MobType::Normal)
+    if (m_PBaseEntity->objtype == TYPE_MOB && static_cast<CMobEntity*>(m_PBaseEntity)->m_Type & MOBTYPE_NOTORIOUS)
     {
         return true;
     }
@@ -17766,7 +17856,7 @@ float CLuaBaseEntity::getMeleeRange(CLuaBaseEntity* target)
  *  Notes   : Used for changing Ul'xzomit babies' size and through !setmobflags command
  ************************************************************************/
 
-void CLuaBaseEntity::setMobFlags(xi::EntityFlags flags, const sol::object& mobId)
+void CLuaBaseEntity::setMobFlags(uint32 flags, const sol::object& mobId)
 {
     if (m_PBaseEntity->objtype != TYPE_MOB && m_PBaseEntity->objtype != TYPE_PC)
     {
@@ -17813,12 +17903,12 @@ void CLuaBaseEntity::setMobFlags(xi::EntityFlags flags, const sol::object& mobId
  *  Example : Not in use in scripts
  *  Notes   : Currently only used through !getMobFlags command
  ************************************************************************/
-auto CLuaBaseEntity::getMobFlags() -> xi::EntityFlags
+uint32 CLuaBaseEntity::getMobFlags()
 {
     if (m_PBaseEntity->objtype != TYPE_MOB)
     {
         ShowWarning("Attempting to get mob flags for invalid entity type (%s).", m_PBaseEntity->getName());
-        return xi::EntityFlags::None;
+        return 0;
     }
 
     if (auto* PMob = dynamic_cast<CMobEntity*>(m_PBaseEntity))
@@ -17826,7 +17916,7 @@ auto CLuaBaseEntity::getMobFlags() -> xi::EntityFlags
         return PMob->getEntityFlags();
     }
 
-    return xi::EntityFlags::None;
+    return 0;
 }
 
 /************************************************************************
@@ -17836,7 +17926,7 @@ auto CLuaBaseEntity::getMobFlags() -> xi::EntityFlags
  *  Notes   :
  ************************************************************************/
 
-void CLuaBaseEntity::setNpcFlags(xi::EntityFlags flags)
+void CLuaBaseEntity::setNpcFlags(uint32 flags)
 {
     if (m_PBaseEntity->objtype != TYPE_NPC)
     {
@@ -17849,27 +17939,6 @@ void CLuaBaseEntity::setNpcFlags(xi::EntityFlags flags)
     {
         PNpc->setEntityFlags(flags);
         PNpc->updatemask |= UPDATE_HP;
-    }
-}
-
-/************************************************************************
- *  Function: setNpcAlwaysRelevant()
- *  Purpose : Set NPC such that it is always relevant to players regardless of distance
- *  Example : npc:setNpcAlwaysRelevant(true)
- *  Notes   :
- ************************************************************************/
-void CLuaBaseEntity::setNpcAlwaysRelevant(bool alwaysRelevant)
-{
-    if (m_PBaseEntity->objtype != TYPE_NPC)
-    {
-        return;
-    }
-
-    auto* PNpc = dynamic_cast<CNpcEntity*>(m_PBaseEntity);
-
-    if (PNpc != nullptr)
-    {
-        PNpc->setAlwaysRelevant(alwaysRelevant);
     }
 }
 
@@ -17930,7 +17999,7 @@ bool CLuaBaseEntity::isSpawned()
     }
     else if (CNpcEntity* PNpcEntity = dynamic_cast<CNpcEntity*>(m_PBaseEntity))
     {
-        return PNpcEntity->status != xi::Status::Disappear;
+        return PNpcEntity->status != STATUS_TYPE::DISAPPEAR;
     }
     else
     {
@@ -18005,7 +18074,7 @@ auto CLuaBaseEntity::getRespawnTime() const -> uint32
 
     if (auto* PMob = static_cast<CMobEntity*>(m_PBaseEntity); PMob->loc.zone)
     {
-        if (const auto remaining = PMob->loc.zone->spawnHandler().getRemainingRespawnTime(PMob))
+        if (const auto remaining = PMob->loc.zone->spawnHandler()->getRemainingRespawnTime(PMob))
         {
             return static_cast<uint32>(timer::count_seconds(*remaining));
         }
@@ -18017,7 +18086,7 @@ auto CLuaBaseEntity::getRespawnTime() const -> uint32
 /************************************************************************
  *  Function: setRespawnTime()
  *  Purpose : Setting the respawn time for a Mob
- *  Example : mob:setRespawnTime(math.randomInt(3600, 7200))
+ *  Example : mob:setRespawnTime(math.random(3600, 7200))
  *  Notes   : 0 disables respawn.
  ************************************************************************/
 
@@ -18037,7 +18106,7 @@ void CLuaBaseEntity::setRespawnTime(const uint32 seconds) const
 
         if (PMob->loc.zone != nullptr)
         {
-            PMob->loc.zone->spawnHandler().unregister(PMob);
+            PMob->loc.zone->spawnHandler()->unregister(PMob);
         }
 
         return;
@@ -18049,7 +18118,7 @@ void CLuaBaseEntity::setRespawnTime(const uint32 seconds) const
     // If mob is not currently spawned, update its pending respawn time in SpawnHandler
     if (!PMob->PAI->IsSpawned() && PMob->loc.zone != nullptr)
     {
-        PMob->loc.zone->spawnHandler().registerForRespawn(PMob, std::chrono::seconds(seconds));
+        PMob->loc.zone->spawnHandler()->registerForRespawn(PMob, std::chrono::seconds(seconds));
     }
 }
 
@@ -18100,7 +18169,7 @@ bool CLuaBaseEntity::hasTrait(uint16 traitID)
  *  Notes   : Arguments are dec to bin, so powers of 2 (max 256) -- Listed in mobentity.h
  ************************************************************************/
 
-bool CLuaBaseEntity::hasImmunity(xi::Immunity immunityID)
+bool CLuaBaseEntity::hasImmunity(uint32 immunityID)
 {
     auto* PEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
     if (!PEntity)
@@ -18118,7 +18187,7 @@ bool CLuaBaseEntity::hasImmunity(xi::Immunity immunityID)
  *  Example : mob:addImmunity(xi.immunity.SILENCE)
  ************************************************************************/
 
-void CLuaBaseEntity::addImmunity(xi::Immunity immunityID)
+void CLuaBaseEntity::addImmunity(uint32 immunityID)
 {
     auto PEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
     if (PEntity)
@@ -18133,7 +18202,7 @@ void CLuaBaseEntity::addImmunity(xi::Immunity immunityID)
  *  Example : mob:delImmunity(xi.immunity.SILENCE)
  ************************************************************************/
 
-void CLuaBaseEntity::delImmunity(xi::Immunity immunityID)
+void CLuaBaseEntity::delImmunity(uint32 immunityID)
 {
     auto PEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
     if (PEntity)
@@ -18192,23 +18261,6 @@ void CLuaBaseEntity::setUnkillable(bool unkillable)
 }
 
 /************************************************************************
- *  Function: getUnkillable()
- *  Purpose : Gets a Mob to unkillable var
- *  Example : mob:getUnkillable()
- *  Notes   :
- ************************************************************************/
-
-bool CLuaBaseEntity::getUnkillable()
-{
-    if (auto* PBattle = dynamic_cast<CBattleEntity*>(m_PBaseEntity))
-    {
-        return PBattle->m_unkillable;
-    }
-
-    return false;
-}
-
-/************************************************************************
  *  Function: setUntargetable()
  *  Purpose : Sets a target's untargetable flag.
  *  Example : target:setUntargetable(true)
@@ -18229,22 +18281,9 @@ void CLuaBaseEntity::setUntargetable(bool untargetable)
     }
     else if (m_PBaseEntity->objtype == TYPE_NPC)
     {
-        static_cast<CNpcEntity*>(m_PBaseEntity)->setUntargetable(untargetable);
+        static_cast<CNpcEntity*>(m_PBaseEntity)->SetUntargetable(untargetable);
     }
 
-    m_PBaseEntity->updatemask |= UPDATE_HP;
-}
-
-/************************************************************************
- *  Function: setPriorityRender()
- *  Purpose : Forces clients to always render this entity (CliPriorityFlag)
- *  Example : mob:setPriorityRender(true)
- *  Notes   :
- ************************************************************************/
-
-void CLuaBaseEntity::setPriorityRender(const bool enabled) const
-{
-    m_PBaseEntity->priorityRender = enabled;
     m_PBaseEntity->updatemask |= UPDATE_HP;
 }
 
@@ -18314,7 +18353,7 @@ bool CLuaBaseEntity::isAggroable()
 /************************************************************************
  *  Function: setDelay()
  *  Purpose : Override default delay settings for a Mob
- *  Example : mob:setDelay(240) -- 240 raw game delay units
+ *  Example : mob:setDelay(2400)
  ************************************************************************/
 
 void CLuaBaseEntity::setDelay(uint16 delay)
@@ -18335,26 +18374,19 @@ void CLuaBaseEntity::setDelay(uint16 delay)
 /************************************************************************
  *  Function: setDamage()
  *  Purpose : Override default damage settings for a Mob
- *  Example : mob:setDamage(40, xi.slot.MAIN)
+ *  Example : mob:setDamage(40)
  ************************************************************************/
 
-auto CLuaBaseEntity::setDamage(uint16 damage, uint8 slot) -> void
+void CLuaBaseEntity::setDamage(uint16 damage)
 {
-    if (!(m_PBaseEntity->objtype & (TYPE_MOB | TYPE_PET)))
+    if (!(m_PBaseEntity->objtype & TYPE_MOB))
     {
         ShowError("function call on invalid entity! (name: %s type: %d)", m_PBaseEntity->name, m_PBaseEntity->objtype);
         return;
     }
 
-    if (slot < SLOT_MAIN || slot > SLOT_RANGED)
-    {
-        ShowError("attempted to setDamage for an invalid slot! (name: %s type: %d)", m_PBaseEntity->name, m_PBaseEntity->objtype);
-        return;
-    }
-
-    auto* PBattleEntity = static_cast<CBattleEntity*>(m_PBaseEntity);
-
-    if (auto* PItemWeapon = dynamic_cast<CItemWeapon*>(PBattleEntity->m_Weapons[slot]))
+    auto* PMobEntity = static_cast<CMobEntity*>(m_PBaseEntity);
+    if (auto* PItemWeapon = dynamic_cast<CItemWeapon*>(PMobEntity->m_Weapons[SLOT_MAIN]))
     {
         PItemWeapon->setDamage(damage);
     }
@@ -18435,9 +18467,9 @@ void CLuaBaseEntity::setAutoAttackEnabled(bool state)
 
 /************************************************************************
  *  Function: setRangedAttackEnabled()
- *  Purpose : Enables/disables ranged auto-attacks for a Mob
- *  Example : mob:setRangedAttackEnabled(true)
- *  Notes   : Used for mobs that should fire ranged attacks instead of ranged special skills
+ *  Purpose : Enables/disables ranged auto-attack for a Mob
+ *  Example : mob:setRangedAttackEnabled(false)
+ *  Notes   :
  ************************************************************************/
 
 void CLuaBaseEntity::setRangedAttackEnabled(bool state)
@@ -18453,8 +18485,9 @@ void CLuaBaseEntity::setRangedAttackEnabled(bool state)
 
 /************************************************************************
  *  Function: isRangedAttackEnabled()
- *  Purpose : Returns whether ranged auto-attacks are enabled for a Mob
- *  Example : mob:isRangedAttackEnabled()
+ *  Purpose : Returns whether ranged auto-attack is enabled for a Mob
+ *  Example : if mob:isRangedAttackEnabled() then
+ *  Notes   :
  ************************************************************************/
 
 bool CLuaBaseEntity::isRangedAttackEnabled()
@@ -18595,52 +18628,6 @@ void CLuaBaseEntity::delMobMod(uint16 mobModID, int16 value)
 }
 
 /************************************************************************
- *  Function: getfTPModifierOverride()
- *  Purpose : Returns the fTP modifier override table set for a mob skill, or nil if none is set
- *  Example : mob:getfTPModifierOverride(xi.mobSkill.FLYING_HIP_PRESS)
- *  Notes   :
- ************************************************************************/
-
-auto CLuaBaseEntity::getfTPModifierOverride(uint16 skillId) -> sol::object
-{
-    if (m_PBaseEntity->objtype & TYPE_NPC || m_PBaseEntity->objtype & TYPE_PC)
-    {
-        ShowError("function call on invalid entity! (name: %s type: %d)", m_PBaseEntity->name, m_PBaseEntity->objtype);
-        return sol::lua_nil;
-    }
-
-    if (const auto fTPModifierOverride = static_cast<CMobEntity*>(m_PBaseEntity)->getfTPModifierOverride(skillId))
-    {
-        auto table = lua.create_table();
-        table.add((*fTPModifierOverride)[0]);
-        table.add((*fTPModifierOverride)[1]);
-        table.add((*fTPModifierOverride)[2]);
-
-        return table;
-    }
-
-    return sol::lua_nil;
-}
-
-/************************************************************************
- *  Function: setfTPModifierOverride()
- *  Purpose : Sets an fTP modifier override table for a mob skill, replacing the skill's default fTP scaling
- *  Example : mob:setfTPModifierOverride(xi.mobSkill.FLYING_HIP_PRESS, 7.0, 9.0, 11.0)
- *  Notes   : Needs to be added to the mob skill to be consumed. params.fTP = mob:getfTPModifierOverride(skill:getID()) or params.fTP
- ************************************************************************/
-
-void CLuaBaseEntity::setfTPModifierOverride(uint16 skillId, float ftp1, float ftp2, float ftp3)
-{
-    if (m_PBaseEntity->objtype & TYPE_NPC || m_PBaseEntity->objtype & TYPE_PC)
-    {
-        ShowError("function call on invalid entity! (name: %s type: %d)", m_PBaseEntity->name, m_PBaseEntity->objtype);
-        return;
-    }
-
-    static_cast<CMobEntity*>(m_PBaseEntity)->setfTPModifierOverride(skillId, ftp1, ftp2, ftp3);
-}
-
-/************************************************************************
  *  Function: getBattleTime()
  *  Purpose : Returns the time the Mob has been engaged in seconds
  *  Example : if mob:getBattleTime() == 3600 then -- 1 Hour
@@ -18679,37 +18666,18 @@ auto CLuaBaseEntity::getCrystalElement() const -> ELEMENT
 }
 
 /************************************************************************
- *  Function: setCrystalElement()
- *  Purpose : Sets a mob crystal element
- *  Example : mob:getCrystalElement(xi.element.FIRE)
- *  Notes   :
- ************************************************************************/
-void CLuaBaseEntity::setCrystalElement(ELEMENT crystalElement)
-{
-    auto* PMob = dynamic_cast<CMobEntity*>(m_PBaseEntity);
-
-    if (!PMob)
-    {
-        ShowWarning("Invalid Entity (NPC: %s) calling function.", m_PBaseEntity->getName());
-        return;
-    }
-
-    PMob->m_Element = crystalElement;
-}
-
-/************************************************************************
  *  Function: getBehavior()
  *  Purpose : Returns the current Mob behavior
  *  Example : mob:getBehavior()
  *  Notes   : Currently used in bitwise calculations for high-tier NM's
  ************************************************************************/
 
-auto CLuaBaseEntity::getBehavior() -> xi::Behavior
+uint16 CLuaBaseEntity::getBehavior()
 {
     if (m_PBaseEntity->objtype != TYPE_MOB)
     {
         ShowWarning("Attempting to get behavior for invalid entity type (%s).", m_PBaseEntity->getName());
-        return xi::Behavior::None;
+        return 0;
     }
 
     return static_cast<CMobEntity*>(m_PBaseEntity)->m_Behavior;
@@ -18722,7 +18690,7 @@ auto CLuaBaseEntity::getBehavior() -> xi::Behavior
  *  Notes   : Currently used in bitwise calculations for high-tier NM's
  ************************************************************************/
 
-void CLuaBaseEntity::setBehavior(xi::Behavior behavior)
+void CLuaBaseEntity::setBehavior(uint16 behavior)
 {
     if (m_PBaseEntity->objtype != TYPE_MOB)
     {
@@ -18775,12 +18743,12 @@ void CLuaBaseEntity::setLink(uint8 link)
  *  Example : mob:getRoamFlags()
  ************************************************************************/
 
-auto CLuaBaseEntity::getRoamFlags() -> xi::RoamFlag
+uint16 CLuaBaseEntity::getRoamFlags()
 {
     if (m_PBaseEntity->objtype != TYPE_MOB)
     {
         ShowWarning("Attempting to get roam flags for invalid entity type (%s).", m_PBaseEntity->getName());
-        return xi::RoamFlag::None;
+        return 0;
     }
 
     return static_cast<CMobEntity*>(m_PBaseEntity)->m_roamFlags;
@@ -18792,7 +18760,7 @@ auto CLuaBaseEntity::getRoamFlags() -> xi::RoamFlag
  *  Example : mob:setRoamFlags(bit.bor(mob:getRoamFlags(), xi.roamFlag.STEALTH))
  ************************************************************************/
 
-void CLuaBaseEntity::setRoamFlags(xi::RoamFlag newRoamFlags)
+void CLuaBaseEntity::setRoamFlags(uint16 newRoamFlags)
 {
     if (m_PBaseEntity->objtype != TYPE_MOB)
     {
@@ -19216,19 +19184,18 @@ bool CLuaBaseEntity::hasTPMoves()
         return false;
     }
 
-    auto* PMob = dynamic_cast<CMobEntity*>(m_PBaseEntity);
-    if (!PMob)
-    {
-        return false;
-    }
+    uint16 speciesID = 0;
 
-    uint16 skillListID = static_cast<uint16>(PMob->getMobMod(MOBMOD_SKILL_LIST));
-    if (skillListID == 0)
+    if (m_PBaseEntity->objtype & TYPE_PET)
     {
-        skillListID = PMob->m_MobSkillList;
+        speciesID = static_cast<CPetEntity*>(m_PBaseEntity)->m_Species;
     }
+    else if (m_PBaseEntity->objtype & TYPE_MOB)
+    {
+        speciesID = static_cast<CMobEntity*>(m_PBaseEntity)->m_Species;
+    }
+    const std::vector<uint16>& MobSkills = battleutils::GetMobSkillList(speciesID);
 
-    const std::vector<uint16>& MobSkills = battleutils::GetMobSkillList(skillListID);
     return !MobSkills.empty();
 }
 
@@ -19367,12 +19334,12 @@ void CLuaBaseEntity::restoreFromChest(CLuaBaseEntity* PLuaBaseEntity, uint32 res
                 .actiontype = ActionCategory::MobSkillFinish,
                 .targets    = {
                     {
-                        .actorId = PChar->id,
-                        .results = {
+                           .actorId = PChar->id,
+                           .results = {
                             {
-                                .animation = animationID,
-                                .param     = messageParam,
-                                .messageID = messageID,
+                                   .animation = animationID,
+                                   .param     = messageParam,
+                                   .messageID = messageID,
                             },
                         },
                     },
@@ -19656,39 +19623,40 @@ uint16 CLuaBaseEntity::getDespoilDebuff(uint16 itemID)
 
 /************************************************************************
  *  Function: itemStolen()
- *  Purpose : Flags a mob's item as stolen or not
- *  Example : target:itemStolen(true)
- *  Notes   : Used in scripts/globals/job_utils/thief.lua and QM NM popping code
+ *  Purpose : Flags a mob's item as stolen, returns true upon update
+ *  Example : target:itemStolen()
+ *  Notes   : Used in scripts/globals/job_utils/thief.lua
  ************************************************************************/
 
-void CLuaBaseEntity::itemStolen(bool stolen)
+bool CLuaBaseEntity::itemStolen()
 {
     if (m_PBaseEntity->objtype != TYPE_MOB)
     {
         ShowWarning("Attempting to flag stolen item for invalid entity type (%s).", m_PBaseEntity->getName());
-        return;
+        return false;
     }
 
-    static_cast<CMobEntity*>(m_PBaseEntity)->m_ItemStolen = stolen;
-    return;
+    static_cast<CMobEntity*>(m_PBaseEntity)->m_ItemStolen = true;
+    return true;
 }
 
 /************************************************************************
  *  Function: itemDespoiled()
- *  Purpose : Flags a mob's item as despoiled or not
+ *  Purpose : Flags a mob's item as despoiled, returns true upon update
  *  Example : target:itemDespoiled()
- *  Notes   : Used in scripts/globals/job_utils/thief.lua and and QM NM popping code
+ *  Notes   : Used in scripts/globals/job_utils/thief.lua
  ************************************************************************/
 
-void CLuaBaseEntity::itemDespoiled(bool despoiled)
+bool CLuaBaseEntity::itemDespoiled()
 {
     if (m_PBaseEntity->objtype != TYPE_MOB)
     {
         ShowWarning("Attempting to flag despoiled item for invalid entity type (%s).", m_PBaseEntity->getName());
-        return;
+        return false;
     }
 
-    static_cast<CMobEntity*>(m_PBaseEntity)->m_ItemDespoiled = despoiled;
+    static_cast<CMobEntity*>(m_PBaseEntity)->m_ItemDespoiled = true;
+    return true;
 }
 
 /************************************************************************
@@ -19905,9 +19873,8 @@ auto CLuaBaseEntity::getChocoboRaisingInfo() -> sol::table
                             "stage, "
                             "location, "
                             "color, "
-                            "allele1, "
-                            "allele2, "
-                            "allele3, "
+                            "dominant_gene, "
+                            "recessive_gene, "
                             "strength, "
                             "endurance, "
                             "discernment, "
@@ -19952,9 +19919,8 @@ auto CLuaBaseEntity::getChocoboRaisingInfo() -> sol::table
             table["location"]        = rset->get<uint32>("location");
             table["color"]           = rset->get<uint32>("color");
 
-            table["allele1"] = rset->get<uint32>("allele1");
-            table["allele2"] = rset->get<uint32>("allele2");
-            table["allele3"] = rset->get<uint32>("allele3");
+            table["dominant_gene"]  = rset->get<uint32>("dominant_gene");
+            table["recessive_gene"] = rset->get<uint32>("recessive_gene");
 
             table["strength"]    = rset->get<uint32>("strength");
             table["endurance"]   = rset->get<uint32>("endurance");
@@ -19991,7 +19957,7 @@ bool CLuaBaseEntity::setChocoboRaisingInfo(const sol::table& table)
         return false;
     }
 
-    const char* Query = "INSERT INTO char_chocobos SET "
+    const char* Query = "REPLACE INTO char_chocobos SET "
                         "charid = ?, "
                         "first_name = ?, "
                         "last_name = ?, "
@@ -20001,9 +19967,8 @@ bool CLuaBaseEntity::setChocoboRaisingInfo(const sol::table& table)
                         "stage = ?, "
                         "location = ?, "
                         "color = ?, "
-                        "allele1 = ?, "
-                        "allele2 = ?, "
-                        "allele3 = ?, "
+                        "dominant_gene = ?, "
+                        "recessive_gene = ?, "
                         "strength = ?, "
                         "endurance = ?, "
                         "discernment = ?, "
@@ -20019,67 +19984,39 @@ bool CLuaBaseEntity::setChocoboRaisingInfo(const sol::table& table)
                         "hunger = ?, "
                         "care_plan = ?, "
                         "held_item = ? "
-                        "ON DUPLICATE KEY UPDATE "
-                        "first_name = VALUES(first_name), "
-                        "last_name = VALUES(last_name), "
-                        "sex = VALUES(sex), "
-                        "created = VALUES(created), "
-                        "last_update_age = VALUES(last_update_age), "
-                        "stage = VALUES(stage), "
-                        "location = VALUES(location), "
-                        "color = VALUES(color), "
-                        "allele1 = VALUES(allele1), "
-                        "allele2 = VALUES(allele2), "
-                        "allele3 = VALUES(allele3), "
-                        "strength = VALUES(strength), "
-                        "endurance = VALUES(endurance), "
-                        "discernment = VALUES(discernment), "
-                        "receptivity = VALUES(receptivity), "
-                        "affection = VALUES(affection), "
-                        "energy = VALUES(energy), "
-                        "satisfaction = VALUES(satisfaction), "
-                        "conditions = VALUES(conditions), "
-                        "ability1 = VALUES(ability1), "
-                        "ability2 = VALUES(ability2), "
-                        "personality = VALUES(personality), "
-                        "weather_preference = VALUES(weather_preference), "
-                        "hunger = VALUES(hunger), "
-                        "care_plan = VALUES(care_plan), "
-                        "held_item = VALUES(held_item);";
+                        "LIMIT 1";
 
-    const auto rset = db::preparedStmt(
-        Query,
-        m_PBaseEntity->id,
-        table.get_or<std::string>("first_name", "Chocobo"),
-        table.get_or<std::string>("last_name", "Chocobo"),
-        table.get_or<uint32>("sex", 0),
-        table.get_or<uint32>("created", 0),
-        table.get_or<uint32>("last_update_age", 0),
-        table.get_or<uint32>("stage", 1),
-        table.get_or<uint32>("location", 0),
-        table.get_or<uint32>("color", 0),
-        table.get_or<uint32>("allele1", 0),
-        table.get_or<uint32>("allele2", 0),
-        table.get_or<uint32>("allele3", 0),
-        table.get_or<uint32>("strength", 0),
-        table.get_or<uint32>("endurance", 0),
-        table.get_or<uint32>("discernment", 0),
-        table.get_or<uint32>("receptivity", 0),
-        table.get_or<uint32>("affection", 0),
-        table.get_or<uint32>("energy", 0),
-        table.get_or<uint32>("satisfaction", 0),
-        table.get_or<uint32>("conditions", 0),
-        table.get_or<uint32>("ability1", 0),
-        table.get_or<uint32>("ability2", 0),
-        table.get_or<uint32>("personality", 0),
-        table.get_or<uint32>("weather_preference", 0),
-        table.get_or<uint32>("hunger", 0),
-        table.get_or<uint32>("care_plan", 0),
-        table.get_or<uint32>("held_item", 0));
+    const auto rset = db::preparedStmt(Query,
+                                       m_PBaseEntity->id,
+                                       table.get_or<std::string>("first_name", "Chocobo"),
+                                       table.get_or<std::string>("last_name", "Chocobo"),
+                                       table.get_or<uint32>("sex", 0),
+                                       table.get_or<uint32>("created", 0),
+                                       table.get_or<uint32>("last_update_age", 0),
+                                       table.get_or<uint32>("stage", 1),
+                                       table.get_or<uint32>("location", 0),
+                                       table.get_or<uint32>("color", 0),
+                                       table.get_or<uint32>("dominant_gene", 0),
+                                       table.get_or<uint32>("recessive_gene", 0),
+                                       table.get_or<uint32>("strength", 0),
+                                       table.get_or<uint32>("endurance", 0),
+                                       table.get_or<uint32>("discernment", 0),
+                                       table.get_or<uint32>("receptivity", 0),
+                                       table.get_or<uint32>("affection", 0),
+                                       table.get_or<uint32>("energy", 0),
+                                       table.get_or<uint32>("satisfaction", 0),
+                                       table.get_or<uint32>("conditions", 0),
+                                       table.get_or<uint32>("ability1", 0),
+                                       table.get_or<uint32>("ability2", 0),
+                                       table.get_or<uint32>("personality", 0),
+                                       table.get_or<uint32>("weather_preference", 0),
+                                       table.get_or<uint32>("hunger", 0),
+                                       table.get_or<uint32>("care_plan", 0),
+                                       table.get_or<uint32>("held_item", 0));
 
     if (!rset)
     {
-        ShowDebug("UPSERT Query failed");
+        ShowDebug("REPLACE Query failed");
         return false;
     }
 
@@ -20285,6 +20222,31 @@ void CLuaBaseEntity::claimContestReward()
     }
 }
 
+void CLuaBaseEntity::addPacketMod(uint16 packetId, uint16 offset, uint8 value)
+{
+    TracyZoneScoped;
+
+    if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    {
+        ShowInfoFmt("Adding Packet Mod ({}): {}: {}: {}",
+                    PChar->name,
+                    hex16ToString(packetId),
+                    hex16ToString(offset),
+                    hex8ToString(value));
+        PacketMods[PChar->id][packetId].emplace_back(std::make_pair(offset, value));
+    }
+}
+
+void CLuaBaseEntity::clearPacketMods()
+{
+    TracyZoneScoped;
+
+    if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    {
+        PacketMods[PChar->id].clear();
+    }
+}
+
 //==========================================================//
 
 void CLuaBaseEntity::Register()
@@ -20330,7 +20292,6 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("entityAnimationPacket", CLuaBaseEntity::entityAnimationPacket);
     SOL_REGISTER("sendDebugPacket", CLuaBaseEntity::sendDebugPacket);
     SOL_REGISTER("sendLinkshellConcierge", CLuaBaseEntity::sendLinkshellConcierge);
-    SOL_REGISTER("sendChocoboRace", CLuaBaseEntity::sendChocoboRace);
 
     SOL_REGISTER("startEvent", CLuaBaseEntity::startEvent);
     SOL_REGISTER("startCutscene", CLuaBaseEntity::startCutscene);
@@ -20405,9 +20366,7 @@ void CLuaBaseEntity::Register()
     // PC Instructions
     SOL_REGISTER("changeMusic", CLuaBaseEntity::changeMusic);
     SOL_REGISTER("sendMenu", CLuaBaseEntity::sendMenu);
-    SOL_REGISTER("openGuildShop", CLuaBaseEntity::openGuildShop);
-    SOL_REGISTER("clearGuildShop", CLuaBaseEntity::clearGuildShop);
-    SOL_REGISTER("sendGuildClose", CLuaBaseEntity::sendGuildClose);
+    SOL_REGISTER("sendGuild", CLuaBaseEntity::sendGuild);
     SOL_REGISTER("openSendBox", CLuaBaseEntity::openSendBox);
     SOL_REGISTER("leaveGame", CLuaBaseEntity::leaveGame);
     SOL_REGISTER("sendEmote", CLuaBaseEntity::sendEmote);
@@ -20484,6 +20443,9 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("getCurrentGPItem", CLuaBaseEntity::getCurrentGPItem);
     SOL_REGISTER("breakLinkshell", CLuaBaseEntity::breakLinkshell);
     SOL_REGISTER("addLinkpearl", CLuaBaseEntity::addLinkpearl);
+    SOL_REGISTER("addLinkshellHolder", CLuaBaseEntity::addLinkshellHolder);
+
+    SOL_REGISTER("addSoulPlate", CLuaBaseEntity::addSoulPlate);
 
     // Trading
     SOL_REGISTER("getContainerSize", CLuaBaseEntity::getContainerSize);
@@ -20695,7 +20657,6 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("getCP", CLuaBaseEntity::getCP);
     SOL_REGISTER("addCP", CLuaBaseEntity::addCP);
     SOL_REGISTER("delCP", CLuaBaseEntity::delCP);
-    SOL_REGISTER("gainConquestInfluence", CLuaBaseEntity::gainConquestInfluence);
 
     SOL_REGISTER("getSeals", CLuaBaseEntity::getSeals);
     SOL_REGISTER("addSeals", CLuaBaseEntity::addSeals);
@@ -20893,7 +20854,6 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("hasClaim", CLuaBaseEntity::hasClaim);
     SOL_REGISTER("hasEnmity", CLuaBaseEntity::hasEnmity);
     SOL_REGISTER("getNotorietyList", CLuaBaseEntity::getNotorietyList);
-    SOL_REGISTER("getMasterThreatMob", CLuaBaseEntity::getMasterThreatMob);
     SOL_REGISTER("clearEnmityForEntity", CLuaBaseEntity::clearEnmityForEntity);
 
     // Status Effects
@@ -20911,7 +20871,6 @@ void CLuaBaseEntity::Register()
 
     SOL_REGISTER("delStatusEffect", CLuaBaseEntity::delStatusEffect);
     SOL_REGISTER("delStatusEffectsByFlag", CLuaBaseEntity::delStatusEffectsByFlag);
-    SOL_REGISTER("delStatusEffectsByType", CLuaBaseEntity::delStatusEffectsByType);
     SOL_REGISTER("delStatusEffectSilent", CLuaBaseEntity::delStatusEffectSilent);
     SOL_REGISTER("eraseStatusEffect", CLuaBaseEntity::eraseStatusEffect);
     SOL_REGISTER("eraseAllStatusEffect", CLuaBaseEntity::eraseAllStatusEffect);
@@ -20931,8 +20890,11 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("delLatent", CLuaBaseEntity::delLatent);
     SOL_REGISTER("hasAllLatentsActive", CLuaBaseEntity::hasAllLatentsActive);
 
+    SOL_REGISTER("fold", CLuaBaseEntity::fold);
     SOL_REGISTER("doWildCard", CLuaBaseEntity::doWildCard);
     SOL_REGISTER("doRandomDeal", CLuaBaseEntity::doRandomDeal);
+    SOL_REGISTER("addCorsairRoll", CLuaBaseEntity::addCorsairRoll);
+    SOL_REGISTER("hasCorsairEffect", CLuaBaseEntity::hasCorsairEffect);
     SOL_REGISTER("hasBustEffect", CLuaBaseEntity::hasBustEffect);
     SOL_REGISTER("numBustEffects", CLuaBaseEntity::numBustEffects);
     SOL_REGISTER("healingWaltz", CLuaBaseEntity::healingWaltz);
@@ -21020,7 +20982,6 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("delPetMod", CLuaBaseEntity::delPetMod);
 
     SOL_REGISTER("hasAttachment", CLuaBaseEntity::hasAttachment);
-    SOL_REGISTER("hasAttachmentSet", CLuaBaseEntity::hasAttachmentSet);
     SOL_REGISTER("getAutomatonName", CLuaBaseEntity::getAutomatonName);
     SOL_REGISTER("getAutomatonFrame", CLuaBaseEntity::getAutomatonFrame);
     SOL_REGISTER("setAutomatonFrame", CLuaBaseEntity::setAutomatonFrame);
@@ -21031,6 +20992,7 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("getActiveManeuverCount", CLuaBaseEntity::getActiveManeuverCount);
     SOL_REGISTER("removeOldestManeuver", CLuaBaseEntity::removeOldestManeuver);
     SOL_REGISTER("removeAllManeuvers", CLuaBaseEntity::removeAllManeuvers);
+    SOL_REGISTER("getAttachment", CLuaBaseEntity::getAttachment);
     SOL_REGISTER("setAttachment", CLuaBaseEntity::setAttachment);
     SOL_REGISTER("getAttachments", CLuaBaseEntity::getAttachments);
     SOL_REGISTER("updateAttachments", CLuaBaseEntity::updateAttachments);
@@ -21073,7 +21035,6 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("setMobFlags", CLuaBaseEntity::setMobFlags);
     SOL_REGISTER("getMobFlags", CLuaBaseEntity::getMobFlags);
     SOL_REGISTER("setNpcFlags", CLuaBaseEntity::setNpcFlags);
-    SOL_REGISTER("setNpcAlwaysRelevant", CLuaBaseEntity::setNpcAlwaysRelevant);
 
     SOL_REGISTER("spawn", CLuaBaseEntity::spawn);
     SOL_REGISTER("isSpawned", CLuaBaseEntity::isSpawned);
@@ -21092,10 +21053,8 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("setAggressive", CLuaBaseEntity::setAggressive);
     SOL_REGISTER("setTrueDetection", CLuaBaseEntity::setTrueDetection);
     SOL_REGISTER("setUnkillable", CLuaBaseEntity::setUnkillable);
-    SOL_REGISTER("getUnkillable", CLuaBaseEntity::getUnkillable);
     SOL_REGISTER("setUntargetable", CLuaBaseEntity::setUntargetable);
     SOL_REGISTER("getUntargetable", CLuaBaseEntity::getUntargetable);
-    SOL_REGISTER("setPriorityRender", CLuaBaseEntity::setPriorityRender);
     SOL_REGISTER("setIsAggroable", CLuaBaseEntity::setIsAggroable);
     SOL_REGISTER("isAggroable", CLuaBaseEntity::isAggroable);
 
@@ -21116,12 +21075,8 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("addMobMod", CLuaBaseEntity::addMobMod);
     SOL_REGISTER("delMobMod", CLuaBaseEntity::delMobMod);
 
-    SOL_REGISTER("getfTPModifierOverride", CLuaBaseEntity::getfTPModifierOverride);
-    SOL_REGISTER("setfTPModifierOverride", CLuaBaseEntity::setfTPModifierOverride);
-
     SOL_REGISTER("getBattleTime", CLuaBaseEntity::getBattleTime);
     SOL_REGISTER("getCrystalElement", CLuaBaseEntity::getCrystalElement);
-    SOL_REGISTER("setCrystalElement", CLuaBaseEntity::setCrystalElement);
 
     SOL_REGISTER("getBehavior", CLuaBaseEntity::getBehavior);
     SOL_REGISTER("setBehavior", CLuaBaseEntity::setBehavior);
@@ -21175,6 +21130,7 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("sendEntityUpdateToPlayer", CLuaBaseEntity::sendEntityUpdateToPlayer);
     SOL_REGISTER("sendEmptyEntityUpdateToPlayer", CLuaBaseEntity::sendEmptyEntityUpdateToPlayer);
     SOL_REGISTER("forceRezone", CLuaBaseEntity::forceRezone);
+    SOL_REGISTER("forceLogout", CLuaBaseEntity::forceLogout);
 
     // Abyssea
     SOL_REGISTER("getAvailableTraverserStones", CLuaBaseEntity::getAvailableTraverserStones);
@@ -21204,6 +21160,9 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("getContestRewardStatus", CLuaBaseEntity::getContestRewardStatus);
     SOL_REGISTER("getContestRankHistory", CLuaBaseEntity::getContestRankHistory);
     SOL_REGISTER("claimContestReward", CLuaBaseEntity::claimContestReward);
+
+    SOL_REGISTER("addPacketMod", CLuaBaseEntity::addPacketMod);
+    SOL_REGISTER("clearPacketMods", CLuaBaseEntity::clearPacketMods);
 }
 
 std::ostream& operator<<(std::ostream& os, const CLuaBaseEntity& entity)

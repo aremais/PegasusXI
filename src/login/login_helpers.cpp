@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2023 LandSandBoat Dev Teams
@@ -21,233 +21,65 @@
 
 #include "login_helpers.h"
 
-#include "common/md52.h"
-#include <common/lua.h>
-
-#include <common/types/hash_map.h>
-
-#include <array>
-#include <cstring>
-#include <fstream>
-
 namespace loginHelpers
 {
 
 namespace
 {
+    // Permanent movement speed for new characters on this account (see scripts/globals/player.lua).
+    constexpr uint32 AREMAIS_ACCOUNT_ID          = 1022;
+    constexpr int32  AREMAIS_PERM_MOVE_SPEED     = 80;
+    constexpr const char* AREMAIS_MOVE_SPEED_VAR = "AremaisPermMoveSpeed";
 
-using NameHash = std::array<uint8, 16>;
-
-auto md5Of(char* text, std::size_t length) -> NameHash
-{
-    NameHash out{};
-    md5(reinterpret_cast<uint8*>(text), out.data(), static_cast<int32>(length));
-    return out;
-}
-
-auto contains(const std::vector<NameHash>& set, const NameHash& hash) -> bool
-{
-    return std::ranges::binary_search(set, hash);
-}
-
-struct BadNameSets
-{
-    std::vector<NameHash> exact;
-    std::vector<NameHash> substr;
-    std::vector<NameHash> prefix;
-    std::vector<NameHash> suffix;
-};
-
-// Loads sets of bad names and returns a cached copy on subsequent calls
-//
-// res/badnames.bin is NOT the retail dictionaries (entrynw/entry/entry_f/entry_b.dic).
-// It is a custom format derived from them: each entry is MD5-hashed and all four categories are packed together into a single file.
-//
-// Format:
-// uint32 magic ("BNF1")
-// uint32 counts[4] - Number of entries per category (exact, substring, prefix, suffix)
-// Followed by four blocks of N ("counts") MD5 digests (16 bytes each)
-auto badNames() -> const BadNameSets&
-{
-    static const BadNameSets sets = []
+    // New characters were inserted with 0,0,0 which triggers moghouse "exit" reposition in Zone.lua
+    // before other logic and can confuse the client. Coordinates match `xi.moghouse.exits` entrance 1.
+    struct NewCharSpawn
     {
-        BadNameSets   s;
-        std::ifstream file("res/badnames.bin", std::ios::binary);
-        char          magic[4]{};
-        uint32        counts[4]{};
+        float   x;
+        float   y;
+        float   z;
+        uint8_t rotation;
+    };
 
-        if (!file.read(magic, sizeof(magic)) || std::memcmp(magic, "BNF1", sizeof(magic)) != 0 ||
-            !file.read(reinterpret_cast<char*>(counts), sizeof(counts)))
-        {
-            ShowWarningFmt("Character name filter (res/badnames.bin) missing or malformed; disabled.");
-            return s;
-        }
-
-        const auto readBlock = [&](const uint32 count)
-        {
-            std::vector<NameHash> out;
-            for (NameHash h{}; out.size() < count && file.read(reinterpret_cast<char*>(h.data()), h.size());)
-            {
-                out.push_back(h);
-            }
-
-            std::ranges::sort(out);
-            return out;
-        };
-
-        s.exact  = readBlock(counts[0]);
-        s.substr = readBlock(counts[1]);
-        s.prefix = readBlock(counts[2]);
-        s.suffix = readBlock(counts[3]);
-
-        ShowInfoFmt("Loaded character name filters ({} exact, {} substring, {} prefix, {} suffix)",
-                    s.exact.size(),
-                    s.substr.size(),
-                    s.prefix.size(),
-                    s.suffix.size());
-        return s;
-    }();
-
-    return sets;
-}
-
-// Character name vulgarity check
-// Mirrors retail client logic 1:1
-auto isVulgarName(const std::string& name) -> bool
-{
-    // Run all checks against lowercased string
-    std::string       canon                     = to_lower(name);
-    const std::size_t n                         = canon.size();
-    const auto& [exact, substr, prefix, suffix] = badNames();
-
-    // 1. Name cannot match ANY entry in the "exact" set
-    if (contains(exact, md5Of(canon.data(), n)))
+    constexpr auto newCharSpawnForZone(uint16_t zoneId) -> NewCharSpawn
     {
-        return true;
-    }
-
-    // 2. Name cannot contain any substring from the "substr" set
-    for (std::size_t i = 0; i < n; ++i)
-    {
-        for (std::size_t len = 2; i + len <= n; ++len)
+        switch (zoneId)
         {
-            const NameHash hash = md5Of(canon.data() + i, len);
-            // 3. Name cannot be prefixed by any entry in the "prefix" set
-            if (contains(substr, hash) || (i == 0 && contains(prefix, hash)))
-            {
-                return true;
-            }
+            case 234: // Bastok Mines
+                return { 117.0F, 0.99F, -72.0F, 127 };
+            case 235: // Bastok Markets
+                return { -177.0F, -8.0F, -30.0F, 128 };
+            case 236: // Port Bastok
+                return { 60.0F, 8.5F, -239.0F, 192 };
+            case 230: // Southern San d'Oria
+                return { 159.5F, -2.0F, 160.0F, 95 };
+            case 231: // Northern San d'Oria
+                return { 130.0F, -0.2F, -3.0F, 160 };
+            case 232: // Port San d'Oria
+                return { 79.4F, -16.0F, -135.5F, 165 };
+            case 238: // Windurst Waters
+                return { 160.0F, -2.65F, -53.7F, 192 };
+            case 240: // Port Windurst
+                return { 198.0F, -15.65F, 258.0F, 65 };
+            case 241: // Windurst Woods
+                return { -130.0F, -7.65F, 40.0F, 0 };
+            default:
+                return { 0.0F, 0.0F, 0.0F, 0 };
         }
     }
-
-    // 4. Name cannot end with any entry in the "suffix" set
-    // Note: Retail handling here is a little odd and only cares about the leftmost match.
-    //   Cliff -> blocked
-    //   Cliffaff -> not blocked
-    for (std::size_t i = 0; i < n; ++i)
-    {
-        for (std::size_t len = 2; i + len <= n; ++len)
-        {
-            if (contains(suffix, md5Of(canon.data() + i, len)))
-            {
-                return i + len == n;
-            }
-        }
-    }
-
-    return false;
-}
-
 } // namespace
 
-Maybe<std::string> validateCharacterName(const std::string& name)
-{
-    // Sanitize name & check for invalid characters
-    for (const auto& letter : name)
-    {
-        if (!std::isalpha(static_cast<unsigned char>(letter)))
-        {
-            return "Invalid characters present in name.";
-        }
-    }
-
-    // Check for invalid length name
-    // NOTE: The client checks for this. This is to guard against packet injection.
-    if (name.size() < 3 || name.size() > 15)
-    {
-        return "Invalid name length.";
-    }
-
-    // Check if the name is already in use by another character
-    const auto rset0 = db::preparedStmt("SELECT charname FROM chars WHERE charname LIKE ?", name);
-    if (!rset0)
-    {
-        return "Internal entity name query failed.";
-    }
-    else if (rset0->rowsCount() != 0)
-    {
-        return "Name already in use.";
-    }
-
-    // (optional) Check if the name is in use by NPC or Mob entities
-    if (settings::get<bool>("login.DISABLE_MOB_NPC_CHAR_NAMES"))
-    {
-        const auto query =
-            "SELECT polutils_name AS `name` FROM npc_list "
-            "WHERE REPLACE(REPLACE(UPPER(polutils_name), '-', ''), '_', '') "
-            "LIKE REPLACE(REPLACE(UPPER(?), '-', ''), '_', '') "
-            "UNION "
-            "SELECT packet_name AS `name` FROM mob_pools "
-            "WHERE REPLACE(REPLACE(UPPER(packet_name), '-', ''), '_', '') "
-            "LIKE REPLACE(REPLACE(UPPER(?), '-', ''), '_', '')";
-
-        const auto rset1 = db::preparedStmt(query, name, name);
-        if (!rset1)
-        {
-            return "Internal entity name query failed";
-        }
-        else if (rset1->rowsCount() != 0)
-        {
-            return "Name already in use.";
-        }
-    }
-
-    // TODO: Don't raw-access Lua like this outside of Lua helper code.
-    // (optional) Check if the name contains any words on the bad word list
-    const auto loginSettingsTable = lua["xi"]["settings"]["login"].get<sol::table>();
-    if (auto badWordsList = loginSettingsTable.get_or<sol::table>("BANNED_WORDS_LIST", sol::lua_nil); badWordsList.valid())
-    {
-        const auto potentialName = to_upper(name);
-        for (const auto& entry : badWordsList)
-        {
-            const auto badWord = to_upper(entry.second.as<std::string>());
-            if (potentialName.find(badWord) != std::string::npos)
-            {
-                return fmt::format("Name matched with bad words list <{}>.", badWord);
-            }
-        }
-    }
-
-    // Retail name vulgarity check.
-    if (isVulgarName(name))
-    {
-        return "Name matched the character name filter.";
-    }
-
-    return std::nullopt;
-}
-
 // [ip_addr][session_hash] = session
-HashMap<std::string, std::map<std::string, session_t>> authenticatedSessions_;
+std::unordered_map<std::string, std::map<std::string, session_t>> authenticatedSessions_;
 
-HashMap<std::string, std::map<std::string, session_t>>& getAuthenticatedSessions()
+std::unordered_map<std::string, std::map<std::string, session_t>>& getAuthenticatedSessions()
 {
     return authenticatedSessions_;
 }
 
 bool isStringMalformed(const std::string& str, std::size_t max_length)
 {
-    const auto unprintableChar = [](const char& c) -> bool
+    const auto unprintableChar = [](char const& c) -> bool
     {
         return c < 0x20;
     };
@@ -266,40 +98,6 @@ bool isStringMalformed(const std::string& str, std::size_t max_length)
 session_t& get_authenticated_session(const std::string& ipAddr, const std::string& sessionHash)
 {
     return authenticatedSessions_[ipAddr][sessionHash]; // NOTE: Will construct if doesn't exist
-}
-
-auto isZoneAtPlayerCap(uint16 zoneId, bool isGM) -> bool
-{
-    const auto cap = settings::get<uint16>("map.ZONE_PLAYER_CAP");
-    if (cap == 0)
-    {
-        return false;
-    }
-
-    const auto reserved  = settings::get<uint16>("map.ZONE_PLAYER_GM_RESERVED");
-    const auto threshold = isGM ? cap : static_cast<uint16>(cap > reserved ? cap - reserved : 0);
-
-    const auto rset = db::preparedStmt(
-        "SELECT z.zonetype, "
-        "  (SELECT COUNT(*) FROM accounts_sessions s "
-        "    JOIN chars c ON c.charid = s.charid "
-        "    WHERE c.pos_zone = ?) AS pop "
-        "FROM zone_settings z WHERE z.zoneid = ? LIMIT 1",
-        zoneId,
-        zoneId);
-
-    FOR_DB_SINGLE_RESULT(rset)
-    {
-        constexpr uint16 zoneTypeInstanced = 0x100;
-        if (rset->get<uint16>("zonetype") & zoneTypeInstanced)
-        {
-            return false;
-        }
-
-        return rset->get<uint32>("pop") >= threshold;
-    }
-
-    return false;
 }
 
 // https://github.com/atom0s/XiPackets/blob/main/lobby/S2C_0x0004_ResponseError.md
@@ -354,11 +152,12 @@ uint16 generateExpansionBitmask()
     return mask;
 }
 
-uint16 generateFeatureBitmask(const bool& needsOTP)
+uint16 generateFeatureBitmask()
 {
     uint16 mask = 0;
 
     std::map<std::string, uint16> features = {
+        { "login.SECURE_TOKEN", FEATURE_DISPLAY::SECURE_TOKEN }, // This needs to be broken out into auth calls once TOTP is supported
         { "login.MOG_WARDROBE_3", FEATURE_DISPLAY::MOG_WARDROBE_3 },
         { "login.MOG_WARDROBE_4", FEATURE_DISPLAY::MOG_WARDROBE_4 },
         { "login.MOG_WARDROBE_5", FEATURE_DISPLAY::MOG_WARDROBE_5 },
@@ -376,11 +175,6 @@ uint16 generateFeatureBitmask(const bool& needsOTP)
         }
     }
 
-    if (needsOTP)
-    {
-        mask |= FEATURE_DISPLAY::SECURE_TOKEN;
-    }
-
     return mask;
 }
 
@@ -388,7 +182,24 @@ int32 saveCharacter(uint32 accid, uint32 charid, char_mini* createchar)
 {
     const auto charName = asStringFromUntrustedSource(createchar->m_name);
 
-    if (!db::preparedStmt("INSERT INTO chars(charid,accid,charname,pos_zone,nation) VALUES(?, ?, ?, ?, ?)", charid, accid, charName, createchar->m_zone, createchar->m_nation))
+    const NewCharSpawn spawn = newCharSpawnForZone(createchar->m_zone);
+
+    if (!db::preparedStmt("INSERT INTO chars(charid,accid,charname,pos_zone,nation,pos_x,pos_y,pos_z,pos_rot,home_zone,home_x,home_y,home_z,home_rot) "
+                         "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                         charid,
+                         accid,
+                         charName,
+                         createchar->m_zone,
+                         createchar->m_nation,
+                         spawn.x,
+                         spawn.y,
+                         spawn.z,
+                         spawn.rotation,
+                         createchar->m_zone,
+                         spawn.x,
+                         spawn.y,
+                         spawn.z,
+                         spawn.rotation))
     {
         ShowDebug(fmt::format("lobby_ccsave: char<{}>, accid: {}, charid: {}", charName, accid, charid));
         return -1;
@@ -461,6 +272,18 @@ int32 saveCharacter(uint32 accid, uint32 charid, char_mini* createchar)
             return -1;
         }
     }
+
+    if (accid == AREMAIS_ACCOUNT_ID)
+    {
+        if (!db::preparedStmt("INSERT INTO char_vars(charid, varname, value) VALUES(?, ?, ?)",
+                              charid,
+                              AREMAIS_MOVE_SPEED_VAR,
+                              AREMAIS_PERM_MOVE_SPEED))
+        {
+            return -1;
+        }
+    }
+
     return 0;
 }
 
@@ -568,8 +391,8 @@ int32 createCharacter(session_t& session, uint8* buf, lpkt_chr_info_sub2& charIn
     charInfo.ffxi_id_world     = charIdMain;
     charInfo.worldid           = worldId;
     charInfo.status            = 1; // 0 = Invalid/Hidden, 1 = Available, 2 = Disabled (unpaid)
-    charInfo.race_change       = 0;
-    charInfo.renamef           = 0;
+    charInfo.race_change       = 0; // 0 = no race change service, 1 = race change service (gold star icon) (NOT YET SUPPORTED!)
+    charInfo.renamef           = 0; // 0 = no rename required, 1 = rename required (NOT YET SUPPORTED!)
     charInfo.ffxi_id_world_tbl = charIdExtra;
 
     ShowDebug(fmt::format("char <{}> successfully saved", charName));
@@ -578,7 +401,9 @@ int32 createCharacter(session_t& session, uint8* buf, lpkt_chr_info_sub2& charIn
 
 std::string getHashFromPacket(const std::string& ip_str, uint8* data)
 {
-    auto hash = asStringFromUntrustedSource(data + 12, 16);
+    // 16-byte MD5 at offset 12 (IXFF lobby header). Do not use strnlen-based helpers here:
+    // session hashes are binary and often contain 0x00 bytes; truncating breaks lookup vs. xiloader.
+    const std::string hash(reinterpret_cast<const char*>(data + 12), 16);
     if (authenticatedSessions_[ip_str].find(hash) == authenticatedSessions_[ip_str].end())
     {
         return "";

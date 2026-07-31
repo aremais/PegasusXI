@@ -27,7 +27,7 @@
 #include "common/utils.h"
 #include "common/xirand.h"
 
-#include <cfloat>
+#include <filesystem>
 #include <fstream>
 #include <set>
 #include <vector>
@@ -275,6 +275,18 @@ bool CNavMesh::save(const std::string& path) const
     if (!m_navMesh || path.empty())
     {
         return false;
+    }
+
+    const auto parentPath = std::filesystem::path(path).parent_path();
+    if (!parentPath.empty())
+    {
+        std::error_code error;
+        std::filesystem::create_directories(parentPath, error);
+        if (error)
+        {
+            ShowErrorFmt("CNavMesh::save: Could not create output directory ({})", parentPath.string());
+            return false;
+        }
     }
 
     std::ofstream file(path, std::ios::binary);

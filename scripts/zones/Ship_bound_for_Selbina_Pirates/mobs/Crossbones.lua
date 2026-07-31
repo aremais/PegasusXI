@@ -9,8 +9,11 @@ entity.onMobInitialize = function(mob)
     mob:setMobMod(xi.mobMod.NO_STANDBACK, 1)
 end
 
-entity.onMobSpawn = function(mob)
-    mob:setRespawnTime(60) -- respawns every 60s while the pirate ship is alongside
+entity.onMobDeath = function(mob, player, optParams)
+    local zone = mob:getZone()
+    if xi.pirates.isPirateMobWaveActive(zone) then
+        mob:setRespawnTime(math.random(30, 75))
+    end
 end
 
 return entity

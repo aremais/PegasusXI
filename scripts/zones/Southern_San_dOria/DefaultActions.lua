@@ -36,7 +36,7 @@ return {
     ['Luthiaque']            = { event = 658 },
     ['Malecharisant']        = { text = ID.text.WEST_GATE },
     ['Maugie']               = { event =  46 },
-    ['Melledanne']           = { event = 943 },
+    ['Ophelia']              = { event = 751 },
     ['Paouala']              = { event =  82 },
     ['Phillone']             = { event =  29 },
     ['qm2']                  = { messageSpecial = ID.text.NOTHING_OUT_OF_ORDINARY },

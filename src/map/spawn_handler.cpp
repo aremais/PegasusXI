@@ -21,73 +21,20 @@
 
 #include "spawn_handler.h"
 
-#include "ai/ai_container.h"
+#include <vector>
+
 #include "common/timer.h"
 #include "common/vana_time.h"
-#include "data/enums/weather.h"
 #include "entities/mob_entity.h"
+#include "enums/weather.h"
 #include "lua/luautils.h"
 #include "spawn_slot.h"
 #include "utils/zoneutils.h"
 #include "zone.h"
 
-namespace
-{
-
-auto hourInWindow(const uint32 hour, const uint8 spawn, const uint8 despawn) -> bool
-{
-    if (spawn <= despawn)
-    {
-        return hour >= spawn && hour < despawn;
-    }
-
-    return hour >= spawn || hour < despawn;
-}
-
-// Spawn window for a mob, or nullopt if unrestricted. Per-mob window wins over the SPAWNTYPE flags.
-auto spawnWindowOf(const CMobEntity* PMob) -> Maybe<SpawnWindow>
-{
-    if (PMob->spawnWindow().has_value())
-    {
-        return PMob->spawnWindow();
-    }
-
-    if ((PMob->m_SpawnType & xi::SpawnType::AtNight) != xi::SpawnType::Normal)
-    {
-        return SpawnWindow{ 20, 4 };
-    }
-
-    if ((PMob->m_SpawnType & xi::SpawnType::AtEvening) != xi::SpawnType::Normal)
-    {
-        return SpawnWindow{ 18, 6 };
-    }
-
-    return std::nullopt;
-}
-
-} // namespace
-
 SpawnHandler::SpawnHandler(CZone* PZone)
 : zone_(PZone)
 {
-}
-
-SpawnHandler::~SpawnHandler() = default;
-
-auto SpawnHandler::getOrCreateSpawnSlot(uint32_t slotId) -> SpawnSlot*
-{
-    auto& spawnSlot = spawnSlots_[slotId];
-    if (!spawnSlot)
-    {
-        spawnSlot = std::make_unique<SpawnSlot>();
-    }
-    return spawnSlot.get();
-}
-
-auto SpawnHandler::getSpawnSlot(uint32_t slotId) const -> SpawnSlot*
-{
-    const auto it = spawnSlots_.find(slotId);
-    return it != spawnSlots_.end() ? it->second.get() : nullptr;
 }
 
 // Register a given mob for respawn at its default respawn timer.
@@ -99,15 +46,29 @@ void SpawnHandler::registerForRespawn(CMobEntity* PMob, const Maybe<timer::durat
         return;
     }
 
-    const timer::duration   duration  = respawnTime.value_or(PMob->m_RespawnTime);
+    timer::duration duration = respawnTime.value_or(PMob->m_RespawnTime);
+    if (!respawnTime.has_value() && PMob->GetSpawnSlot() && !canSpawnNow(PMob))
+    {
+        duration = timer::duration::zero();
+    }
+
     const timer::time_point respawnAt = timer::now() + duration;
 
     if (auto slot = PMob->GetSpawnSlot())
     {
-        // Only a non-zero timer (deaggro/scripting) pins the respawn to this mob; otherwise the slot re-rolls.
-        const auto specificMobId   = (respawnTime.has_value() && *respawnTime > timer::duration::zero())
-                                         ? Maybe<uint32>(PMob->id)
-                                         : std::nullopt;
+        // Pin a mob only when a non-zero respawn override is used (e.g. deaggro 60s). Zone init passes 0s for
+        // time/weather-conditioned slotted mobs so TrySpawn can pick any pool member once conditions match; using
+        // 0s with a specific id would lock the slot to one mob and skip the day partner entirely.
+        const auto specificMobId = respawnTime.has_value() && respawnTime.value() > timer::duration::zero()
+                                       ? Maybe<uint32>(PMob->id)
+                                       : std::nullopt;
+        if (
+            auto it = pendingSlotRespawns_.find(slot);
+            !specificMobId.has_value() && it != pendingSlotRespawns_.end() && it->second.respawnAt <= respawnAt)
+        {
+            return;
+        }
+
         pendingSlotRespawns_[slot] = { respawnAt, specificMobId };
     }
     else
@@ -190,8 +151,7 @@ void SpawnHandler::Tick(const timer::time_point now)
     std::vector<CMobEntity*> mobsToSpawn;
 
     // Process non-slotted mobs
-    // Unqualified: ADL finds ankerl's erase_if for FlatHashMap
-    erase_if(
+    std::erase_if(
         pendingRespawns_,
         [&](const auto& pair)
         {
@@ -223,8 +183,7 @@ void SpawnHandler::Tick(const timer::time_point now)
     }
 
     // Process slotted spawns
-    // Unqualified: ADL finds ankerl's erase_if for FlatHashMap
-    erase_if(
+    std::erase_if(
         pendingSlotRespawns_,
         [&](const auto& pair)
         {
@@ -238,48 +197,59 @@ void SpawnHandler::Tick(const timer::time_point now)
         });
 }
 
-// Despawn mobs now outside their spawn window. Not tied to 30s task.
-void SpawnHandler::onGameHour(const uint32 hour) const
+// On TOTD change, process all relevant despawns.
+// This is not tied to the 30s task.
+void SpawnHandler::onTOTDChange(const vanadiel_time::TOTD totd) const
 {
-    const bool zoneActive = zone_->IsZoneActive();
-
-    zone_->ForEachMob(
-        [zoneActive, hour](CMobEntity* PMob)
+    switch (totd)
+    {
+        case vanadiel_time::TOTD::NEWDAY:
         {
-            const auto window = spawnWindowOf(PMob);
-            if (window.has_value() && PMob->isAlive() && !hourInWindow(hour, window->spawnHour, window->despawnHour))
-            {
-                if (zoneActive)
+            zone_->ForEachMob(
+                [](CMobEntity* PMob)
                 {
-                    PMob->SetDespawnTime(1ms);
-                }
-                else
+                    if (PMob->m_SpawnType & SPAWNTYPE_ATNIGHT)
+                    {
+                        PMob->SetDespawnTime(1ms);
+                    }
+                });
+        }
+        break;
+        case vanadiel_time::TOTD::DAWN:
+        {
+            zone_->ForEachMob(
+                [](CMobEntity* PMob)
                 {
-                    // Sleeping zone -> process the despawn immediately since AI doesnt tick on its own
-                    PMob->PAI->Despawn();
-                }
-            }
-        });
+                    if (PMob->m_SpawnType & SPAWNTYPE_ATEVENING)
+                    {
+                        PMob->SetDespawnTime(1ms);
+                    }
+                });
+        }
+        break;
+        default:
+            break;
+    }
 }
 
 // On Weather change, process all relevant despawns.
 // This is not tied to the 30s task.
-void SpawnHandler::onWeatherChange(xi::Weather weather) const
+void SpawnHandler::onWeatherChange(Weather weather) const
 {
     const auto element = zoneutils::GetWeatherElement(weather);
     zone_->ForEachMob(
         [weather, element](CMobEntity* PMob)
         {
-            if (PMob->m_EcoSystem == xi::Ecosystem::Elemental && PMob->PMaster == nullptr && (PMob->m_SpawnType & xi::SpawnType::Weather) != xi::SpawnType::Normal)
+            if (PMob->m_EcoSystem == ECOSYSTEM::ELEMENTAL && PMob->PMaster == nullptr && PMob->m_SpawnType & SPAWNTYPE_WEATHER)
             {
                 if (PMob->m_Element != element)
                 {
                     PMob->SetDespawnTime(1s);
                 }
             }
-            else if ((PMob->m_SpawnType & xi::SpawnType::Fog) != xi::SpawnType::Normal)
+            else if (PMob->m_SpawnType & SPAWNTYPE_FOG)
             {
-                if (weather != xi::Weather::Fog)
+                if (weather != Weather::Fog)
                 {
                     PMob->SetDespawnTime(1s);
                 }
@@ -296,29 +266,43 @@ auto SpawnHandler::canSpawnNow(const CMobEntity* PMob) const -> bool
     }
 
     // Time-based spawn conditions
-    if (const auto window = spawnWindowOf(PMob); window.has_value())
+    const auto totd = vanadiel_time::get_totd();
+    if (PMob->m_SpawnType & SPAWNTYPE_ATNIGHT)
     {
-        if (!hourInWindow(vanadiel_time::get_hour(), window->spawnHour, window->despawnHour))
+        // 20:00-04:00 (NIGHT, MIDNIGHT)
+        if (totd != vanadiel_time::TOTD::NIGHT && totd != vanadiel_time::TOTD::MIDNIGHT)
+        {
+            return false;
+        }
+    }
+
+    if (PMob->m_SpawnType & SPAWNTYPE_ATEVENING)
+    {
+        // 18:00-06:00 (EVENING, NIGHT, MIDNIGHT, NEWDAY)
+        if (totd != vanadiel_time::TOTD::EVENING &&
+            totd != vanadiel_time::TOTD::NIGHT &&
+            totd != vanadiel_time::TOTD::MIDNIGHT &&
+            totd != vanadiel_time::TOTD::NEWDAY)
         {
             return false;
         }
     }
 
     // Weather-based spawn conditions
-    if ((PMob->m_SpawnType & xi::SpawnType::Fog) != xi::SpawnType::Normal)
+    if (PMob->m_SpawnType & SPAWNTYPE_FOG)
     {
-        if (zone_->weather().current() != xi::Weather::Fog)
+        if (zone_->GetWeather() != Weather::Fog)
         {
             return false;
         }
     }
 
-    if ((PMob->m_SpawnType & xi::SpawnType::Weather) != xi::SpawnType::Normal)
+    if (PMob->m_SpawnType & SPAWNTYPE_WEATHER)
     {
         // Only for elementals without a master
-        if (PMob->m_EcoSystem == xi::Ecosystem::Elemental && PMob->PMaster == nullptr)
+        if (PMob->m_EcoSystem == ECOSYSTEM::ELEMENTAL && PMob->PMaster == nullptr)
         {
-            if (PMob->m_Element != zoneutils::GetWeatherElement(zone_->weather().current()))
+            if (PMob->m_Element != zoneutils::GetWeatherElement(zone_->GetWeather()))
             {
                 return false;
             }

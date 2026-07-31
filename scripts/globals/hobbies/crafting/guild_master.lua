@@ -113,7 +113,8 @@ xi.crafting.guildMasterOnTrigger = function(player, npc)
     local nextRank = player:getSkillRank(skillId) + 1
 
     -- Event parameters
-    local testItem       = GetSystemTime()                                     -- Parameter 1: Current time OR Test Item if applicable.
+    -- Use 0 when no rank-up item applies; a non-item value (e.g. timestamp) breaks the cutscene client-side.
+    local testItem       = 0                                                   -- Parameter 1: Test item id, or 0 if none.
     local skillLevel     = xi.crafting.getRealSkill(player, skillId)     -- Parameter 2: Player real level on concrete craft.
     local skillCap       = xi.crafting.getCraftSkillCap(player, skillId) -- Parameter 3: Player max level on concrete craft.
     local guildsJoined   = player:getCharVar('Guild_Member')             -- Parameter 4: Bitmask with guilds joined.

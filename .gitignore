@@ -14,7 +14,6 @@
 # Build results
 build/
 build*/
-.cpm-cache/
 lbuild/
 build_mariadb_32/
 build_mariadb_64/
@@ -214,14 +213,11 @@ cmake_install.cmake
 
 # Tool/misc configs
 /tools/config.yaml
-/tools/logs/
 ip.txt
 
 # Tracy download
 ext/tracy/
 tracy.tar.gz
-tracy*
-**/*.tracy
 
 # Valgrind
 *.memcheck.log
@@ -270,7 +266,4 @@ __pycache__
 sanity_checks_summary.md
 changed-files.txt
 clang_tidy_summary.md
-
-# YAML codegen
-*.codegen.json
-*.codegen.lua
+navmeshes

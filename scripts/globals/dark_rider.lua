@@ -126,14 +126,16 @@ xi.darkRider.addHoofprints = function(zone)
         end
 
         local hoofprint = GetNPCByID(possibleHoofprintIds[i])
-        if hoofprint ~= nil and hoofprint:getStatus() ~= xi.status.NORMAL then
+        if hoofprint == nil then
+            printf('Did not find hoofprint with ID: %d', possibleHoofprintIds[i])
+        elseif hoofprint:getStatus() ~= xi.status.NORMAL then
             hoofprint:setPos(possiblePositions[i])
             hoofprint:setStatus(xi.status.NORMAL)
             hoofprint:setLocalVar('DaysSinceEpoch', daysSinceEpoch)
             currentHoofprintCount = currentHoofprintCount + 1
             hoofprintsToAdd = hoofprintsToAdd - 1
         else
-            printf('Did not find hoofprint with ID: %d', possibleHoofprintIds[i])
+            hoofprintsToAdd = hoofprintsToAdd - 1
         end
     end
 

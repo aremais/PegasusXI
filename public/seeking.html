@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seeking - PegasusXI | PegasusXI</title>
+  <meta name="description" content="Seeking party and LFG on PegasusXI" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Force header layout on live (overrides cached/different CSS) */
+    header .nav { display: flex !important; flex-wrap: nowrap !important; align-items: center !important; }
+    header .brand-wrap { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: center !important; gap: 8px !important; }
+    header .brand-icon { width: 48px !important; height: 48px !important; max-width: 48px !important; max-height: 48px !important; display: block !important; object-fit: contain !important; }
+    header nav ul { display: flex !important; flex-wrap: nowrap !important; flex-direction: row !important; align-items: center !important; }
+    header .nav-dropdown { display: flex !important; flex-direction: column !important; align-items: flex-start !important; }
+    header .nav-dropdown .dropdown-menu { display: block !important; position: absolute !important; top: 100% !important; left: 0 !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+    header .nav-dropdown:hover .dropdown-menu, header .nav-dropdown.open .dropdown-menu { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+    header .nav-dropdown .dropdown-menu li { display: block !important; width: 100% !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="nav">
+        <div class="brand-wrap">
+          <a class="brand" href="index.html" aria-label="PegasusXI Home">
+            <img src="images/icon.png" alt="PegasusXI" class="brand-icon" width="48" height="48" />
+          </a>
+          <a class="brand-play" href="play-now.html">Play Now</a>
+        </div>
+        <nav aria-label="Primary"><ul>
+          <li class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">About <span class="chevron" aria-hidden="true">▼</span></button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="server-info.html">Server Info</a></li>
+              <li><a href="addons.html">Addons</a></li>
+            </ul>
+          </li>
+          <li><a href="rules.html">Rules</a></li>
+          <li><a href="news.html">News</a></li>
+          <li class="nav-dropdown">
+            <button type="button" class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">Tools <span class="chevron" aria-hidden="true">▼</span></button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="players.html">Players</a></li>
+              <li><a href="seeking.html">Seeking</a></li>
+              <li><a href="items.html">Items</a></li>
+              <li><a href="bazaar.html">Bazaar</a></li>
+              <li><a href="bcnm-ranking.html">BCNM Ranking</a></li>
+              <li><a href="wiki.html">Wiki</a></li>
+              <li><a href="yells.html">Yells</a></li>
+            </ul>
+          </li>
+        </ul></nav>
+        <div class="nav-right">
+          <div id="navStatus" class="nav-status" aria-live="polite">
+            <span class="dot ok"></span><span class="nav-status-text">— Online</span>
+          </div>
+          <span class="nav-game-icon" aria-hidden="true"></span>
+          <span class="nav-sep" aria-hidden="true"></span>
+          <a class="nav-link" href="login.html">Login</a>
+          <a class="nav-link" href="register.html">Register</a>
+          <button class="btn hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">Menu</button>
+        </div>
+      </div>
+      <div id="mobileMenu" class="mobile-menu" aria-label="Mobile navigation" style="display:none">
+        <a href="server-info.html">Server Info</a>
+        <a href="addons.html">Addons</a>
+        <a href="rules.html">Rules</a>
+        <a href="news.html">News</a>
+        <a href="players.html">Players</a>
+        <a href="seeking.html">Seeking</a>
+        <a href="items.html">Items</a>
+        <a href="bazaar.html">Bazaar</a>
+        <a href="bcnm-ranking.html">BCNM Ranking</a>
+        <a href="wiki.html">Wiki</a>
+        <a href="yells.html">Yells</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 18px 0 0;">
+    <section class="card pad">
+      <h1 class="seeking-title" id="seekingTitle">Seeking</h1>
+
+      <div class="seeking-wrap">
+        <table class="seeking-table" aria-label="Seeking party">
+          <thead>
+            <tr>
+              <th scope="col">Avatar</th>
+              <th scope="col">Charname</th>
+              <th scope="col">Main Job</th>
+              <th scope="col">Main lvl</th>
+              <th scope="col">Sub Job</th>
+              <th scope="col">Sub lvl</th>
+              <th scope="col">Seacom Type</th>
+              <th scope="col">Seacom Message</th>
+              <th scope="col">WAR</th>
+              <th scope="col">MNK</th>
+              <th scope="col">WHM</th>
+              <th scope="col">BLM</th>
+              <th scope="col">RDM</th>
+              <th scope="col">THF</th>
+              <th scope="col">PLD</th>
+              <th scope="col">DRK</th>
+              <th scope="col">BST</th>
+              <th scope="col">BRD</th>
+              <th scope="col">RNG</th>
+              <th scope="col">SAM</th>
+              <th scope="col">NIN</th>
+              <th scope="col">DRG</th>
+              <th scope="col">SMN</th>
+            </tr>
+          </thead>
+          <tbody id="seekingList">
+            <tr class="seeking-empty">
+              <td colspan="24">Loading seeking data…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="siteFooter"></div>
+  <script src="app.js"></script>
+  <script>
+    (function() {
+      var tbody = document.getElementById("seekingList");
+      var titleEl = document.getElementById("seekingTitle");
+      if (!tbody) return;
+
+      var jobCols = ["WAR","MNK","WHM","BLM","RDM","THF","PLD","DRK","BST","BRD","RNG","SAM","NIN","DRG","SMN"];
+
+      function render(list) {
+        var rows = Array.isArray(list) ? list : [];
+        if (rows.length === 0) {
+          tbody.innerHTML = '<tr class="seeking-empty"><td colspan="24">No seeking entries.</td></tr>';
+          if (titleEl) titleEl.textContent = "0 Seeking";
+          return;
+        }
+        if (titleEl) titleEl.textContent = rows.length + " Seeking";
+        tbody.innerHTML = rows.map(function(r) {
+          var jobs = r.jobs || {};
+          var jobCells = jobCols.map(function(j) { return "<td>" + (jobs[j] != null ? jobs[j] : "—") + "</td>"; }).join("");
+          var charLink = r.charname ? '<a href="players.html">' + r.charname + '</a>' : "—";
+          return "<tr>" +
+            "<td>" + (r.avatar ? '<img src=\"' + r.avatar + '\" alt=\"\" class=\"seeking-avatar\" />' : "—") + "</td>" +
+            "<td>" + charLink + "</td>" +
+            "<td>" + (r.mainJob || "—") + "</td>" +
+            "<td>" + (r.mainLvl != null ? r.mainLvl : "—") + "</td>" +
+            "<td>" + (r.subJob || "—") + "</td>" +
+            "<td>" + (r.subLvl != null ? r.subLvl : "—") + "</td>" +
+            "<td>" + (r.seacomType || "—") + "</td>" +
+            "<td>" + (r.seacomMessage || "—") + "</td>" +
+            jobCells +
+            "</tr>";
+        }).join("");
+      }
+
+      // Placeholder: replace with your API (e.g. fetch("/api/seeking").then(r=>r.json()))
+      var placeholder = [
+        { charname: "Pnoytagas", mainJob: "WAR", mainLvl: 75, subJob: "NIN", subLvl: 37, seacomType: "—", seacomMessage: "", jobs: { WAR: 75, NIN: 37, MNK: 51, WHM: 75, BLM: 32, RDM: 37, THF: 74, PLD: 37, DRK: 10, BST: 37, BRD: 37, RNG: 37, SAM: 37, DRG: 37, SMN: 37 } }
+      ];
+      render(placeholder);
+
+      // Optional: fetch from endpoint when available
+      // fetch("/api/seeking").then(function(r){ return r.json(); }).then(function(data){
+      //   render(data.entries || data || []);
+      // }).catch(function(){ render([]); });
+    })();
+  </script>
+</body>
+</html>

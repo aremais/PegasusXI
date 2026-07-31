@@ -1,0 +1,3 @@
+-- Southern San d'Oria (230): placeholder for missing CHARREQ slot npcid 17719985 (targid 689).
+INSERT IGNORE INTO `npc_list`
+VALUES (17719985,'blank','',0,0.000,0.000,0.000,0,40,40,0,0,8,2,3,0x0000320000000000000000000000000000000000,0,NULL,1);

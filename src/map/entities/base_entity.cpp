@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -19,7 +19,7 @@
 ===========================================================================
 */
 
-#include "base_entity.h"
+#include "baseentity.h"
 
 #include "common/tracy.h"
 
@@ -27,31 +27,35 @@
 
 #include "battlefield.h"
 #include "instance.h"
+#include "utils/zoneutils.h"
 #include "zone.h"
+
+#include "common/logging.h"
+
+#include <cstring>
 
 CBaseEntity::CBaseEntity()
 : id(0)
 , targid(0)
 , objtype(ENTITYTYPE::TYPE_NONE)
-, status(xi::Status::Disappear)
+, status(STATUS_TYPE::DISAPPEAR)
 , m_TargID(0)
 , animation(0)
 , animationsub(0)
 , baseSpeed(settings::get<uint8>("map.BASE_SPEED"))
-, namevis(xi::NameVis::None)
-, allegiance(xi::Allegiance::Mob)
+, namevis(0)
+, allegiance(ALLEGIANCE_TYPE::MOB)
 , updatemask(0)
 , priorityRender(false)
 , isRenamed(false)
 , m_bReleaseTargIDOnDisappear(false)
-, spawnAnimation(xi::SpawnAnimation::Normal)
+, spawnAnimation(SPAWN_ANIMATION::NORMAL)
 , PAI(nullptr)
 , PBattlefield(nullptr)
 , PInstance(nullptr)
 , m_nextUpdateTimer(timer::now())
 {
     TracyZoneScoped;
-
     speed          = baseSpeed;
     animationSpeed = static_cast<uint8>(std::clamp<float>((baseSpeed / settings::get<float>("map.ANIMATION_SPEED_DIVISOR")), std::numeric_limits<uint8>::min(), std::numeric_limits<uint8>::max()));
 }
@@ -59,7 +63,6 @@ CBaseEntity::CBaseEntity()
 CBaseEntity::~CBaseEntity()
 {
     TracyZoneScoped;
-
     if (PBattlefield)
     {
         PBattlefield->RemoveEntity(this, BATTLEFIELD_LEAVE_CODE_WARPDC);
@@ -68,7 +71,7 @@ CBaseEntity::~CBaseEntity()
 
 void CBaseEntity::Spawn()
 {
-    status = allegiance == xi::Allegiance::Mob ? xi::Status::Update : xi::Status::Normal;
+    status = allegiance == ALLEGIANCE_TYPE::MOB ? STATUS_TYPE::UPDATE : STATUS_TYPE::NORMAL;
     updatemask |= UPDATE_HP;
     ResetLocalVars();
     PAI->Reset();
@@ -76,7 +79,7 @@ void CBaseEntity::Spawn()
 
 void CBaseEntity::FadeOut()
 {
-    status = xi::Status::Disappear;
+    status = STATUS_TYPE::DISAPPEAR;
     updatemask |= UPDATE_HP;
 }
 
@@ -92,7 +95,16 @@ const std::string& CBaseEntity::getPacketName()
 
 uint16 CBaseEntity::getZone() const
 {
-    return loc.zone != nullptr ? (uint16)loc.zone->GetID() : (uint16)loc.destination;
+    if (loc.zone != nullptr && zoneutils::IsRegisteredZone(loc.zone))
+    {
+        return static_cast<uint16>(loc.zone->GetID());
+    }
+    if (loc.zone != nullptr)
+    {
+        ShowWarningFmt("CBaseEntity::getZone: entity {} (id {}) has non-null loc.zone that is not a live zone; using destination {}",
+                       name, id, loc.destination);
+    }
+    return static_cast<uint16>(loc.destination);
 }
 
 float CBaseEntity::GetXPos() const
@@ -132,11 +144,11 @@ void CBaseEntity::HideName(bool hide)
     if (hide)
     {
         // I totally guessed this number
-        namevis |= xi::NameVis::HideName;
+        namevis |= FLAG_HIDE_NAME;
     }
     else
     {
-        namevis &= ~xi::NameVis::HideName;
+        namevis &= ~FLAG_HIDE_NAME;
     }
     updatemask |= UPDATE_HP;
 }
@@ -145,18 +157,18 @@ void CBaseEntity::GhostPhase(bool ghost)
 {
     if (ghost)
     {
-        namevis |= xi::NameVis::GhostPhase;
+        namevis |= VIS_GHOST_PHASE;
     }
     else
     {
-        namevis &= ~xi::NameVis::GhostPhase;
+        namevis &= ~VIS_GHOST_PHASE;
     }
     updatemask |= UPDATE_HP;
 }
 
 bool CBaseEntity::IsNameHidden() const
 {
-    return (namevis & xi::NameVis::HideName) != xi::NameVis::None;
+    return namevis & FLAG_HIDE_NAME;
 }
 
 bool CBaseEntity::GetUntargetable() const
@@ -166,37 +178,32 @@ bool CBaseEntity::GetUntargetable() const
 
 bool CBaseEntity::isWideScannable()
 {
-    return status != xi::Status::Disappear && !IsNameHidden() && !GetUntargetable();
+    return status != STATUS_TYPE::DISAPPEAR && !IsNameHidden() && !GetUntargetable();
 }
 
 bool CBaseEntity::CanSeeTarget(CBaseEntity* target)
 {
-    return CanSeeTarget(target->loc.p);
+    return CanSeeTarget(target, true);
+}
+
+bool CBaseEntity::CanSeeTarget(CBaseEntity* target, bool fallbackNavMesh)
+{
+    return CanSeeTarget(target->loc.p, fallbackNavMesh);
 }
 
 bool CBaseEntity::CanSeeTarget(const position_t& targetPointBase)
 {
-    TracyZoneScoped;
+    return CanSeeTarget(targetPointBase, true);
+}
 
-    constexpr float ENTITY_HEIGHT = 2.0f;
-
-    // TODO: Handle:
-    // if (GetTypeMask() & ZONE_TYPE::CITY || (m_miscMask & MISC_LOS_OFF))
-    // -> Skip cities and zones with line of sight turned off
-
-    const auto src = Vector3{ loc.p.x, loc.p.y - ENTITY_HEIGHT, loc.p.z };
-    const auto dst = Vector3{ targetPointBase.x, targetPointBase.y - ENTITY_HEIGHT, targetPointBase.z };
-
-    const auto now    = timer::now();
-    const auto zoneId = static_cast<uint16>(this->loc.zone->GetID());
-    if (const auto cached = losCache_.get(src, dst, zoneId, now))
+bool CBaseEntity::CanSeeTarget(const position_t& targetPointBase, bool fallbackNavMesh)
+{
+    if (fallbackNavMesh && loc.zone != nullptr)
     {
-        return *cached;
+        return loc.zone->navMesh()->raycast(loc.p, targetPointBase);
     }
 
-    const bool canSee = !this->loc.zone->xiMesh()->rayIntersect(src, dst);
-    losCache_.put(src, dst, zoneId, canSee, now);
-    return canSee;
+    return true;
 }
 
 CBaseEntity* CBaseEntity::GetEntity(uint16 targid, uint8 filter) const

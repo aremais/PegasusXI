@@ -1339,3 +1339,5 @@ xi.mobSkill =
 
     MIX_FINAL_ELIXIR              = 4231, -- Monbereaux Trust
 }
+
+return xi.mobSkill

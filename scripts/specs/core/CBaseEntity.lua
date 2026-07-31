@@ -56,7 +56,7 @@ end
 ---@param p3 integer?
 ---@param chat integer?
 ---@return nil
-function CBaseEntity:messageName(messageID, entity, p0, p1, p2, p3, chat)
+function CBaseEntity:messageName(messageID, entity, p0, p1, p2, p3, chat, showSender)
 end
 
 ---@param messageID integer
@@ -1093,25 +1093,11 @@ end
 function CBaseEntity:addLinkpearl(lsname, equip)
 end
 
----@class LinkshellConciergeSlot
----@field groupId integer
----@field groupKey integer
----@field color integer
----@field flag integer
----@field name string
----@field lang integer
----@field membersGoal integer
----@field activeTier integer
----@field characteristics integer
-
----@class LinkshellConciergeView
----@field yourSlot integer?
----@field postedDays integer?
----@field slots table<integer, LinkshellConciergeSlot>?
-
----@param data LinkshellConciergeView
----@return nil
-function CBaseEntity:sendLinkshellConcierge(data)
+--- Grants item 513 (physical linkshell) for an existing `linkshells` row; optional equip slot 1 or 2 (default 1).
+---@param lsname string
+---@param equipSlot? integer
+---@return boolean
+function CBaseEntity:addLinkshellHolder(lsname, equipSlot)
 end
 
 ---@class ChocoboRaceStats

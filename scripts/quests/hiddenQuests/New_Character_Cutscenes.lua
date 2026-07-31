@@ -30,26 +30,14 @@ quest.sections =
                         xi.cutsceneFlag.UNKNOWN_2
                     )
 
-                    return { 0, -1, cutsceneFlags } -- CS 0 is not a typo.
+                    -- Event 0 was used on retail as a two-step intro (0 then 7). Event 0 leaves many
+                    -- clients stuck on a black / loading screen; start at 7 which carries the actual intro.
+                    return { 7, -1, cutsceneFlags }
                 end
             },
 
             onEventFinish =
             {
-                [0] = function(player, csid, option, npc)
-                    -- Retail normally zones you for this -- but testing proved there was no difference other than NOT zoning by just calling the next event.
-                    -- event 0x00 fades your screen to black and seems to wait for another event, otherwise it will never fade back in.
-                    -- TODO: research if there was some purpose to the zoning.
-
-                    local cutsceneFlags = bit.bor(
-                        xi.cutsceneFlag.UNKNOWN_1,
-                        xi.cutsceneFlag.NO_PCS,
-                        xi.cutsceneFlag.UNKNOWN_2
-                    )
-
-                    player:startEvent(7, { flags = cutsceneFlags })
-                end,
-
                 [7] = function(player, csid, option, npc)
                     local ID = zones[player:getZoneID()]
                     -- If you don't get the coupon, tough luck. Retail doesn't give you a chance to get it again.

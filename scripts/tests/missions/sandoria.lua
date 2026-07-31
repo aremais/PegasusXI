@@ -84,6 +84,7 @@ describe('San d\'Oria', function()
             player.bcnm:killMobs()
             player.bcnm:expectWin({ finishOption = 2 })
             player.assert:hasKI(xi.ki.ORCISH_HUT_KEY)
+            assert(player:hasTitle(xi.title.FODDERCHIEF_FLAYER))
             player.entities:gotoAndTrigger('Hut_Door', { eventId = 55 })
 
             -- Go back to gate guard and finish mission.

@@ -1,4 +1,4 @@
-﻿/*
+/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -32,6 +32,8 @@
 class CBaseEntity;
 class CCharEntity;
 class CNpcEntity;
+class Scheduler;
+struct MapConfig;
 
 namespace zoneutils
 {
@@ -48,17 +50,21 @@ struct LazyLoadState
 
 } // namespace detail
 
-auto LoadZones(Scheduler& scheduler, MapConfig config, const std::vector<uint16>& zoneIds) -> Task<void>;
-auto LoadZoneList(Scheduler& scheduler, MapConfig config) -> Task<void>;
-auto Initialize(Scheduler& scheduler, MapConfig config) -> Task<void>;
-auto ProcessLoadQueue(Scheduler& scheduler, MapConfig config) -> Task<void>;
+auto LoadZones(Scheduler& scheduler, const MapConfig& config, const std::vector<uint16>& zoneIds) -> Task<void>;
+auto LoadZoneList(Scheduler& scheduler, const MapConfig& config) -> Task<void>;
+auto Initialize(Scheduler& scheduler, const MapConfig& config) -> Task<void>;
+auto ProcessLoadQueue(Scheduler& scheduler, const MapConfig& config) -> Task<void>;
 
 auto IsLazyLoadingEnabled() -> bool;
+
+// Set once from MapEngine after zone init; used to load lazy zones before 0x00A login completes.
+void SetLoginZoneLoadContext(Scheduler* scheduler, const MapConfig* config);
+void EnsureDestinationZoneLoaded(uint16 zoneId);
 
 // TODO:
 // This shouldn't have side effects, it should be const and the caller should be responsible
 // for requesting the zone is loaded if it isn't ready.
-auto IsZoneReady(Scheduler& scheduler, MapConfig config, uint16 zoneId) -> Task<bool>;
+auto IsZoneReady(Scheduler& scheduler, const MapConfig& config, uint16 zoneId) -> Task<bool>;
 
 auto GetManagedZones() -> std::vector<std::pair<uint16, std::string>>;
 void FreeZoneList();
@@ -72,6 +78,8 @@ auto GetCurrentContinent(uint16 zoneId) -> CONTINENT_TYPE;
 auto GetWeatherElement(xi::Weather weather) -> int;
 
 auto GetZone(uint16 zoneId) -> CZone*;
+// True if `zone` is non-null and matches a live zone in this process (guards against stale loc.zone).
+auto IsRegisteredZone(const CZone* zone) -> bool;
 auto GetEntity(uint32 id, uint8 filter = -1) -> CBaseEntity*;
 auto GetCharByName(const std::string& name) -> CCharEntity*;
 auto GetCharFromWorld(uint32 charId, uint16 targId) -> CCharEntity*;  // returns pointer to character by id and target id

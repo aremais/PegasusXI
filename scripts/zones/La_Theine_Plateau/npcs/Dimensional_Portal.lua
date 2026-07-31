@@ -8,6 +8,11 @@ local ID = zones[xi.zone.LA_THEINE_PLATEAU]
 local entity = {}
 
 entity.onTrigger = function(player, npc)
+    if player:hasKeyItem(xi.ki.SONG_OF_HOPE) then
+        player:setPos(-500.016, -19.751, -494.675, 221, xi.zone.REISENJIMA)
+        return
+    end
+
     if player:getCurrentMission(xi.mission.log_id.COP) > xi.mission.id.cop.THE_WARRIORS_PATH then
         player:startOptionalCutscene(204, { cs_option = 0, canSkip = true })
     else

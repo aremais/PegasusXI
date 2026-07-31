@@ -9,6 +9,11 @@ zoneObject.onInitialize = function(zone)
 end
 
 zoneObject.onZoneIn = function(player, prevZone)
+    -- Entering mog house sets inMogHouse before onZoneIn; run this before mission/CGN CS or MH never initializes.
+    if player:inMogHouse() then
+        return xi.moghouse.onMoghouseZoneEvent(player, prevZone)
+    end
+
     local heartwingsAndTheKindhearted = player:getCurrentMission(xi.mission.log_id.SOA) == xi.mission.id.soa.HEARTWINGS_AND_THE_KINDHEARTED
 
     if player:getCharVar('Raptor_Rapture_Status') == 2 then

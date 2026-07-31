@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/status.codegen.json",
+  "description": "GENERATED from data/enums/status.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "normal",
+    "update",
+    "disappear",
+    "invisible",
+    "status_4",
+    "cutscene_only",
+    "status_18",
+    "shutdown"
+  ]
+}

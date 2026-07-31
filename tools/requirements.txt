@@ -1,9 +1,10 @@
 mariadb
 gitpython
+pymysql
 pylint
 pyyaml
 colorama
-zmq
+pyzmq
 black
 regex
 argparse

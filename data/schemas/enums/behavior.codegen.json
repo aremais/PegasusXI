@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/behavior.codegen.json",
+  "description": "GENERATED from data/enums/behavior.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "none",
+    "no_despawn",
+    "standback",
+    "raisable",
+    "no_assist",
+    "aggro_ambush",
+    "no_turn"
+  ]
+}

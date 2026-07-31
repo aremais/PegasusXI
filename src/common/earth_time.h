@@ -102,14 +102,15 @@ inline uint32 get_hour(const time_point& tp = now())
 inline uint32 get_monthday(const time_point& tp = now())
 {
     const auto ymd = std::chrono::year_month_day(std::chrono::floor<std::chrono::days>(tp));
-    return static_cast<uint32>(ymd.day());
+    // Use unsigned(...) — static_cast from day/month can bypass operator unsigned() on some compilers.
+    return static_cast<uint32>(static_cast<unsigned>(ymd.day()));
 }
 
 // current month – [​1​, 12]
 inline uint32 get_month(const time_point& tp = now())
 {
     const auto ymd = std::chrono::year_month_day(std::chrono::floor<std::chrono::days>(tp));
-    return static_cast<uint32>(ymd.month());
+    return static_cast<uint32>(static_cast<unsigned>(ymd.month()));
 }
 
 // current year
@@ -181,7 +182,7 @@ inline uint32 get_monthday(const time_point& tp = now())
     // const auto jst_tp = std::chrono::zoned_time(std::chrono::locate_zone("Asia/Tokyo"), tp).get_local_time();
     const auto jst_tp = time_point(tp + 9h);
     const auto ymd    = std::chrono::year_month_day(std::chrono::floor<std::chrono::days>(jst_tp));
-    return static_cast<uint32>(ymd.day());
+    return static_cast<uint32>(static_cast<unsigned>(ymd.day()));
 }
 
 // current month – [​1​, 12]
@@ -190,7 +191,7 @@ inline uint32 get_month(const time_point& tp = now())
     // const auto jst_tp = std::chrono::zoned_time(std::chrono::locate_zone("Asia/Tokyo"), tp).get_local_time();
     const auto jst_tp = time_point(tp + 9h);
     const auto ymd    = std::chrono::year_month_day(std::chrono::floor<std::chrono::days>(jst_tp));
-    return static_cast<uint32>(ymd.month());
+    return static_cast<uint32>(static_cast<unsigned>(ymd.month()));
 }
 
 // current year

@@ -1,7 +1,8 @@
 -----------------------------------
 -- Chimera Ripper
--- Family: Automaton
--- Description: Delivers a single attack. Damage varies with TP.
+-- Delivers a single-hit attack.
+-----------------------------------
+require('scripts/globals/mobskills')
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -10,24 +11,29 @@ mobskillObject.onMobSkillCheck = function(target, mob, skill)
     return 0
 end
 
-mobskillObject.onMobWeaponSkill = function(mob, target, skill, action)
-    local params = {}
+mobskillObject.onMobWeaponSkill = function(target, mob, skill, action)
+    local ftp = 6.0
 
-    params.baseDamage       = mob:getWeaponDmg()
-    params.numHits          = 1
-    params.fTP              = { 1.5, 2.0, 3.0 }
-    params.accuracyModifier = { 100, 100, 100 }
-    params.attackType       = xi.attackType.PHYSICAL
-    params.damageType       = xi.damageType.SLASHING
-    params.shadowBehavior   = xi.mobskills.shadowBehavior.NUMSHADOWS_1
-
-    local info = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
-
-    if xi.mobskills.processDamage(mob, target, skill, action, info) then
-        target:takeDamage(info.damage, mob, info.attackType, info.damageType)
+    if skill:getTP() >= 3000 then
+        ftp = 11.0
+    elseif skill:getTP() >= 2000 then
+        ftp = 8.5
     end
 
-    return info.damage
+    local params =
+    {
+        numHits = 1,
+        fTP = { ftp, ftp, ftp },
+        str_wSC = 0.50,
+        skill = xi.skill.NONE,
+    }
+
+    local damage = xi.mobskills.mobPhysicalMove(mob, target, skill, action, params)
+    damage.damage = xi.mobskills.mobFinalAdjustments(damage.damage, mob, skill, target, xi.attackType.PHYSICAL, xi.damageType.SLASHING, damage.hitsLanded)
+
+    target:takeDamage(damage.damage, mob, xi.attackType.PHYSICAL, xi.damageType.SLASHING)
+
+    return damage.damage
 end
 
 return mobskillObject

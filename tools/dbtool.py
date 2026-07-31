@@ -184,7 +184,9 @@ def populate_settings():
 settings, default_settings = populate_settings()
 
 
-# These are the 'protected' files
+# These are the 'protected' files (never re-imported on update if the table already exists).
+# zone_settings.sql must stay protected: the repo dump is all 127.0.0.1; importing it wipes
+# production zoneip/zoneport and causes FFXI-3001 for every internet client.
 player_data = [
     "accounts.sql",
     "accounts_banned.sql",
@@ -231,6 +233,7 @@ player_data = [
     "linkshells.sql",
     "server_variables.sql",
     "unity_system.sql",
+    "zone_settings.sql",
 ]
 
 import_files = []
@@ -264,9 +267,19 @@ else:
 colorama.init(autoreset=True)
 
 
+# MySQL CLI on Windows often emits UTF-8 bytes; decoding with the console
+# code page (cp1252) raises UnicodeDecodeError in subprocess reader threads.
+_MYSQL_SUBPROCESS_TEXT = {
+    "text": True,
+    "encoding": "utf-8",
+    "errors": "replace",
+}
+
+
 # Redirect errors through this to hide annoying password warning
 def fetch_errors(query, result):
-    for line in result.stderr.splitlines():
+    stderr = result.stderr or ""
+    for line in stderr.splitlines():
         # Safe to ignore this warning
         if "Using a password on the command line interface can be insecure" in line:
             continue
@@ -293,10 +306,19 @@ def db_query(query):
             f"-e {query}",
         ],
         capture_output=True,
-        text=True,
+        **_MYSQL_SUBPROCESS_TEXT,
     )
     fetch_errors(query, result)
     return result
+
+
+def is_connection_lost_error(err):
+    errno = getattr(err, "errno", None)
+    if errno in (2006, 2013):
+        return True
+    if isinstance(err, mariadb.InterfaceError):
+        return "server has gone away" in str(err).lower()
+    return False
 
 
 def fetch_credentials():
@@ -385,13 +407,20 @@ def check_protected():
     global import_protected, express_enabled
     if not cur:
         connect()
-    import_protected.clear()
-    for table in player_data:
-        import_protected.append("'" + table[:-4] + "'")
-    cur.execute(
-        f"SELECT TABLE_NAME FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = '{database}' AND `TABLE_NAME` IN ({', '.join(import_protected)})"
+    quoted_tables = ["'" + table[:-4] + "'" for table in player_data]
+    q = (
+        "SELECT TABLE_NAME FROM `information_schema`.`tables` "
+        f"WHERE `TABLE_SCHEMA` = '{database}' AND `TABLE_NAME` IN ({', '.join(quoted_tables)})"
     )
-    tables = cur.fetchall()
+    try:
+        cur.execute(q)
+        tables = cur.fetchall()
+    except (mariadb.InterfaceError, mariadb.Error) as err:
+        if not is_connection_lost_error(err):
+            raise
+        connect()
+        cur.execute(q)
+        tables = cur.fetchall()
     import_protected.clear()
     for value in tables:
         import_protected.append("".join(value) + ".sql")
@@ -506,8 +535,26 @@ def import_file(file):
     _ = db_query(query)
 
 
+def _disconnect_mysql():
+    """Close the connector-managed MariaDB session (best-effort)."""
+    global db, cur
+    if cur is not None:
+        try:
+            cur.close()
+        except Exception:
+            pass
+        cur = None
+    if db is not None:
+        try:
+            db.close()
+        except Exception:
+            pass
+        db = None
+
+
 def connect():
     global db, cur
+    _disconnect_mysql()
     try:
         db = mariadb.connect(
             host=host, user=login, passwd=password, db=database, port=port
@@ -539,7 +586,7 @@ def connect():
                         f"-e {query}",
                     ],
                     capture_output=True,
-                    text=True,
+                    **_MYSQL_SUBPROCESS_TEXT,
                 )
                 fetch_errors(query, result)
                 setup_db()
@@ -556,8 +603,7 @@ def connect():
 def close():
     if db:
         print("Closing connection...")
-        cur.close()
-        db.close()
+    _disconnect_mysql()
     time.sleep(0.5)
     quit()
 
@@ -598,16 +644,19 @@ def backup_db(silent=False, lite=False):
                 outfile_path = f"{server_dir_path}/sql/backups/{database}-{time.strftime('%Y%m%d-%H%M%S')}-{db_ver}.sql"
             else:
                 outfile_path = f"{server_dir_path}/sql/backups/{database}-{time.strftime('%Y%m%d-%H%M%S')}-full.sql"
-        with open(outfile_path, "w") as outfile:
+        with open(outfile_path, "w", encoding="utf-8", errors="replace") as outfile:
             result = subprocess.run(
                 dumpcmd,
                 stdout=outfile,
                 stderr=subprocess.PIPE,
-                text=True,
+                **_MYSQL_SUBPROCESS_TEXT,
             )
             fetch_errors("Dumping database", result)
             print_green("Database saved!")
             time.sleep(0.5)
+            # mysqldump runs outside this connector; the server may close our idle socket.
+            if db is not None:
+                connect()
 
 
 def express_update(silent=False):
@@ -1462,7 +1511,7 @@ def main():
                             f"-e {query}",
                         ],
                         capture_output=True,
-                        text=True,
+                        **_MYSQL_SUBPROCESS_TEXT,
                     )
                     fetch_errors(query, result)
                     fetch_versions()

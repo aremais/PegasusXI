@@ -137,7 +137,8 @@ quest.sections =
                         local limitBreaker    = player:hasKeyItem(xi.ki.LIMIT_BREAKER) and 1 or 2
                         local lastQuestNumber = 4
                         local lastQuestStage  = 1
-                        local itemChosen      = quest:getVar(player, 'itemWanted')
+                        -- Must match QUEST_AVAILABLE: event param is 0-9; DB stores itemWanted as 1-10.
+                        local itemChosen      = quest:getVar(player, 'itemWanted') - 1
                         return quest:event(10045, playerLevel, limitBreaker, lastQuestNumber, lastQuestStage, 0, itemChosen)
                     end
                 end,

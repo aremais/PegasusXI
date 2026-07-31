@@ -23,10 +23,22 @@ xi.settings.search =
     -- Interval is in seconds, default is one hour
     EXPIRE_INTERVAL = 3600,
 
+    -- Max concurrent TCP connections to the search server from one public IP (AH + /sea each use sessions).
+    -- The retail client can open several at once; NAT (many players, one IP) needs a higher value.
+    MAX_CONNECTIONS_PER_IP = 1000,
+
     -- IP address strings in this list won't be subject to 'IPAddressesInUse' rate limiting
     ACCESS_WHITELIST =
     {
         '127.0.0.1',   -- Example, not actually needed
         '192.168.0.1', -- Example, not actually needed
     },
+
+    -- true/false: Enable/disable logging the content of packets being sent to the client (required Debug mode)
+    DEBUG_OUT_PACKETS = false,
+
+    -- Cache AH category browse results in memory to avoid repeating heavy GROUP BY queries.
+    -- TTL is short so listing counts stay reasonably fresh without map-server invalidation.
+    AH_CACHE_ENABLED     = true,
+    AH_CACHE_TTL_SECONDS = 45,
 }

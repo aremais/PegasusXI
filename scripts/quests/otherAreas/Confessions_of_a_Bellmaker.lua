@@ -94,7 +94,10 @@ quest.sections =
             {
                 onTrigger = function(player, npc)
                     if quest:getVar(player, 'Prog') == 0 then
-                        return quest:progressEvent(402)
+                        -- importantOnce: first talk uses Event priority so interaction can alternate with
+                        -- Reinberta.lua (guild master). progressEvent = Progress priority and blocks the
+                        -- guild rank-up cutscene until this quest step is cleared.
+                        return quest:event(402):importantOnce()
                     end
                 end,
             },

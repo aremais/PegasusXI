@@ -30,9 +30,13 @@ zones[xi.zone.SPIRE_OF_VAHZL] =
     },
     mob =
     {
-        AGONIZER                 = GetFirstID('Agonizer'),
-        MEMORY_RECEPTACLE_RED    = GetFirstID('Memory_Receptacle_Red'),
-        MEMORY_RECEPTACLE_SHIELD = GetFirstID('Memory_Receptacle_Shield'),
+        -- Stock mob_spawn_points.sql (zone 23). IDs must match mobid column there; (mobid >> 12) & 0xFFF == 23.
+        -- Do not use GetFirstID here: it logs errors when the DB omits these rows (e.g. partial migration), and `or` does not suppress that.
+        -- First Desires-of-Emptiness row is 16871425 (16871424 has no row — battlefield would spawn a broken "NPC" mob).
+        AGONIZER                 = 16871425,
+        -- Pulling the Plug receptacles (first arena): Red then three shields (see Memory_Receptacle_* scripts +10 per area).
+        MEMORY_RECEPTACLE_RED    = 16871446,
+        MEMORY_RECEPTACLE_SHIELD = 16871447,
     },
     npc =
     {

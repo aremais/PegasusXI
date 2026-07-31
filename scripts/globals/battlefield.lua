@@ -39,7 +39,8 @@ local maxAreas =
             xi.zone.DYNAMIS_JEUNO,
             xi.zone.RIVERNE_SITE_B01,
             xi.zone.GHELSBA_OUTPOST,
-            xi.zone.THE_GARDEN_OF_RUHMET
+            xi.zone.THE_GARDEN_OF_RUHMET,
+            xi.zone.WALK_OF_ECHOES,
         },
     },
 }
@@ -354,6 +355,41 @@ xi.battlefield.id =
     CENTRAL_TEMENOS_4TH_FLOOR                  = 1306, -- Converted
     CENTRAL_TEMENOS_4TH_FLOOR_II               = 1307, -- Converted
     PURPLE_THE_NEW_BLACK                       = 2721, -- Converted
+
+    -- ── High-Tier Mission Battlefields (HTBF) — Avatar Prime Fights ──────────
+    TRIAL_BY_FIRE_HTBF                         = 3000,
+    TRIAL_BY_ICE_HTBF                          = 3001,
+    TRIAL_BY_WIND_HTBF                         = 3002,
+    TRIAL_BY_EARTH_HTBF                        = 3003,
+    TRIAL_BY_LIGHTNING_HTBF                    = 3004,
+    TRIAL_BY_WATER_HTBF                        = 3005,
+    MOONLIT_PATH_HTBF                          = 3006,
+    WAKING_THE_BEAST_HTBF                      = 3007,
+    WAKING_DREAMS_HTBF                         = 3008,
+    DIVINE_INTERFERENCE_HTBF                   = 3009,
+    STYGIAN_PACT_HTBF                          = 3010,
+    CHAMPION_OF_THE_DAWN_HTBF                  = 3011,
+
+    -- ── Macrocosmic Orb II SKCNMs (Rem's Tale Ch.1–5) ────────────────────────
+    AMPHIBIAN_ASSAULT_II                       = 3100,
+    JUNGLE_BOOGYMEN_II                         = 3101,
+    KINDRED_SPIRITS_II                         = 3102,
+    DEMOLITION_SQUAD_II                        = 3103,
+    BROTHERS_DAUPHE_II                         = 3104,
+    LEGION_XI_COMITATENSIS_II                  = 3105,
+    DISMEMBERMENT_BRIGADE_II                   = 3106,
+    DIVINE_PUNISHERS_II                        = 3107,
+    GRIMSHELL_SHOCKTROOPERS_II                 = 3108,
+    -- SKCNM: Macrocosmic Orb battles
+    JUNGLE_BOOGYMEN_II                         = 4000,
+    AMPHIBIAN_ASSAULT_II                       = 4001,
+    KINDRED_SPIRITS_II                         = 4002,
+    DEMOLITION_SQUAD_II                        = 4003,
+    BROTHERS_D_AURPHE_II                       = 4004,
+    LEGION_XI_COMITATENSIS_II                  = 4005,
+    DISMEMBERMENT_BRIGADE_II                   = 4006,
+    DIVINE_PUNISHERS_II                        = 4007,
+    GRIMSHELL_SHOCKTROOPERS_II                 = 4008,
 }
 
 xi.battlefield.itemUses =
@@ -533,7 +569,7 @@ function Battlefield:register()
             utils.append(zoneSection, {
                 [entryNpc] =
                 {
-                    onTrade   = Battlefield.onEntryTrade,
+                    onTrade   = self.onEntryTrade,
                     onTrigger = Battlefield.onEntryTrigger,
                 }
             })
@@ -1336,6 +1372,18 @@ function xi.battlefield.getBattlefieldOptions(player, npc, trade)
     end
 
     return result
+end
+
+-- True while the player is on CoP 5-3 (Three Paths) Ulmia path at the mission-only BCNM step
+-- for that zone: 7 = Head Wind (Boneyard Gully), 8 = Flames for the Dead (Bearclaw Pinnacle).
+-- Optional BCNMs that share the same entrance must return false from entryRequirement so the
+-- registrar menu lists only the mission instance.
+function xi.battlefield.shouldHideOtherBfDuringCopThreePathsUlmiaMissionBf(player, ulmiaMissionBfStatus)
+    if player:getCurrentMission(xi.mission.log_id.COP) ~= xi.mission.id.cop.THREE_PATHS then
+        return false
+    end
+
+    return player:getMissionStatus(xi.mission.log_id.COP, xi.mission.status.COP.ULMIA) == ulmiaMissionBfStatus
 end
 
 function xi.battlefield.rejectLevelSyncedParty(player, npc)

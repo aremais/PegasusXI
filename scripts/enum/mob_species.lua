@@ -492,3 +492,5 @@ xi.mobSpecies =
     MAMMET                 = 483,
     UNCLASSIFIED           = 484,
 }
+
+return xi.mobSpecies

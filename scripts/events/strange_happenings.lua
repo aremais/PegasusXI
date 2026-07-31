@@ -15,7 +15,7 @@ local function getEncounters()
     local ID
 
     ID = zones[xi.zone.ALZADAAL_UNDERSEA_RUINS]
-    if ID then
+    if ID and ID.mob.ALEXANDER and ID.npc.STRANGE_HAPPENINGS_CHEST then
         result[xi.zone.ALZADAAL_UNDERSEA_RUINS] =
         {
             mob     = ID.mob.ALEXANDER,
@@ -25,7 +25,7 @@ local function getEncounters()
     end
 
     ID = zones[xi.zone.RUAUN_GARDENS]
-    if ID then
+    if ID and ID.mob.KIRIN and ID.npc.STRANGE_HAPPENINGS_CHEST then
         result[xi.zone.RUAUN_GARDENS] =
         {
             mob     = ID.mob.KIRIN,
@@ -35,7 +35,7 @@ local function getEncounters()
     end
 
     ID = zones[xi.zone.THE_BOYAHDA_TREE]
-    if ID then
+    if ID and ID.mob.FAFNIR and ID.npc.STRANGE_HAPPENINGS_CHEST then
         result[xi.zone.THE_BOYAHDA_TREE] =
         {
             mob     = ID.mob.FAFNIR,
@@ -66,7 +66,7 @@ xi.events.strangeHappenings.onMobDeath = function(mob)
         return
     end
 
-    local chest = GetNPCByID(enc.chest)
+    local chest = GetEntityByID(enc.chest, nil, true)
     if not chest then
         return
     end
@@ -120,26 +120,36 @@ event:setEnableCheck(function()
 end)
 
 event:setStartFunction(function()
+    if xi.settings.main.ENABLE_STRANGE_HAPPENINGS ~= 1 then
+        return
+    end
+
     for _, enc in pairs(getEncounters()) do
-        local mob = GetMobByID(enc.mob)
-        if mob and not mob:isSpawned() then
-            DisallowRespawn(enc.mob, false)
-            SpawnMob(enc.mob)
+        if enc.mob then
+            local mob = GetEntityByID(enc.mob, nil, true)
+            if mob and not mob:isSpawned() then
+                DisallowRespawn(enc.mob, false)
+                SpawnMob(enc.mob)
+            end
         end
     end
 end)
 
 event:setEndFunction(function()
     for _, enc in pairs(getEncounters()) do
-        local mob = GetMobByID(enc.mob)
-        if mob and mob:isSpawned() then
-            DisallowRespawn(enc.mob, true)
-            DespawnMob(enc.mob)
+        if enc.mob then
+            local mob = GetEntityByID(enc.mob, nil, true)
+            if mob and mob:isSpawned() then
+                DisallowRespawn(enc.mob, true)
+                DespawnMob(enc.mob)
+            end
         end
 
-        local chest = GetNPCByID(enc.chest)
-        if chest and chest:getStatus() == xi.status.NORMAL then
-            removeChest(chest)
+        if enc.chest then
+            local chest = GetEntityByID(enc.chest, nil, true)
+            if chest and chest:getStatus() == xi.status.NORMAL then
+                removeChest(chest)
+            end
         end
     end
 end)
