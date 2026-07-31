@@ -3,6 +3,7 @@ gitpython
 pymysql
 pylint
 pyyaml
+ruamel.yaml
 colorama
 pyzmq
 black

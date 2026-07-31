@@ -25,14 +25,17 @@
 #include "common/cbasetypes.h"
 #include "common/mmo.h"
 #include "common/timer.h"
+#include "entities/entity_id.h"
 #include "los_cache.h"
 #include "packets/basic.h"
 
 #include "data/enums/allegiance.h"
+#include "data/enums/animation.h"
 #include "data/enums/entity_flags.h"
 #include "data/enums/name_vis.h"
 #include "data/enums/spawn_animation.h"
 #include "data/enums/status.h"
+#include "data/enums/zone.h"
 
 #include <map>
 #include <memory>
@@ -51,57 +54,6 @@ enum ENTITYTYPE : uint8
 };
 
 DECLARE_FORMAT_AS_UNDERLYING(ENTITYTYPE);
-
-enum ANIMATIONTYPE : uint8
-{
-    ANIMATION_NONE    = 0,
-    ANIMATION_ATTACK  = 1,
-    ANIMATION_DESPAWN = 2,
-    ANIMATION_DEATH   = 3,
-    ANIMATION_EVENT   = 4,
-    ANIMATION_CHOCOBO = 5,
-    ANIMATION_FISHING = 6,
-    // Healing                      = 7,
-    ANIMATION_OPEN_DOOR     = 8,
-    ANIMATION_CLOSE_DOOR    = 9,
-    ANIMATION_ELEVATOR_UP   = 10,
-    ANIMATION_ELEVATOR_DOWN = 11,
-    // seems to be WALLHACK                     = 28,
-    // seems to be WALLHACK also..              = 31,
-    ANIMATION_HEALING                = 33,
-    ANIMATION_FISHING_FISH_OLD       = 38,
-    ANIMATION_FISHING_CAUGHT_OLD     = 39,
-    ANIMATION_FISHING_ROD_BREAK_OLD  = 40,
-    ANIMATION_FISHING_LINE_BREAK_OLD = 41,
-    ANIMATION_FISHING_MONSTER_OLD    = 42,
-    ANIMATION_FISHING_STOP_OLD       = 43,
-    ANIMATION_SYNTH                  = 44,
-    ANIMATION_SIT                    = 47,
-    ANIMATION_RANGED                 = 48,
-    ANIMATION_FISHING_START_OLD      = 50,
-    ANIMATION_FISHING_START          = 56,
-    ANIMATION_FISHING_FISH           = 57,
-    ANIMATION_FISHING_CAUGHT         = 58,
-    ANIMATION_FISHING_ROD_BREAK      = 59,
-    ANIMATION_FISHING_LINE_BREAK     = 60,
-    ANIMATION_FISHING_MONSTER        = 61,
-    ANIMATION_FISHING_STOP           = 62,
-    // 63 through 72 are used with /sitchair
-    ANIMATION_SITCHAIR_0  = 63,
-    ANIMATION_SITCHAIR_1  = 64,
-    ANIMATION_SITCHAIR_2  = 65,
-    ANIMATION_SITCHAIR_3  = 66,
-    ANIMATION_SITCHAIR_4  = 67,
-    ANIMATION_SITCHAIR_5  = 68,
-    ANIMATION_SITCHAIR_6  = 69,
-    ANIMATION_SITCHAIR_7  = 70,
-    ANIMATION_SITCHAIR_8  = 71,
-    ANIMATION_SITCHAIR_9  = 72,
-    ANIMATION_SITCHAIR_10 = 73,
-    // 74 through 83 sitting on air (guessing future use for more chairs..)
-    ANIMATION_MOUNT = 85,
-    // ANIMATION_TRUST              = 90 // This is the animation for a trust NPC spawning in.
-};
 
 enum MOUNTTYPE : uint8
 {
@@ -161,26 +113,7 @@ enum UPDATETYPE : uint8
     UPDATE_DESPAWN  = 0x20,
 };
 
-// TODO: It is possible to make this structure part of the class, instead of the current ID and Targid, but without the clean() method.
-struct EntityID_t
-{
-    // TODO: Add a constructor that takes an id and targid.
-    // TODO: Clean with a destructor.
-    void clean()
-    {
-        id     = 0;
-        targid = 0;
-    }
-
-    // TODO: Globally rename targid to index, zoneIndex, etc.
-
-    uint32 id;     // "Long" global ID of the entity. Built from 0x10000000 | (zoneId << 16) | targid.
-    uint16 targid; // The "index" of the entity in the current zone. Used for local targeting and referencing.
-
-    // TODO: Store the zoneId of this entity's zone. We can then use the targid (index) and the zoneId to build the global id.
-    // TODO: Store an incremental u64 as a UUID for the entity for disambiguation in the case of dynamic entities that might have the same targid.
-};
-
+class CBaseEntity;
 class CAIContainer;
 class CBattlefield;
 class CInstance;
@@ -189,16 +122,16 @@ class CZone;
 struct location_t
 {
     position_t p;           // Position of entity
-    uint16     destination; // Destination zone while zoning
+    xi::ZoneId destination; // Destination zone while zoning
     CZone*     zone;        // Current zone
-    uint16     prevzone;    // Previous zone (Not used for monsters and NPCs)
+    xi::ZoneId prevzone;    // Previous zone (Not used for monsters and NPCs)
     uint16     boundary;    // A certain area in the zone in which the entity is located (used by characters and transport)
     bool       zoning{};    // Script flag: player must zone before continuing (see CLuaBaseEntity::needToZone)
 
     location_t()
-    : destination(0)
+    : destination(xi::ZoneId::Unknown)
     , zone(nullptr)
-    , prevzone(0)
+    , prevzone(xi::ZoneId::Unknown)
     , boundary(0)
     , zoning(false)
     {
@@ -223,10 +156,10 @@ public:
     virtual const std::string& getName() const; // Internal name of entity
     virtual const std::string& getPacketName(); // Name of entity sent to the client
 
-    uint16        getZone() const; // Current zone
-    float         GetXPos() const; // Position of co-ordinate X
-    float         GetYPos() const; // Position of co-ordinate Y
-    float         GetZPos() const; // Position of co-ordinate Z
+    auto          getZone() const -> xi::ZoneId; // Current zone
+    float         GetXPos() const;               // Position of co-ordinate X
+    float         GetYPos() const;               // Position of co-ordinate Y
+    float         GetZPos() const;               // Position of co-ordinate Z
     uint8         GetRotPos() const;
     uint8         GetSpeed() const;
     virtual uint8 UpdateSpeed(bool run = false);
@@ -261,6 +194,8 @@ public:
 
     bool IsDynamicEntity() const;
 
+    auto           serial() const -> uint64;
+    auto           entityId() const -> EntityId;
     uint32         id;             // global identifier unique on the server
     uint16         targid;         // local identifier unique to the zone
     ENTITYTYPE     objtype;        // Type of entity
@@ -271,7 +206,7 @@ public:
     look_t         look;           //
     look_t         mainlook;       // only used if mob use changeSkin() or player /lockstyle
     location_t     loc;            // Location of entity
-    uint8          animation;      // animation
+    xi::Animation  animation;      // animation
     uint8          animationsub;   // Additional animation parameter
     uint8          baseSpeed;      // base movement speed
     uint8          animationSpeed; // speed of movement animation
@@ -300,6 +235,9 @@ protected:
     uint8                         speed; // speed of movement
 
     LineOfSightCache losCache_;
+
+private:
+    uint64 serial_{ 0 };
 };
 
 #endif // _BASEENTITY_H

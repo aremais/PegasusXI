@@ -28,7 +28,7 @@
 #include "utils/charutils.h"
 #include "utils/zoneutils.h"
 
-CZoneInstance::CZoneInstance(Scheduler& scheduler, MapConfig config, ZONEID ZoneID, REGION_TYPE RegionID, CONTINENT_TYPE ContinentID, uint8 levelRestriction)
+CZoneInstance::CZoneInstance(Scheduler& scheduler, MapConfig config, xi::ZoneId ZoneID, REGION_TYPE RegionID, CONTINENT_TYPE ContinentID, uint8 levelRestriction)
 : CZone(scheduler, config, ZoneID, RegionID, ContinentID, levelRestriction)
 {
     TracyZoneScoped;
@@ -90,6 +90,14 @@ CBaseEntity* CZoneInstance::GetEntity(uint16 targid, uint8 filter)
     return PEntity;
 }
 
+auto CZoneInstance::getInstanceByRunId(uint32 runId) const -> CInstance*
+{
+    TracyZoneScoped;
+
+    const auto it = instancesByRun_.find(runId);
+    return it != instancesByRun_.end() ? it->second : nullptr;
+}
+
 void CZoneInstance::InsertMOB(CBaseEntity* PMob)
 {
     TracyZoneScoped;
@@ -140,7 +148,7 @@ void CZoneInstance::FindPartyForMob(CBaseEntity* PEntity)
     }
 }
 
-void CZoneInstance::TransportDepart(uint16 boundary, uint16 prevZoneId, uint16 transportId)
+void CZoneInstance::TransportDepart(uint16 boundary, xi::ZoneId prevZoneId, uint16 transportId)
 {
     TracyZoneScoped;
 
@@ -209,11 +217,6 @@ void CZoneInstance::IncreaseZoneCounter(CCharEntity* PChar)
 
     if (PChar->PInstance)
     {
-        if (!zoneTimerToken_.has_value())
-        {
-            createZoneTimers();
-        }
-
         PChar->targid = PChar->PInstance->GetNewCharTargID();
 
         if (PChar->targid >= 0x700)
@@ -246,7 +249,7 @@ void CZoneInstance::IncreaseZoneCounter(CCharEntity* PChar)
                         .c_str());
 
         // instance no longer exists: put them outside (at exit)
-        uint16 zoneid = luautils::OnInstanceLoadFailed(this);
+        auto zoneid = luautils::OnInstanceLoadFailed(this);
 
         CZone* PZone = zoneutils::GetZone(zoneid);
         // At this stage, can only send the player to a zone on this map server
@@ -412,6 +415,8 @@ auto CZoneInstance::ZoneServer(timer::time_point tick) -> Task<void>
     for (const auto& PInstance : instancesToRemove)
     {
         ShowDebug("[CZoneInstance] ZoneServer cleaned up Instance %s", PInstance->GetName());
+
+        instancesByRun_.erase(PInstance->runId());
 
         m_InstanceList.erase(
             std::find_if(
@@ -592,5 +597,9 @@ CInstance* CZoneInstance::CreateInstance(uint32 instanceid)
     TracyZoneScoped;
 
     m_InstanceList.emplace_back(std::make_unique<CInstance>(scheduler_, config_, this, instanceid));
-    return m_InstanceList.back().get();
+
+    auto* PInstance = m_InstanceList.back().get();
+    instancesByRun_.emplace(PInstance->runId(), PInstance);
+
+    return PInstance;
 }

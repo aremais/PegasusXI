@@ -213,6 +213,7 @@ xi.mobFamily =
     STATUE              = 205,
     ULTIMA              = 206,
     UNCLASSIFIED        = 207,
+    MAMMET              = 208,
 }
 
 return xi.mobFamily
