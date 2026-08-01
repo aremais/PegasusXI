@@ -1,0 +1,181 @@
+name: Sync base into Test
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-base-to-test
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout Test branch
+        uses: actions/checkout@v6
+        with:
+          ref: Test
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch base
+        run: git fetch origin base
+
+      - name: Build list of changes being merged
+        id: changelist
+        run: |
+          $commitCount = (git rev-list --count Test..origin/base)
+          Write-Host "Commits on base not yet in Test: $commitCount"
+
+          if ($commitCount -eq "0") {
+            Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "## Sync base -> Test`n`nTest is already up to date with base. Nothing to merge."
+            echo "has_changes=false" >> $env:GITHUB_OUTPUT
+            exit 0
+          }
+
+          echo "has_changes=true" >> $env:GITHUB_OUTPUT
+
+          $commits = git log Test..origin/base --pretty=format:"- %h %s (%an)"
+          $files = git diff --name-status Test..origin/base
+
+          $summary = @()
+          $summary += "## Sync base -> Test"
+          $summary += ""
+          $summary += "$commitCount commit(s) being merged from ``base`` into ``Test``:"
+          $summary += ""
+          $summary += $commits
+          $summary += ""
+          $summary += "### Files changed"
+          $summary += ""
+          $summary += '```'
+          $summary += $files
+          $summary += '```'
+
+          $summaryText = $summary -join "`n"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summaryText
+
+          # Stash the plain-text version outside the working tree for the commit message step
+          $summaryText | Out-File -FilePath "$env:RUNNER_TEMP\changelist.txt" -Encoding utf8
+
+      - name: Merge base into Test, preserve Test overrides
+        if: steps.changelist.outputs.has_changes == 'true'
+        run: |
+          git checkout Test
+
+          Write-Host "Conflict strategy: keep Test branch version for settings/ and workflow files"
+
+          git merge origin/base --no-commit --no-ff
+          $mergeExit = $LASTEXITCODE
+          Write-Host "Merge exit code: $mergeExit"
+
+          Write-Host "Restoring Test version of settings/ and settings/default/"
+          git restore --source=HEAD --staged --worktree -- settings settings/default 2>$null
+          $global:LASTEXITCODE = 0
+
+          Write-Host "Auto-preserving conflicted workflow files from Test"
+          $workflowConflicts = @(git diff --name-only --diff-filter=U -- .github/workflows)
+
+          if ($workflowConflicts.Count -gt 0) {
+            foreach ($file in $workflowConflicts) {
+              Write-Host "Keeping Test version of workflow file: $file"
+              git checkout --ours -- "$file"
+              git add "$file"
+            }
+          }
+
+          Write-Host "Removing any staged workflow-file changes before commit"
+          $workflowChanges = @(git diff --name-only --cached -- .github/workflows)
+
+          if ($workflowChanges.Count -gt 0) {
+            foreach ($file in $workflowChanges) {
+              Write-Host "Reverting staged workflow file: $file"
+
+              git show "HEAD:$file" > $null 2>&1
+
+              if ($LASTEXITCODE -eq 0) {
+                git checkout HEAD -- "$file"
+              } else {
+                git rm --cached --force -- "$file" 2>$null
+
+                if (Test-Path $file) {
+                  Remove-Item -Force "$file"
+                }
+              }
+
+              $global:LASTEXITCODE = 0
+            }
+          }
+
+          $stillWorkflowChanges = @(git diff --name-only --cached -- .github/workflows)
+
+          if ($stillWorkflowChanges.Count -gt 0) {
+            Write-Host "Workflow files still staged:"
+            $stillWorkflowChanges | ForEach-Object { Write-Host " - $_" }
+            throw "Workflow file changes are still staged. Stopping before push."
+          }
+
+          $remainingConflicts = @(git diff --name-only --diff-filter=U)
+
+          if ($remainingConflicts.Count -gt 0) {
+            Write-Host "Remaining conflicts detected. Keeping Test branch version for all:"
+            $remainingConflicts | ForEach-Object { Write-Host " - $_" }
+
+            foreach ($file in $remainingConflicts) {
+              Write-Host "Keeping Test version of $file"
+
+              git checkout --ours -- "$file" 2>$null
+
+              if ($LASTEXITCODE -eq 0) {
+                git add "$file"
+              } else {
+                Write-Host "Test branch does not have $file, keeping it deleted."
+
+                git rm --cached --force -- "$file" 2>$null
+
+                if (Test-Path $file) {
+                  Remove-Item -Force "$file"
+                }
+
+                $global:LASTEXITCODE = 0
+              }
+            }
+          }
+
+          $stillConflicted = @(git diff --name-only --diff-filter=U)
+
+          if ($stillConflicted.Count -gt 0) {
+            Write-Host "Unresolved conflicts still remain:"
+            $stillConflicted | ForEach-Object { Write-Host " - $_" }
+            throw "Unable to fully resolve merge conflicts."
+          }
+
+          git diff --cached --quiet
+
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "No changes to commit after preserving Test overrides."
+            exit 0
+          }
+
+          git status --short
+
+          $commitBody = ""
+          if (Test-Path "$env:RUNNER_TEMP\changelist.txt") {
+            $commitBody = Get-Content "$env:RUNNER_TEMP\changelist.txt" -Raw
+          }
+
+          $commitMessage = "Sync base into Test`n`n$commitBody"
+          $commitMessage | git commit -F -
+
+          git push origin Test
