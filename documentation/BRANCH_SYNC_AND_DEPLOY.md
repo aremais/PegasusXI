@@ -59,12 +59,145 @@ Path: https://github.com/aremais/PegasusXI/actions/workflows/sync-upstream-to-te
 
 ### 3. Register self-hosted runners
 
-Deploy workflows run on machines labeled `self-hosted`:
+Deploy workflows use `runs-on: self-hosted`, so each game server needs a GitHub Actions runner app installed and online.
+
+You need **admin access** to https://github.com/aremais/PegasusXI and **Administrator** PowerShell on each Windows server.
+
+#### 3a. Prerequisites on each Windows server
+
+Install these first (if missing):
+
+1. **Git for Windows** — https://git-scm.com/download/win
+2. **CMake** (added to PATH) — needed for the Deploy build steps
+3. **Visual Studio Build Tools** or Visual Studio with **Desktop development with C++** (for `cmake -A x64`)
+4. Outbound HTTPS access to `github.com`
+
+Create a folder for the runner app (recommended):
+
+```powershell
+mkdir C:\actions-runner
+```
+
+#### 3b. Create the runner registration in GitHub
+
+Do this once per machine (BetaTest, then Live):
 
 1. Open https://github.com/aremais/PegasusXI/settings/actions/runners
-2. Install a runner on the **BetaTest** Windows server
-3. Install a runner on the **Live** Windows server (or one runner if both servers share a host and you use different repo paths)
-4. Leave the default `self-hosted` label enabled
+2. Click **New self-hosted runner**
+3. Choose:
+   - **Operating system:** Windows
+   - **Architecture:** x64
+4. GitHub will show download + config commands with a **one-hour token**
+5. Keep that page open while you configure the server (token expires in 1 hour)
+
+#### 3c. Install on the BetaTest Windows server
+
+On the **BetaTest** machine, open **PowerShell as Administrator**.
+
+**Important:** On the GitHub “New self-hosted runner” page, copy the **Download** and **Extract** commands exactly (the version number changes over time). They look like this:
+
+```powershell
+cd C:\actions-runner
+
+# Example only — prefer the commands GitHub shows you:
+# Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/vX.XXX.X/actions-runner-win-x64-X.XXX.X.zip -OutFile actions-runner-win-x64-X.XXX.X.zip
+# Add-Type -AssemblyName System.IO.Compression.FileSystem
+# [System.IO.Compression.ZipFile]::ExtractToDirectory("$PWD\actions-runner-win-x64-X.XXX.X.zip", "$PWD")
+```
+
+Then configure and register it. GitHub also shows this command with a real token already filled in — paste that whole line:
+
+```powershell
+./config.cmd --url https://github.com/aremais/PegasusXI --token PASTE_TOKEN_HERE
+```
+
+When prompted, use answers like this:
+
+| Prompt | Recommended answer |
+|--------|--------------------|
+| Runner group | press Enter (default) |
+| Runner name | `betatest-server` |
+| Additional labels | optional: `betatest` (not required) |
+| Work folder | press Enter (`_work`) |
+| Run as service? | `Y` (yes — so it survives reboots) |
+| User account for service | press Enter (default) |
+
+Start it:
+
+```powershell
+# If installed as a service:
+./svc.cmd install
+./svc.cmd start
+
+# Or run interactively in a window (not recommended for production):
+./run.cmd
+```
+
+Confirm in GitHub:
+
+1. Refresh https://github.com/aremais/PegasusXI/settings/actions/runners
+2. You should see `betatest-server` with status **Idle** (green)
+3. Labels should include `self-hosted`, `Windows`, `X64` — leave those enabled
+
+#### 3d. Install on the Live Windows server
+
+Repeat the same process on the **Live** machine, but use a different runner name:
+
+```powershell
+mkdir C:\actions-runner
+cd C:\actions-runner
+
+# Download + extract using the commands from a NEW "New self-hosted runner" page
+# (get a fresh token — each machine needs its own)
+
+./config.cmd --url https://github.com/aremais/PegasusXI --token PASTE_NEW_TOKEN_HERE
+```
+
+| Prompt | Recommended answer |
+|--------|--------------------|
+| Runner name | `live-server` |
+| Additional labels | optional: `live` |
+| Run as service? | `Y` |
+
+Then:
+
+```powershell
+./svc.cmd install
+./svc.cmd start
+```
+
+Confirm `live-server` shows **Idle** on the runners page.
+
+#### 3e. One physical host for both Test and Live? (optional)
+
+If BetaTest and Live share the **same Windows machine** but different folders (`D:\server-test` and `D:\server`):
+
+1. Install **one** runner is enough for both Deploy workflows
+2. Name it something like `game-host`
+3. Keep the default `self-hosted` label
+4. When you run each Deploy workflow, set `repo_path`:
+   - Deploy Test → `D:\server-test`
+   - Deploy Live → `D:\server`
+
+Only install two runners if they are **two different machines**.
+
+#### 3f. Quick verification checklist
+
+- [ ] https://github.com/aremais/PegasusXI/settings/actions/runners shows runner(s) **Idle**
+- [ ] Each runner has the `self-hosted` label
+- [ ] Runner service is set to **Automatic** start in Windows Services (`actions.runner.*`)
+- [ ] Game repo folders exist (next section) before you run Deploy workflows
+
+Useful service commands on the server:
+
+```powershell
+cd C:\actions-runner
+./svc.cmd status
+./svc.cmd stop
+./svc.cmd start
+```
+
+> Security note: self-hosted runners should only be used with this private repo. Do not enable them for untrusted forks/PRs.
 
 ### 4. Clone the repo on each game server
 
