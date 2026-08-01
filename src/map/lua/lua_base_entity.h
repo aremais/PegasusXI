@@ -178,13 +178,13 @@ public:
     void setWeather(Weather weatherType); // Set Weather condition (GM COMMAND)
 
     // PC Instructions
-    void changeMusic(MusicSlot slotId, uint16 trackId) const;                             // Sets the specified music Track for specified music block.
-    void sendMenu(uint32 menu);                                                           // Displays a menu (AH,Raise,Tractor,MH etc)
-    auto sendGuild(uint16 guildId, uint8 open, uint8 close, uint8 holiday) const -> bool; // Sends guild shop menu
+    void changeMusic(MusicSlot slotId, uint16 trackId) const;                                                      // Sets the specified music Track for specified music block.
+    void sendMenu(uint32 menu);                                                                                    // Displays a menu (AH,Raise,Tractor,MH etc)
+    auto sendGuild(uint16 guildId, uint8 open, uint8 close, uint8 holiday) const -> bool;                          // Sends guild shop menu
     auto openGuildShop(CLuaBaseEntity* PNpc, uint8 open, uint8 close, sol::optional<uint8> holiday) const -> bool; // Opens a lua guild shop and remembers the NPC
-    void clearGuildShop() const;                                                          // Clears the PC's open guild shop handle
-    void sendGuildClose(uint8 open, uint8 close, sol::optional<bool> passive) const;      // Sends the guild-open packet with a Close status
-    void openSendBox() const;                                                             // Opens send box (to deliver items)
+    void clearGuildShop() const;                                                                                   // Clears the PC's open guild shop handle
+    void sendGuildClose(uint8 open, uint8 close, sol::optional<bool> passive) const;                               // Sends the guild-open packet with a Close status
+    void openSendBox() const;                                                                                      // Opens send box (to deliver items)
     void leaveGame();
     void sendEmote(const CLuaBaseEntity* target, uint8 emID, uint8 emMode, bool othersOnly) const;
 
@@ -264,8 +264,8 @@ public:
     bool   delContainerItems(const sol::object& containerID);
     bool   addUsedItem(uint16 itemID);
     bool   addTempItem(uint16 itemID, const sol::object& arg1);
-    uint8  getWornUses(uint16 itemID);                      // Check if the item is already worn
-    uint8  incrementItemWear(uint16 itemID);               // Increment the item's worn value and returns it
+    uint8  getWornUses(uint16 itemID);                                     // Check if the item is already worn
+    uint8  incrementItemWear(uint16 itemID);                               // Increment the item's worn value and returns it
     auto   findItem(uint16 itemID, const sol::object& location) -> CItem*; // Like hasItem, but returns the item object (nil if not found)
     auto   findItems(uint16 itemID, const sol::object& location) -> sol::table;
     auto   getItems(const sol::object& location) -> sol::table;
