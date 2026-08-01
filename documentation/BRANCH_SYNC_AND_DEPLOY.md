@@ -108,7 +108,7 @@ cd C:\actions-runner
 Then configure and register it. GitHub also shows this command with a real token already filled in — paste that whole line:
 
 ```powershell
-./config.cmd --url https://github.com/aremais/PegasusXI --token PASTE_TOKEN_HERE
+.\config.cmd --url https://github.com/aremais/PegasusXI --token PASTE_TOKEN_HERE
 ```
 
 When prompted, use answers like this:
@@ -122,16 +122,35 @@ When prompted, use answers like this:
 | Run as service? | `Y` (yes — so it survives reboots) |
 | User account for service | press Enter (default) |
 
-Start it:
+**Only after `config.cmd` finishes successfully**, start the runner.
+
+First confirm the files exist:
 
 ```powershell
-# If installed as a service:
-./svc.cmd install
-./svc.cmd start
-
-# Or run interactively in a window (not recommended for production):
-./run.cmd
+cd C:\actions-runner
+dir *.cmd
 ```
+
+You should see at least `config.cmd`, `run.cmd`, and `svc.cmd`.
+
+Then start it (use `.\` in PowerShell):
+
+```powershell
+# Preferred: Windows service (survives reboot)
+.\svc.cmd install
+.\svc.cmd start
+
+# Or run interactively in this window (stops when you close PowerShell):
+.\run.cmd
+```
+
+If `config.cmd` already asked “Run runner as a service?” and you answered **Y**, the service may already be installed — just run:
+
+```powershell
+.\svc.cmd start
+```
+
+If `.\svc.cmd` is still “not recognized”, `config.cmd` was not completed or files were extracted to a different folder. Re-run the GitHub download/extract commands, then `.\config.cmd` again with a fresh token.
 
 Confirm in GitHub:
 
@@ -162,8 +181,8 @@ cd C:\actions-runner
 Then:
 
 ```powershell
-./svc.cmd install
-./svc.cmd start
+.\svc.cmd install
+.\svc.cmd start
 ```
 
 Confirm `live-server` shows **Idle** on the runners page.
@@ -192,9 +211,9 @@ Useful service commands on the server:
 
 ```powershell
 cd C:\actions-runner
-./svc.cmd status
-./svc.cmd stop
-./svc.cmd start
+.\svc.cmd status
+.\svc.cmd stop
+.\svc.cmd start
 ```
 
 > Security note: self-hosted runners should only be used with this private repo. Do not enable them for untrusted forks/PRs.
