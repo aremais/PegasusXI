@@ -238,6 +238,8 @@ struct Pet_t
     int8 light_sleep_res_rank;
     int8 dark_sleep_res_rank;
     int8 blind_res_rank;
+    int8 stun_res_rank;
+    int8 gravity_res_rank;
 
     Pet_t()
     : PetID(0)
@@ -250,8 +252,8 @@ struct Pet_t
     , mJob(0)
     , sJob(0)
     , m_Element(0)
-    , HPscale(0.f)
-    , MPscale(0.f)
+    , HPscale(1.f)
+    , MPscale(1.f)
     , cmbDelay(0)
     , dmgMult(100)
     , m_dmgType(DAMAGE_TYPE::NONE)
@@ -299,6 +301,8 @@ struct Pet_t
     , light_sleep_res_rank(0)
     , dark_sleep_res_rank(0)
     , blind_res_rank(0)
+    , stun_res_rank(0)
+    , gravity_res_rank(0)
     {
     }
 };

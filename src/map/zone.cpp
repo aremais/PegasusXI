@@ -74,7 +74,7 @@ constexpr std::uint16_t WeatherCycle = 2160;
 
 #include <map/ximesh/ximesh.h>
 
-CZone::CZone(Scheduler& scheduler, MapConfig config, ZONEID ZoneID, REGION_TYPE RegionID, CONTINENT_TYPE ContinentID, uint8 levelRestriction)
+CZone::CZone(Scheduler& scheduler, MapConfig config, xi::ZoneId ZoneID, REGION_TYPE RegionID, CONTINENT_TYPE ContinentID, uint8 levelRestriction)
 : scheduler_(scheduler)
 , config_(config)
 , navMesh_{ std::make_unique<NullNavMesh>() }
@@ -99,20 +99,6 @@ CZone::CZone(Scheduler& scheduler, MapConfig config, ZONEID ZoneID, REGION_TYPE 
 
     LoadZoneLines();
     LoadZoneWeather();
-
-    if (config_.isTestServer)
-    {
-        return;
-    }
-
-    // This must run continually, regardless of if the zone is awake
-    spawnHandlerTimerToken_ = scheduler.intervalOnMainThread(
-        kSpawnHandlerInterval,
-        [this]() -> Task<void>
-        {
-            this->spawnHandler().Tick(timer::now());
-            co_return;
-        });
 }
 
 CZone::~CZone()
@@ -137,7 +123,7 @@ CZone::~CZone()
     m_zoneLineList.clear();
 }
 
-auto CZone::GetID() const -> ZONEID
+auto CZone::GetID() const -> xi::ZoneId
 {
     return m_zoneID;
 }
@@ -371,11 +357,11 @@ void CZone::LoadZoneLines()
         auto* zl = new zoneLine_t;
 
         zl->zoneLineId              = rset->get<uint32>("zonelineid");
-        zl->originZoneId            = rset->get<ZONEID>("from_zone");
+        zl->originZoneId            = rset->get<xi::ZoneId>("from_zone");
         zl->originPos.x             = rset->get<float>("from_pos_x");
         zl->originPos.y             = rset->get<float>("from_pos_y");
         zl->originPos.z             = rset->get<float>("from_pos_z");
-        zl->destinationZoneId       = rset->get<ZONEID>("to_zone");
+        zl->destinationZoneId       = rset->get<xi::ZoneId>("to_zone");
         zl->destinationPos.x        = rset->get<float>("to_pos_x");
         zl->destinationPos.y        = rset->get<float>("to_pos_y");
         zl->destinationPos.z        = rset->get<float>("to_pos_z");
@@ -455,10 +441,10 @@ void CZone::LoadZoneSettings()
         m_zoneIP   = str2ip(rset->get<std::string>("zoneip"));
         m_zonePort = rset->get<uint16>("zoneport");
 
-        m_zoneMusic.m_songDay   = rset->get<uint8>("music_day");
-        m_zoneMusic.m_songNight = rset->get<uint8>("music_night");
-        m_zoneMusic.m_bSongS    = rset->get<uint8>("battlesolo");
-        m_zoneMusic.m_bSongM    = rset->get<uint8>("battlemulti");
+        m_zoneMusic.m_songDay   = rset->get<uint16>("music_day");
+        m_zoneMusic.m_songNight = rset->get<uint16>("music_night");
+        m_zoneMusic.m_bSongS    = rset->get<uint16>("battlesolo");
+        m_zoneMusic.m_bSongM    = rset->get<uint16>("battlemulti");
         m_tax                   = static_cast<uint16>(rset->get<float>("tax") * 100); // tax for bazaar
         m_miscMask              = rset->get<xi::ZoneMisc>("misc");
         m_zoneType              = rset->get<xi::ZoneType>("zonetype");
@@ -641,7 +627,7 @@ void CZone::onEntityMoved(CBaseEntity* PEntity)
     m_zoneEntities->onEntityMoved(PEntity);
 }
 
-void CZone::TransportDepart(uint16 boundary, uint16 prevZoneId, uint16 transportId)
+void CZone::TransportDepart(const uint16 boundary, const xi::ZoneId prevZoneId, const uint16 transportId)
 {
     m_zoneEntities->TransportDepart(boundary, prevZoneId, transportId);
 }
@@ -770,32 +756,9 @@ void CZone::UpdateWeather()
         });
 }
 
-bool CZone::CheckMobsPathedBack()
-{
-    bool allMobsHomeAndHealed = true;
-    if (m_zoneEntities && m_zoneEntities->GetMobList().size() > 0)
-    {
-        const auto& mobListMap = m_zoneEntities->GetMobList();
-        for (const auto& pair : mobListMap)
-        {
-            CMobEntity* mob = dynamic_cast<CMobEntity*>(pair.second);
-            // if the mob is (not dead/despawned AND it is not fully healed) OR it is pathing home
-            if (mob && ((!mob->isDead() && !mob->isFullyHealed()) || mob->m_IsPathingHome))
-            {
-                // at least one mob is away from home or not fully healed
-                allMobsHomeAndHealed = false;
-                break;
-            }
-        }
-    }
-
-    return allMobsHomeAndHealed;
-}
-
 /************************************************************************
  *                                                                       *
- *  Remove a character from the zone. If ZoneServer and character are    *
- *  online, and there is no more left in the zone, then stop zone        *
+ *  Remove a character from the zone.                                     *
  *                                                                       *
  ************************************************************************/
 
@@ -805,11 +768,7 @@ void CZone::DecreaseZoneCounter(CCharEntity* PChar)
 
     m_zoneEntities->DecreaseZoneCounter(PChar);
 
-    if (m_zoneEntities->CharListEmpty())
-    {
-        m_timeZoneEmpty = timer::now();
-    }
-    else
+    if (!m_zoneEntities->CharListEmpty())
     {
         m_zoneEntities->DespawnPC(PChar);
     }
@@ -819,7 +778,7 @@ void CZone::DecreaseZoneCounter(CCharEntity* PChar)
 
 /************************************************************************
  *                                                                       *
- *  Add a character to the zone. If zone isn't running, then load zone.  *
+ *  Add a character to the zone.                                         *
  *  Be sure to check the number of characters in the zone.               *
  *  The maximum number of characters in one zone is 768                  *
  *                                                                       *
@@ -844,11 +803,6 @@ void CZone::IncreaseZoneCounter(CCharEntity* PChar)
     }
 
     m_zoneEntities->InsertPC(PChar);
-
-    if (!zoneTimerToken_.has_value() && !m_zoneEntities->CharListEmpty())
-    {
-        createZoneTimers();
-    }
 
     PChar->StatusEffectContainer->DelStatusEffectsByFlag(xi::StatusEffectFlag::OnZonePathos, EffectNotice::Silent);
 
@@ -964,12 +918,6 @@ auto CZone::ZoneServer(timer::time_point tick) -> Task<void>
         m_BattlefieldHandler->HandleBattlefields(tick);
     }
 
-    if (zoneTimerToken_.has_value() && m_zoneEntities->CharListEmpty() && m_timeZoneEmpty + 5s < timer::now() && CheckMobsPathedBack())
-    {
-        zoneTimerToken_.reset();
-        zoneTimerTriggerAreasToken_.reset();
-    }
-
     co_return;
 }
 
@@ -1061,11 +1009,19 @@ void CZone::createZoneTimers()
 {
     TracyZoneScoped;
 
-    // We'll manually tick on while testing, don't install the timers
+    // We'll manually tick while testing, don't install the timers.
     if (config_.isTestServer)
     {
         return;
     }
+
+    spawnHandlerTimerToken_ = scheduler_.intervalOnMainThread(
+        kSpawnHandlerInterval,
+        [this]() -> Task<void>
+        {
+            this->spawnHandler().Tick(timer::now());
+            co_return;
+        });
 
     zoneTimerToken_ = scheduler_.intervalOnMainThread(
         kLogicUpdateInterval,
@@ -1087,12 +1043,12 @@ void CZone::CharZoneIn(CCharEntity* PChar)
     TracyZoneScoped;
 
     PChar->loc.zone        = this;
-    PChar->loc.destination = 0;
+    PChar->loc.destination = xi::ZoneId::Unknown;
     PChar->clearTriggerAreas();
 
     if (PChar->isMounted() && !CanUseMisc(xi::ZoneMisc::Mount))
     {
-        PChar->animation = ANIMATION_NONE;
+        PChar->animation = xi::Animation::None;
         PChar->StatusEffectContainer->DelStatusEffectSilent(xi::StatusEffect::Mounted);
     }
 
@@ -1181,7 +1137,8 @@ void CZone::CharZoneIn(CCharEntity* PChar)
     }
 
     // Mark current zone as visited
-    PChar->m_ZonesVisitedList[PChar->getZone() >> 3] |= (1 << (PChar->getZone() % 8));
+    const auto visitedZone = static_cast<uint16>(PChar->getZone());
+    PChar->m_ZonesVisitedList[visitedZone >> 3] |= (1 << (visitedZone % 8));
 
     monstrosity::HandleZoneIn(PChar);
 
@@ -1300,11 +1257,6 @@ void CZone::CharZoneOut(CCharEntity* PChar)
     }
 
     charutils::WriteHistory(PChar);
-}
-
-bool CZone::IsZoneActive() const
-{
-    return zoneTimerToken_.has_value();
 }
 
 CZoneEntities* CZone::GetZoneEntities()

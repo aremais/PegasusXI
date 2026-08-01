@@ -60,10 +60,20 @@ m:addOverride('xi.actions.weaponskills.sniper_shot.onUseWeaponSkill', function(p
     local effectId      = xi.effect.INT_DOWN
     local actionElement = xi.element.FIRE
     local power         = 10
-    local skillType     = xi.skill.MARKSMANSHIP
-    local resist        = xi.combat.magicHitRate.calculateResistRate(player, target, 0, skillType, 0, actionElement, 0, effectId, 0)
-    local duration      = math.floor(140 * resist)
-    xi.weaponskills.handleWeaponskillEffect(player, target, effectId, actionElement, damage, power, duration)
+    local maccParams    =
+    {
+        effectId       = effectId,
+        magicalElement = actionElement,
+        skillType      = xi.skill.MARKSMANSHIP,
+    }
+
+    local resistanceRate = xi.combat.magicHitRate.calculateResistRate(player, target, maccParams)
+
+    if xi.data.statusEffect.isResistRateSuccessfull(effectId, resistanceRate, 0) then
+        local duration = math.floor(140 * resistanceRate)
+
+        xi.weaponskills.handleWeaponskillEffect(player, target, effectId, actionElement, damage, power, duration)
+    end
 
     return tpHits, extraHits, criticalHit, damage
 end)
@@ -138,9 +148,11 @@ m:addOverride('xi.actions.weaponskills.coronach.onUseWeaponSkill', function(play
     params.overrideVE          = 240
     params.rangedAccuracyBonus = 100
 
-    xi.aftermath.addStatusEffect(player, tp, xi.slot.MAIN, xi.aftermath.type.RELIC)
-
     local damage, criticalHit, tpHits, extraHits = xi.weaponskills.doRangedWeaponskill(player, target, wsID, params, tp, action, primary)
+
+    -- Apply aftermath
+    xi.aftermath.addStatusEffect(player, tp, xi.slot.RANGED, xi.aftermath.type.RELIC)
+
     return tpHits, extraHits, criticalHit, damage
 end)
 
@@ -156,7 +168,8 @@ m:addOverride('xi.actions.weaponskills.trueflight.onUseWeaponSkill', function(pl
     params.includemab = true
     params.dStat      = xi.mod.AGI
 
-    xi.aftermath.addStatusEffect(player, tp, xi.slot.MAIN, xi.aftermath.type.MYTHIC)
+    -- Apply aftermath
+    xi.aftermath.addStatusEffect(player, tp, xi.slot.RANGED, xi.aftermath.type.MYTHIC)
 
     local damage, criticalHit, tpHits, extraHits = xi.weaponskills.doMagicWeaponskill(player, target, wsID, params, tp, action, primary)
     return tpHits, extraHits, criticalHit, damage
@@ -174,7 +187,8 @@ m:addOverride('xi.actions.weaponskills.leaden_salute.onUseWeaponSkill', function
     params.includemab = true
     params.dStat      = xi.mod.AGI
 
-    xi.aftermath.addStatusEffect(player, tp, xi.slot.MAIN, xi.aftermath.type.MYTHIC)
+    -- Apply aftermath
+    xi.aftermath.addStatusEffect(player, tp, xi.slot.RANGED, xi.aftermath.type.MYTHIC)
 
     local damage, criticalHit, tpHits, extraHits = xi.weaponskills.doMagicWeaponskill(player, target, wsID, params, tp, action, primary)
     return tpHits, extraHits, criticalHit, damage

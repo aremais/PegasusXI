@@ -23,10 +23,7 @@ if not xi.module.isContentEnabled('ROV') then
     -- Stoneskin onEffectGain: Add defense buff when displayed as RAMPART
     m:addOverride('xi.effects.stoneskin.onEffectGain', function(target, effect)
         if effect:getIcon() == xi.effect.RAMPART then
-            effect:addMod(xi.mod.STONESKIN, effect:getSubPower())
             effect:addMod(xi.mod.DEF, effect:getPower())
-        else
-            effect:addMod(xi.mod.STONESKIN, effect:getPower())
         end
     end)
 end
@@ -98,7 +95,15 @@ if not xi.module.isContentEnabled('ABYSSEA') then
             not xi.data.statusEffect.isTargetResistant(player, target, xi.effect.STUN) and
             not xi.data.statusEffect.isEffectNullified(target, xi.effect.STUN, 0)
         then
-            local resistanceRate = xi.combat.magicHitRate.calculateResistRate(player, target, 0, 0, xi.skillRank.A_PLUS, xi.element.THUNDER, xi.mod.INT, xi.effect.STUN, 0)
+            local maccParams =
+            {
+                effectId       = xi.effect.STUN,
+                magicalElement = xi.element.THUNDER,
+                skillRank      = xi.skillRank.A_PLUS,
+                actorStat      = xi.mod.INT,
+            }
+
+            local resistanceRate = xi.combat.magicHitRate.calculateResistRate(player, target, maccParams)
             if xi.data.statusEffect.isResistRateSuccessfull(xi.effect.STUN, resistanceRate, 0) then
                 target:addStatusEffect(xi.effect.STUN, { power = 1, duration = math.randomInt(2, 8) * resistanceRate, origin = player })
             end

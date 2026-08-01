@@ -24,12 +24,12 @@
 #include "instance_loader.h"
 #include "zone_instance.h"
 
+#include "data/enums/mob_mod.h"
 #include "entities/mob_entity.h"
 #include "entities/npc_entity.h"
 #include "instance.h"
 #include "items/item_weapon.h"
 #include "lua/luautils.h"
-#include "mob_modifier.h"
 #include "mob_spell_list.h"
 
 #include "utils/instanceutils.h"
@@ -70,22 +70,19 @@ auto CInstanceLoader::LoadInstance() const -> CInstance*
     auto rset = db::preparedStmt("SELECT mobname, mobid, pos_rot, pos_x, pos_y, pos_z, "
                                  "respawntime, spawntype, dropid, mob_groups.HP, mob_groups.MP, minLevel, maxLevel, "
                                  "modelid, mJob, sJob, cmbSkill, cmbDmgMult, cmbDelay, behavior, links, mobType, immunity, "
-                                 "ecosystemID, speed, "
-                                 "STR, DEX, VIT, AGI, `INT`, MND, CHR, EVA, DEF, ATT, ACC, "
                                  "slash_sdt, pierce_sdt, h2h_sdt, impact_sdt, "
                                  "magical_sdt, fire_sdt, ice_sdt, wind_sdt, earth_sdt, lightning_sdt, water_sdt, light_sdt, dark_sdt, "
                                  "fire_res_rank, ice_res_rank, wind_res_rank, earth_res_rank, lightning_res_rank, water_res_rank, light_res_rank, dark_res_rank, "
-                                 "paralyze_res_rank, bind_res_rank, silence_res_rank, slow_res_rank, poison_res_rank, light_sleep_res_rank, dark_sleep_res_rank, blind_res_rank, "
-                                 "Element, mob_pools.speciesid, name_prefix, entityFlags, animationsub, "
-                                 "(mob_species_system.HP / 100) AS hp_scale, (mob_species_system.MP / 100) AS mp_scale, hasSpellScript, spellList, mob_groups.poolid, "
-                                 "allegiance, namevis, aggro, mob_pools.roamflag, mob_pools.skill_list_id, mob_pools.true_detection, detects, "
-                                 "mob_species_system.charmable, mob_pools.modelSize, mob_pools.modelHitboxSize "
+                                 "paralyze_res_rank, bind_res_rank, silence_res_rank, slow_res_rank, poison_res_rank, light_sleep_res_rank, dark_sleep_res_rank, blind_res_rank, stun_res_rank, gravity_res_rank, "
+                                 "mob_pools.speciesid, name_prefix, entityFlags, animationsub, "
+                                 "hasSpellScript, spellList, mob_groups.poolid, "
+                                 "allegiance, namevis, aggro, mob_pools.roamflag, mob_pools.skill_list_id, mob_pools.true_detection, "
+                                 "mob_pools.modelSize, mob_pools.modelHitboxSize "
                                  "FROM instance_entities "
                                  "INNER JOIN mob_spawn_points ON instance_entities.id = mob_spawn_points.mobid "
                                  "INNER JOIN mob_groups ON mob_groups.groupid = mob_spawn_points.groupid AND mob_groups.zoneid = ? "
                                  "INNER JOIN mob_pools ON mob_groups.poolid = mob_pools.poolid "
                                  "INNER JOIN mob_resistances ON mob_resistances.resist_id = mob_pools.resist_id "
-                                 "INNER JOIN mob_species_system ON mob_pools.speciesid = mob_species_system.speciesID "
                                  "WHERE instanceid = ? "
                                  "  AND ((mob_spawn_points.mobid >> 12) & 0xFFF) = ? "
                                  "  AND NOT (pos_x = 0 AND pos_y = 0 AND pos_z = 0)",
@@ -132,75 +129,56 @@ auto CInstanceLoader::LoadInstance() const -> CInstance*
             static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setDelay(rset->get<uint16>("cmbDelay"));
             static_cast<CItemWeapon*>(PMob->m_Weapons[SLOT_MAIN])->setBaseDelay(rset->get<uint16>("cmbDelay"));
 
-            PMob->m_Behavior  = rset->get<xi::Behavior>("behavior");
-            PMob->m_Link      = rset->get<uint8>("links");
-            PMob->m_Type      = rset->get<xi::MobType>("mobType");
-            PMob->m_Immunity  = rset->get<xi::Immunity>("immunity");
-            PMob->m_EcoSystem = rset->get<xi::Ecosystem>("ecosystemID");
+            PMob->m_Behavior = rset->get<xi::Behavior>("behavior");
+            PMob->m_Link     = rset->get<uint8>("links");
+            PMob->m_Type     = rset->get<xi::MobType>("mobType");
+            PMob->m_Immunity = rset->get<xi::Immunity>("immunity");
 
-            PMob->baseSpeed      = rset->get<uint8>("speed"); // Overwrites baseentity.cpp's defined baseSpeed
-            PMob->animationSpeed = rset->get<uint8>("speed"); // Overwrites baseentity.cpp's defined animationSpeed
-            PMob->UpdateSpeed();
+            PMob->setModifier(xi::Mod::SLASH_SDT, rset->get<int16>("slash_sdt"));
+            PMob->setModifier(xi::Mod::PIERCE_SDT, rset->get<int16>("pierce_sdt"));
+            PMob->setModifier(xi::Mod::HTH_SDT, rset->get<int16>("h2h_sdt"));
+            PMob->setModifier(xi::Mod::IMPACT_SDT, rset->get<int16>("impact_sdt"));
 
-            PMob->strRank = rset->get<uint8>("STR");
-            PMob->dexRank = rset->get<uint8>("DEX");
-            PMob->vitRank = rset->get<uint8>("VIT");
-            PMob->agiRank = rset->get<uint8>("AGI");
-            PMob->intRank = rset->get<uint8>("INT");
-            PMob->mndRank = rset->get<uint8>("MND");
-            PMob->chrRank = rset->get<uint8>("CHR");
-            PMob->evaRank = rset->get<uint8>("EVA");
-            PMob->defRank = rset->get<uint8>("DEF");
-            PMob->attRank = rset->get<uint8>("ATT");
-            PMob->accRank = rset->get<uint8>("ACC");
+            PMob->setModifier(xi::Mod::UDMGMAGIC, rset->get<int16>("magical_sdt")); // Modifier 389, base 10000 stored as signed integer. Positives signify less damage.
 
-            PMob->setModifier(Mod::SLASH_SDT, rset->get<int16>("slash_sdt"));
-            PMob->setModifier(Mod::PIERCE_SDT, rset->get<int16>("pierce_sdt"));
-            PMob->setModifier(Mod::HTH_SDT, rset->get<int16>("h2h_sdt"));
-            PMob->setModifier(Mod::IMPACT_SDT, rset->get<int16>("impact_sdt"));
+            PMob->setModifier(xi::Mod::FIRE_SDT, rset->get<int16>("fire_sdt"));         // Modifier 54, base 10000 stored as signed integer. Positives signify less damage.
+            PMob->setModifier(xi::Mod::ICE_SDT, rset->get<int16>("ice_sdt"));           // Modifier 55, base 10000 stored as signed integer. Positives signify less damage.
+            PMob->setModifier(xi::Mod::WIND_SDT, rset->get<int16>("wind_sdt"));         // Modifier 56, base 10000 stored as signed integer. Positives signify less damage.
+            PMob->setModifier(xi::Mod::EARTH_SDT, rset->get<int16>("earth_sdt"));       // Modifier 57, base 10000 stored as signed integer. Positives signify less damage.
+            PMob->setModifier(xi::Mod::THUNDER_SDT, rset->get<int16>("lightning_sdt")); // Modifier 58, base 10000 stored as signed integer. Positives signify less damage.
+            PMob->setModifier(xi::Mod::WATER_SDT, rset->get<int16>("water_sdt"));       // Modifier 59, base 10000 stored as signed integer. Positives signify less damage.
+            PMob->setModifier(xi::Mod::LIGHT_SDT, rset->get<int16>("light_sdt"));       // Modifier 60, base 10000 stored as signed integer. Positives signify less damage.
+            PMob->setModifier(xi::Mod::DARK_SDT, rset->get<int16>("dark_sdt"));         // Modifier 61, base 10000 stored as signed integer. Positives signify less damage.
 
-            PMob->setModifier(Mod::UDMGMAGIC, rset->get<int16>("magical_sdt")); // Modifier 389, base 10000 stored as signed integer. Positives signify less damage.
+            PMob->setModifier(xi::Mod::FIRE_RES_RANK, rset->get<int8>("fire_res_rank"));
+            PMob->setModifier(xi::Mod::ICE_RES_RANK, rset->get<int8>("ice_res_rank"));
+            PMob->setModifier(xi::Mod::WIND_RES_RANK, rset->get<int8>("wind_res_rank"));
+            PMob->setModifier(xi::Mod::EARTH_RES_RANK, rset->get<int8>("earth_res_rank"));
+            PMob->setModifier(xi::Mod::THUNDER_RES_RANK, rset->get<int8>("lightning_res_rank"));
+            PMob->setModifier(xi::Mod::WATER_RES_RANK, rset->get<int8>("water_res_rank"));
+            PMob->setModifier(xi::Mod::LIGHT_RES_RANK, rset->get<int8>("light_res_rank"));
+            PMob->setModifier(xi::Mod::DARK_RES_RANK, rset->get<int8>("dark_res_rank"));
 
-            PMob->setModifier(Mod::FIRE_SDT, rset->get<int16>("fire_sdt"));         // Modifier 54, base 10000 stored as signed integer. Positives signify less damage.
-            PMob->setModifier(Mod::ICE_SDT, rset->get<int16>("ice_sdt"));           // Modifier 55, base 10000 stored as signed integer. Positives signify less damage.
-            PMob->setModifier(Mod::WIND_SDT, rset->get<int16>("wind_sdt"));         // Modifier 56, base 10000 stored as signed integer. Positives signify less damage.
-            PMob->setModifier(Mod::EARTH_SDT, rset->get<int16>("earth_sdt"));       // Modifier 57, base 10000 stored as signed integer. Positives signify less damage.
-            PMob->setModifier(Mod::THUNDER_SDT, rset->get<int16>("lightning_sdt")); // Modifier 58, base 10000 stored as signed integer. Positives signify less damage.
-            PMob->setModifier(Mod::WATER_SDT, rset->get<int16>("water_sdt"));       // Modifier 59, base 10000 stored as signed integer. Positives signify less damage.
-            PMob->setModifier(Mod::LIGHT_SDT, rset->get<int16>("light_sdt"));       // Modifier 60, base 10000 stored as signed integer. Positives signify less damage.
-            PMob->setModifier(Mod::DARK_SDT, rset->get<int16>("dark_sdt"));         // Modifier 61, base 10000 stored as signed integer. Positives signify less damage.
+            PMob->setModifier(xi::Mod::PARALYZE_RES_RANK, rset->get<int8>("paralyze_res_rank"));
+            PMob->setModifier(xi::Mod::BIND_RES_RANK, rset->get<int8>("bind_res_rank"));
+            PMob->setModifier(xi::Mod::SILENCE_RES_RANK, rset->get<int8>("silence_res_rank"));
+            PMob->setModifier(xi::Mod::SLOW_RES_RANK, rset->get<int8>("slow_res_rank"));
+            PMob->setModifier(xi::Mod::POISON_RES_RANK, rset->get<int8>("poison_res_rank"));
+            PMob->setModifier(xi::Mod::LIGHT_SLEEP_RES_RANK, rset->get<int8>("light_sleep_res_rank"));
+            PMob->setModifier(xi::Mod::DARK_SLEEP_RES_RANK, rset->get<int8>("dark_sleep_res_rank"));
+            PMob->setModifier(xi::Mod::BLIND_RES_RANK, rset->get<int8>("blind_res_rank"));
+            PMob->setModifier(xi::Mod::STUN_RES_RANK, rset->get<int8>("stun_res_rank"));
+            PMob->setModifier(xi::Mod::GRAVITY_RES_RANK, rset->get<int8>("gravity_res_rank"));
 
-            PMob->setModifier(Mod::FIRE_RES_RANK, rset->get<int8>("fire_res_rank"));
-            PMob->setModifier(Mod::ICE_RES_RANK, rset->get<int8>("ice_res_rank"));
-            PMob->setModifier(Mod::WIND_RES_RANK, rset->get<int8>("wind_res_rank"));
-            PMob->setModifier(Mod::EARTH_RES_RANK, rset->get<int8>("earth_res_rank"));
-            PMob->setModifier(Mod::THUNDER_RES_RANK, rset->get<int8>("lightning_res_rank"));
-            PMob->setModifier(Mod::WATER_RES_RANK, rset->get<int8>("water_res_rank"));
-            PMob->setModifier(Mod::LIGHT_RES_RANK, rset->get<int8>("light_res_rank"));
-            PMob->setModifier(Mod::DARK_RES_RANK, rset->get<int8>("dark_res_rank"));
-
-            PMob->setModifier(Mod::PARALYZE_RES_RANK, rset->get<int8>("paralyze_res_rank"));
-            PMob->setModifier(Mod::BIND_RES_RANK, rset->get<int8>("bind_res_rank"));
-            PMob->setModifier(Mod::SILENCE_RES_RANK, rset->get<int8>("silence_res_rank"));
-            PMob->setModifier(Mod::SLOW_RES_RANK, rset->get<int8>("slow_res_rank"));
-            PMob->setModifier(Mod::POISON_RES_RANK, rset->get<int8>("poison_res_rank"));
-            PMob->setModifier(Mod::LIGHT_SLEEP_RES_RANK, rset->get<int8>("light_sleep_res_rank"));
-            PMob->setModifier(Mod::DARK_SLEEP_RES_RANK, rset->get<int8>("dark_sleep_res_rank"));
-            PMob->setModifier(Mod::BLIND_RES_RANK, rset->get<int8>("blind_res_rank"));
-
-            PMob->m_Element     = rset->get<uint8>("Element");
             PMob->m_Species     = rset->get<uint16>("speciesid");
             PMob->m_name_prefix = rset->get<uint8>("name_prefix");
-            PMob->m_flags       = rset->get<xi::EntityFlags>("entityFlags");
+            mobutils::ApplySpecies(PMob);
+            PMob->m_flags = rset->get<xi::EntityFlags>("entityFlags");
 
             // Special sub animation for Mob (yovra, jailer of love, phuabo)
             // yovra 1: On top/in the sky, 2: , 3: On top/in the sky
             // phuabo 1: Underwater, 2: Out of the water, 3: Goes back underwater
             PMob->animationsub = rset->get<uint32>("animationsub");
-
-            // Setup HP / MP Stat Percentage Boost
-            PMob->HPscale = rset->get<float>("hp_scale");
-            PMob->MPscale = rset->get<float>("mp_scale");
 
             PMob->m_SpellListContainer = mobSpellList::GetMobSpellList(rset->get<uint16>("spellList"));
 
@@ -216,20 +194,11 @@ auto CInstanceLoader::LoadInstance() const -> CInstance*
             // If a special instanced mob aggros, it should always aggro regardless of level.
             if ((PMob->m_Type & xi::MobType::Event) != xi::MobType::Normal)
             {
-                PMob->setMobMod(MOBMOD_ALWAYS_AGGRO, aggro);
+                PMob->setMobMod(xi::MobMod::AlwaysAggro, aggro);
             }
 
             PMob->m_MobSkillList  = rset->get<uint16>("skill_list_id");
             PMob->m_TrueDetection = rset->get<bool>("true_detection");
-            PMob->setMobMod(MOBMOD_DETECTION, rset->get<int16>("detects"));
-            PMob->setMobMod(MOBMOD_CHARMABLE, rset->get<int16>("charmable"));
-
-            // Overwrite base family charmables depending on mob type. Disallowed mobs which should be charmable
-            // can be set in in their onInitialize
-            if ((PMob->m_Type & xi::MobType::Event) != xi::MobType::Normal || (PMob->m_Type & xi::MobType::Fished) != xi::MobType::Normal || (PMob->m_Type & xi::MobType::Battlefield) != xi::MobType::Normal || (PMob->m_Type & xi::MobType::Notorious) != xi::MobType::Normal)
-            {
-                PMob->setMobMod(MOBMOD_CHARMABLE, 0);
-            }
 
             // must be here first to define mobmods
             mobutils::InitializeMob(PMob);
@@ -269,7 +238,7 @@ auto CInstanceLoader::LoadInstance() const -> CInstance*
             PNpc->baseSpeed      = rset->get<uint8>("speed");
             PNpc->animationSpeed = rset->get<uint8>("speedsub");
             PNpc->UpdateSpeed();
-            PNpc->animation    = rset->get<uint8>("animation");
+            PNpc->animation    = rset->get<xi::Animation>("animation");
             PNpc->animationsub = rset->get<uint8>("animationsub");
 
             PNpc->namevis = rset->get<xi::NameVis>("namevis");

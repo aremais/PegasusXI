@@ -144,7 +144,7 @@ void LoadAutomaton(CCharEntity* PChar)
     {
         db::extractFromBlob(rset, "unlocked_attachments", PChar->m_unlockedAttachments);
 
-        if (PChar->GetMJob() == JOB_PUP || PChar->GetSJob() == JOB_PUP)
+        if (PChar->GetMJob() == xi::Job::PUP || PChar->GetSJob() == xi::Job::PUP)
         {
             PChar->automatonInfo.m_automatonName = rset->get<std::string>("name");
 
@@ -188,7 +188,7 @@ void LoadAutomaton(CCharEntity* PChar)
             }
 
             // Add the elemental bonus before we set the head and frame
-            PChar->setAutomatonElementalCapacityBonus(PChar->getMod(Mod::AUTO_ELEM_CAPACITY));
+            PChar->setAutomatonElementalCapacityBonus(PChar->getMod(xi::Mod::AUTO_ELEM_CAPACITY));
 
             setHead(PChar, tempEquip.Head);
             setFrame(PChar, tempEquip.Frame);
@@ -228,7 +228,7 @@ void SaveAttachments(CCharEntity* PChar)
 
 void SaveAutomaton(CCharEntity* PChar)
 {
-    if (PChar->GetMJob() == JOBTYPE::JOB_PUP || PChar->GetSJob() == JOBTYPE::JOB_PUP)
+    if (PChar->GetMJob() == xi::Job::PUP || PChar->GetSJob() == xi::Job::PUP)
     {
         db::preparedStmt("UPDATE char_pet SET "
                          "equipped_attachments = ? "
@@ -620,7 +620,7 @@ void TrySkillUP(CAutomatonEntity* PAutomaton, SKILLTYPE SkillID, uint8 lvl)
             SkillUpChance = 0.5;
         }
 
-        SkillUpChance *= ((100.0f + PAutomaton->getMod(Mod::COMBAT_SKILLUP_RATE)) / 100.0f);
+        SkillUpChance *= ((100.0f + PAutomaton->getMod(xi::Mod::COMBAT_SKILLUP_RATE)) / 100.0f);
 
         if (Diff > 0 && random < SkillUpChance)
         {

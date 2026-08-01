@@ -618,7 +618,7 @@ end
 function CBaseEntity:setWeather(weatherType)
 end
 
----@param blockID integer
+---@param blockID xi.musicSlot
 ---@param musicTrackID integer
 ---@return nil
 function CBaseEntity:changeMusic(blockID, musicTrackID)
@@ -644,8 +644,9 @@ end
 
 ---@param open integer
 ---@param close integer
+---@param passive boolean?
 ---@return nil
-function CBaseEntity:sendGuildClose(open, close)
+function CBaseEntity:sendGuildClose(open, close, passive)
 end
 
 ---@return nil
@@ -1353,11 +1354,11 @@ function CBaseEntity:setCostume2(costume)
 end
 
 ---@nodiscard
----@return integer
+---@return xi.animation
 function CBaseEntity:getAnimation()
 end
 
----@param animation integer
+---@param animation xi.animation
 ---@return nil
 function CBaseEntity:setAnimation(animation)
 end
@@ -1545,12 +1546,12 @@ function CBaseEntity:getTimeCreated()
 end
 
 ---@nodiscard
----@return integer
+---@return xi.job
 function CBaseEntity:getMainJob()
 end
 
 ---@nodiscard
----@return integer
+---@return xi.job
 function CBaseEntity:getSubJob()
 end
 
@@ -1685,27 +1686,27 @@ function CBaseEntity:delTitle(titleID)
 end
 
 ---@nodiscard
----@param areaObj table|integer
+---@param area xi.fameArea
 ---@return integer
-function CBaseEntity:getFame(areaObj)
+function CBaseEntity:getFame(area)
 end
 
----@param areaObj table|integer
+---@param area xi.fameArea
 ---@param fame integer
 ---@return nil
-function CBaseEntity:addFame(areaObj, fame)
+function CBaseEntity:addFame(area, fame)
 end
 
----@param areaObj table|integer
+---@param area xi.fameArea
 ---@param fame integer
 ---@return nil
-function CBaseEntity:setFame(areaObj, fame)
+function CBaseEntity:setFame(area, fame)
 end
 
 ---@nodiscard
----@param areaObj table|integer
+---@param area xi.fameArea
 ---@return integer
-function CBaseEntity:getFameLevel(areaObj)
+function CBaseEntity:getFameLevel(area)
 end
 
 ---@nodiscard
@@ -3950,24 +3951,24 @@ function CBaseEntity:setMobSkillAttack(listId)
 end
 
 ---@nodiscard
----@param mobModID integer
+---@param mobModID xi.mobMod
 ---@return integer
 function CBaseEntity:getMobMod(mobModID)
 end
 
----@param mobModID integer
+---@param mobModID xi.mobMod
 ---@param value integer
 ---@return nil
 function CBaseEntity:setMobMod(mobModID, value)
 end
 
----@param mobModID integer
+---@param mobModID xi.mobMod
 ---@param value integer
 ---@return nil
 function CBaseEntity:addMobMod(mobModID, value)
 end
 
----@param mobModID integer
+---@param mobModID xi.mobMod
 ---@param value integer
 ---@return nil
 function CBaseEntity:delMobMod(mobModID, value)

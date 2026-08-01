@@ -27,7 +27,6 @@ xi.moghouse.moghouseZones =
     xi.zone.SOUTHERN_SAN_DORIA_S, -- 80
     xi.zone.BASTOK_MARKETS_S,     -- 87
     xi.zone.WINDURST_WATERS_S,    -- 94
-    xi.zone.RESIDENTIAL_AREA,     -- 219
     xi.zone.SOUTHERN_SAN_DORIA,   -- 230
     xi.zone.NORTHERN_SAN_DORIA,   -- 231
     xi.zone.PORT_SAN_DORIA,       -- 232
@@ -231,7 +230,7 @@ xi.moghouse.trySetMusic = function(player)
     if #possibleSongs > 0 then
         -- This needs a moment before music changes can take effect
         player:timer(1000, function(playerArg)
-            playerArg:changeMusic(6, utils.randomEntry(possibleSongs))
+            playerArg:changeMusic(xi.musicSlot.MOG_HOUSE, utils.randomEntry(possibleSongs))
         end)
     end
 end
@@ -402,6 +401,28 @@ xi.moghouse.setMogLockerAccessType = function(player, accessType)
     player:setCharVar(xi.moghouse.MOGLOCKER_PLAYERVAR_ACCESS_TYPE, accessType)
 
     return accessType
+end
+
+-- Toggles the mog locker access type, scaling the remaining lease time by the ratio of the new to old day/bronze rate.
+xi.moghouse.switchMogLockerAccessType = function(player)
+    local isAllAreas = xi.moghouse.getMogLockerAccessType(player) == xi.moghouse.lockerAccessType.ALLAREAS
+    local oldDays    = isAllAreas and xi.moghouse.MOGLOCKER_ALLAREAS_VALID_DAYS or xi.moghouse.MOGLOCKER_ALZAHBI_VALID_DAYS
+    local newDays    = isAllAreas and xi.moghouse.MOGLOCKER_ALZAHBI_VALID_DAYS or xi.moghouse.MOGLOCKER_ALLAREAS_VALID_DAYS
+    local newType    = isAllAreas and xi.moghouse.lockerAccessType.ALZAHBI or xi.moghouse.lockerAccessType.ALLAREAS
+
+    xi.moghouse.setMogLockerAccessType(player, newType)
+
+    local expiryTs = xi.moghouse.getMogLockerExpiryTimestamp(player)
+    if expiryTs ~= nil and expiryTs ~= -1 then
+        local now       = GetSystemTime() - xi.time.VANADIEL_EPOCH
+        local remaining = expiryTs - now
+        if remaining > 0 then
+            local newExpiry = now + math.floor(remaining * newDays / oldDays)
+            player:setCharVar('mog-locker-expiry-timestamp', newExpiry)
+        end
+    end
+
+    return newType
 end
 
 -- Gets the mog locker access type (all area or alzahbi only). Returns the new access type.
