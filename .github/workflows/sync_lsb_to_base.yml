@@ -1,9 +1,10 @@
-name: Sync LSB into base
+name: Sync LSB into Base
 
-# Runs on GitHub (not the game server). Merges LandSandBoat/server base -> this repo's base.
+# Morning sync: LandSandBoat/server (base) -> aremais/PegasusXI (base)
+# Runs on GitHub-hosted runners only. Does not touch game servers.
 on:
   schedule:
-    # Daily 08:00 UTC (04:00 US Eastern during EDT)
+    # Daily 08:00 UTC (~04:00 US Eastern during EDT)
     - cron: "0 8 * * *"
   workflow_dispatch:
 
@@ -16,7 +17,7 @@ concurrency:
 
 jobs:
   sync:
-    name: Merge upstream/base into base
+    name: Merge LandSandBoat/base into base
     runs-on: ubuntu-latest
     steps:
       - name: Checkout base
@@ -24,6 +25,7 @@ jobs:
         with:
           ref: base
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure git identity
         run: |
@@ -32,24 +34,140 @@ jobs:
 
       - name: Add LandSandBoat upstream and fetch
         run: |
-          git remote add upstream https://github.com/LandSandBoat/server.git
+          git remote add upstream https://github.com/LandSandBoat/server.git || git remote set-url upstream https://github.com/LandSandBoat/server.git
           git fetch upstream base
 
-      - name: Merge upstream/base into base
-        id: merge
+      - name: Build changelog of incoming LSB commits
+        id: changelist
         run: |
           BEFORE=$(git rev-parse HEAD)
           UPSTREAM=$(git rev-parse upstream/base)
-          echo "base before : $BEFORE"
-          echo "upstream tip: $UPSTREAM"
-          if [ "$BEFORE" = "$UPSTREAM" ]; then
+          echo "base_before=$BEFORE" >> "$GITHUB_OUTPUT"
+          echo "upstream_tip=$UPSTREAM" >> "$GITHUB_OUTPUT"
+
+          COMMIT_COUNT=$(git rev-list --count HEAD..upstream/base)
+          echo "commit_count=$COMMIT_COUNT" >> "$GITHUB_OUTPUT"
+          echo "Commits on LandSandBoat/base not yet in base: $COMMIT_COUNT"
+
+          DATE_STAMP=$(date -u +'%Y-%m-%d')
+          CHANGELOG="changelogs/lsb-to-base-${DATE_STAMP}.md"
+          mkdir -p changelogs
+
+          {
+            echo "# Sync LSB into Base — ${DATE_STAMP}"
+            echo
+            echo "- Source: \`LandSandBoat/server\` branch \`base\` (\`${UPSTREAM}\`)"
+            echo "- Target: \`aremais/PegasusXI\` branch \`base\` (\`${BEFORE}\`)"
+            echo "- Incoming commits: **${COMMIT_COUNT}**"
+            echo
+          } > "$CHANGELOG"
+
+          if [ "$COMMIT_COUNT" = "0" ]; then
             echo "already_up_to_date=true" >> "$GITHUB_OUTPUT"
-            echo "Already up to date with LandSandBoat base."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "Base is already up to date with LandSandBoat." >> "$CHANGELOG"
+            {
+              echo "## Sync LSB into Base"
+              echo
+              echo "Already up to date with [LandSandBoat/server](https://github.com/LandSandBoat/server) \`base\`."
+            } >> "$GITHUB_STEP_SUMMARY"
+            cat "$CHANGELOG"
             exit 0
           fi
+
           echo "already_up_to_date=false" >> "$GITHUB_OUTPUT"
-          git merge --no-edit upstream/base
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          echo "### Commits" >> "$CHANGELOG"
+          echo >> "$CHANGELOG"
+          git log HEAD..upstream/base --pretty=format:"- %h %s (%an)" >> "$CHANGELOG"
+          echo >> "$CHANGELOG"
+          echo >> "$CHANGELOG"
+          echo "### Files changed" >> "$CHANGELOG"
+          echo >> "$CHANGELOG"
+          echo '```' >> "$CHANGELOG"
+          git diff --name-status HEAD..upstream/base >> "$CHANGELOG"
+          echo '```' >> "$CHANGELOG"
+
+          cat "$CHANGELOG" >> "$GITHUB_STEP_SUMMARY"
+          echo "changelog_path=$CHANGELOG" >> "$GITHUB_OUTPUT"
+
+      - name: Merge upstream/base into base
+        id: merge
+        if: steps.changelist.outputs.has_changes == 'true'
+        run: |
+          DATE_STAMP=$(date -u +'%Y-%m-%d')
+          CHANGELOG="changelogs/lsb-to-base-${DATE_STAMP}.md"
+
+          set +e
+          git merge --no-commit --no-ff upstream/base
+          MERGE_EXIT=$?
+          set -e
+
+          if [ "$MERGE_EXIT" -ne 0 ]; then
+            echo "Merge reported conflicts. Auto-resolving:"
+            echo "  - Prefer LandSandBoat (theirs) for conflicted source files"
+            echo "  - Keep PegasusXI base versions of workflow and settings files"
+
+            CONFLICTS=$(git diff --name-only --diff-filter=U || true)
+            if [ -n "$CONFLICTS" ]; then
+              echo "Conflicted files:"
+              echo "$CONFLICTS"
+              while IFS= read -r file; do
+                [ -z "$file" ] && continue
+                case "$file" in
+                  .github/workflows/*|settings/*|settings/default/*)
+                    echo "Keeping base version: $file"
+                    git checkout --ours -- "$file" || true
+                    git add -- "$file" || git rm --cached --force -- "$file" || true
+                    ;;
+                  *)
+                    echo "Taking LandSandBoat version: $file"
+                    git checkout --theirs -- "$file" || true
+                    git add -- "$file" || true
+                    ;;
+                esac
+              done <<< "$CONFLICTS"
+            fi
+
+            # Prefer keeping local settings after merge resolution.
+            git checkout HEAD -- settings settings/default 2>/dev/null || true
+
+            STILL=$(git diff --name-only --diff-filter=U || true)
+            if [ -n "$STILL" ]; then
+              echo "Unresolved conflicts remain:"
+              echo "$STILL"
+              echo "merge_status=failed" >> "$GITHUB_OUTPUT"
+              {
+                echo
+                echo "## Merge failed"
+                echo
+                echo "Unresolved conflicts:"
+                echo '```'
+                echo "$STILL"
+                echo '```'
+              } >> "$GITHUB_STEP_SUMMARY"
+              exit 1
+            fi
+            echo "merge_status=resolved" >> "$GITHUB_OUTPUT"
+          else
+            echo "merge_status=clean" >> "$GITHUB_OUTPUT"
+            echo "Merge completed cleanly (commit pending)."
+          fi
+
+          if [ -f "$CHANGELOG" ]; then
+            git add "$CHANGELOG"
+          fi
+
+          git commit -m "Sync LSB into Base" -m "Merged LandSandBoat/server base into base. See ${CHANGELOG}."
 
       - name: Push base
-        if: steps.merge.outputs.already_up_to_date != 'true'
+        if: steps.changelist.outputs.has_changes == 'true'
         run: git push origin base
+
+      - name: Upload changelog artifact
+        if: always() && steps.changelist.outputs.changelog_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: lsb-to-base-changelog
+          path: ${{ steps.changelist.outputs.changelog_path }}
+          if-no-files-found: ignore

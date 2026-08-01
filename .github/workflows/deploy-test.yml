@@ -1,31 +1,32 @@
-name: Deploy Live
+name: Deploy Test (BetaTest)
 
-# Pulls the Live branch onto the production game server, builds, and restarts processes.
-# Requires a self-hosted runner on the live machine with label "self-hosted".
+# Pulls the Test branch onto the BetaTest / staging game server, builds, and restarts processes.
+# Requires a self-hosted runner on the BetaTest machine with label "self-hosted".
 on:
   workflow_dispatch:
     inputs:
       repo_path:
-        description: 'Absolute path to the Live server git checkout on the runner'
+        description: 'Absolute path to the BetaTest server git checkout on the runner'
         required: true
-        default: 'D:\server'
+        default: 'D:\server-test'
         type: string
-  push:
-    branches:
-      - Live
+  # Optional: auto-deploy whenever Test is updated (disable if you prefer manual only)
+  # push:
+  #   branches:
+  #     - Test
 
 permissions:
   contents: read
 
 concurrency:
-  group: deploy-live
+  group: deploy-test
   cancel-in-progress: false
 
 jobs:
   deploy:
-    name: Update Live server from Live branch
+    name: Update BetaTest from Test branch
     runs-on: self-hosted
-    environment: Production
+    environment: Staging
 
     defaults:
       run:
@@ -48,33 +49,33 @@ jobs:
 
           Start-Sleep -Seconds 3
 
-      - name: Update Live working copy
+      - name: Update Test working copy
         run: |
-          $RepoPath = if ('${{ inputs.repo_path }}') { '${{ inputs.repo_path }}' } else { 'D:\server' }
+          $RepoPath = '${{ inputs.repo_path }}'
 
           if (-not (Test-Path $RepoPath)) {
-            throw "Repo path not found: $RepoPath. Clone the repo on the Live server first (see documentation/BRANCH_SYNC_AND_DEPLOY.md)."
+            throw "Repo path not found: $RepoPath. Clone the repo on the BetaTest server first (see documentation/BRANCH_SYNC_AND_DEPLOY.md)."
           }
 
           git -C $RepoPath fetch origin
-          git -C $RepoPath checkout Live
-          git -C $RepoPath reset --hard origin/Live
+          git -C $RepoPath checkout Test
+          git -C $RepoPath reset --hard origin/Test
           git -C $RepoPath submodule update --init --recursive
 
           $sha = (git -C $RepoPath rev-parse HEAD).Trim()
-          Write-Host "Live server now at $sha (Live)"
-          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "## Deploy Live`n`nUpdated ``$RepoPath`` to Live @ ``$sha``."
+          Write-Host "BetaTest server now at $sha (Test)"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "## Deploy Test (BetaTest)`n`nUpdated ``$RepoPath`` to Test @ ``$sha``."
 
-      - name: Build Live branch
+      - name: Build Test branch
         run: |
-          $RepoPath = if ('${{ inputs.repo_path }}') { '${{ inputs.repo_path }}' } else { 'D:\server' }
+          $RepoPath = '${{ inputs.repo_path }}'
 
           cmake -S $RepoPath -B "$RepoPath\build" -A x64
           cmake --build "$RepoPath\build" --config Release --parallel
 
       - name: Start LSB processes
         run: |
-          $RepoPath = if ('${{ inputs.repo_path }}') { '${{ inputs.repo_path }}' } else { 'D:\server' }
+          $RepoPath = '${{ inputs.repo_path }}'
           $candidateDirs = @(
             "$RepoPath\build\bin\Release",
             "$RepoPath\build\Release",
@@ -117,4 +118,4 @@ jobs:
             }
           }
 
-          Write-Host "Live deployment completed successfully."
+          Write-Host "BetaTest deployment completed successfully."
