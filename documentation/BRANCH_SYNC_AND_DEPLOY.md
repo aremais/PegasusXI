@@ -169,7 +169,7 @@ cd C:\actions-runner
 # Download + extract using the commands from a NEW "New self-hosted runner" page
 # (get a fresh token — each machine needs its own)
 
-./config.cmd --url https://github.com/aremais/PegasusXI --token PASTE_NEW_TOKEN_HERE
+.\config.cmd --url https://github.com/aremais/PegasusXI --token PASTE_NEW_TOKEN_HERE
 ```
 
 | Prompt | Recommended answer |
