@@ -20,11 +20,9 @@
 */
 
 #include "action_queue.h"
-#include "ai/ai_container.h"
-#include "common/logging.h"
-#include "entities/base_entity.h"
 
-#include <exception>
+#include "ai/ai_container.h"
+#include "entities/base_entity.h"
 
 CAIActionQueue::CAIActionQueue(CBaseEntity* _PEntity)
 : PEntity(_PEntity)
@@ -45,84 +43,38 @@ void CAIActionQueue::pushAction(queueAction_t&& action)
 
 void CAIActionQueue::checkAction(timer::time_point tick)
 {
-    while (!timerQueue.empty())
+    while (!timerQueue.empty() && tick > timerQueue.top().deadline)
     {
-        const auto& topaction = timerQueue.top();
-        if (tick >= topaction.start_time + topaction.delay)
-        {
-            auto action = timerQueue.top();
-            timerQueue.pop();
-            handleAction(action);
-        }
-        else
-        {
-            break;
-        }
+        queueAction_t action = timerQueue.pop();
+        handleAction(action);
     }
 
-    while (!actionQueue.empty())
+    while (!actionQueue.empty() && tick > actionQueue.top().deadline && PEntity->PAI->CanChangeState())
     {
-        const auto& topaction = actionQueue.top();
-        if (
-            tick >= topaction.start_time + topaction.delay &&
-            (!topaction.checkState || (PEntity && PEntity->PAI && PEntity->PAI->CanChangeState())))
-        {
-            auto action = actionQueue.top();
-            actionQueue.pop();
-            handleAction(action);
-        }
-        else
-        {
-            break;
-        }
+        queueAction_t action = actionQueue.pop();
+        handleAction(action);
     }
 }
 
 void CAIActionQueue::handleAction(queueAction_t& action)
 {
-    if (PEntity == nullptr)
+    if (action.func)
     {
-        return;
-    }
-
-    try
-    {
-        if (action.func)
-        {
-            action.func(PEntity);
-        }
-        else
-        {
-            ShowError("CAIActionQueue::handleAction for %s (%u): empty action callback", PEntity->name, PEntity->id);
-        }
-    }
-    catch (const std::exception& e)
-    {
-        ShowError("CAIActionQueue::handleAction for %s (%u): %s", PEntity->name, PEntity->id, e.what());
-    }
-    catch (...)
-    {
-        ShowError("CAIActionQueue::handleAction for %s (%u): unknown exception", PEntity->name, PEntity->id);
+        action.func(PEntity);
     }
 }
 
-bool CAIActionQueue::isEmpty()
+bool CAIActionQueue::isEmpty() const
 {
     return actionQueue.empty() && timerQueue.empty();
 }
 
 void CAIActionQueue::clearActionQueue()
 {
-    while (!actionQueue.empty())
-    {
-        actionQueue.pop();
-    }
+    actionQueue.clear();
 }
 
 void CAIActionQueue::clearTimerQueue()
 {
-    while (!timerQueue.empty())
-    {
-        timerQueue.pop();
-    }
+    timerQueue.clear();
 }

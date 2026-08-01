@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/job.codegen.json",
+  "description": "GENERATED from data/enums/job.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "none",
+    "war",
+    "mnk",
+    "whm",
+    "blm",
+    "rdm",
+    "thf",
+    "pld",
+    "drk",
+    "bst",
+    "brd",
+    "rng",
+    "sam",
+    "nin",
+    "drg",
+    "smn",
+    "blu",
+    "cor",
+    "pup",
+    "dnc",
+    "sch",
+    "geo",
+    "run",
+    "mon"
+  ]
+}

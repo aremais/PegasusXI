@@ -23,6 +23,7 @@
 
 #include "common/database.h"
 #include "common/ipc.h"
+#include "common/md52.h"
 #include "common/settings.h"
 #include "common/utils.h"
 
@@ -80,6 +81,20 @@ void data_session::addCharIntoCharInfo(const lpkt_chr_info_sub2& charInfo)
     }
 }
 
+void data_session::renameCharInCharInfo(const uint32_t charId, const std::string& newName)
+{
+    for (auto& charInfo : characterInfoResponse.character_info)
+    {
+        if (charInfo.ffxi_id == charId)
+        {
+            std::memset(charInfo.character_name, 0, sizeof(charInfo.character_name));
+            std::memcpy(charInfo.character_name, newName.c_str(), std::min(newName.size(), sizeof(charInfo.character_name) - 1));
+            charInfo.renamef = 0;
+            break;
+        }
+    }
+}
+
 void data_session::read_func()
 {
     auto sessionHash = loginHelpers::getHashFromPacket(ipAddress, buffer_.data());
@@ -97,7 +112,7 @@ void data_session::read_func()
     session_t& session = loginHelpers::get_authenticated_session(ipAddress, sessionHash);
     if (!session.data_session)
     {
-        session.data_session              = std::make_shared<data_session>(std::forward<asio::ssl::stream<asio::ip::tcp::socket>>(socket_), zmqDealerWrapper_);
+        session.data_session              = std::make_shared<data_session>(std::forward<asio::ssl::stream<asio::ip::tcp::socket>>(socket_), dealerChannel_);
         session.data_session->sessionHash = sessionHash;
     }
 
@@ -341,7 +356,7 @@ void data_session::read_func()
 
             uint32 ZoneIP   = 0;
             uint16 ZonePort = 0;
-            uint16 ZoneID   = 0;
+            auto   ZoneID   = xi::ZoneId::Unknown;
             uint16 PrevZone = 0;
             uint16 gmlevel  = 0;
 
@@ -354,7 +369,7 @@ void data_session::read_func()
 
             if (rset && rset->rowsCount() && rset->next())
             {
-                ZoneID   = rset->get<uint16>("zoneid");
+                ZoneID   = rset->get<xi::ZoneId>("zoneid");
                 PrevZone = rset->get<uint16>("pos_prevzone");
                 gmlevel  = rset->get<uint16>("gmlevel");
 
@@ -581,7 +596,7 @@ void data_session::read_func()
                 db::preparedStmt("UPDATE char_flags SET disconnecting = 0 WHERE charid = ?", charid);
                 db::preparedStmt("UPDATE char_stats SET zoning = 2 WHERE charid = ?", charid);
 
-                zmqDealerWrapper_.outgoingQueue_.enqueue(zmq::message_t(payload.data(), payload.size()));
+                dealerChannel_.send(zmq::message_t(payload.data(), payload.size()));
             }
 
             if (settings::get<bool>("login.LOG_USER_IP"))

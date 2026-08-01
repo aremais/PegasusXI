@@ -21,6 +21,14 @@
 
 #include "login_helpers.h"
 
+#include "common/database.h"
+#include "common/lua.h"
+#include "common/md52.h"
+#include "common/settings.h"
+
+#include <cctype>
+#include <map>
+
 namespace loginHelpers
 {
 
@@ -41,27 +49,27 @@ namespace
         uint8_t rotation;
     };
 
-    constexpr auto newCharSpawnForZone(uint16_t zoneId) -> NewCharSpawn
+    constexpr auto newCharSpawnForZone(xi::ZoneId zoneId) -> NewCharSpawn
     {
         switch (zoneId)
         {
-            case 234: // Bastok Mines
+            case xi::ZoneId::BastokMines:
                 return { 117.0F, 0.99F, -72.0F, 127 };
-            case 235: // Bastok Markets
+            case xi::ZoneId::BastokMarkets:
                 return { -177.0F, -8.0F, -30.0F, 128 };
-            case 236: // Port Bastok
+            case xi::ZoneId::PortBastok:
                 return { 60.0F, 8.5F, -239.0F, 192 };
-            case 230: // Southern San d'Oria
+            case xi::ZoneId::SouthernSanDoria:
                 return { 159.5F, -2.0F, 160.0F, 95 };
-            case 231: // Northern San d'Oria
+            case xi::ZoneId::NorthernSanDoria:
                 return { 130.0F, -0.2F, -3.0F, 160 };
-            case 232: // Port San d'Oria
+            case xi::ZoneId::PortSanDoria:
                 return { 79.4F, -16.0F, -135.5F, 165 };
-            case 238: // Windurst Waters
+            case xi::ZoneId::WindurstWaters:
                 return { 160.0F, -2.65F, -53.7F, 192 };
-            case 240: // Port Windurst
+            case xi::ZoneId::PortWindurst:
                 return { 198.0F, -15.65F, 258.0F, 65 };
-            case 241: // Windurst Woods
+            case xi::ZoneId::WindurstWoods:
                 return { -130.0F, -7.65F, 40.0F, 0 };
             default:
                 return { 0.0F, 0.0F, 0.0F, 0 };
@@ -70,9 +78,9 @@ namespace
 } // namespace
 
 // [ip_addr][session_hash] = session
-std::unordered_map<std::string, std::map<std::string, session_t>> authenticatedSessions_;
+HashMap<std::string, std::map<std::string, session_t>> authenticatedSessions_;
 
-std::unordered_map<std::string, std::map<std::string, session_t>>& getAuthenticatedSessions()
+HashMap<std::string, std::map<std::string, session_t>>& getAuthenticatedSessions()
 {
     return authenticatedSessions_;
 }
@@ -152,12 +160,11 @@ uint16 generateExpansionBitmask()
     return mask;
 }
 
-uint16 generateFeatureBitmask()
+uint16 generateFeatureBitmask(const bool& needsOTP)
 {
     uint16 mask = 0;
 
     std::map<std::string, uint16> features = {
-        { "login.SECURE_TOKEN", FEATURE_DISPLAY::SECURE_TOKEN }, // This needs to be broken out into auth calls once TOTP is supported
         { "login.MOG_WARDROBE_3", FEATURE_DISPLAY::MOG_WARDROBE_3 },
         { "login.MOG_WARDROBE_4", FEATURE_DISPLAY::MOG_WARDROBE_4 },
         { "login.MOG_WARDROBE_5", FEATURE_DISPLAY::MOG_WARDROBE_5 },
@@ -175,7 +182,86 @@ uint16 generateFeatureBitmask()
         }
     }
 
+    if (needsOTP)
+    {
+        mask |= FEATURE_DISPLAY::SECURE_TOKEN;
+    }
+
     return mask;
+}
+
+Maybe<std::string> validateCharacterName(const std::string& name)
+{
+    // Sanitize name & check for invalid characters
+    for (const auto& letter : name)
+    {
+        if (!std::isalpha(static_cast<unsigned char>(letter)))
+        {
+            return "Invalid characters present in name.";
+        }
+    }
+
+    // Check for invalid length name
+    // NOTE: The client checks for this. This is to guard against packet injection.
+    if (name.size() < 3 || name.size() > 15)
+    {
+        return "Invalid name length.";
+    }
+
+    // Check if the name is already in use by another character
+    const auto rset0 = db::preparedStmt("SELECT charname FROM chars WHERE charname LIKE ?", name);
+    if (!rset0)
+    {
+        return "Internal entity name query failed.";
+    }
+    else if (rset0->rowsCount() != 0)
+    {
+        return "Name already in use.";
+    }
+
+    // (optional) Check if the name is in use by NPC or Mob entities
+    if (settings::get<bool>("login.DISABLE_MOB_NPC_CHAR_NAMES"))
+    {
+        const auto query =
+            "SELECT polutils_name AS `name` FROM npc_list "
+            "WHERE REPLACE(REPLACE(UPPER(polutils_name), '-', ''), '_', '') "
+            "LIKE REPLACE(REPLACE(UPPER(?), '-', ''), '_', '') "
+            "UNION "
+            "SELECT packet_name AS `name` FROM mob_pools "
+            "WHERE REPLACE(REPLACE(UPPER(packet_name), '-', ''), '_', '') "
+            "LIKE REPLACE(REPLACE(UPPER(?), '-', ''), '_', '')";
+
+        const auto rset1 = db::preparedStmt(query, name, name);
+        if (!rset1)
+        {
+            return "Internal entity name query failed";
+        }
+        else if (rset1->rowsCount() != 0)
+        {
+            return "Name already in use.";
+        }
+    }
+
+    // TODO: Don't raw-access Lua like this outside of Lua helper code.
+    // (optional) Check if the name contains any words on the bad word list
+    const auto loginSettingsTable = lua["xi"]["settings"]["login"].get_or<sol::table>(sol::lua_nil);
+    if (loginSettingsTable.valid())
+    {
+        if (auto badWordsList = loginSettingsTable.get_or<sol::table>("BANNED_WORDS_LIST", sol::lua_nil); badWordsList.valid())
+        {
+            const auto potentialName = to_upper(name);
+            for (const auto& entry : badWordsList)
+            {
+                const auto badWord = to_upper(entry.second.as<std::string>());
+                if (potentialName.find(badWord) != std::string::npos)
+                {
+                    return fmt::format("Name matched with bad words list <{}>.", badWord);
+                }
+            }
+        }
+    }
+
+    return std::nullopt;
 }
 
 int32 saveCharacter(uint32 accid, uint32 charid, char_mini* createchar)
@@ -338,9 +424,9 @@ int32 createCharacter(session_t& session, uint8* buf, lpkt_chr_info_sub2& charIn
         return -1;
     }
 
-    std::vector<uint32> bastokStartingZones   = { 0xEA, 0xEB, 0xEC };
-    std::vector<uint32> sandoriaStartingZones = { 0xE6, 0xE7, 0xE8 };
-    std::vector<uint32> windurstStartingZones = { 0xEE, 0xF0, 0xF1 };
+    const std::vector<xi::ZoneId> bastokStartingZones   = { xi::ZoneId::BastokMines, xi::ZoneId::BastokMarkets, xi::ZoneId::PortBastok };
+    const std::vector<xi::ZoneId> sandoriaStartingZones = { xi::ZoneId::SouthernSanDoria, xi::ZoneId::NorthernSanDoria, xi::ZoneId::PortSanDoria };
+    const std::vector<xi::ZoneId> windurstStartingZones = { xi::ZoneId::WindurstWaters, xi::ZoneId::PortWindurst, xi::ZoneId::WindurstWoods };
 
     switch (createchar.m_nation)
     {

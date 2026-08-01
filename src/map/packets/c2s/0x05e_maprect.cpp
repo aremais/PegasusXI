@@ -35,31 +35,31 @@ namespace
 {
 
 // Same-zone zonelines in these zones are Mog House doors (sql: from_zone == to_zone). Other zones use same-zone for puzzles (e.g. Pso'Xja).
-bool isCityMogHousePortalZone(ZONEID zoneId)
+bool isCityMogHousePortalZone(xi::ZoneId zoneId)
 {
     switch (zoneId)
     {
-        case ZONE_AL_ZAHBI:
-        case ZONE_AHT_URHGAN_WHITEGATE:
-        case ZONE_SOUTHERN_SAN_DORIA_S:
-        case ZONE_BASTOK_MARKETS_S:
-        case ZONE_WINDURST_WATERS_S:
-        case ZONE_WESTERN_ADOULIN:
-        case ZONE_EASTERN_ADOULIN:
-        case ZONE_SOUTHERN_SANDORIA:
-        case ZONE_NORTHERN_SANDORIA:
-        case ZONE_PORT_SANDORIA:
-        case ZONE_BASTOK_MINES:
-        case ZONE_BASTOK_MARKETS:
-        case ZONE_PORT_BASTOK:
-        case ZONE_WINDURST_WATERS:
-        case ZONE_WINDURST_WALLS:
-        case ZONE_PORT_WINDURST:
-        case ZONE_WINDURST_WOODS:
-        case ZONE_RULUDE_GARDENS:
-        case ZONE_UPPER_JEUNO:
-        case ZONE_LOWER_JEUNO:
-        case ZONE_PORT_JEUNO:
+        case xi::ZoneId::AlZahbi:
+        case xi::ZoneId::AhtUrhganWhitegate:
+        case xi::ZoneId::SouthernSanDoriaS:
+        case xi::ZoneId::BastokMarketsS:
+        case xi::ZoneId::WindurstWatersS:
+        case xi::ZoneId::WesternAdoulin:
+        case xi::ZoneId::EasternAdoulin:
+        case xi::ZoneId::SouthernSanDoria:
+        case xi::ZoneId::NorthernSanDoria:
+        case xi::ZoneId::PortSanDoria:
+        case xi::ZoneId::BastokMines:
+        case xi::ZoneId::BastokMarkets:
+        case xi::ZoneId::PortBastok:
+        case xi::ZoneId::WindurstWaters:
+        case xi::ZoneId::WindurstWalls:
+        case xi::ZoneId::PortWindurst:
+        case xi::ZoneId::WindurstWoods:
+        case xi::ZoneId::RuludeGardens:
+        case xi::ZoneId::UpperJeuno:
+        case xi::ZoneId::LowerJeuno:
+        case xi::ZoneId::PortJeuno:
             return true;
         default:
             return false;
@@ -77,7 +77,7 @@ const auto denyZone = [](CCharEntity* PChar)
     PChar->pushPacket<GP_SERV_COMMAND_SYSTEMMES>(0, 0, MsgStd::CouldNotEnter);
     PChar->pushPacket<GP_SERV_COMMAND_WPOS2>(PChar, PChar->loc.p, POSMODE::RESET);
 
-    PChar->status = STATUS_TYPE::NORMAL;
+    PChar->status = xi::Status::Normal;
 };
 
 } // namespace
@@ -112,9 +112,9 @@ void GP_CLI_COMMAND_MAPRECT::process(MapSession* PSession, CCharEntity* PChar) c
     auto isMogHouseEntrance = std::memcmp(&this->RectID, "zmr", 3) == 0 ||
                               std::memcmp(&this->RectID, "zms", 3) == 0;
 
-    if (PChar->status == STATUS_TYPE::NORMAL)
+    if (PChar->status == xi::Status::Normal)
     {
-        PChar->status       = STATUS_TYPE::DISAPPEAR;
+        PChar->status       = xi::Status::Disappear;
         PChar->loc.boundary = 0;
 
         // Exiting Mog House
@@ -220,14 +220,14 @@ void GP_CLI_COMMAND_MAPRECT::process(MapSession* PSession, CCharEntity* PChar) c
                 }
                 else
                 {
-                    PChar->status = STATUS_TYPE::NORMAL;
+                    PChar->status = xi::Status::Normal;
                     ShowWarning("GP_CLI_COMMAND_MAPRECT: Moghouse 2F requested without it being unlocked: %s", PChar->getName());
                     return;
                 }
             }
             else
             {
-                PChar->status = STATUS_TYPE::NORMAL;
+                PChar->status = xi::Status::Normal;
                 ShowWarning("GP_CLI_COMMAND_MAPRECT: Moghouse zoneline abuse by %s", PChar->getName());
                 return;
             }

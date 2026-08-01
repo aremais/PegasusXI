@@ -21,13 +21,9 @@
 
 #include "map_engine.h"
 
-#include "common/blowfish.h"
-#include "common/console_service.h"
-#include "common/database.h"
 #include "common/debug.h"
 #include "common/ipp.h"
 #include "common/logging.h"
-#include "common/macros.h"
 #include "common/settings.h"
 #include "common/timer.h"
 #include "common/utils.h"
@@ -38,9 +34,7 @@
 #include "ability.h"
 #include "daily_system.h"
 #include "ipc_client.h"
-#include "lua/luautils.h"
 #include "job_points.h"
-#include "latent_effect_container.h"
 #include "map_networking.h"
 #include "map_statistics.h"
 #include "mob_spell_list.h"
@@ -78,7 +72,6 @@
 #include "linkshell.h"
 
 #include <array>
-#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <thread>
@@ -149,7 +142,6 @@ auto MapEngine::init() -> Task<void>
     db::checkTriggers();
 
     luautils::init(mapIPP, config_.inCI); // Also calls moduleutils::LoadLuaModules();
-    luautils::setMapScheduler(&scheduler_);
 
     // Delete sessions that are associated with this map process, but leave others alone
     db::preparedStmt("DELETE FROM accounts_sessions WHERE IF(? = 0 AND ? = 0, true, server_addr = ? AND server_port = ?)",
@@ -162,7 +154,25 @@ auto MapEngine::init() -> Task<void>
     zlib_init();
 
     ShowInfo("do_init: starting ZMQ thread");
-    message::init(networking());
+    ipcClient_ = std::make_unique<IPCClient>(networking(), application_.zmqService());
+    message::init(*ipcClient_);
+
+    // NOTE: We're phasing out server usage without ximeshes and navmeshes. For now for ease of use,
+    // we're still allowing it in CI, but regular usage will demand them.
+    if (!config_.inCI)
+    {
+        if (!std::filesystem::exists("./ximeshes/") || std::filesystem::is_empty("./ximeshes/"))
+        {
+            ShowCritical("./ximeshes/ directory isn't present or is empty! Check your setup.");
+            std::exit(-1);
+        }
+
+        if (!std::filesystem::exists("./navmeshes/") || std::filesystem::is_empty("./navmeshes/"))
+        {
+            ShowCritical("./navmeshes/ directory isn't present or is empty! Check your setup.");
+            std::exit(-1);
+        }
+    }
 
     ShowInfo("do_init: loading items");
     itemutils::Initialize();
@@ -186,7 +196,6 @@ auto MapEngine::init() -> Task<void>
     battleutils::LoadWeaponSkillsList();
     battleutils::LoadMobSkillsList();
     battleutils::LoadPetSkillsList();
-    battleutils::LoadSkillChainDamageModifiers();
     petutils::LoadPetList();
     trustutils::LoadTrustList();
     mobutils::LoadSqlModifiers();
@@ -197,18 +206,7 @@ auto MapEngine::init() -> Task<void>
     synergyutils::LoadSynergyRecipes();
     CItemEquipment::LoadAugmentData(); // TODO: Move to itemutils
 
-    if (!std::filesystem::exists("./ximeshes/") || std::filesystem::is_empty("./ximeshes/"))
-    {
-        ShowError("./ximeshes/ directory isn't present or is empty");
-    }
-
-    if (!std::filesystem::exists("./navmeshes/") || std::filesystem::is_empty("./navmeshes/"))
-    {
-        ShowWarning("./navmeshes/ directory isn't present or is empty");
-    }
-
     co_await zoneutils::Initialize(scheduler_, config_);
-    zoneutils::SetLoginZoneLoadContext(&scheduler_, &config_);
     instanceutils::Initialize(config_);
 
     if (!config_.lazyZones)
@@ -414,14 +412,14 @@ void MapEngine::onGM(const std::vector<std::string>& inputs) const
 void MapEngine::onFixFabiontLinkshell(std::vector<std::string>& inputs) const
 {
     (void)inputs;
-    constexpr const char* kFabChar    = "Fabiont";
-    constexpr const char* kOwner    = "Aremais";
-    constexpr const char* kLsName   = "PegasusXI";
-    constexpr uint8_t     SLOT_LINK1 = 0x10;
-    constexpr uint8_t     SLOT_LINK2 = 0x11;
-    constexpr uint8_t     LOC_INVENTORY = 0;
-    constexpr uint16_t    ITEM_LINKSHELL = 513;
-    constexpr uint16_t    ITEM_EMPTY     = 65535;
+    constexpr const char* kFabChar         = "Fabiont";
+    constexpr const char* kOwner           = "Aremais";
+    constexpr const char* kLsName          = "PegasusXI";
+    constexpr uint8_t     SLOT_LINK1       = 0x10;
+    constexpr uint8_t     SLOT_LINK2       = 0x11;
+    constexpr uint8_t     LOC_INVENTORY    = 0;
+    constexpr uint16_t    ITEM_LINKSHELL   = 513;
+    constexpr uint16_t    ITEM_EMPTY       = 65535;
     constexpr uint8_t     LSTYPE_LINKSHELL = 1; // item_linkshell.h
 
     const auto fabR = db::preparedStmt("SELECT charid FROM chars WHERE charname = ? LIMIT 1", std::string(kFabChar));
@@ -440,8 +438,8 @@ void MapEngine::onFixFabiontLinkshell(std::vector<std::string>& inputs) const
     }
     const uint32_t arId = arR->get<uint32>("charid");
 
-    uint8_t     fabLoc = 0;
-    uint8_t     fabSlot = 0;
+    uint8_t     fabLoc    = 0;
+    uint8_t     fabSlot   = 0;
     uint16_t    fabItemId = 0;
     std::string fabExtra;
     bool        found = false;
@@ -473,11 +471,11 @@ void MapEngine::onFixFabiontLinkshell(std::vector<std::string>& inputs) const
         {
             continue;
         }
-        fabLoc     = containerid;
-        fabSlot    = slotid;
-        fabItemId  = iid;
-        fabExtra   = invR->get<std::string>("extra");
-        found      = true;
+        fabLoc    = containerid;
+        fabSlot   = slotid;
+        fabItemId = iid;
+        fabExtra  = invR->get<std::string>("extra");
+        found     = true;
         break;
     }
 

@@ -27,7 +27,6 @@
 #include "colonization_system.h"
 #include "conquest_system.h"
 
-#include <concurrentqueue.h>
 #include <exception>
 #include <memory>
 
@@ -39,14 +38,18 @@ namespace
 
 auto getZMQEndpointString() -> std::string
 {
-    return fmt::format("tcp://{}:{}", settings::get<std::string>("network.ZMQ_IP"), settings::get<uint16>("network.ZMQ_PORT"));
+    return fmt::format(
+        "{}://{}:{}",
+        settings::get<std::string>("network.ZMQ_TRANSPORT"),
+        settings::get<std::string>("network.ZMQ_IP"),
+        settings::get<uint16>("network.ZMQ_PORT"));
 }
 
 } // namespace
 
-IPCServer::IPCServer(WorldEngine& worldServer)
+IPCServer::IPCServer(WorldEngine& worldServer, ZMQService& zmqService)
 : worldServer_(worldServer)
-, zmqRouterWrapper_(getZMQEndpointString())
+, channel_(zmqService.registerRouter(getZMQEndpointString()))
 {
     TracyZoneScoped;
 }
@@ -368,7 +371,7 @@ void IPCServer::handleIncomingMessages()
 
     // TODO: Can we stop more messages appearing on the queue while we're processing?
     IPPMessage message;
-    while (zmqRouterWrapper_.incomingQueue_.try_dequeue(message))
+    while (channel_.tryReceive(message))
     {
         if (message.payload.empty())
         {
@@ -637,8 +640,7 @@ void IPCServer::handleMessage_KillSession(const IPP& ipp, const ipc::KillSession
 
         if (prevZoneID != nextZoneID)
         {
-            const auto prevZoneU16 = static_cast<uint16>(prevZoneID);
-            if (const auto it = zoneSettings_.zoneSettingsMap_.find(prevZoneU16); it != zoneSettings_.zoneSettingsMap_.end())
+            if (const auto it = zoneSettings_.zoneSettingsMap_.find(prevZoneID); it != zoneSettings_.zoneSettingsMap_.end())
             {
                 DebugIPCFmt("Message: -> rerouting to {}", it->second.ipp.toString());
 

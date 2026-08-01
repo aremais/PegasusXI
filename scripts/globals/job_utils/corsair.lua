@@ -2,7 +2,7 @@
 -- Corsair Job Utilities
 -----------------------------------
 require('scripts/globals/ability')
-require('scripts/globals/jobpoints')
+require('scripts/enum/job_points')
 -----------------------------------
 xi = xi or {}
 xi.job_utils = xi.job_utils or {}

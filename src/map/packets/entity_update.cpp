@@ -302,7 +302,7 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
             {
                 ref<uint8>(0x2A) = 4;
             }
-            if (PEntity->spawnAnimation == SPAWN_ANIMATION::SPECIAL)
+            if (PEntity->spawnAnimation == xi::SpawnAnimation::Special)
             {
                 ref<uint8>(0x28) |= 0x04;
             }
@@ -350,9 +350,9 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         ref<uint8>(0x1D)  = PEntity->animationSpeed;
     }
 
-    if (PEntity->allegiance == ALLEGIANCE_TYPE::PLAYER && PEntity->status == STATUS_TYPE::UPDATE)
+    if (PEntity->allegiance == xi::Allegiance::Player && PEntity->status == xi::Status::Update)
     {
-        ref<uint8>(0x20) = static_cast<uint8>(STATUS_TYPE::NORMAL);
+        ref<uint8>(0x20) = static_cast<uint8>(xi::Status::Normal);
     }
     else
     {
@@ -370,19 +370,19 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
             if (updatemask & UPDATE_HP)
             {
                 ref<uint8>(0x1E) = 0x64; // HPP: 100
-                ref<uint8>(0x1F) = PEntity->animation;
+                ref<uint8>(0x1F) = static_cast<uint8>(PEntity->animation);
                 ref<uint8>(0x2A) |= PEntity->animationsub;
 
-                ref<uint32>(0x21) = PNpc->m_flags;
+                ref<uint32>(0x21) = static_cast<uint32>(PNpc->m_flags);
                 ref<uint8>(0x27)  = PNpc->name_prefix; // gender and something else
 
-                if (PNpc->IsTriggerable())
+                if (PNpc->triggerable())
                 {
                     ref<uint8>(0x28) |= 0x40;
                 }
 
                 ref<uint8>(0x29) = static_cast<uint8>(PEntity->allegiance);
-                ref<uint8>(0x2B) = PEntity->namevis;
+                ref<uint8>(0x2B) = static_cast<uint8>(PEntity->namevis);
             }
 
             // TODO: Unify name logic
@@ -446,31 +446,31 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
             if (updatemask & UPDATE_HP)
             {
                 ref<uint8>(0x1E) = PMob->GetHPP();
-                ref<uint8>(0x1F) = PEntity->animation;
+                ref<uint8>(0x1F) = static_cast<uint8>(PEntity->animation);
                 ref<uint8>(0x2A) |= PEntity->animationsub;
 
-                ref<uint32>(0x21) = PMob->m_flags;
+                ref<uint32>(0x21) = static_cast<uint32>(PMob->m_flags);
                 ref<uint8>(0x25)  = PMob->health.hp > 0 ? 0x08 : 0;
                 ref<uint8>(0x27)  = PMob->m_name_prefix;
                 if (PMob->PMaster != nullptr && PMob->PMaster->objtype == TYPE_PC)
                 {
                     ref<uint8>(0x27) |= 0x08;
                 }
-                ref<uint8>(0x28) |= PMob->StatusEffectContainer->HasStatusEffect(EFFECT_TERROR) ? 0x10 : 0x00;
+                ref<uint8>(0x28) |= PMob->StatusEffectContainer->HasStatusEffect(xi::StatusEffect::Terror) ? 0x10 : 0x00;
 
                 // Giga hack -- mobs in Pso'Xja for some reason are less "visible"
                 // Set CliPriorityFlag to force them to render on the client if they receive 0x00Es
                 // TODO: make this a MOBMOD or some other way to set this flag without hardcoding.
-                if (PMob->getZone() == ZONEID::ZONE_PSOXJA)
+                if (PMob->getZone() == xi::ZoneId::Psoxja)
                 {
                     // Enable CliPriorityFlag
                     ref<uint8>(0x28) |= 0x20;
                 }
 
-                ref<uint8>(0x28) |= PMob->health.hp > 0 && PMob->animation == ANIMATION_DEATH ? 0x08 : 0;
-                ref<uint8>(0x28) |= PMob->status == STATUS_TYPE::NORMAL && PMob->objtype == TYPE_MOB ? 0x40 : 0; // Make the entity triggerable if a mob and normal status
+                ref<uint8>(0x28) |= PMob->health.hp > 0 && PMob->animation == xi::Animation::Death ? 0x08 : 0;
+                ref<uint8>(0x28) |= PMob->status == xi::Status::Normal && PMob->objtype == TYPE_MOB ? 0x40 : 0; // Make the entity triggerable if a mob and normal status
                 ref<uint8>(0x29) = static_cast<uint8>(PEntity->allegiance);
-                ref<uint8>(0x2B) = PEntity->namevis;
+                ref<uint8>(0x2B) = static_cast<uint8>(PEntity->namevis);
             }
 
             // TODO: make flags struct for 0x00E when it's decompped
@@ -482,7 +482,7 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
 
             if (updatemask & UPDATE_STATUS)
             {
-                ref<uint32>(0x2C) = PMob->m_OwnerID.id;
+                ref<uint32>(0x2C) = PMob->m_OwnerID.UniqueNo;
             }
 
             if (updatemask & UPDATE_NAME)

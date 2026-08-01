@@ -229,6 +229,7 @@
     "manawell",
     "spontaneity",
     "marcato",
+    "na",
     "auto_regen",
     "auto_refresh",
     "fishing_imagery",
@@ -251,6 +252,7 @@
     "mounted",
     "signet",
     "battlefield",
+    "none",
     "sanction",
     "besieged",
     "illusion",
@@ -660,17 +662,15 @@
     "meditate",
     "elementalres_down",
     "full_speed_ahead",
+    "hysteria",
     "tomahawk",
+    "nuke_wall",
     "trust_aura_chr",
     "trust_aura_haste",
     "trust_aura_exp",
     "trust_aura_acc",
     "trust_aura_refresh",
     "trust_aura_regen",
-    "trust_aura_magic_attack",
-    "na",
-    "none",
-    "hysteria",
-    "nuke_wall"
+    "trust_aura_magic_attack"
   ]
 }

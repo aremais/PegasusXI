@@ -7,13 +7,9 @@
     "none",
     "sight",
     "hearing",
-    "sight_and_hearing",
     "lowhp",
-    "none1",
-    "none2",
     "magic",
-    "weaponskill",
-    "jobability",
+    "ability",
     "scent"
   ]
 }
