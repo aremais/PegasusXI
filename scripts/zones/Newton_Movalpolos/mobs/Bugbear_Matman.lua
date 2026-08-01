@@ -18,6 +18,9 @@ entity.onMobSpawn = function(mob)
     mob:setMod(xi.mod.DARK_SLEEP_RES_RANK, 10)
     mob:setMobMod(xi.mobMod.NO_H2H_PENALTY, 1)
     mob:setMobMod(xi.mobMod.BASE_DAMAGE_MULTIPLIER, 150)
+
+    -- setfTPModifierOverride is a relatively new binding; guard the call so
+    -- older builds or environments without the binding don't fail CI or runtime.
     if mob.setfTPModifierOverride then
         mob:setfTPModifierOverride(xi.mobSkill.FLYING_HIP_PRESS, 10.0, 10.0, 10.0)
     end
