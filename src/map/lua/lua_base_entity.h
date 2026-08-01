@@ -181,6 +181,9 @@ public:
     void changeMusic(MusicSlot slotId, uint16 trackId) const;                             // Sets the specified music Track for specified music block.
     void sendMenu(uint32 menu);                                                           // Displays a menu (AH,Raise,Tractor,MH etc)
     auto sendGuild(uint16 guildId, uint8 open, uint8 close, uint8 holiday) const -> bool; // Sends guild shop menu
+    auto openGuildShop(CLuaBaseEntity* PNpc, uint8 open, uint8 close, sol::optional<uint8> holiday) const -> bool; // Opens a lua guild shop and remembers the NPC
+    void clearGuildShop() const;                                                          // Clears the PC's open guild shop handle
+    void sendGuildClose(uint8 open, uint8 close, sol::optional<bool> passive) const;      // Sends the guild-open packet with a Close status
     void openSendBox() const;                                                             // Opens send box (to deliver items)
     void leaveGame();
     void sendEmote(const CLuaBaseEntity* target, uint8 emID, uint8 emMode, bool othersOnly) const;
@@ -493,6 +496,7 @@ public:
     int32 getCP(); // Conquest points, not to be confused with Capacity Points
     void  addCP(int32 cp);
     void  delCP(int32 cp);
+    void  gainConquestInfluence(int32 points);
 
     int32 getSeals(uint8 sealType);
     void  addSeals(int32 points, uint8 sealType);
@@ -704,6 +708,7 @@ public:
 
     bool   delStatusEffect(uint16 StatusID, const sol::object& SubType, const sol::object& SourceType, const sol::object& SourceTypeParam);
     void   delStatusEffectsByFlag(uint32 flag, const sol::object& silent);
+    void   delStatusEffectsByType(uint16 type);
     bool   delStatusEffectSilent(uint16 StatusID); // Removes Status Effect, suppresses message
     uint16 eraseStatusEffect();
     uint8  eraseAllStatusEffect();
@@ -822,6 +827,7 @@ public:
     void delPetMod(uint16 modID, int16 amount);
 
     auto hasAttachment(uint16 itemID) const -> bool;
+    auto hasAttachmentSet(uint16 itemID) const -> bool;
     auto getAutomatonName() const -> std::string;
     auto getAutomatonFrame() const -> Maybe<AutomatonFrame>;
     void setAutomatonFrame(AutomatonFrame frame) const;
@@ -866,6 +872,7 @@ public:
     uint32 getMobFlags();
 
     void setNpcFlags(uint32 flags);
+    void setNpcAlwaysRelevant(bool alwaysRelevant);
 
     void spawn(const sol::object& despawnSec, const sol::object& respawnSec);
     bool isSpawned();
@@ -907,7 +914,10 @@ public:
     void  delMobMod(uint16 mobModID, int16 value);
 
     uint32 getBattleTime();
+    auto   getfTPModifierOverride(uint16 skillId) -> sol::object;
+    void   setfTPModifierOverride(uint16 skillId, float ftp1, float ftp2, float ftp3);
     auto   getCrystalElement() const -> ELEMENT;
+    void   setCrystalElement(ELEMENT crystalElement);
 
     uint16 getBehavior();
     void   setBehavior(uint16 behavior);

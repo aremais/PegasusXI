@@ -27,8 +27,10 @@ commandObj.onTrigger = function(player, targetName)
         end
     end
 
-    targ:maxAllMerits()
-    player:printToPlayer(string.format('%s now has all merit abilities maxed.', targ:getName()))
+    -- maxAllMerits C++ binding is not available on this fork yet.
+    -- Award a large pool of spendable merit points instead.
+    targ:setMerits(30)
+    player:printToPlayer(string.format('%s merit points set to 30. Spend them to max abilities as needed.', targ:getName()))
 end
 
 return commandObj
