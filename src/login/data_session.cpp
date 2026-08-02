@@ -24,6 +24,7 @@
 #include "common/database.h"
 #include "common/ipc.h"
 #include "common/md52.h"
+#include "common/settings.h"
 #include "common/utils.h"
 
 #include <asio/write.hpp>

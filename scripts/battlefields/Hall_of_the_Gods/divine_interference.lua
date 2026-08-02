@@ -110,3 +110,5 @@ content.groups =
 
 return content:register()
 --]] -- END DISABLED
+
+return false

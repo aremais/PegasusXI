@@ -68,4 +68,6 @@ xi.latent =
     MAINJOB                = 62,
     IN_ADOULIN             = 63,
     IN_GARRISON            = 64,
+    SANCTION_FOOD_BONUS    = 65,
+    SIGIL_FOOD_BONUS       = 66,
 }

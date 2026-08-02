@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "enums/ecosystem.codegen.json",
-  "description": "GENERATED from data/enums/ecosystem.yaml. Do not edit.",
+  "description": "GENERATED from data/ecosystem.yaml. Do not edit.",
   "type": "string",
   "enum": [
     "unclassified",

@@ -20,6 +20,8 @@
 #include "common/cbasetypes.h"
 #include "data/enums/mod.h"
 
+#include "enums/legacy_enum_compat.h"
+
 // temporary workaround for using enum class as unordered_map key until compilers support it
 struct EnumClassHash
 {

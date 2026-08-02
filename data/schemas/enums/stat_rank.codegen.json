@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/stat_rank.codegen.json",
+  "description": "GENERATED from data/enums/stat_rank.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "none",
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g"
+  ]
+}

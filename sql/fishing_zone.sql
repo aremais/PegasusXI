@@ -225,7 +225,7 @@ INSERT INTO `fishing_zone` VALUES (185,'Dynamis-San_dOria',0);
 INSERT INTO `fishing_zone` VALUES (186,'Dynamis-Bastok',0);
 INSERT INTO `fishing_zone` VALUES (187,'Dynamis-Windurst',0);
 INSERT INTO `fishing_zone` VALUES (188,'Dynamis-Jeuno',0);
-INSERT INTO `fishing_zone` VALUES (189,'Residential_Area',0);
+INSERT INTO `fishing_zone` VALUES (189,'Outer_RaKaznar_[U3]',0);
 INSERT INTO `fishing_zone` VALUES (190,'King_Ranperres_Tomb',0);
 INSERT INTO `fishing_zone` VALUES (191,'Dangruf_Wadi',0);
 INSERT INTO `fishing_zone` VALUES (192,'Inner_Horutoto_Ruins',0);

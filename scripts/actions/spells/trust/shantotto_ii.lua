@@ -19,8 +19,8 @@ spellObject.onMobSpawn = function(mob)
     mob:addGambit(ai.t.TARGET, { ai.c.NOT_SC_AVAILABLE, 0 }, { ai.r.MA, ai.s.HIGHEST, xi.magic.spellFamily.NONE }, 45)
 
     local trustLevel  = mob:getMainLvl()
-    local power       = trustLevel / 10
-    local spellDamage = math.floor(trustLevel * 1.5)
+    local power       = trustLevel / 5
+    local spellDamage = trustLevel * math.floor((trustLevel + 1) / 10)
 
     mob:addMod(xi.mod.MATT, power)
     mob:addMod(xi.mod.MACC, power)

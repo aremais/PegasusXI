@@ -1,4 +1,4 @@
--- GENERATED from data/enums/ecosystem.yaml. Do not edit.
+-- GENERATED from data/ecosystem.yaml. Do not edit.
 xi = xi or {}
 
 ---@enum xi.ecosystem

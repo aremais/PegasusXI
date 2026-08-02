@@ -83,7 +83,11 @@ void GP_CLI_COMMAND_LOGIN::process(MapSession* PSession, CCharEntity* PChar) con
         if (static_cast<uint16>(destination) >= MAX_ZONEID || destZone == nullptr)
         {
             // TODO: work out how to drop player in moghouse that exits them to the zone they were in before this happened, like we used to.
-            ShowWarning("GP_CLI_COMMAND_LOGIN: player tried to enter zone that was invalid or out of range");
+            ShowWarning(
+                "GP_CLI_COMMAND_LOGIN: destination zone %u not loaded or invalid (lazyZones=%s). "
+                "Check --ip vs zone_settings.zoneip/zoneport, or omit --ip. If not using --lazy, zone_settings row may be missing for this zoneid.",
+                static_cast<uint16>(destination),
+                zoneutils::IsLazyLoadingEnabled() ? "true" : "false");
             ShowWarning("GP_CLI_COMMAND_LOGIN: dumping player `%s` to homepoint!", PChar->getName());
             PChar->requestedWarp = WarpRequest::HomePoint; // Not a "request" but a demand
 

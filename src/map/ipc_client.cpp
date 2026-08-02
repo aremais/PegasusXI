@@ -782,6 +782,14 @@ void IPCClient::handleMessage_KillSession(const IPP& ipp, const ipc::KillSession
             ShowDebugFmt("Closing session of charid {} on request of other process", message.victimId);
             networking_.sessions().destroySession(sessionToDelete);
         }
+        else if (sessionToDelete->blowfish.status == BLOWFISH_ACCEPTED && sessionToDelete->PChar)
+        {
+            // Fully logged-in player (e.g. admin kick). Do not apply to BLOWFISH_WAITING —
+            // login sends KillSession to clear the previous zone, and on a single map process
+            // that IPC returns here and would otherwise ForceLogout the new session.
+            ShowDebugFmt("KillSession: force logout charid {}", message.victimId);
+            charutils::ForceLogout(sessionToDelete->PChar.get());
+        }
         else
         {
             ShowDebugFmt("KillSession for charid {} not needed", message.victimId);
