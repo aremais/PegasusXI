@@ -118,7 +118,7 @@ jobs:
                 [ -z "$file" ] && continue
                 case "$file" in
                   # Allow LSB CI dependency/tooling updates through; keep Pegasus-owned workflows/settings.
-                  .github/workflows/runner_build.yml|.github/workflows/build.yml)
+                  .github/workflows/runner_build.yml|.github/workflows/runner_test.yml|.github/workflows/build.yml)
                     echo "Taking LandSandBoat CI tooling version: $file"
                     git checkout --theirs -- "$file" || true
                     git add -- "$file" || true

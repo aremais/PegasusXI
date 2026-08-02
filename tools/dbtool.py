@@ -464,21 +464,26 @@ def fetch_files(express=False):
             print_red("Error checking diffs.\nCheck that hash is valid in config.yaml.")
             print(e)
     else:
-        # One-shot repair/audit scripts are not part of a fresh schema import.
+        # One-shot repair/diagnostic scripts are not part of a fresh schema import.
         # They sort alphabetically before many CREATE TABLE files (e.g. fix_* before
         # npc_list.sql) and break CI/dbtool full imports with ERROR 1146.
+        # Do not skip LSB schema tables such as audit_bazaar.sql.
         skip_full_import_prefixes = (
             "fix_",
             "patch_",
             "scan_",
             "verify_",
-            "audit_",
         )
+        skip_full_import_names = {
+            "audit_zone_settings.sql",
+        }
         for _, _, filenames in os.walk(from_server_path("sql/")):
             for filename in sorted(filenames):
                 if not filename.endswith(".sql"):
                     continue
                 if filename.startswith(skip_full_import_prefixes):
+                    continue
+                if filename in skip_full_import_names:
                     continue
                 import_files.append(from_server_path("sql/" + filename))
             break
