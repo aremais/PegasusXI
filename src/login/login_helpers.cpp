@@ -35,15 +35,11 @@ namespace loginHelpers
 
 namespace
 {
-    // Permanent movement speed for new characters on this account (see scripts/globals/player.lua).
-    constexpr uint32      AREMAIS_ACCOUNT_ID      = 1022;
-    constexpr int32       AREMAIS_PERM_MOVE_SPEED = 80;
-    constexpr const char* AREMAIS_MOVE_SPEED_VAR  = "AremaisPermMoveSpeed";
-} // namespace
 
-
-namespace
-{
+// Permanent movement speed for new characters on this account (see scripts/globals/player.lua).
+constexpr uint32      AREMAIS_ACCOUNT_ID      = 1022;
+constexpr int32       AREMAIS_PERM_MOVE_SPEED = 80;
+constexpr const char* AREMAIS_MOVE_SPEED_VAR  = "AremaisPermMoveSpeed";
 
 using NameHash = std::array<uint8, 16>;
 
