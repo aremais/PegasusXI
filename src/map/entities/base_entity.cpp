@@ -109,7 +109,9 @@ auto CBaseEntity::getZone() const -> xi::ZoneId
     if (loc.zone != nullptr)
     {
         ShowWarningFmt("CBaseEntity::getZone: entity {} (id {}) has non-null loc.zone that is not a live zone; using destination {}",
-                       name, id, loc.destination);
+                       name,
+                       id,
+                       loc.destination);
     }
     return loc.destination;
 }
