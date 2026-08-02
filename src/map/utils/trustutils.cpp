@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
   Copyright (c) 2024 LandSandBoat Dev Teams
@@ -714,57 +714,54 @@ void LoadTrustStatsAndSkills(CTrustEntity* PTrust)
     auto skillList = battleutils::GetMobSkillList(PTrust->m_MobSkillList);
     for (uint16 skill_id : skillList)
     {
-        if (skill_id <= 255) // Player weapon skills: always register (Lv3 filter only applied to mobskills below)
+        TrustSkill_t skill;
+        if (skill_id <= 255) // Player WSs
         {
             CWeaponSkill* PWeaponSkill = battleutils::GetWeaponSkill(skill_id);
             if (!PWeaponSkill)
             {
                 ShowWarning("LoadTrustStatsAndSkills: Error loading WeaponSkill id %d for trust %s", skill_id, PTrust->name);
-                continue;
+                break;
             }
 
-            controller->m_GambitsContainer->tp_skills.emplace_back(TrustSkill_t{
+            skill = TrustSkill_t{
                 G_REACTION::WS,
                 skill_id,
                 PWeaponSkill->getPrimarySkillchain(),
                 PWeaponSkill->getSecondarySkillchain(),
                 PWeaponSkill->getTertiarySkillchain(),
                 battleutils::isValidSelfTargetWeaponskill(skill_id) ? TARGET_SELF : TARGET_ENEMY,
-            });
-            continue;
+            };
         }
-
-        CMobSkill* PMobSkill = battleutils::GetMobSkill(skill_id);
-        if (!PMobSkill)
+        else // MobSkills
         {
-            ShowWarning("LoadTrustStatsAndSkills: Error loading MobSkill id %d for trust %s", skill_id, PTrust->name);
-            continue;
+            CMobSkill* PMobSkill = battleutils::GetMobSkill(skill_id);
+            if (!PMobSkill)
+            {
+                ShowWarning("LoadTrustStatsAndSkills: Error loading MobSkill id %d for trust %s", skill_id, PTrust->name);
+                break;
+            }
+            skill = {
+                G_REACTION::MS,
+                skill_id,
+                PMobSkill->getPrimarySkillchain(),
+                PMobSkill->getSecondarySkillchain(),
+                PMobSkill->getTertiarySkillchain(),
+                static_cast<TARGETTYPE>(PMobSkill->getValidTargets()),
+            };
+
+            controller->m_GambitsContainer->tp_skills.emplace_back(skill);
         }
 
-        TrustSkill_t skill{
-            G_REACTION::MS,
-            skill_id,
-            PMobSkill->getPrimarySkillchain(),
-            PMobSkill->getSecondarySkillchain(),
-            PMobSkill->getTertiarySkillchain(),
-            static_cast<TARGETTYPE>(PMobSkill->getValidTargets()),
-        };
-
-        // Only get access to mobskills that produce Lv3 SCs after Lv60 (trust WS are unrestricted above)
+        // Only get access to skills that produce Lv3 SCs after Lv60
         bool canFormLv3Skillchain = skill.primary >= SC_GRAVITATION || skill.secondary >= SC_GRAVITATION || skill.tertiary >= SC_GRAVITATION;
-        bool onlyHasLv3Skillchains  = canFormLv3Skillchain && controller->m_GambitsContainer->tp_skills.empty();
+
+        // Special case for Zeid II and others who only have Lv3+ skills
+        bool onlyHasLv3Skillchains = canFormLv3Skillchain && controller->m_GambitsContainer->tp_skills.empty();
 
         if (!canFormLv3Skillchain || PTrust->GetMLevel() >= 60 || onlyHasLv3Skillchains)
         {
             controller->m_GambitsContainer->tp_skills.emplace_back(skill);
         }
-    }
-
-    if (PTrust->m_MobSkillList > 0 && controller->m_GambitsContainer->tp_skills.empty())
-    {
-        ShowWarning(
-            "LoadTrustStatsAndSkills: trust '%s' skill_list_id=%u but tp_skills is empty — check mob_skill_lists + weapon_skills rows, and map SQL load.",
-            PTrust->name.c_str(),
-            static_cast<uint32_t>(PTrust->m_MobSkillList));
     }
 }

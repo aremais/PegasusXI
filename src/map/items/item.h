@@ -65,6 +65,9 @@ class CItem
 {
 public:
     CItem(uint16 id);
+    CItem(const CItem& other);
+    auto operator=(const CItem&) -> CItem& = delete;
+
     virtual ~CItem();
 
     uint16 getID() const;
@@ -111,7 +114,7 @@ public:
     void               setReceiver(const std::string& receiver);
 
     virtual auto getSignature() const -> const std::string;
-    virtual void              setSignature(const std::string& signature);
+    virtual void setSignature(const std::string& signature);
 
     auto isDirty() const -> bool;
     void setDirty(bool dirty);
@@ -123,8 +126,6 @@ public:
     auto state() const -> ItemState;
     void setState(ItemState newState, xi::Badge<xi::items::detail::ItemAccess>);
     auto isBusy() const -> bool;
-
-    void setSoulPlateData(const std::string& name, uint32 interestData, uint8 zeni, uint16 skillIndex, uint8 fp);
 
     static constexpr uint32_t extra_size = 0x18;
     uint8                     m_extra[extra_size]{};

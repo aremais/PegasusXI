@@ -19,13 +19,11 @@
 ===========================================================================
 */
 
-#include <algorithm>
 #include <cstring>
 
 #include "common/utils.h"
 #include "exdata/appraisable.h"
 #include "exdata/augment_standard.h"
-#include "exdata/soul_plate.h"
 #include "item.h"
 
 /************************************************************************
@@ -51,6 +49,29 @@ CItem::CItem(uint16 id)
 , m_sent(false)
 {
     std::memset(m_extra, 0, sizeof(m_extra));
+}
+
+CItem::CItem(const CItem& other)
+: m_id(other.m_id)
+, m_subid(other.m_subid)
+, m_type(other.m_type)
+, m_subtype(other.m_subtype)
+, m_quantity(other.m_quantity)
+, m_reserve(other.m_reserve)
+, m_stackSize(other.m_stackSize)
+, m_BasePrice(other.m_BasePrice)
+, m_CharPrice(other.m_CharPrice)
+, m_ahCat(other.m_ahCat)
+, m_flag(other.m_flag)
+, m_slotID(other.m_slotID)
+, m_locationID(other.m_locationID)
+, m_sent(other.m_sent)
+, dirty_(other.dirty_)
+, m_name(other.m_name)
+, m_send(other.m_send)
+, m_recv(other.m_recv)
+{
+    std::memcpy(m_extra, other.m_extra, sizeof(m_extra));
 }
 
 CItem::~CItem() = default;
@@ -322,21 +343,6 @@ void CItem::setSignature(const std::string& signature)
     std::memcpy(m_extra + 0x0C, encoded, sizeof(m_extra) - 0x0C);
 }
 
-auto CItem::state() const -> ItemState
-{
-    return state_;
-}
-
-void CItem::setState(const ItemState newState, xi::Badge<xi::items::detail::ItemAccess>)
-{
-    state_ = newState;
-}
-
-auto CItem::isBusy() const -> bool
-{
-    return state_ != ItemState::Free;
-}
-
 /************************************************************************
  *                                                                       *
  *                                                                       *
@@ -416,14 +422,17 @@ bool CItem::isMannequin() const
     return m_id >= 256 && m_id <= 263;
 }
 
-void CItem::setSoulPlateData(const std::string& name, uint32 interestData, uint8 zeni, uint16 skillIndex, uint8 fp)
+auto CItem::state() const -> ItemState
 {
-    std::memset(m_extra, 0, sizeof(m_extra));
-    auto& sp         = exdata<Exdata::SoulPlate>();
-    sp.PoolId        = static_cast<uint16_t>(interestData & 0xFFFFu);
-    sp.FamilyId      = static_cast<uint16_t>((interestData >> 16) & 0xFFFFu);
-    sp.Quality       = std::min<uint32_t>(zeni, (1u << 6) - 1u);
-    sp.FeralSkill    = std::min<uint32_t>(skillIndex, (1u << 12) - 1u);
-    sp.FeralPoints   = std::min<uint32_t>(fp, (1u << 7) - 1u);
-    PackSoultrapperName(name, sp.Signature);
+    return state_;
+}
+
+void CItem::setState(const ItemState newState, xi::Badge<xi::items::detail::ItemAccess>)
+{
+    state_ = newState;
+}
+
+auto CItem::isBusy() const -> bool
+{
+    return state_ != ItemState::Free;
 }

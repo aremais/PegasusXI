@@ -39,12 +39,9 @@ GP_SERV_COMMAND_EVENT::GP_SERV_COMMAND_EVENT(const CCharEntity* PChar, const Eve
         packet.ActIndex = PChar->targid;
     }
 
-    packet.EventNum  = PChar->getZone();
-    packet.EventPara = eventInfo->eventId;
-    packet.EventNum2 = PChar->getZone();
-
-    // 0x032 (simple event) is used for NPC triggers with no EventNum params (e.g. Mog House elevator).
-    // Mode must follow eventFlags; when flags are 0, Mode and EventPara2 are 0 — not the same defaults as 0x033/0x034.
+    packet.EventNum   = static_cast<uint16>(PChar->getZone());
+    packet.EventPara  = eventInfo->eventId;
     packet.Mode       = eventInfo->eventFlags & 0xFFFF;
+    packet.EventNum2  = static_cast<uint16>(PChar->getZone());
     packet.EventPara2 = eventInfo->eventFlags >> 16;
 }

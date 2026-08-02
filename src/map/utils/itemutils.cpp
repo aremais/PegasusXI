@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -23,19 +23,20 @@
 
 #include "map_engine.h"
 
-#include <algorithm>
-#include <array>
-#include <cstring>
-#include <string>
-#include <map>
-#include <unordered_map>
-
 #include "common/database.h"
 #include "common/logging.h"
 #include "common/sjis.h"
 
+#include <common/types/hash_map.h>
+
+#include <algorithm>
+#include <array>
+#include <cstring>
+#include <map>
+
 #include "entities/battle_entity.h"
 #include "enums/item_types.h"
+#include "items/item_flowerpot.h"
 #include "items/item_furnishing.h"
 #include "items/item_general.h"
 #include "items/item_linkshell.h"
@@ -45,16 +46,18 @@
 
 namespace
 {
+
 std::array<std::unique_ptr<CItem>, MAX_ITEMID> itemTemplates;
 std::unique_ptr<CItemWeapon>                   unarmedItem;
 std::unique_ptr<CItemWeapon>                   unarmedH2HItem;
+
 } // namespace
 
 std::array<DropList_t*, MAX_DROPID> g_pDropList; // global array of monster droplist items
 std::array<LootList_t*, MAX_LOOTID> g_pLootList; // global array of BCNM lootlist items
 
 // Translation lookup: language -> (name -> {item id, translated name})
-std::map<GP_CLI_COMMAND_TRANSLATE_INDEX, std::unordered_map<std::string, std::pair<uint16, std::string>>> g_TranslateMap;
+std::map<GP_CLI_COMMAND_TRANSLATE_INDEX, HashMap<std::string, std::pair<uint16, std::string>>> g_TranslateMap;
 
 DropItem_t::DropItem_t(uint8 DropType, uint16 ItemID, uint16 DropRate)
 : DropType(DropType)
@@ -89,7 +92,7 @@ LootContainer::LootContainer(DropList_t* dropList)
 {
 }
 
-void LootContainer::ForEachGroup(const std::function<void(const DropGroup_t&)>& func)
+void LootContainer::ForEachGroup(FnRef<void(const DropGroup_t&)> func)
 {
     for (const auto& group : dropList->Groups)
     {
@@ -102,7 +105,7 @@ void LootContainer::ForEachGroup(const std::function<void(const DropGroup_t&)>& 
     }
 }
 
-void LootContainer::ForEachItem(const std::function<void(const DropItem_t&)>& func)
+void LootContainer::ForEachItem(FnRef<void(const DropItem_t&)> func)
 {
     for (const auto& item : dropList->Items)
     {
@@ -149,6 +152,12 @@ auto clone(const CItem& source) -> std::unique_ptr<CItem>
     if (source.isType(ITEM_LINKSHELL))
     {
         return std::make_unique<CItemLinkshell>(static_cast<const CItemLinkshell&>(source));
+    }
+
+    // Flowerpot check has to go before Furnishing because isType is a bitwise check and flowerpots are a child class
+    if (source.isType(ITEM_FLOWERPOT))
+    {
+        return std::make_unique<CItemFlowerpot>(static_cast<const CItemFlowerpot&>(source));
     }
 
     if (source.isType(ITEM_FURNISHING))
@@ -245,44 +254,35 @@ void LoadItemList()
                 return std::make_unique<CItemWeapon>(itemId);
             case ItemType::Currency:
                 return std::make_unique<CItemCurrency>(itemId);
+            case ItemType::FlowerPot:
+                return std::make_unique<CItemFlowerpot>(itemId);
             default:
                 ShowErrorFmt("LoadItemList({}): Unknown item type {}", itemId, static_cast<uint8>(itemType));
                 return std::make_unique<CItemGeneral>(itemId);
         }
     };
 
-    const auto itemBasicColumns = db::getTableColumnNames("item_basic");
-    const bool haveNameJpCol    = std::find(itemBasicColumns.begin(), itemBasicColumns.end(), "name_jp") != itemBasicColumns.end();
-    if (!haveNameJpCol)
-    {
-        ShowWarning("item_basic is missing name_jp; using empty strings for item JP names. Apply migration tools/migrations/051_item_basic_name_jp.py to restore the column and optional Japanese data.");
-    }
-
-    const std::string nameJpSelect = haveNameJpCol
-                                       ? "b.name_jp"
-                                       : "CAST('' AS CHAR(255) CHARACTER SET utf8mb4) AS name_jp";
-    const auto        query        = fmt::format("SELECT "
-                                          "b.itemId,b.name,b.sortname,{},b.type,b.stackSize,b.flags,"
-                                          "b.aH,b.BaseSell,b.subid,"
-                                          "u.validTargets,u.activation,u.animation,u.animationTime,"
-                                          "u.maxCharges,u.useDelay,u.reuseDelay,u.aoe,"
-                                          "a.level,a.ilevel,a.jobs,a.MId,"
-                                          "a.shieldSize,a.scriptType,a.slot,a.rslot,"
-                                          "a.su_level,a.rslotlook,"
-                                          "w.skill,w.subskill,w.ilvl_skill,w.ilvl_parry,"
-                                          "w.ilvl_macc,w.delay,w.dmg,w.dmgType,"
-                                          "w.hit,w.unlock_points,"
-                                          "f.storage,f.moghancement,f.element,f.aura,f.placement AS furn_placement,f.size_x,f.size_y,f.height AS furn_height,"
-                                          "p.slot AS pup_slot,p.element AS pup_element "
-                                          "FROM item_basic AS b "
-                                          "LEFT JOIN item_usable AS u USING (itemId) "
-                                          "LEFT JOIN item_equipment  AS a USING (itemId) "
-                                          "LEFT JOIN item_weapon AS w USING (itemId) "
-                                          "LEFT JOIN item_furnishing AS f USING (itemId) "
-                                          "LEFT JOIN item_puppet AS p USING (itemId) "
-                                          "WHERE itemId < ?",
-                                          nameJpSelect);
-    auto rset = db::preparedStmt(query, MAX_ITEMID);
+    auto rset = db::preparedStmt("SELECT "
+                                 "b.itemId,b.name,b.sortname,b.name_jp,b.type,b.stackSize,b.flags,"
+                                 "b.aH,b.BaseSell,b.subid,"
+                                 "u.validTargets,u.activation,u.animation,u.animationTime,"
+                                 "u.maxCharges,u.useDelay,u.reuseDelay,u.aoe,"
+                                 "a.level,a.ilevel,a.jobs,a.MId,"
+                                 "a.shieldSize,a.scriptType,a.slot,a.rslot,"
+                                 "a.su_level,a.rslotlook,"
+                                 "w.skill,w.subskill,w.ilvl_skill,w.ilvl_parry,"
+                                 "w.ilvl_macc,w.delay,w.dmg,w.dmgType,"
+                                 "w.hit,w.unlock_points,"
+                                 "f.storage,f.moghancement,f.element,f.aura,f.placement AS furn_placement,f.size_x,f.size_y,f.height AS furn_height,"
+                                 "p.slot AS pup_slot,p.element AS pup_element "
+                                 "FROM item_basic AS b "
+                                 "LEFT JOIN item_usable AS u USING (itemId) "
+                                 "LEFT JOIN item_equipment  AS a USING (itemId) "
+                                 "LEFT JOIN item_weapon AS w USING (itemId) "
+                                 "LEFT JOIN item_furnishing AS f USING (itemId) "
+                                 "LEFT JOIN item_puppet AS p USING (itemId) "
+                                 "WHERE itemId < ?",
+                                 MAX_ITEMID);
     FOR_DB_MULTIPLE_RESULTS(rset)
     {
         auto   tplOwn = buildFromType(rset->get<uint16>("itemId"), rset->get<ItemType>("type"));
@@ -319,18 +319,17 @@ void LoadItemList()
                 static_cast<CItemUsable*>(PItem)->setAoE(rset->get<uint16>("aoe"));
             }
 
-            if (PItem->isType(ITEM_PUPPET) && !rset->isNull("pup_slot"))
+            if (PItem->isType(ITEM_PUPPET))
             {
                 static_cast<CItemPuppet*>(PItem)->setEquipSlot(rset->get<uint32>("pup_slot"));
-                static_cast<CItemPuppet*>(PItem)->setElementSlots(rset->getOrDefault<uint32>("pup_element", 0));
+                static_cast<CItemPuppet*>(PItem)->setElementSlots(rset->get<uint32>("pup_element"));
 
                 // If this is a PUP attachment, load the appropriate script as well
                 auto attachmentFile = fmt::format("./scripts/actions/abilities/pets/attachments/{}.lua", PItem->getName());
-                luautils::CacheLuaObjectFromFile(attachmentFile);
+                luautils::LoadLuaObjectFromFile(attachmentFile);
             }
 
-            // item_basic may flag ITEM_EQUIPMENT without a matching item_equipment row (LEFT JOIN)
-            if (PItem->isType(ITEM_EQUIPMENT) && !rset->isNull("slot"))
+            if (PItem->isType(ITEM_EQUIPMENT))
             {
                 static_cast<CItemEquipment*>(PItem)->setReqLvl(rset->get<uint8>("level"));
                 static_cast<CItemEquipment*>(PItem)->setILvl(rset->get<uint8>("ilevel"));
@@ -339,9 +338,9 @@ void LoadItemList()
                 static_cast<CItemEquipment*>(PItem)->setShieldSize(rset->get<uint8>("shieldSize"));
                 static_cast<CItemEquipment*>(PItem)->setScriptType(rset->get<uint16>("scriptType"));
                 static_cast<CItemEquipment*>(PItem)->setEquipSlotId(rset->get<uint16>("slot"));
-                static_cast<CItemEquipment*>(PItem)->setRemoveSlotId(rset->getOrDefault<uint16>("rslot", 0));
-                static_cast<CItemEquipment*>(PItem)->setRemoveSlotLookId(rset->getOrDefault<uint16>("rslotlook", 0));
-                static_cast<CItemEquipment*>(PItem)->setSuperiorLevel(rset->getOrDefault<uint8>("su_level", 0));
+                static_cast<CItemEquipment*>(PItem)->setRemoveSlotId(rset->get<uint16>("rslot"));
+                static_cast<CItemEquipment*>(PItem)->setRemoveSlotLookId(rset->get<uint16>("rslotlook"));
+                static_cast<CItemEquipment*>(PItem)->setSuperiorLevel(rset->get<uint8>("su_level"));
 
                 if (static_cast<CItemEquipment*>(PItem)->getValidTarget() != 0)
                 {
@@ -349,9 +348,9 @@ void LoadItemList()
                 }
             }
 
-            if (PItem->isType(ITEM_WEAPON) && !rset->isNull("delay"))
+            if (PItem->isType(ITEM_WEAPON))
             {
-                static_cast<CItemWeapon*>(PItem)->setSkillType(rset->get<uint8>("skill"));
+                static_cast<CItemWeapon*>(PItem)->setSkillType(rset->get<xi::SkillType>("skill"));
                 static_cast<CItemWeapon*>(PItem)->setSubSkillType(rset->get<uint8>("subskill"));
                 static_cast<CItemWeapon*>(PItem)->setILvlSkill(rset->get<uint16>("ilvl_skill"));
                 static_cast<CItemWeapon*>(PItem)->setILvlParry(rset->get<uint16>("ilvl_parry"));
@@ -359,13 +358,13 @@ void LoadItemList()
                 static_cast<CItemWeapon*>(PItem)->setBaseDelay(rset->get<uint16>("delay"));
                 static_cast<CItemWeapon*>(PItem)->setDelay(rset->get<uint16>("delay"));
                 static_cast<CItemWeapon*>(PItem)->setDamage(rset->get<uint16>("dmg"));
-                static_cast<CItemWeapon*>(PItem)->setDmgType(rset->get<DAMAGE_TYPE>("dmgType"));
+                static_cast<CItemWeapon*>(PItem)->setDmgType(rset->get<xi::DamageType>("dmgType"));
                 static_cast<CItemWeapon*>(PItem)->setMaxHit(rset->get<uint8>("hit"));
                 static_cast<CItemWeapon*>(PItem)->setTotalUnlockPointsNeeded(rset->get<uint16>("unlock_points"));
 
                 int        dmg   = rset->get<uint16>("dmg");
                 int        delay = rset->get<uint16>("delay");
-                const bool isH2H = static_cast<CItemWeapon*>(PItem)->getSkillType() == SKILL_HAND_TO_HAND;
+                const bool isH2H = static_cast<CItemWeapon*>(PItem)->getSkillType() == xi::SkillType::HandToHand;
 
                 if ((dmg > 0 || isH2H) && delay > 0) // avoid division by zero for items not yet implemented. Zero dmg h2h weapons don't actually have zero dmg for the purposes of DPS.
                 {
@@ -389,7 +388,7 @@ void LoadItemList()
                 }
             }
 
-            if (PItem->isType(ITEM_FURNISHING) && !rset->isNull("storage"))
+            if (PItem->isType(ITEM_FURNISHING))
             {
                 auto* PFurnishing = static_cast<CItemFurnishing*>(PItem);
                 PFurnishing->setStorage(rset->get<uint8>("storage"));
@@ -422,7 +421,7 @@ void LoadItemList()
             }
 
             auto filename = fmt::format("./scripts/items/{}.lua", PItem->getName());
-            luautils::CacheLuaObjectFromFile(filename);
+            luautils::LoadLuaObjectFromFile(filename);
         }
     }
 
@@ -468,7 +467,7 @@ void LoadItemList()
         const auto ItemID      = rset->get<uint16>("itemId");
         const auto modID       = rset->get<xi::Mod>("modId");
         const auto value       = rset->get<int16>("value");
-        const auto latentId    = rset->get<LATENT>("latentId");
+        const auto latentId    = rset->get<xi::Latent>("latentId");
         const auto latentParam = rset->get<uint16>("latentParam");
 
         if (auto* tpl = itemTemplates[ItemID].get(); tpl != nullptr && tpl->isType(ITEM_EQUIPMENT))
@@ -534,17 +533,18 @@ void LoadDropList()
 void Initialize()
 {
     TracyZoneScoped;
+
     LoadItemList();
     LoadDropList();
 
     unarmedItem = std::make_unique<CItemWeapon>(0);
-    unarmedItem->setDmgType(DAMAGE_TYPE::NONE);
-    unarmedItem->setSkillType(SKILL_NONE);
+    unarmedItem->setDmgType(xi::DamageType::None);
+    unarmedItem->setSkillType(xi::SkillType::None);
     unarmedItem->setDamage(3);
 
     unarmedH2HItem = std::make_unique<CItemWeapon>(0);
-    unarmedH2HItem->setDmgType(DAMAGE_TYPE::HTH);
-    unarmedH2HItem->setSkillType(SKILL_HAND_TO_HAND);
+    unarmedH2HItem->setDmgType(xi::DamageType::HandToHand);
+    unarmedH2HItem->setSkillType(xi::SkillType::HandToHand);
     unarmedH2HItem->setDamage(0);
 
     // load magian trial data AFTER items
@@ -581,7 +581,7 @@ void FreeItemList()
 }
 
 auto TranslateItemName(GP_CLI_COMMAND_TRANSLATE_INDEX fromLang, GP_CLI_COMMAND_TRANSLATE_INDEX toLang, const std::string& name)
-    -> std::optional<std::pair<uint16, std::string>>
+    -> Maybe<std::pair<uint16, std::string>>
 {
     std::ignore = toLang; // With only EN/JP, the "from" map already stores the other language's translation.
 

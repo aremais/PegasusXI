@@ -22,7 +22,6 @@
 #include "0x016_charreq.h"
 
 #include "entities/char_entity.h"
-#include "entities/npc_entity.h"
 #include "packets/char_status.h"
 #include "utils/zoneutils.h"
 
@@ -41,8 +40,7 @@ void GP_CLI_COMMAND_CHARREQ::process(MapSession* PSession, CCharEntity* PChar) c
         return;
     }
 
-    // Targids below 0x400 may be mobs, NPCs, or ships; mobs are only resolved when TYPE_MOB is set (see CZoneEntities::GetEntity).
-    CBaseEntity* PEntity = PChar->GetEntity(this->ActIndex, TYPE_NPC | TYPE_PC | TYPE_MOB);
+    CBaseEntity* PEntity = PChar->GetEntity(this->ActIndex, TYPE_NPC | TYPE_PC | TYPE_SHIP);
     if (!PEntity)
     {
         const auto fullId = ((4096 + static_cast<uint16>(PChar->getZone())) << 12) + this->ActIndex;
@@ -73,15 +71,15 @@ void GP_CLI_COMMAND_CHARREQ::process(MapSession* PSession, CCharEntity* PChar) c
         // Special case for onZoneIn cutscenes in Mog House
         // TODO: Verify this condition when Mog House sharing is implemented.
         if (PChar->m_moghouseID == PChar->id &&
-            PEntity->status == STATUS_TYPE::DISAPPEAR &&
+            PEntity->status == xi::Status::Disappear &&
             PEntity->loc.p.z == 1.5 &&
             PEntity->look.face == 0x52)
         {
             // Using the same logic as in ZoneEntities::SpawnConditionalNPCs:
             // Change the status of the entity, send the packet, change it back to disappear
-            PEntity->status = STATUS_TYPE::NORMAL;
+            PEntity->status = xi::Status::Normal;
             PChar->updateEntityPacket(PEntity, ENTITY_SPAWN, UPDATE_ALL_MOB);
-            PEntity->status = STATUS_TYPE::DISAPPEAR;
+            PEntity->status = xi::Status::Disappear;
             return;
         }
 

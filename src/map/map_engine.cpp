@@ -21,13 +21,9 @@
 
 #include "map_engine.h"
 
-#include "common/blowfish.h"
-#include "common/console_service.h"
-#include "common/database.h"
 #include "common/debug.h"
 #include "common/ipp.h"
 #include "common/logging.h"
-#include "common/macros.h"
 #include "common/settings.h"
 #include "common/timer.h"
 #include "common/utils.h"
@@ -38,9 +34,7 @@
 #include "ability.h"
 #include "daily_system.h"
 #include "ipc_client.h"
-#include "lua/luautils.h"
 #include "job_points.h"
-#include "latent_effect_container.h"
 #include "map_networking.h"
 #include "map_statistics.h"
 #include "mob_spell_list.h"
@@ -75,12 +69,7 @@
 #include "utils/trustutils.h"
 #include "utils/zoneutils.h"
 
-#include "linkshell.h"
-
-#include <array>
-#include <cstdio>
 #include <cstdlib>
-#include <cstring>
 #include <thread>
 
 #ifdef _WIN32
@@ -149,7 +138,6 @@ auto MapEngine::init() -> Task<void>
     db::checkTriggers();
 
     luautils::init(mapIPP, config_.inCI); // Also calls moduleutils::LoadLuaModules();
-    luautils::setMapScheduler(&scheduler_);
 
     // Delete sessions that are associated with this map process, but leave others alone
     db::preparedStmt("DELETE FROM accounts_sessions WHERE IF(? = 0 AND ? = 0, true, server_addr = ? AND server_port = ?)",
@@ -162,7 +150,25 @@ auto MapEngine::init() -> Task<void>
     zlib_init();
 
     ShowInfo("do_init: starting ZMQ thread");
-    message::init(networking());
+    ipcClient_ = std::make_unique<IPCClient>(networking(), application_.zmqService());
+    message::init(*ipcClient_);
+
+    // NOTE: We're phasing out server usage without ximeshes and navmeshes. For now for ease of use,
+    // we're still allowing it in CI, but regular usage will demand them.
+    if (!config_.inCI)
+    {
+        if (!std::filesystem::exists("./ximeshes/") || std::filesystem::is_empty("./ximeshes/"))
+        {
+            ShowCritical("./ximeshes/ directory isn't present or is empty! Check your setup.");
+            std::exit(-1);
+        }
+
+        if (!std::filesystem::exists("./navmeshes/") || std::filesystem::is_empty("./navmeshes/"))
+        {
+            ShowCritical("./navmeshes/ directory isn't present or is empty! Check your setup.");
+            std::exit(-1);
+        }
+    }
 
     ShowInfo("do_init: loading items");
     itemutils::Initialize();
@@ -187,7 +193,6 @@ auto MapEngine::init() -> Task<void>
     battleutils::LoadWeaponSkillsList();
     battleutils::LoadMobSkillsList();
     battleutils::LoadPetSkillsList();
-    battleutils::LoadSkillChainDamageModifiers();
     petutils::LoadPetList();
     trustutils::LoadTrustList();
     mobutils::LoadSqlModifiers();
@@ -198,18 +203,7 @@ auto MapEngine::init() -> Task<void>
     synergyutils::LoadSynergyRecipes();
     CItemEquipment::LoadAugmentData(); // TODO: Move to itemutils
 
-    if (!std::filesystem::exists("./ximeshes/") || std::filesystem::is_empty("./ximeshes/"))
-    {
-        ShowError("./ximeshes/ directory isn't present or is empty");
-    }
-
-    if (!std::filesystem::exists("./navmeshes/") || std::filesystem::is_empty("./navmeshes/"))
-    {
-        ShowWarning("./navmeshes/ directory isn't present or is empty");
-    }
-
     co_await zoneutils::Initialize(scheduler_, config_);
-    zoneutils::SetLoginZoneLoadContext(&scheduler_, &config_);
     instanceutils::Initialize(config_);
 
     if (!config_.lazyZones)
@@ -410,173 +404,6 @@ void MapEngine::onGM(const std::vector<std::string>& inputs) const
 
     fmt::print("> Promoting {} to GM level {}\n", PChar->name, level);
     PChar->pushPacket<GP_SERV_COMMAND_CHAT_STD>(PChar, MESSAGE_SYSTEM_3, fmt::format("You have been set to GM level {}.", level));
-}
-
-void MapEngine::onFixFabiontLinkshell(std::vector<std::string>& inputs) const
-{
-    (void)inputs;
-    constexpr const char* kFabChar    = "Fabiont";
-    constexpr const char* kOwner    = "Aremais";
-    constexpr const char* kLsName   = "PegasusXI";
-    constexpr uint8_t     SLOT_LINK1 = 0x10;
-    constexpr uint8_t     SLOT_LINK2 = 0x11;
-    constexpr uint8_t     LOC_INVENTORY = 0;
-    constexpr uint16_t    ITEM_LINKSHELL = 513;
-    constexpr uint16_t    ITEM_EMPTY     = 65535;
-    constexpr uint8_t     LSTYPE_LINKSHELL = 1; // item_linkshell.h
-
-    const auto fabR = db::preparedStmt("SELECT charid FROM chars WHERE charname = ? LIMIT 1", std::string(kFabChar));
-    if (!fabR || fabR->rowsCount() == 0 || !fabR->next())
-    {
-        fmt::print("fix_fabiont_ls: character '{}' not found.\n", kFabChar);
-        return;
-    }
-    const uint32_t fabId = fabR->get<uint32>("charid");
-
-    const auto arR = db::preparedStmt("SELECT charid FROM chars WHERE charname = ? LIMIT 1", std::string(kOwner));
-    if (!arR || arR->rowsCount() == 0 || !arR->next())
-    {
-        fmt::print("fix_fabiont_ls: character '{}' not found.\n", kOwner);
-        return;
-    }
-    const uint32_t arId = arR->get<uint32>("charid");
-
-    uint8_t     fabLoc = 0;
-    uint8_t     fabSlot = 0;
-    uint16_t    fabItemId = 0;
-    std::string fabExtra;
-    bool        found = false;
-
-    for (const uint8_t equipSlot : { SLOT_LINK1, SLOT_LINK2 })
-    {
-        const auto eqR = db::preparedStmt(
-            "SELECT slotid, containerid FROM char_equip WHERE charid = ? AND equipslotid = ? LIMIT 1",
-            fabId,
-            equipSlot);
-        if (!eqR || eqR->rowsCount() == 0 || !eqR->next())
-        {
-            continue;
-        }
-        const uint8_t slotid      = eqR->get<uint8>("slotid");
-        const uint8_t containerid = eqR->get<uint8>("containerid");
-
-        const auto invR = db::preparedStmt(
-            "SELECT itemId, extra FROM char_inventory WHERE charid = ? AND location = ? AND slot = ? LIMIT 1",
-            fabId,
-            containerid,
-            slotid);
-        if (!invR || invR->rowsCount() == 0 || !invR->next())
-        {
-            continue;
-        }
-        const uint16_t iid = invR->get<uint16>("itemId");
-        if (iid != ITEM_LINKSHELL && iid != 514 && iid != 515)
-        {
-            continue;
-        }
-        fabLoc     = containerid;
-        fabSlot    = slotid;
-        fabItemId  = iid;
-        fabExtra   = invR->get<std::string>("extra");
-        found      = true;
-        break;
-    }
-
-    if (!found)
-    {
-        fmt::print("fix_fabiont_ls: no linkshell-type item (513/514/515) in {}'s LS1/LS2 equip slots.\n", kFabChar);
-        return;
-    }
-
-    std::array<uint8_t, 24> fabBuf{};
-    if (!fabExtra.empty())
-    {
-        const auto n = std::min(fabExtra.size(), fabBuf.size());
-        std::memcpy(fabBuf.data(), fabExtra.data(), n);
-    }
-
-    uint32_t groupId = 0;
-    std::memcpy(&groupId, fabBuf.data(), sizeof(groupId));
-    if (groupId == 0)
-    {
-        fmt::print("fix_fabiont_ls: equipped item has GroupId 0; cannot resolve linkshell row.\n");
-        return;
-    }
-
-    char encodedName[LinkshellStringLength]{};
-    EncodeStringLinkshell(std::string(kLsName), encodedName);
-    std::memcpy(fabBuf.data() + 9, encodedName, 15);
-
-    const auto updLs = db::preparedStmt(
-        "UPDATE linkshells SET name = ?, poster = ? WHERE linkshellid = ? LIMIT 1",
-        std::string(kLsName),
-        std::string(kOwner),
-        groupId);
-    if (!updLs || updLs->rowsAffected() == 0)
-    {
-        fmt::print("fix_fabiont_ls: UPDATE linkshells failed for linkshellid {}.\n", groupId);
-        return;
-    }
-
-    const std::string fabExtraOut(reinterpret_cast<const char*>(fabBuf.data()), fabBuf.size());
-    const auto        updFab = db::preparedStmt(
-        "UPDATE char_inventory SET signature = ?, extra = ? WHERE charid = ? AND location = ? AND slot = ? LIMIT 1",
-        std::string(kLsName),
-        fabExtraOut,
-        fabId,
-        fabLoc,
-        fabSlot);
-    if (!updFab || updFab->rowsAffected() == 0)
-    {
-        fmt::print("fix_fabiont_ls: failed to update {}'s equipped item row.\n", kFabChar);
-        return;
-    }
-
-    std::array<uint8_t, 24> holderBuf{};
-    std::memcpy(holderBuf.data(), fabBuf.data(), 8);
-    holderBuf[8] = LSTYPE_LINKSHELL;
-    std::memcpy(holderBuf.data() + 9, encodedName, 15);
-
-    const auto freeR = db::preparedStmt(
-        "SELECT slot FROM char_inventory WHERE charid = ? AND location = ? AND itemId = ? ORDER BY slot ASC LIMIT 1",
-        arId,
-        LOC_INVENTORY,
-        ITEM_EMPTY);
-    if (!freeR || freeR->rowsCount() == 0 || !freeR->next())
-    {
-        fmt::print("fix_fabiont_ls: {} has no free inventory slot (itemId {}).\n", kOwner, ITEM_EMPTY);
-        return;
-    }
-    const uint8_t freeSlot = freeR->get<uint8>("slot");
-
-    const std::string holderExtra(reinterpret_cast<const char*>(holderBuf.data()), holderBuf.size());
-    const auto        updAr = db::preparedStmt(
-        "UPDATE char_inventory SET itemId = ?, quantity = 1, signature = ?, extra = ? "
-        "WHERE charid = ? AND location = ? AND slot = ? LIMIT 1",
-        ITEM_LINKSHELL,
-        std::string(kLsName),
-        holderExtra,
-        arId,
-        LOC_INVENTORY,
-        freeSlot);
-    if (!updAr || updAr->rowsAffected() == 0)
-    {
-        fmt::print("fix_fabiont_ls: failed to give {} the linkshell holder (slot {}).\n", kOwner, freeSlot);
-        return;
-    }
-
-    linkshell::UnloadLinkshell(groupId);
-    linkshell::LoadLinkshell(groupId);
-
-    fmt::print("fix_fabiont_ls: OK linkshellid={} name={} poster={}; updated {} equip (item {}); {} holder at inv slot {}.\n",
-               groupId,
-               kLsName,
-               kOwner,
-               kFabChar,
-               fabItemId,
-               kOwner,
-               freeSlot);
-    fmt::print("fix_fabiont_ls: If either character is online, have them zone or relog to refresh items.\n");
 }
 
 auto MapEngine::networking() const -> MapNetworking&

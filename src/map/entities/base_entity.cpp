@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -19,9 +19,12 @@
 ===========================================================================
 */
 
-#include "baseentity.h"
+#include "base_entity.h"
 
+#include "common/logging.h"
 #include "common/tracy.h"
+
+#include <atomic>
 
 #include "ai/ai_container.h"
 
@@ -29,33 +32,35 @@
 #include "instance.h"
 #include "utils/zoneutils.h"
 #include "zone.h"
-
-#include "common/logging.h"
-
-#include <cstring>
+#include "zone_instance.h"
 
 CBaseEntity::CBaseEntity()
 : id(0)
 , targid(0)
 , objtype(ENTITYTYPE::TYPE_NONE)
-, status(STATUS_TYPE::DISAPPEAR)
+, status(xi::Status::Disappear)
 , m_TargID(0)
-, animation(0)
+, animation(xi::Animation::None)
 , animationsub(0)
 , baseSpeed(settings::get<uint8>("map.BASE_SPEED"))
-, namevis(0)
-, allegiance(ALLEGIANCE_TYPE::MOB)
+, namevis(xi::NameVis::None)
+, allegiance(xi::Allegiance::Mob)
 , updatemask(0)
 , priorityRender(false)
 , isRenamed(false)
 , m_bReleaseTargIDOnDisappear(false)
-, spawnAnimation(SPAWN_ANIMATION::NORMAL)
+, spawnAnimation(xi::SpawnAnimation::Normal)
 , PAI(nullptr)
 , PBattlefield(nullptr)
 , PInstance(nullptr)
 , m_nextUpdateTimer(timer::now())
 {
     TracyZoneScoped;
+
+    static std::atomic<uint64> nextSerial{ 1 };
+
+    serial_ = nextSerial.fetch_add(1, std::memory_order_relaxed);
+
     speed          = baseSpeed;
     animationSpeed = static_cast<uint8>(std::clamp<float>((baseSpeed / settings::get<float>("map.ANIMATION_SPEED_DIVISOR")), std::numeric_limits<uint8>::min(), std::numeric_limits<uint8>::max()));
 }
@@ -63,6 +68,7 @@ CBaseEntity::CBaseEntity()
 CBaseEntity::~CBaseEntity()
 {
     TracyZoneScoped;
+
     if (PBattlefield)
     {
         PBattlefield->RemoveEntity(this, BATTLEFIELD_LEAVE_CODE_WARPDC);
@@ -71,7 +77,7 @@ CBaseEntity::~CBaseEntity()
 
 void CBaseEntity::Spawn()
 {
-    status = allegiance == ALLEGIANCE_TYPE::MOB ? STATUS_TYPE::UPDATE : STATUS_TYPE::NORMAL;
+    status = allegiance == xi::Allegiance::Mob ? xi::Status::Update : xi::Status::Normal;
     updatemask |= UPDATE_HP;
     ResetLocalVars();
     PAI->Reset();
@@ -79,7 +85,7 @@ void CBaseEntity::Spawn()
 
 void CBaseEntity::FadeOut()
 {
-    status = STATUS_TYPE::DISAPPEAR;
+    status = xi::Status::Disappear;
     updatemask |= UPDATE_HP;
 }
 
@@ -93,18 +99,21 @@ const std::string& CBaseEntity::getPacketName()
     return packetName;
 }
 
-uint16 CBaseEntity::getZone() const
+auto CBaseEntity::getZone() const -> xi::ZoneId
 {
+    // Guard against stale loc.zone pointers that are no longer a live registered zone.
     if (loc.zone != nullptr && zoneutils::IsRegisteredZone(loc.zone))
     {
-        return static_cast<uint16>(loc.zone->GetID());
+        return loc.zone->GetID();
     }
     if (loc.zone != nullptr)
     {
         ShowWarningFmt("CBaseEntity::getZone: entity {} (id {}) has non-null loc.zone that is not a live zone; using destination {}",
-                       name, id, loc.destination);
+                       name,
+                       id,
+                       loc.destination);
     }
-    return static_cast<uint16>(loc.destination);
+    return loc.destination;
 }
 
 float CBaseEntity::GetXPos() const
@@ -144,11 +153,11 @@ void CBaseEntity::HideName(bool hide)
     if (hide)
     {
         // I totally guessed this number
-        namevis |= FLAG_HIDE_NAME;
+        namevis |= xi::NameVis::HideName;
     }
     else
     {
-        namevis &= ~FLAG_HIDE_NAME;
+        namevis &= ~xi::NameVis::HideName;
     }
     updatemask |= UPDATE_HP;
 }
@@ -157,18 +166,18 @@ void CBaseEntity::GhostPhase(bool ghost)
 {
     if (ghost)
     {
-        namevis |= VIS_GHOST_PHASE;
+        namevis |= xi::NameVis::GhostPhase;
     }
     else
     {
-        namevis &= ~VIS_GHOST_PHASE;
+        namevis &= ~xi::NameVis::GhostPhase;
     }
     updatemask |= UPDATE_HP;
 }
 
 bool CBaseEntity::IsNameHidden() const
 {
-    return namevis & FLAG_HIDE_NAME;
+    return (namevis & xi::NameVis::HideName) != xi::NameVis::None;
 }
 
 bool CBaseEntity::GetUntargetable() const
@@ -178,32 +187,37 @@ bool CBaseEntity::GetUntargetable() const
 
 bool CBaseEntity::isWideScannable()
 {
-    return status != STATUS_TYPE::DISAPPEAR && !IsNameHidden() && !GetUntargetable();
+    return status != xi::Status::Disappear && !IsNameHidden() && !GetUntargetable();
 }
 
 bool CBaseEntity::CanSeeTarget(CBaseEntity* target)
 {
-    return CanSeeTarget(target, true);
-}
-
-bool CBaseEntity::CanSeeTarget(CBaseEntity* target, bool fallbackNavMesh)
-{
-    return CanSeeTarget(target->loc.p, fallbackNavMesh);
+    return CanSeeTarget(target->loc.p);
 }
 
 bool CBaseEntity::CanSeeTarget(const position_t& targetPointBase)
 {
-    return CanSeeTarget(targetPointBase, true);
-}
+    TracyZoneScoped;
 
-bool CBaseEntity::CanSeeTarget(const position_t& targetPointBase, bool fallbackNavMesh)
-{
-    if (fallbackNavMesh && loc.zone != nullptr)
+    constexpr float ENTITY_HEIGHT = 2.0f;
+
+    // TODO: Handle:
+    // if (GetTypeMask() & ZONE_TYPE::CITY || (m_miscMask & MISC_LOS_OFF))
+    // -> Skip cities and zones with line of sight turned off
+
+    const auto src = Vector3{ loc.p.x, loc.p.y - ENTITY_HEIGHT, loc.p.z };
+    const auto dst = Vector3{ targetPointBase.x, targetPointBase.y - ENTITY_HEIGHT, targetPointBase.z };
+
+    const auto now    = timer::now();
+    const auto zoneId = static_cast<uint16>(this->loc.zone->GetID());
+    if (const auto cached = losCache_.get(src, dst, zoneId, now))
     {
-        return loc.zone->navMesh()->raycast(loc.p, targetPointBase);
+        return *cached;
     }
 
-    return true;
+    const bool canSee = !this->loc.zone->xiMesh()->rayIntersect(src, dst);
+    losCache_.put(src, dst, zoneId, canSee, now);
+    return canSee;
 }
 
 CBaseEntity* CBaseEntity::GetEntity(uint16 targid, uint8 filter) const
@@ -220,6 +234,16 @@ CBaseEntity* CBaseEntity::GetEntity(uint16 targid, uint8 filter) const
     {
         return loc.zone->GetEntity(targid, filter);
     }
+}
+
+auto CBaseEntity::serial() const -> uint64
+{
+    return serial_;
+}
+
+auto CBaseEntity::entityId() const -> EntityId
+{
+    return EntityId{ this };
 }
 
 void CBaseEntity::SendZoneUpdate()
