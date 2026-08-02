@@ -53,6 +53,9 @@ MapNetworking::MapNetworking(Scheduler& scheduler, MapStatistics& mapStatistics,
 {
     TracyZoneScoped;
 
+    // Must run before any incoming packet can reach PacketSystem::dispatch.
+    PacketParserInitialize();
+
     // Embedded map server for testing does not actually need to open a socket
     if (config_.isTestServer)
     {
