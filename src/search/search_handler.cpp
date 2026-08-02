@@ -333,6 +333,8 @@ auto SearchHandler::read_func(uint16_t length) -> Task<void>
             }
         }
     }
+
+    co_return;
 }
 
 // Mostly copy-pasted DSP era code. It works, so why change it?
@@ -514,9 +516,9 @@ auto SearchHandler::HandleAuctionHouseRequest() -> Task<void>
     // 7 - defense
     // 8 - resistance
     // 9 - name
-    std::string OrderByString = "ORDER BY";
-    const uint16 packetLen  = ref<uint16>(buffer_.data(), 0x00);
-    const uint8  packetType = buffer_[0x0B];
+    std::string  OrderByString = "ORDER BY";
+    const uint16 packetLen     = ref<uint16>(buffer_.data(), 0x00);
+    const uint8  packetType    = buffer_[0x0B];
 
     // Only TCP_AH_REQUEST (0x15) carries sort param count at 0x12. TCP_AH_REQUEST_MORE (0x10) is a
     // small continuation packet (~76 bytes); that offset is not paramCount — reading it produced
@@ -533,7 +535,9 @@ auto SearchHandler::HandleAuctionHouseRequest() -> Task<void>
             if (paramCount > maxParams)
             {
                 ShowTraceFmt("AH_REQUEST paramCount {} exceeds safe count {} for packet size {}; clamping.",
-                             paramCount, maxParams, packetLen);
+                             paramCount,
+                             maxParams,
+                             packetLen);
                 paramCount = maxParams;
             }
         }
@@ -568,7 +572,7 @@ auto SearchHandler::HandleAuctionHouseRequest() -> Task<void>
     OrderByString.append(" ah.itemid");
     const char* OrderByArray = OrderByString.data();
 
-    CDataLoader PDataLoader;
+    CDataLoader                    PDataLoader;
     std::vector<AuctionHouseItem*> ItemList = co_await PDataLoader.GetAHItemsToCategoryAsync(scheduler_, AHCatID, OrderByArray);
 
     const std::size_t nItems = ItemList.size();
