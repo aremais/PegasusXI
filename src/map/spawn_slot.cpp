@@ -16,21 +16,9 @@
 
 #include "spawn_slot.h"
 
-#include <ranges>
-
-#include "ai/ai_container.h"
 #include "entities/mob_entity.h"
 #include "spawn_handler.h"
 #include "zone.h"
-
-namespace
-{
-    bool isConditionalSpawn(const CMobEntity* mob)
-    {
-        return mob &&
-               (mob->m_SpawnType & (SPAWNTYPE_ATNIGHT | SPAWNTYPE_ATEVENING | SPAWNTYPE_WEATHER | SPAWNTYPE_FOG));
-    }
-} // namespace
 
 void SpawnSlot::AddMob(CMobEntity* mob, const uint8 spawnChance)
 {
@@ -52,7 +40,7 @@ auto SpawnSlot::TrySpawn(const Maybe<uint32> specificMobId) -> bool
     SpawnHandler* spawnHandler = nullptr;
     if (!entries.empty() && entries[0].mob->loc.zone)
     {
-        spawnHandler = entries[0].mob->loc.zone->spawnHandler();
+        spawnHandler = &entries[0].mob->loc.zone->spawnHandler();
     }
 
     // Check if a specific mob should respawn (deaggro case)
@@ -83,17 +71,15 @@ auto SpawnSlot::TrySpawn(const Maybe<uint32> specificMobId) -> bool
     std::vector<CMobEntity*>                     remainingSpawns;
 
     CMobEntity* allowedSpawn = nullptr;
-    CMobEntity* aliveSpawn   = nullptr;
 
     uint32 totalChance = 0;
-    bool   hasConditionalCandidate = false;
 
     for (auto&& entry : entries)
     {
         if (entry.mob->isAlive())
         {
-            aliveSpawn = entry.mob;
-            continue;
+            allowedSpawn = entry.mob;
+            break;
         }
 
         // Use SpawnHandler to check spawn conditions (time, weather, etc.)
@@ -101,8 +87,6 @@ auto SpawnSlot::TrySpawn(const Maybe<uint32> specificMobId) -> bool
         {
             continue;
         }
-
-        hasConditionalCandidate = hasConditionalCandidate || isConditionalSpawn(entry.mob);
 
         if (entry.spawnChance > 0)
         {
@@ -116,13 +100,8 @@ auto SpawnSlot::TrySpawn(const Maybe<uint32> specificMobId) -> bool
     }
 
     // Don't spawn if there's another mob in this slot already spawned.
-    if (aliveSpawn)
+    if (allowedSpawn)
     {
-        if (hasConditionalCandidate && !isConditionalSpawn(aliveSpawn))
-        {
-            aliveSpawn->PAI->Despawn();
-        }
-
         return false;
     }
 

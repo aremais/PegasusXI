@@ -25,9 +25,6 @@
 #include <common/cbasetypes.h>
 #include <common/ipp.h>
 #include <common/scheduler.h>
-#include <common/types/flag.h>
-
-#include <system_error>
 
 #include <map/map_config.h>
 #include <map/map_constants.h>
@@ -55,7 +52,7 @@ public:
     // TODO: All of these need to become coroutines
     // TODO: Properly use size_t or u32/i32 where appropriate, we do a lot of casting
     // TODO: Do better than returning -1 as an error code
-    void handle_incoming_packet(const std::error_code& ec, ByteSpan buffer, const IPP& ipp);
+    void handle_incoming_packet(ByteSpan buffer, const IPP& ipp);
 
     // Decipher packet
     int32 map_decipher_packet(uint8* buff, size_t buffsize, MapSession* PSession, blowfish_t* pbfkey);
@@ -116,8 +113,6 @@ private:
     NetworkBuffer PBuffCopy;      // Copy of above, used to decrypt a second time if necessary.
     NetworkBuffer PScratchBuffer; // Temporary packet clipboard
     CBasicPacket  parseScratchPacket_;
-
-    int32 sendSinglePacketNoPChar(uint8* buff, size_t* buffsize, MapSession* map_session_data, UsePreviousKey usePreviousKey, CBasicPacket* packet);
 
     PacketSystem packetSystem_;
 };

@@ -115,6 +115,12 @@ jobs:
               while IFS= read -r file; do
                 [ -z "$file" ] && continue
                 case "$file" in
+                  # Allow LSB CI dependency/tooling updates through; keep Pegasus-owned workflows/settings.
+                  .github/workflows/runner_build.yml|.github/workflows/build.yml)
+                    echo "Taking LandSandBoat CI tooling version: $file"
+                    git checkout --theirs -- "$file" || true
+                    git add -- "$file" || true
+                    ;;
                   .github/workflows/*|settings/*|settings/default/*)
                     echo "Keeping base version: $file"
                     git checkout --ours -- "$file" || true

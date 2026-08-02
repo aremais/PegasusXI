@@ -20,8 +20,6 @@
 */
 
 #include "grades.h"
-
-#include <algorithm>
 #include <array>
 
 /************************************************************************
@@ -181,26 +179,6 @@ float GetStatScale(uint8 rank, uint8 scale)
 uint8 GetMobHPScale(uint8 rank, uint8 scale)
 {
     return MobHPScale[rank][scale];
-}
-
-uint8 GetMobRBI(uint8 riGrade, uint8 riBase)
-{
-    // Random-increment term for mob base HP in the level 1-5 bucket (see CalculateBaseMobHP in upstream LSB).
-    (void)riBase;
-
-    switch (std::min<uint8>(riGrade, 5))
-    {
-        case 0:
-        case 1:
-        case 2:
-            return 0;
-        case 3:
-            return 3;
-        case 4:
-            return 7;
-        default: // 5
-            return 14;
-    }
 }
 
 }; // namespace grade

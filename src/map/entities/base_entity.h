@@ -126,14 +126,12 @@ struct location_t
     CZone*     zone;        // Current zone
     xi::ZoneId prevzone;    // Previous zone (Not used for monsters and NPCs)
     uint16     boundary;    // A certain area in the zone in which the entity is located (used by characters and transport)
-    bool       zoning{};    // Script flag: player must zone before continuing (see CLuaBaseEntity::needToZone)
 
     location_t()
     : destination(xi::ZoneId::Unknown)
     , zone(nullptr)
     , prevzone(xi::ZoneId::Unknown)
     , boundary(0)
-    , zoning(false)
     {
     }
 };
@@ -170,8 +168,8 @@ public:
     virtual bool GetUntargetable() const; // checks if entity is untargetable
     virtual bool isWideScannable();       // checks if the entity should show up on wide scan
 
-    bool CanSeeTarget(CBaseEntity* target, bool fallbackNavMesh = true);
-    bool CanSeeTarget(const position_t& targetPoint, bool fallbackNavMesh = true);
+    bool CanSeeTarget(CBaseEntity* target);
+    bool CanSeeTarget(const position_t& targetPoint);
 
     CBaseEntity* GetEntity(uint16 targid, uint8 filter = -1) const;
     void         SendZoneUpdate();

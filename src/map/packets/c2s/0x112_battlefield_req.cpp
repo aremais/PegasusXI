@@ -31,7 +31,5 @@ auto GP_CLI_COMMAND_BATTLEFIELD_REQ::validate(MapSession* PSession, const CCharE
 
 void GP_CLI_COMMAND_BATTLEFIELD_REQ::process(MapSession* PSession, CCharEntity* PChar) const
 {
-    // Stub: client sends this in many zones; avoid per-packet logging (no signal until implemented).
-    (void)PSession;
-    (void)PChar;
+    ShowDebugFmt("GP_CLI_COMMAND_BATTLEFIELD_REQ: Not implemented. Kind: {}", this->Kind);
 }

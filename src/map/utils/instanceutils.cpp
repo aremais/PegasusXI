@@ -141,7 +141,7 @@ auto LoadInstances(const std::vector<uint16>& instanceIds) -> void
 } // namespace
 
 // Initialize instance loading: immediate (load all now) or lazy (load on first access)
-auto Initialize(const MapConfig& config) -> void
+auto Initialize(MapConfig config) -> void
 {
     const auto instanceIds = GetInstancesAssignedToThisProcess(config.ipp);
 
@@ -159,7 +159,7 @@ auto Initialize(const MapConfig& config) -> void
 //       and loading in quick succession, so we've swapped it out for a queue which services a
 //       single request at the end of every tick.
 // TODO: Make this multithreaded and not blocking the main tick loop
-auto CheckInstance(Scheduler& scheduler, const MapConfig& config) -> Task<void>
+auto CheckInstance(Scheduler& scheduler, MapConfig config) -> Task<void>
 {
     if (LoadQueue.empty())
     {

@@ -28,7 +28,7 @@ GP_SERV_COMMAND_CURRENCIES_2::GP_SERV_COMMAND_CURRENCIES_2(CCharEntity* PChar)
     auto& packet = this->data();
 
     const char* query = "SELECT bayld, kinetic_unit, imprimaturs, mystical_canteen, obsidian_fragment, lebondopt_wing, "
-                        "pulchridopt_wing, mellidopt_wing, mweya_plasm, ghastly_stone, ghastly_stone_1, ghastly_stone_2, verdigris_stone, "
+                        "pulchridopt_wing, mweya_plasm, ghastly_stone, ghastly_stone_1, ghastly_stone_2, verdigris_stone, "
                         "verdigris_stone_1, verdigris_stone_2, wailing_stone, wailing_stone_1, wailing_stone_2, "
                         "snowslit_stone, snowslit_stone_1, snowslit_stone_2, snowtip_stone, snowtip_stone_1, snowtip_stone_2, "
                         "snowdim_stone, snowdim_stone_1, snowdim_stone_2, snoworb_stone, snoworb_stone_1, snoworb_stone_2, "
@@ -57,7 +57,6 @@ GP_SERV_COMMAND_CURRENCIES_2::GP_SERV_COMMAND_CURRENCIES_2(CCharEntity* PChar)
         packet.obsidian_fragments       = rset->get<int32_t>("obsidian_fragment");
         packet.lebondopt_wings_stored   = rset->get<uint16_t>("lebondopt_wing");
         packet.pulchridopt_wings_stored = rset->get<uint16_t>("pulchridopt_wing");
-        packet.mellidopt_wings_stored   = rset->get<uint16_t>("mellidopt_wing");
         packet.mweya_plasm_corpuscles   = rset->get<int32_t>("mweya_plasm");
 
         packet.ghastly_stones_stored         = rset->get<uint8_t>("ghastly_stone");
@@ -110,6 +109,7 @@ GP_SERV_COMMAND_CURRENCIES_2::GP_SERV_COMMAND_CURRENCIES_2(CCharEntity* PChar)
         packet.pellucid_stones_stored = rset->get<uint8_t>("pellucid_stone");
         packet.fern_stones_stored     = rset->get<uint8_t>("fern_stone");
         packet.taupe_stones_stored    = rset->get<uint8_t>("taupe_stone");
+        packet.mellidopt_wings_stored = 0; // Not in database yet
 
         packet.escha_beads = rset->get<uint16_t>("escha_beads");
         packet.escha_silt  = rset->get<int32_t>("escha_silt");

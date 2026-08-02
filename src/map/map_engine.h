@@ -76,8 +76,6 @@ public:
     void onBacktrace(std::vector<std::string>& inputs) const;
     void onReloadRecipes(std::vector<std::string>& inputs) const;
     void onGM(const std::vector<std::string>& inputs) const;
-    /// One-off maintenance: Fabiont's equipped LS -> name PegasusXI, poster Aremais, holder to Aremais.
-    void onFixFabiontLinkshell(std::vector<std::string>& inputs) const;
 
     //
     // Accessors

@@ -204,7 +204,6 @@ enum SPELLFAMILY
     SPELLFAMILY_DISTRACT           = 154,
     SPELLFAMILY_FRAZZLE            = 155,
     SPELLFAMILY_FLURRY             = 156,
-    SPELLFAMILY_INUNDATION         = 157,
 };
 
 enum SPELLREQ

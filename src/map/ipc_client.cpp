@@ -563,18 +563,7 @@ void IPCClient::handleMessage_PartyInviteResponse(const IPP& ipp, const ipc::Par
                     const auto rset2 = db::preparedStmt("SELECT * FROM accounts_parties WHERE partyid <> 0 AND charid = ?", message.inviteeId);
                     if (rset2 && rset2->rowsCount() == 0)
                     {
-                        if (!PInviter->PParty->AddMember(message.inviteeId))
-                        {
-                            // Invitee must have accounts_sessions row (FK); e.g. disconnect race or session not visible yet.
-                            message::send(ipc::MessageStandard{
-                                .recipientId = message.inviterId,
-                                .message     = MsgStd::CannotBeProcessed,
-                            });
-                            message::send(ipc::MessageStandard{
-                                .recipientId = message.inviteeId,
-                                .message     = MsgStd::CannotBeProcessed,
-                            });
-                        }
+                        PInviter->PParty->AddMember(message.inviteeId);
                     }
                 }
             }
@@ -792,12 +781,6 @@ void IPCClient::handleMessage_KillSession(const IPP& ipp, const ipc::KillSession
         {
             ShowDebugFmt("Closing session of charid {} on request of other process", message.victimId);
             networking_.sessions().destroySession(sessionToDelete);
-        }
-        else if (sessionToDelete->PChar)
-        {
-            // Logged-in player (e.g. kick from admin / external tool using KillSession IPC).
-            ShowDebugFmt("KillSession: force logout charid {}", message.victimId);
-            charutils::ForceLogout(sessionToDelete->PChar.get());
         }
         else
         {
