@@ -11,7 +11,7 @@ CREATE TABLE `mob_spawn_points` (
   `polutils_name` varchar(50) DEFAULT NULL,
   `groupid` int(10) unsigned NOT NULL DEFAULT '0',
   `minLevel` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `maxLevel` tinyint(2) NOT NULL DEFAULT 0,
+  `maxLevel` tinyint(2) unsigned NOT NULL DEFAULT 0,
   `spawnHour` tinyint(3) unsigned DEFAULT NULL,
   `despawnHour` tinyint(3) unsigned DEFAULT NULL,
   `pos_x` float(7,3) NOT NULL DEFAULT '0',

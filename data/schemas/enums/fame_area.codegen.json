@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/fame_area.codegen.json",
+  "description": "GENERATED from data/enums/fame_area.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "sandoria",
+    "bastok",
+    "windurst",
+    "jeuno",
+    "selbina_rabao",
+    "norg",
+    "abyssea_konschtat",
+    "abyssea_tahrongi",
+    "abyssea_latheine",
+    "abyssea_misareaux",
+    "abyssea_vunkerl",
+    "abyssea_attohwa",
+    "abyssea_altepa",
+    "abyssea_grauberg",
+    "abyssea_uleguerand",
+    "adoulin"
+  ]
+}

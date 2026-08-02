@@ -1,0 +1,24 @@
+Pet->EcoSystem       = rset->get<xi::Ecosystem>("ecosystemID");
+        Pet->m_Species       = rset->get<uint16>("speciesid");
+        Pet->mJob            = rset->get<uint8>("mJob");
+        Pet->sJob            = rset->get<uint8>("sJob");
+        Pet->m_Element       = rset->get<uint8>("element");
+
+        Pet->HPscale = rset->get<float>("hp_scale");
+        Pet->MPscale = rset->get<float>("mp_scale");
+
+        Pet->speed = rset->get<uint8>("speed");
+
+        Pet->strRank = rset->get<uint8>("STR");
+        Pet->dexRank = rset->get<uint8>("DEX");
+        Pet->vitRank = rset->get<uint8>("VIT");
+        Pet->agiRank = rset->get<uint8>("AGI");
+        Pet->intRank = rset->get<uint8>("INT");
+        Pet->mndRank = rset->get<uint8>("MND");
+        Pet->chrRank = rset->get<uint8>("CHR");
+        Pet->defRank = rset->get<uint8>("DEF");
+        Pet->attRank = rset->get<uint8>("ATT");
+        Pet->accRank = rset->get<uint8>("ACC");
+        Pet->evaRank = rset->get<uint8>("EVA");
+
+        Pet->
