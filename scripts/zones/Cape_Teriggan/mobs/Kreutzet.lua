@@ -78,7 +78,9 @@ end
 entity.onMobSpawn = function(mob)
     mob:setMobMod(xi.mobMod.BASE_DAMAGE_MULTIPLIER, 150)
     mob:setLocalVar('stormwindCounter', 0)
-    mob:setfTPModifierOverride(xi.mobSkill.STORMWIND, stormwindFTP[1], stormwindFTP[1], stormwindFTP[1])
+    if mob.setfTPModifierOverride then
+        mob:setfTPModifierOverride(xi.mobSkill.STORMWIND, stormwindFTP[1], stormwindFTP[1], stormwindFTP[1])
+    end
 end
 
 entity.onMobRoam = function(mob)
@@ -96,7 +98,9 @@ entity.onMobFight = function(mob, target)
     if mob:canUseAbilities() then
         if stormwindCounter == 3 then
             mob:setLocalVar('stormwindCounter', 0)
-            mob:setfTPModifierOverride(xi.mobSkill.STORMWIND, stormwindFTP[1], stormwindFTP[1], stormwindFTP[1])
+            if mob.setfTPModifierOverride then
+                mob:setfTPModifierOverride(xi.mobSkill.STORMWIND, stormwindFTP[1], stormwindFTP[1], stormwindFTP[1])
+            end
         elseif
             stormwindCounter >= 1 and
             mob:checkDistance(target) <= 15
@@ -105,7 +109,9 @@ entity.onMobFight = function(mob, target)
             mob:setLocalVar('stormwindCounter', stormwindCounter)
 
             local ftp = stormwindFTP[stormwindCounter]
-            mob:setfTPModifierOverride(xi.mobSkill.STORMWIND, ftp, ftp, ftp)
+            if mob.setfTPModifierOverride then
+                mob:setfTPModifierOverride(xi.mobSkill.STORMWIND, ftp, ftp, ftp)
+            end
             mob:useMobAbility(xi.mobSkill.STORMWIND)
         end
     end

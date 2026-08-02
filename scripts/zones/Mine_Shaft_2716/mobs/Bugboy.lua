@@ -11,7 +11,9 @@ entity.onMobInitialize = function(mob)
 end
 
 entity.onMobSpawn = function(mob)
-    mob:setfTPModifierOverride(xi.mobSkill.FLYING_HIP_PRESS, 7.0, 7.0, 7.0)
+    if mob.setfTPModifierOverride then
+        mob:setfTPModifierOverride(xi.mobSkill.FLYING_HIP_PRESS, 7.0, 7.0, 7.0)
+    end
 end
 
 entity.onMobFight = function(mob, target)
