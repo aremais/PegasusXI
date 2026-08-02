@@ -437,6 +437,7 @@ def check_protected():
 
 def fetch_files(express=False):
     import_files.clear()
+    deferred_import_files = []
     if express:
         try:
             global express_enabled
@@ -464,11 +465,11 @@ def fetch_files(express=False):
             print_red("Error checking diffs.\nCheck that hash is valid in config.yaml.")
             print(e)
     else:
-        # One-shot repair/diagnostic scripts are not part of a fresh schema import.
-        # They sort alphabetically before many CREATE TABLE files (e.g. fix_* before
-        # npc_list.sql) and break CI/dbtool full imports with ERROR 1146.
-        # Do not skip LSB schema tables such as audit_bazaar.sql.
-        skip_full_import_prefixes = (
+        # Repair/diagnostic scripts sort alphabetically before many CREATE TABLE files
+        # (e.g. fix_* before npc_list.sql) and break fresh imports with ERROR 1146.
+        # Defer them until after base schema/data, then apply before triggers.sql.
+        # Do not treat LSB schema tables such as audit_bazaar.sql as deferred.
+        defer_full_import_prefixes = (
             "fix_",
             "patch_",
             "scan_",
@@ -481,11 +482,13 @@ def fetch_files(express=False):
             for filename in sorted(filenames):
                 if not filename.endswith(".sql"):
                     continue
-                if filename.startswith(skip_full_import_prefixes):
-                    continue
                 if filename in skip_full_import_names:
                     continue
-                import_files.append(from_server_path("sql/" + filename))
+                path = from_server_path("sql/" + filename)
+                if filename.startswith(defer_full_import_prefixes):
+                    deferred_import_files.append(path)
+                else:
+                    import_files.append(path)
             break
     check_protected()
     backups.clear()
@@ -497,6 +500,9 @@ def fetch_files(express=False):
         break
     backups.sort()
     import_files.sort()
+    # Apply deferred repairs after tables exist, then keep triggers.sql last.
+    if deferred_import_files:
+        import_files.extend(sorted(deferred_import_files))
     try:
         import_files.append(
             import_files.pop(import_files.index(from_server_path("sql/triggers.sql")))
