@@ -1,0 +1,181 @@
+name: Promote Test to Live
+
+# Final promotion: make Live an exact copy of Test, then generate a full changelog.
+# After this workflow succeeds, Test and Live point at the same commit.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type exactly "PROMOTE" to confirm making Live identical to Test'
+        required: true
+        default: ''
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: promote-test-to-live
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    name: Reset Live to match Test
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - name: Confirm promotion
+        run: |
+          if [ "${{ inputs.confirm }}" != "PROMOTE" ]; then
+            echo "Refusing to promote. Enter PROMOTE in the confirm input."
+            exit 1
+          fi
+
+      - name: Checkout Test branch
+        uses: actions/checkout@v6
+        with:
+          ref: Test
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch branches and build full changelog
+        id: changelist
+        run: |
+          git fetch origin Test Live
+          LIVE_BEFORE=$(git rev-parse origin/Live)
+          TEST_BEFORE=$(git rev-parse origin/Test)
+          echo "live_before=$LIVE_BEFORE" >> "$GITHUB_OUTPUT"
+          echo "test_before=$TEST_BEFORE" >> "$GITHUB_OUTPUT"
+
+          DATE_STAMP=$(date -u +'%Y-%m-%d')
+          TIME_STAMP=$(date -u +'%Y-%m-%dT%H:%MZ')
+          CHANGELOG="changelogs/test-to-live-${DATE_STAMP}.md"
+          mkdir -p changelogs
+
+          COMMIT_COUNT=$(git rev-list --count origin/Live..origin/Test)
+          REVERSE_COUNT=$(git rev-list --count origin/Test..origin/Live)
+
+          {
+            echo "# Promote Test to Live — ${DATE_STAMP}"
+            echo
+            echo "- Generated (UTC): ${TIME_STAMP}"
+            echo "- Source: \`Test\` (\`${TEST_BEFORE}\`)"
+            echo "- Target before promote: \`Live\` (\`${LIVE_BEFORE}\`)"
+            echo "- Commits on Test not in Live: **${COMMIT_COUNT}**"
+            echo "- Commits on Live not in Test (discarded by reset): **${REVERSE_COUNT}**"
+            echo "- Result: Live will be **100% identical** to Test"
+            echo
+          } > "$CHANGELOG"
+
+          if [ "$LIVE_BEFORE" = "$TEST_BEFORE" ]; then
+            echo "already_identical=true" >> "$GITHUB_OUTPUT"
+            echo "Test and Live were already identical before this run." >> "$CHANGELOG"
+          else
+            echo "already_identical=false" >> "$GITHUB_OUTPUT"
+
+            echo "### Commits being promoted (Test not in Live)" >> "$CHANGELOG"
+            echo >> "$CHANGELOG"
+            if [ "$COMMIT_COUNT" != "0" ]; then
+              git log origin/Live..origin/Test --pretty=format:"- %h %s (%an, %ad)" --date=short >> "$CHANGELOG"
+            else
+              echo "_None (Live only had divergent commits that will be discarded)._" >> "$CHANGELOG"
+            fi
+            echo >> "$CHANGELOG"
+            echo >> "$CHANGELOG"
+
+            if [ "$REVERSE_COUNT" != "0" ]; then
+              echo "### Commits discarded from Live (not present on Test)" >> "$CHANGELOG"
+              echo >> "$CHANGELOG"
+              git log origin/Test..origin/Live --pretty=format:"- %h %s (%an, %ad)" --date=short >> "$CHANGELOG"
+              echo >> "$CHANGELOG"
+              echo >> "$CHANGELOG"
+            fi
+
+            echo "### Files changed (Live → Test)" >> "$CHANGELOG"
+            echo >> "$CHANGELOG"
+            echo '```' >> "$CHANGELOG"
+            git diff --name-status origin/Live..origin/Test >> "$CHANGELOG"
+            echo '```' >> "$CHANGELOG"
+            echo >> "$CHANGELOG"
+            echo "### Diffstat" >> "$CHANGELOG"
+            echo >> "$CHANGELOG"
+            echo '```' >> "$CHANGELOG"
+            git diff --stat origin/Live..origin/Test >> "$CHANGELOG"
+            echo '```' >> "$CHANGELOG"
+          fi
+
+          cat "$CHANGELOG" >> "$GITHUB_STEP_SUMMARY"
+          echo "changelog_path=$CHANGELOG" >> "$GITHUB_OUTPUT"
+          echo "date_stamp=$DATE_STAMP" >> "$GITHUB_OUTPUT"
+
+      - name: Commit changelog on Test
+        id: changelog_commit
+        run: |
+          CHANGELOG="${{ steps.changelist.outputs.changelog_path }}"
+          DATE_STAMP="${{ steps.changelist.outputs.date_stamp }}"
+
+          git checkout Test
+          git pull origin Test
+          mkdir -p changelogs
+          git add "$CHANGELOG"
+
+          if git diff --cached --quiet; then
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+            echo "Changelog already present or empty; no Test commit needed."
+          else
+            git commit -m "docs: add Test to Live changelog ${DATE_STAMP}"
+            git push origin Test
+            echo "committed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+          TEST_TIP=$(git rev-parse HEAD)
+          echo "test_tip=$TEST_TIP" >> "$GITHUB_OUTPUT"
+          echo "Test tip for Live reset: $TEST_TIP"
+
+      - name: Make Live identical to Test
+        run: |
+          TEST_TIP="${{ steps.changelog_commit.outputs.test_tip }}"
+
+          git fetch origin Test Live
+          git checkout -B Live "$TEST_TIP"
+          git reset --hard "$TEST_TIP"
+          git push --force-with-lease origin Live
+
+          echo "Live force-updated to $TEST_TIP"
+
+      - name: Verify Test and Live are identical
+        run: |
+          git fetch origin Test Live
+          TEST_TIP=$(git rev-parse origin/Test)
+          LIVE_TIP=$(git rev-parse origin/Live)
+
+          echo "Test: $TEST_TIP"
+          echo "Live: $LIVE_TIP"
+
+          if [ "$TEST_TIP" != "$LIVE_TIP" ]; then
+            echo "ERROR: Test and Live are not identical."
+            git log --oneline -5 origin/Test
+            git log --oneline -5 origin/Live
+            exit 1
+          fi
+
+          echo "Success: Test and Live are 100% identical at $TEST_TIP"
+          {
+            echo
+            echo "## Verification"
+            echo
+            echo "Test and Live both point at \`${TEST_TIP}\`."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload changelog artifact
+        if: always() && steps.changelist.outputs.changelog_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-to-live-changelog
+          path: ${{ steps.changelist.outputs.changelog_path }}
+          if-no-files-found: ignore

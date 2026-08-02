@@ -1,5 +1,8 @@
 name: Sync base into Test
 
+# Manual promotion: aremais/PegasusXI base -> Test
+# Preserves Test settings and existing Test workflow customizations.
+# Allows new Pegasus-managed workflow files from base to land on Test.
 on:
   workflow_dispatch: {}
 
@@ -12,6 +15,7 @@ concurrency:
 
 jobs:
   sync:
+    name: Merge base into Test
     runs-on: windows-latest
 
     defaults:
@@ -24,6 +28,7 @@ jobs:
         with:
           ref: Test
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure Git
         run: |
@@ -36,24 +41,43 @@ jobs:
       - name: Build list of changes being merged
         id: changelist
         run: |
-          $commitCount = (git rev-list --count Test..origin/base)
+          $commitCount = (git rev-list --count "Test..origin/base").Trim()
           Write-Host "Commits on base not yet in Test: $commitCount"
 
+          $dateStamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd")
+          $changelogRel = "changelogs/base-to-test-$dateStamp.md"
+          New-Item -ItemType Directory -Force -Path changelogs | Out-Null
+
+          $baseTip = (git rev-parse origin/base).Trim()
+          $testTip = (git rev-parse Test).Trim()
+
+          $header = @(
+            "# Sync base into Test — $dateStamp",
+            "",
+            "- Source: ``base`` (``$baseTip``)",
+            "- Target: ``Test`` (``$testTip``)",
+            "- Incoming commits: **$commitCount**",
+            ""
+          )
+
           if ($commitCount -eq "0") {
+            $header += "Test is already up to date with base. Nothing to merge."
+            $headerText = $header -join "`n"
+            Set-Content -Path $changelogRel -Value $headerText -Encoding utf8
             Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "## Sync base -> Test`n`nTest is already up to date with base. Nothing to merge."
-            echo "has_changes=false" >> $env:GITHUB_OUTPUT
+            "has_changes=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+            "changelog_path=$changelogRel" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
             exit 0
           }
 
-          echo "has_changes=true" >> $env:GITHUB_OUTPUT
+          "has_changes=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
-          $commits = git log Test..origin/base --pretty=format:"- %h %s (%an)"
-          $files = git diff --name-status Test..origin/base
+          $commits = git log "Test..origin/base" --pretty=format:"- %h %s (%an)"
+          $files = git diff --name-status "Test..origin/base"
 
           $summary = @()
-          $summary += "## Sync base -> Test"
-          $summary += ""
-          $summary += "$commitCount commit(s) being merged from ``base`` into ``Test``:"
+          $summary += $header
+          $summary += "### Commits"
           $summary += ""
           $summary += $commits
           $summary += ""
@@ -64,17 +88,18 @@ jobs:
           $summary += '```'
 
           $summaryText = $summary -join "`n"
+          Set-Content -Path $changelogRel -Value $summaryText -Encoding utf8
           Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summaryText
-
-          # Stash the plain-text version outside the working tree for the commit message step
           $summaryText | Out-File -FilePath "$env:RUNNER_TEMP\changelist.txt" -Encoding utf8
+          "changelog_path=$changelogRel" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
       - name: Merge base into Test, preserve Test overrides
         if: steps.changelist.outputs.has_changes == 'true'
         run: |
           git checkout Test
 
-          Write-Host "Conflict strategy: keep Test branch version for settings/ and workflow files"
+          Write-Host "Conflict strategy: keep Test for settings/ and existing workflow customizations"
+          Write-Host "New Pegasus-managed workflow files from base are allowed through"
 
           git merge origin/base --no-commit --no-ff
           $mergeExit = $LASTEXITCODE
@@ -84,46 +109,56 @@ jobs:
           git restore --source=HEAD --staged --worktree -- settings settings/default 2>$null
           $global:LASTEXITCODE = 0
 
-          Write-Host "Auto-preserving conflicted workflow files from Test"
+          # Workflow files that must be allowed to update from base (Pegasus pipeline).
+          $managedWorkflows = @(
+            ".github/workflows/sync_lsb_to_base.yml",
+            ".github/workflows/sync-base-to-test.yml",
+            ".github/workflows/promote-test-to-live.yml",
+            ".github/workflows/deploy-test.yml",
+            ".github/workflows/deploy-live.yml"
+          )
+
+          Write-Host "Auto-preserving conflicted non-managed workflow files from Test"
           $workflowConflicts = @(git diff --name-only --diff-filter=U -- .github/workflows)
 
           if ($workflowConflicts.Count -gt 0) {
             foreach ($file in $workflowConflicts) {
+              if ($managedWorkflows -contains ($file -replace '\\', '/')) {
+                Write-Host "Taking base/managed version of workflow file: $file"
+                git checkout --theirs -- "$file"
+                git add "$file"
+                continue
+              }
+
               Write-Host "Keeping Test version of workflow file: $file"
               git checkout --ours -- "$file"
               git add "$file"
             }
           }
 
-          Write-Host "Removing any staged workflow-file changes before commit"
+          Write-Host "Reverting non-managed workflow-file changes introduced by base"
           $workflowChanges = @(git diff --name-only --cached -- .github/workflows)
 
           if ($workflowChanges.Count -gt 0) {
             foreach ($file in $workflowChanges) {
-              Write-Host "Reverting staged workflow file: $file"
-
-              git show "HEAD:$file" > $null 2>&1
-
-              if ($LASTEXITCODE -eq 0) {
-                git checkout HEAD -- "$file"
-              } else {
-                git rm --cached --force -- "$file" 2>$null
-
-                if (Test-Path $file) {
-                  Remove-Item -Force "$file"
-                }
+              $normalized = $file -replace '\\', '/'
+              if ($managedWorkflows -contains $normalized) {
+                Write-Host "Keeping managed workflow update: $file"
+                continue
               }
 
+              # Allow brand-new workflow files from base (not previously on Test).
+              git show "HEAD:$file" > $null 2>&1
+              if ($LASTEXITCODE -ne 0) {
+                Write-Host "Allowing new workflow file from base: $file"
+                $global:LASTEXITCODE = 0
+                continue
+              }
+
+              Write-Host "Reverting staged workflow file back to Test: $file"
+              git checkout HEAD -- "$file"
               $global:LASTEXITCODE = 0
             }
-          }
-
-          $stillWorkflowChanges = @(git diff --name-only --cached -- .github/workflows)
-
-          if ($stillWorkflowChanges.Count -gt 0) {
-            Write-Host "Workflow files still staged:"
-            $stillWorkflowChanges | ForEach-Object { Write-Host " - $_" }
-            throw "Workflow file changes are still staged. Stopping before push."
           }
 
           $remainingConflicts = @(git diff --name-only --diff-filter=U)
@@ -134,35 +169,34 @@ jobs:
 
             foreach ($file in $remainingConflicts) {
               Write-Host "Keeping Test version of $file"
-
               git checkout --ours -- "$file" 2>$null
 
               if ($LASTEXITCODE -eq 0) {
                 git add "$file"
               } else {
                 Write-Host "Test branch does not have $file, keeping it deleted."
-
                 git rm --cached --force -- "$file" 2>$null
-
                 if (Test-Path $file) {
                   Remove-Item -Force "$file"
                 }
-
                 $global:LASTEXITCODE = 0
               }
             }
           }
 
           $stillConflicted = @(git diff --name-only --diff-filter=U)
-
           if ($stillConflicted.Count -gt 0) {
             Write-Host "Unresolved conflicts still remain:"
             $stillConflicted | ForEach-Object { Write-Host " - $_" }
             throw "Unable to fully resolve merge conflicts."
           }
 
-          git diff --cached --quiet
+          $changelogPath = "${{ steps.changelist.outputs.changelog_path }}"
+          if ($changelogPath -and (Test-Path $changelogPath)) {
+            git add -- "$changelogPath"
+          }
 
+          git diff --cached --quiet
           if ($LASTEXITCODE -eq 0) {
             Write-Host "No changes to commit after preserving Test overrides."
             exit 0
@@ -179,3 +213,11 @@ jobs:
           $commitMessage | git commit -F -
 
           git push origin Test
+
+      - name: Upload changelog artifact
+        if: always() && steps.changelist.outputs.changelog_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: base-to-test-changelog
+          path: ${{ steps.changelist.outputs.changelog_path }}
+          if-no-files-found: ignore

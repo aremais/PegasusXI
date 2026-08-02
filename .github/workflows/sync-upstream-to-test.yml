@@ -1,9 +1,14 @@
 name: Sync upstream into Test
 
+# DISABLED for normal operations.
+# Use the staged pipeline instead:
+#   1) Sync LSB into Base
+#   2) Sync base into Test
+# This workflow bypasses base and is kept only as an emergency fallback.
+# Keep it disabled in the GitHub Actions UI.
+
 on:
   workflow_dispatch: {}
-  schedule:
-    - cron: "0 10 * * *"
 
 permissions:
   contents: write

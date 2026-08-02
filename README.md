@@ -1,3 +1,21 @@
+# PegasusXI
+
+LandSandBoat-based FFXI server fork for PegasusXI.
+
+## Branch sync & deploy (base → Test → Live)
+
+Operator runbook for the morning LSB sync, Test promotion, changelogs, and server deploys:
+
+**[documentation/BRANCH_SYNC_AND_DEPLOY.md](documentation/BRANCH_SYNC_AND_DEPLOY.md)**
+
+Quick links:
+
+- [GitHub Actions](https://github.com/aremais/PegasusXI/actions)
+- Branches: [`base`](https://github.com/aremais/PegasusXI/tree/base) · [`Test`](https://github.com/aremais/PegasusXI/tree/Test) · [`Live`](https://github.com/aremais/PegasusXI/tree/Live)
+- Upstream: [LandSandBoat/server](https://github.com/LandSandBoat/server)
+
+---
+
 # PegasusXI Website Server
 
 Serves the PegasusXI static site and proxies `/api/*` to the game-api.
