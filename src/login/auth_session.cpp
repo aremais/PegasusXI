@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
   Copyright (c) 2023 LandSandBoat Dev Teams
@@ -321,9 +321,7 @@ void auth_session::read_func()
 
             sendJsonAsBuffer(loginSuccessReply);
 
-            auto& session = loginHelpers::get_authenticated_session(
-                ipAddress,
-                std::string(reinterpret_cast<const char*>(hash), sizeof(hash)));
+            auto& session          = loginHelpers::get_authenticated_session(ipAddress, asStringFromUntrustedSource(hash, sizeof(hash)));
             session.accountID      = accountID;
             session.authorizedTime = timer::now();
         }
