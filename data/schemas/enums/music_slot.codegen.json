@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "enums/music_slot.codegen.json",
+  "description": "GENERATED from data/enums/music_slot.yaml. Do not edit.",
+  "type": "string",
+  "enum": [
+    "zone_day",
+    "zone_night",
+    "combat_solo",
+    "combat_party",
+    "mount",
+    "dead",
+    "mog_house",
+    "fishing"
+  ]
+}

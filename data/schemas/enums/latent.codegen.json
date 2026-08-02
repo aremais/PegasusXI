@@ -67,6 +67,8 @@
     "vs_family",
     "mainjob",
     "in_adoulin",
-    "in_garrison"
+    "in_garrison",
+    "sanction_food_bonus",
+    "sigil_food_bonus"
   ]
 }

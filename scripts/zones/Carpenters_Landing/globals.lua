@@ -17,7 +17,10 @@ local carpentersLandingGlobal =
         if hour >= 7 and hour < 22 then
             stat = xi.status.DISAPPEAR
         else
-            GetMobByID(ID.mob.HERCULES_BEETLE):setLocalVar('hasSpawned', 0)
+            local beetle = GetMobByID(ID.mob.HERCULES_BEETLE)
+            if beetle then
+                beetle:setLocalVar('hasSpawned', 0)
+            end
         end
 
         for _, v in pairs(ID.npc.HERCULES_BEETLE_TREES) do

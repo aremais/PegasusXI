@@ -27,9 +27,9 @@
 
 #include <list>
 
-struct search_req;
+struct SearchRequest;
 
-struct ahItem
+struct AuctionHouseItem
 {
     uint16 ItemID;
     uint32 SingleAmount;
@@ -37,7 +37,7 @@ struct ahItem
     uint16 Category;
 };
 
-struct ahHistory
+struct AuctionHouseHistory
 {
     uint32      Price;
     uint32      Data;
@@ -85,19 +85,19 @@ public:
     CDataLoader();
     ~CDataLoader();
 
-    uint32 GetPlayersCount(const search_req& sr);
+    uint32 GetPlayersCount(const SearchRequest& sr);
 
-    std::vector<ahHistory*>  GetAHItemHistory(uint16 ItemID, bool stack);
-    std::list<SearchEntity*> GetPartyList(uint32 PartyID, uint32 AllianceID);
-    std::list<SearchEntity*> GetLinkshellList(uint32 LinkshellID);
-    std::list<SearchEntity*> GetPlayersList(search_req sr, int* count);
-    std::string              GetSearchComment(uint32 playerId);
-    std::vector<ahItem*>     GetAHItemsToCategory(uint8 ahCategoryID, const std::string& orderByString);
-    auto                     GetAHItemsToCategoryAsync(Scheduler& scheduler, uint8 ahCategoryID, const std::string& orderByString) -> Task<std::vector<ahItem*>>;
-    ahItem                   GetAHItemFromItemID(uint16 ItemID);
-    auto                     GetAHItemHistoryAsync(Scheduler& scheduler, uint16 ItemID, bool stack) -> Task<std::pair<std::vector<ahHistory*>, ahItem>>;
-    void                     ExpireAHItems(uint16 expireAgeInDays);
-    void                     InvalidateAHCategoryCache();
+    std::vector<AuctionHouseHistory*> GetAHItemHistory(uint16 ItemID, bool stack);
+    std::list<SearchEntity*>          GetPartyList(uint32 PartyID, uint32 AllianceID);
+    std::list<SearchEntity*>          GetLinkshellList(uint32 LinkshellID);
+    std::list<SearchEntity*>          GetPlayersList(SearchRequest sr, int* count);
+    std::string                       GetSearchComment(uint32 playerId);
+    std::vector<AuctionHouseItem*>    GetAHItemsToCategory(uint8 ahCategoryID, const std::string& orderByString);
+    auto                              GetAHItemsToCategoryAsync(Scheduler& scheduler, uint8 ahCategoryID, const std::string& orderByString) -> Task<std::vector<AuctionHouseItem*>>;
+    AuctionHouseItem                  GetAHItemFromItemID(uint16 ItemID);
+    auto                              GetAHItemHistoryAsync(Scheduler& scheduler, uint16 ItemID, bool stack) -> Task<std::pair<std::vector<AuctionHouseHistory*>, AuctionHouseItem>>;
+    void                     ExpireAHItems(uint16 expireAgeInDays) const;
+    void                     InvalidateAHCategoryCache() const;
 };
 
 #endif

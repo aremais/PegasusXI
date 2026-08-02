@@ -46,12 +46,12 @@ end
 zoneObject.onGameHour = function(zone)
     -- Silk Caterpillar should spawn every 6 hours from 03:00
     -- this is approximately when the Jeuno-Bastok airship is flying overhead towards Jeuno.
-    if
-        VanadielHour() % 6 == 3 and
-        not GetMobByID(ID.mob.SILK_CATERPILLAR):isSpawned()
-    then
-        -- Despawn is handled by xi.mobMod.IDLE_DESPAWN in the mob's script.
-        SpawnMob(ID.mob.SILK_CATERPILLAR)
+    if VanadielHour() % 6 == 3 then
+        local silkCaterpillar = GetMobByID(ID.mob.SILK_CATERPILLAR)
+        if silkCaterpillar and not silkCaterpillar:isSpawned() then
+            -- Despawn is handled by xi.mobMod.IDLE_DESPAWN in the mob's script.
+            SpawnMob(ID.mob.SILK_CATERPILLAR)
+        end
     end
 end
 

@@ -27,6 +27,7 @@
 #include "common/utils.h"
 
 #include "data_loader.h"
+#include "enums/search_type.h"
 
 #include <algorithm>
 #include <map>
@@ -386,7 +387,7 @@ void SearchHandler::HandleGroupListRequest()
 
         for (auto& it : PartyList)
         {
-            PPartyPacket.AddPlayer(it);
+            PPartyPacket.AddPlayer(*it);
         }
 
         uint16_t length = PPartyPacket.GetSize();
@@ -412,7 +413,7 @@ void SearchHandler::HandleGroupListRequest()
 
             while (currentResult < totalResults)
             {
-                bool success = PLinkshellPacket.AddPlayer(*it);
+                bool success = PLinkshellPacket.AddPlayer(**it);
                 if (!success)
                 {
                     break;
@@ -457,7 +458,7 @@ void SearchHandler::HandleSearchComment()
 
 void SearchHandler::HandleSearchRequest()
 {
-    const search_req sr = _HandleSearchRequest();
+    const SearchRequest sr = _HandleSearchRequest();
 
     CDataLoader PDataLoader;
     int         totalCount = 0;
@@ -477,7 +478,7 @@ void SearchHandler::HandleSearchRequest()
 
         while (currentResult < totalResults)
         {
-            bool success = PSearchPacket.AddPlayer(*it);
+            bool success = PSearchPacket.AddPlayer(**it);
             if (!success)
             {
                 break;
@@ -567,7 +568,7 @@ auto SearchHandler::HandleAuctionHouseRequest() -> Task<void>
     const char* OrderByArray = OrderByString.data();
 
     CDataLoader PDataLoader;
-    std::vector<ahItem*> ItemList = co_await PDataLoader.GetAHItemsToCategoryAsync(scheduler_, AHCatID, OrderByArray);
+    std::vector<AuctionHouseItem*> ItemList = co_await PDataLoader.GetAHItemsToCategoryAsync(scheduler_, AHCatID, OrderByArray);
 
     const std::size_t nItems = ItemList.size();
     const std::size_t PacketsCount =
@@ -583,7 +584,7 @@ auto SearchHandler::HandleAuctionHouseRequest() -> Task<void>
         const std::size_t chunkEnd = std::min(20 * (i + 1), nItems);
         for (std::size_t y = 20 * i; y < chunkEnd; ++y)
         {
-            PAHPacket.AddItem(ItemList.at(y));
+            PAHPacket.AddItem(*ItemList.at(y));
         }
 
         uint16_t length = PAHPacket.GetSize();
@@ -605,7 +606,7 @@ auto SearchHandler::HandleAuctionHouseHistory() -> Task<void>
 
     for (auto& i : HistoryList)
     {
-        PAHPacket.AddItem(i);
+        PAHPacket.AddItem(*i);
     }
 
     uint16_t length = PAHPacket.GetSize();
@@ -614,11 +615,11 @@ auto SearchHandler::HandleAuctionHouseHistory() -> Task<void>
     searchPackets_.emplace_back(PAHPacket.GetData(), length);
 }
 
-search_req SearchHandler::_HandleSearchRequest()
+SearchRequest SearchHandler::_HandleSearchRequest()
 {
-    // This function constructs a `search_req` based on which query should be sent to the database.
+    // This function constructs a `SearchRequest` based on which query should be sent to the database.
     // The results from the database will eventually be sent to the client.
-    search_req sr;
+    SearchRequest sr;
 
     uint32 bitOffset = 0;
 
@@ -657,10 +658,10 @@ search_req SearchHandler::_HandleSearchRequest()
             break;
         }
 
-        uint8 EntryType = (uint8)unpackBitsLE(&buffer_[0x11], bitOffset, 5);
+        const auto EntryType = static_cast<SearchType>(unpackBitsLE(&buffer_[0x11], bitOffset, 5));
         bitOffset += 5;
 
-        if ((EntryType != SEARCH_FRIEND) && (EntryType != SEARCH_LINKSHELL) && (EntryType != SEARCH_LINKSHELL2) && (EntryType != SEARCH_COMMENT) && (EntryType != SEARCH_FLAGS2))
+        if ((EntryType != SearchType::Friend) && (EntryType != SearchType::Linkshell) && (EntryType != SearchType::Linkshell2) && (EntryType != SearchType::Comment) && (EntryType != SearchType::Flags2))
         {
             if ((bitOffset + 3) >= workloadBits) // so 0000000 at the end does not get interpreted as name entry
             {
@@ -676,7 +677,7 @@ search_req SearchHandler::_HandleSearchRequest()
 
         switch (EntryType)
         {
-            case SEARCH_NAME:
+            case SearchType::Name:
             {
                 if (isPresent == 0x1) // Name send
                 {
@@ -698,7 +699,7 @@ search_req SearchHandler::_HandleSearchRequest()
                 }
                 break;
             }
-            case SEARCH_AREA: // Area Code Entry - 10 bit
+            case SearchType::Area: // Area Code Entry - 10 bit
             {
                 if (isPresent == 0) // no more Area entries
                 {
@@ -712,7 +713,7 @@ search_req SearchHandler::_HandleSearchRequest()
                 }
                 break;
             }
-            case SEARCH_NATION: // Country - 2 bit
+            case SearchType::Nation: // Country - 2 bit
             {
                 if (isPresent == 0x1)
                 {
@@ -724,7 +725,7 @@ search_req SearchHandler::_HandleSearchRequest()
                 }
                 break;
             }
-            case SEARCH_JOB: // Job - 5 bit
+            case SearchType::Job: // Job - 5 bit
             {
                 if (isPresent == 0x1)
                 {
@@ -734,7 +735,7 @@ search_req SearchHandler::_HandleSearchRequest()
                 }
                 break;
             }
-            case SEARCH_LEVEL: // Level- 16 bit
+            case SearchType::Level: // Level- 16 bit
             {
                 if (isPresent == 0x1)
                 {
@@ -747,7 +748,7 @@ search_req SearchHandler::_HandleSearchRequest()
                 }
                 break;
             }
-            case SEARCH_RACE: // Race - 4 bit
+            case SearchType::Race: // Race - 4 bit
             {
                 if (isPresent == 0x1)
                 {
@@ -760,7 +761,7 @@ search_req SearchHandler::_HandleSearchRequest()
                 ShowInfoFmt("SortByRace: {}.", (sortDescending == 0x00) ? "ascending" : "descending");
                 break;
             }
-            case SEARCH_RANK: // Rank - 2 byte
+            case SearchType::Rank: // Rank - 2 byte
             {
                 if (isPresent == 0x1)
                 {
@@ -776,7 +777,7 @@ search_req SearchHandler::_HandleSearchRequest()
                 ShowInfoFmt("SortByRank: {}.", (sortDescending == 0x00) ? "ascending" : "descending");
                 break;
             }
-            case SEARCH_COMMENT: // 4 Byte
+            case SearchType::Comment: // 4 Byte
             {
                 commentType = (uint8)unpackBitsLE(&buffer_[0x11], bitOffset, 32);
                 bitOffset += 32;
@@ -786,7 +787,7 @@ search_req SearchHandler::_HandleSearchRequest()
             }
             // the following 4 Entries were generated with /sea (ballista|friend|linkshell|away|inv)
             // so they may be off
-            case SEARCH_LINKSHELL: // 4 Byte
+            case SearchType::Linkshell: // 4 Byte
             {
                 sr.lsId = static_cast<uint32>(unpackBitsLE(&buffer_[0x11], bitOffset, 32));
                 bitOffset += 32;
@@ -794,7 +795,7 @@ search_req SearchHandler::_HandleSearchRequest()
                 ShowInfoFmt("Linkshell Entry found. Value: {}", hex32ToString(sr.lsId.value()));
                 break;
             }
-            case SEARCH_LINKSHELL2: // 4 Byte
+            case SearchType::Linkshell2: // 4 Byte
             {
                 sr.lsId = static_cast<uint32>(unpackBitsLE(&buffer_[0x11], bitOffset, 32));
                 bitOffset += 32;
@@ -802,12 +803,12 @@ search_req SearchHandler::_HandleSearchRequest()
                 ShowInfoFmt("Linkshell2 Entry found. Value: {}", hex32ToString(sr.lsId.value()));
                 break;
             }
-            case SEARCH_FRIEND: // Friend Packet, 0 byte
+            case SearchType::Friend: // Friend Packet, 0 byte
             {
                 ShowInfoFmt("Friend Entry found.");
                 break;
             }
-            case SEARCH_FLAGS1: // Flag Entry #1, 2 byte,
+            case SearchType::Flags1: // Flag Entry #1, 2 byte,
             {
                 if (isPresent == 0x1)
                 {
@@ -821,7 +822,7 @@ search_req SearchHandler::_HandleSearchRequest()
                 ShowInfoFmt("SortByFlags: {}", (sortDescending == 0 ? "ascending" : "descending"));
                 break;
             }
-            case SEARCH_FLAGS2: // Flag Entry #2 - 4 byte
+            case SearchType::Flags2: // Flag Entry #2 - 4 byte
             {
                 unsigned int flags2 = (unsigned int)unpackBitsLE(&buffer_[0x11], bitOffset, 32);
 
@@ -831,7 +832,7 @@ search_req SearchHandler::_HandleSearchRequest()
             }
             default:
             {
-                ShowInfoFmt("Unknown Search Param {}!", EntryType);
+                ShowInfoFmt("Unknown Search Param {}!", static_cast<uint8>(EntryType));
                 break;
             }
         }
@@ -863,7 +864,7 @@ search_req SearchHandler::_HandleSearchRequest()
     // For example: "/blacklist delete Name" and "/sea all Name"
 }
 
-uint16_t SearchHandler::getNumSessionsInUse(const std::string& ipAddressStr)
+uint16_t SearchHandler::getNumSessionsInUse(const std::string& ipAddressStr) const
 {
     DebugSocketsFmt("Checking if IP is in use: {}", ipAddressStr);
 
@@ -888,7 +889,7 @@ uint16_t SearchHandler::getNumSessionsInUse(const std::string& ipAddressStr)
         });
 }
 
-void SearchHandler::removeFromUsedIPAddresses(const std::string& ipAddressStr)
+void SearchHandler::removeFromUsedIPAddresses(const std::string& ipAddressStr) const
 {
     DebugSocketsFmt("Removing IP from active set: {}", ipAddressStr);
 
@@ -921,7 +922,7 @@ void SearchHandler::removeFromUsedIPAddresses(const std::string& ipAddressStr)
         });
 }
 
-void SearchHandler::addToUsedIPAddresses(const std::string& ipAddressStr)
+void SearchHandler::addToUsedIPAddresses(const std::string& ipAddressStr) const
 {
     DebugSocketsFmt("Adding IP to active set: {}", ipAddressStr);
 

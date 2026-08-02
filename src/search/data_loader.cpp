@@ -42,7 +42,7 @@ uint8 JOB_MON = 23;
 
 struct AhCategoryCacheEntry
 {
-    std::vector<ahItem>                   items;
+    std::vector<AuctionHouseItem>                   items;
     std::chrono::steady_clock::time_point expiresAt;
 };
 
@@ -53,18 +53,18 @@ std::string makeAhCategoryCacheKey(uint8 ahCategoryID, const std::string& orderB
     return fmt::format("{}:{}", ahCategoryID, orderByString);
 }
 
-std::vector<ahItem*> cloneAhItems(const std::vector<ahItem>& items)
+std::vector<AuctionHouseItem*> cloneAhItems(const std::vector<AuctionHouseItem>& items)
 {
-    std::vector<ahItem*> out;
+    std::vector<AuctionHouseItem*> out;
     out.reserve(items.size());
     for (const auto& item : items)
     {
-        out.emplace_back(new ahItem(item));
+        out.emplace_back(new AuctionHouseItem(item));
     }
     return out;
 }
 
-Maybe<std::vector<ahItem>> tryGetCachedAhCategory(uint8 ahCategoryID, const std::string& orderByString)
+Maybe<std::vector<AuctionHouseItem>> tryGetCachedAhCategory(uint8 ahCategoryID, const std::string& orderByString)
 {
     if (!settings::get<bool>("search.AH_CACHE_ENABLED"))
     {
@@ -73,7 +73,7 @@ Maybe<std::vector<ahItem>> tryGetCachedAhCategory(uint8 ahCategoryID, const std:
 
     const auto key = makeAhCategoryCacheKey(ahCategoryID, orderByString);
     return ahCategoryCache.read(
-        [&](const auto& cache) -> Maybe<std::vector<ahItem>>
+        [&](const auto& cache) -> Maybe<std::vector<AuctionHouseItem>>
         {
             const auto it = cache.find(key);
             if (it == cache.end())
@@ -90,7 +90,7 @@ Maybe<std::vector<ahItem>> tryGetCachedAhCategory(uint8 ahCategoryID, const std:
         });
 }
 
-void putCachedAhCategory(uint8 ahCategoryID, const std::string& orderByString, std::vector<ahItem> items)
+void putCachedAhCategory(uint8 ahCategoryID, const std::string& orderByString, std::vector<AuctionHouseItem> items)
 {
     if (!settings::get<bool>("search.AH_CACHE_ENABLED"))
     {
@@ -110,11 +110,11 @@ void putCachedAhCategory(uint8 ahCategoryID, const std::string& orderByString, s
         });
 }
 
-std::vector<ahItem> fetchAhItemsToCategory(uint8 ahCategoryID, const std::string& orderByString)
+std::vector<AuctionHouseItem> fetchAhItemsToCategory(uint8 ahCategoryID, const std::string& orderByString)
 {
     ShowTraceFmt("Try find category: {}", ahCategoryID);
 
-    std::vector<ahItem> itemList;
+    std::vector<AuctionHouseItem> itemList;
 
     const auto rset = [&]()
     {
@@ -150,7 +150,7 @@ std::vector<ahItem> fetchAhItemsToCategory(uint8 ahCategoryID, const std::string
     {
         while (rset->next())
         {
-            ahItem item = {};
+            AuctionHouseItem item = {};
 
             item.ItemID = rset->get<uint16>("itemid");
 
@@ -186,9 +186,9 @@ CDataLoader::~CDataLoader()
  *                                                                       *
  ************************************************************************/
 
-std::vector<ahHistory*> CDataLoader::GetAHItemHistory(uint16 ItemID, bool stack)
+std::vector<AuctionHouseHistory*> CDataLoader::GetAHItemHistory(uint16 ItemID, bool stack)
 {
-    std::vector<ahHistory*> HistoryList;
+    std::vector<AuctionHouseHistory*> HistoryList;
 
     auto rset = db::preparedStmt("SELECT sale, sell_date, seller_name, buyer_name "
                                  "FROM auction_house "
@@ -202,7 +202,7 @@ std::vector<ahHistory*> CDataLoader::GetAHItemHistory(uint16 ItemID, bool stack)
     {
         while (rset->next())
         {
-            ahHistory* PAHHistory = new ahHistory;
+            AuctionHouseHistory* PAHHistory = new AuctionHouseHistory;
 
             PAHHistory->Price = rset->get<uint32>("sale");
             PAHHistory->Data  = rset->get<uint32>("sell_date");
@@ -217,10 +217,10 @@ std::vector<ahHistory*> CDataLoader::GetAHItemHistory(uint16 ItemID, bool stack)
     return HistoryList;
 }
 
-auto CDataLoader::GetAHItemHistoryAsync(Scheduler& scheduler, uint16 ItemID, bool stack) -> Task<std::pair<std::vector<ahHistory*>, ahItem>>
+auto CDataLoader::GetAHItemHistoryAsync(Scheduler& scheduler, uint16 ItemID, bool stack) -> Task<std::pair<std::vector<AuctionHouseHistory*>, AuctionHouseItem>>
 {
     co_return co_await scheduler.spawnOnWorkerThread(
-        [ItemID, stack]() -> std::pair<std::vector<ahHistory*>, ahItem>
+        [ItemID, stack]() -> std::pair<std::vector<AuctionHouseHistory*>, AuctionHouseItem>
         {
             CDataLoader loader;
             return { loader.GetAHItemHistory(ItemID, stack), loader.GetAHItemFromItemID(ItemID) };
@@ -233,7 +233,7 @@ auto CDataLoader::GetAHItemHistoryAsync(Scheduler& scheduler, uint16 ItemID, boo
  *                                                                       *
  ************************************************************************/
 
-std::vector<ahItem*> CDataLoader::GetAHItemsToCategory(uint8 ahCategoryID, const std::string& orderByString)
+std::vector<AuctionHouseItem*> CDataLoader::GetAHItemsToCategory(uint8 ahCategoryID, const std::string& orderByString)
 {
     if (const auto cached = tryGetCachedAhCategory(ahCategoryID, orderByString))
     {
@@ -246,7 +246,7 @@ std::vector<ahItem*> CDataLoader::GetAHItemsToCategory(uint8 ahCategoryID, const
     return cloneAhItems(items);
 }
 
-auto CDataLoader::GetAHItemsToCategoryAsync(Scheduler& scheduler, uint8 ahCategoryID, const std::string& orderByString) -> Task<std::vector<ahItem*>>
+auto CDataLoader::GetAHItemsToCategoryAsync(Scheduler& scheduler, uint8 ahCategoryID, const std::string& orderByString) -> Task<std::vector<AuctionHouseItem*>>
 {
     if (const auto cached = tryGetCachedAhCategory(ahCategoryID, orderByString))
     {
@@ -264,7 +264,7 @@ auto CDataLoader::GetAHItemsToCategoryAsync(Scheduler& scheduler, uint8 ahCatego
     co_return cloneAhItems(items);
 }
 
-void CDataLoader::InvalidateAHCategoryCache()
+void CDataLoader::InvalidateAHCategoryCache() const
 {
     ahCategoryCache.write(
         [](auto& cache)
@@ -274,9 +274,9 @@ void CDataLoader::InvalidateAHCategoryCache()
 }
 
 // Return single item including category and how many are listed
-ahItem CDataLoader::GetAHItemFromItemID(uint16 ItemID)
+AuctionHouseItem CDataLoader::GetAHItemFromItemID(uint16 ItemID)
 {
-    ahItem CAHItem       = {};
+    AuctionHouseItem CAHItem       = {};
     CAHItem.ItemID       = ItemID;
     CAHItem.Category     = 0;
     CAHItem.SingleAmount = 0;
@@ -304,7 +304,7 @@ ahItem CDataLoader::GetAHItemFromItemID(uint16 ItemID)
  *                                                                       *
  ************************************************************************/
 
-uint32 CDataLoader::GetPlayersCount(const search_req& sr)
+uint32 CDataLoader::GetPlayersCount(const SearchRequest& sr)
 {
     uint8 jobid = sr.jobid;
     if (jobid > 0 && jobid < 21)
@@ -333,7 +333,7 @@ uint32 CDataLoader::GetPlayersCount(const search_req& sr)
  *          Job ID is 0 for none specified.                              *
  ************************************************************************/
 
-std::list<SearchEntity*> CDataLoader::GetPlayersList(search_req sr, int* count)
+std::list<SearchEntity*> CDataLoader::GetPlayersList(SearchRequest sr, int* count)
 {
     std::list<SearchEntity*> PlayersList;
     std::string              filterQry;
@@ -868,7 +868,7 @@ std::string CDataLoader::GetSearchComment(uint32 playerId)
     return std::string();
 }
 
-void CDataLoader::ExpireAHItems(uint16 expireAgeInDays)
+void CDataLoader::ExpireAHItems(uint16 expireAgeInDays) const
 {
     ShowInfoFmt("Expiring auction house listings over {} days old", expireAgeInDays);
 

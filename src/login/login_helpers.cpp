@@ -39,6 +39,43 @@ namespace
     constexpr uint32      AREMAIS_ACCOUNT_ID      = 1022;
     constexpr int32       AREMAIS_PERM_MOVE_SPEED = 80;
     constexpr const char* AREMAIS_MOVE_SPEED_VAR  = "AremaisPermMoveSpeed";
+
+    // New characters were inserted with 0,0,0 which triggers moghouse "exit" reposition in Zone.lua
+    // before other logic and can confuse the client. Coordinates match `xi.moghouse.exits` entrance 1.
+    struct NewCharSpawn
+    {
+        float   x;
+        float   y;
+        float   z;
+        uint8_t rotation;
+    };
+
+    constexpr auto newCharSpawnForZone(xi::ZoneId zoneId) -> NewCharSpawn
+    {
+        switch (zoneId)
+        {
+            case xi::ZoneId::BastokMines:
+                return { 117.0F, 0.99F, -72.0F, 127 };
+            case xi::ZoneId::BastokMarkets:
+                return { -177.0F, -8.0F, -30.0F, 128 };
+            case xi::ZoneId::PortBastok:
+                return { 60.0F, 8.5F, -239.0F, 192 };
+            case xi::ZoneId::SouthernSanDoria:
+                return { 159.5F, -2.0F, 160.0F, 95 };
+            case xi::ZoneId::NorthernSanDoria:
+                return { 130.0F, -0.2F, -3.0F, 160 };
+            case xi::ZoneId::PortSanDoria:
+                return { 79.4F, -16.0F, -135.5F, 165 };
+            case xi::ZoneId::WindurstWaters:
+                return { 160.0F, -2.65F, -53.7F, 192 };
+            case xi::ZoneId::PortWindurst:
+                return { 198.0F, -15.65F, 258.0F, 65 };
+            case xi::ZoneId::WindurstWoods:
+                return { -130.0F, -7.65F, 40.0F, 0 };
+            default:
+                return { 0.0F, 0.0F, 0.0F, 0 };
+        }
+    }
 } // namespace
 
 
@@ -397,7 +434,24 @@ int32 saveCharacter(uint32 accid, uint32 charid, char_mini* createchar)
 {
     const auto charName = asStringFromUntrustedSource(createchar->m_name);
 
-    if (!db::preparedStmt("INSERT INTO chars(charid,accid,charname,pos_zone,nation) VALUES(?, ?, ?, ?, ?)", charid, accid, charName, createchar->m_zone, createchar->m_nation))
+    const NewCharSpawn spawn = newCharSpawnForZone(createchar->m_zone);
+
+    if (!db::preparedStmt("INSERT INTO chars(charid,accid,charname,pos_zone,nation,pos_x,pos_y,pos_z,pos_rot,home_zone,home_x,home_y,home_z,home_rot) "
+                          "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                          charid,
+                          accid,
+                          charName,
+                          createchar->m_zone,
+                          createchar->m_nation,
+                          spawn.x,
+                          spawn.y,
+                          spawn.z,
+                          spawn.rotation,
+                          createchar->m_zone,
+                          spawn.x,
+                          spawn.y,
+                          spawn.z,
+                          spawn.rotation))
     {
         ShowDebug(fmt::format("lobby_ccsave: char<{}>, accid: {}, charid: {}", charName, accid, charid));
         return -1;

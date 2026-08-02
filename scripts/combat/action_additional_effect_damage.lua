@@ -1,8 +1,8 @@
 -----------------------------------
 -- Global file for additional effects (damage)
 -----------------------------------
-require('scripts/globals/combat/damage_multipliers')
-require('scripts/globals/combat/magic_hit_rate')
+require('scripts/combat/basic/damage_multipliers')
+require('scripts/combat/basic/magic_hit_rate')
 -----------------------------------
 xi = xi or {}
 xi.combat = xi.combat or {}
