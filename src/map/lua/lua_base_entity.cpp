@@ -39,6 +39,7 @@
 #include "alliance.h"
 #include "aman.h"
 #include "battlefield.h"
+#include "conquest_system.h"
 #include "daily_system.h"
 #include "enmity_container.h"
 #include "fishingcontest.h"
@@ -972,14 +973,14 @@ void CLuaBaseEntity::injectActionPacket(const uint32 inTargetID, uint16 inCatego
         .actionid   = inActionParam,
         .targets    = {
             {
-                   .actorId = inTargetID,
-                   .results = {
+                .actorId = inTargetID,
+                .results = {
                     {
-                           .resolution = reaction,
-                           .animation  = static_cast<ActionAnimation>(inAnimationID),
-                           .info       = info,
-                           .param      = inParam,
-                           .messageID  = static_cast<MsgBasic>(inMessage),
+                        .resolution = reaction,
+                        .animation  = static_cast<ActionAnimation>(inAnimationID),
+                        .info       = info,
+                        .param      = inParam,
+                        .messageID  = static_cast<MsgBasic>(inMessage),
                     },
                 },
             },
@@ -2779,6 +2780,86 @@ auto CLuaBaseEntity::sendGuild(const uint16 guildId, uint8 open, uint8 close, ui
     PChar->pushPacket<GP_SERV_COMMAND_GUILD_OPEN>(status, open, close, holiday);
 
     return status == GP_SERV_COMMAND_GUILD_OPEN_STAT::Open;
+}
+
+/************************************************************************
+ *  Function: openGuildShop()
+ *  Purpose : Opens a lua guild shop and remembers the NPC the PC opened it with
+ *  Example : if player:openGuildShop(npc, 8, 23) then
+ ************************************************************************/
+
+auto CLuaBaseEntity::openGuildShop(CLuaBaseEntity* PNpc, uint8 open, uint8 close, sol::optional<uint8> holiday) const -> bool
+{
+    auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity);
+    if (!PChar)
+    {
+        ShowWarningFmt("Invalid entity type calling function ({}).", m_PBaseEntity->getName());
+        return false;
+    }
+
+    if (PNpc == nullptr || PNpc->GetBaseEntity() == nullptr)
+    {
+        ShowWarning("Invalid guild shop NPC passed to openGuildShop().");
+        return false;
+    }
+
+    const bool isHoliday = holiday.has_value() && holiday.value() == vanadiel_time::get_weekday(vanadiel_time::now());
+
+    const uint8 vanadielHour = static_cast<uint8>(vanadiel_time::get_hour(vanadiel_time::now()));
+    const bool  isOpen       = !isHoliday && vanadielHour >= open && vanadielHour < close;
+
+    auto status = GP_SERV_COMMAND_GUILD_OPEN_STAT::Close;
+    if (isHoliday)
+    {
+        status = GP_SERV_COMMAND_GUILD_OPEN_STAT::Holiday;
+    }
+    else if (isOpen)
+    {
+        status = GP_SERV_COMMAND_GUILD_OPEN_STAT::Open;
+    }
+
+    const auto* PNpcEntity = PNpc->GetBaseEntity();
+
+    PChar->guildShopNpc_ = EntityId(PNpcEntity);
+    PChar->pushPacket<GP_SERV_COMMAND_GUILD_OPEN>(status, open, close, holiday.value_or(0));
+
+    return isOpen;
+}
+
+/************************************************************************
+ *  Function: clearGuildShop()
+ *  Purpose : Clears the PC's open guild shop handle
+ *  Example : player:clearGuildShop()
+ ************************************************************************/
+
+void CLuaBaseEntity::clearGuildShop() const
+{
+    auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity);
+    if (!PChar)
+    {
+        ShowWarningFmt("Invalid entity type calling function ({}).", m_PBaseEntity->getName());
+        return;
+    }
+
+    PChar->guildShopNpc_.clean();
+}
+
+/************************************************************************
+ *  Function: sendGuildClose()
+ *  Purpose : Sends the guild-open packet with a Close status to the PC
+ *  Example : player:sendGuildClose(8, 23)
+ ************************************************************************/
+
+void CLuaBaseEntity::sendGuildClose(uint8 open, uint8 close, sol::optional<bool> passive) const
+{
+    auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity);
+    if (!PChar)
+    {
+        ShowWarningFmt("Invalid entity type calling function ({}).", m_PBaseEntity->getName());
+        return;
+    }
+
+    PChar->pushPacket<GP_SERV_COMMAND_GUILD_OPEN>(GP_SERV_COMMAND_GUILD_OPEN_STAT::Close, open, close, 0, PassiveGuildClose(passive.value_or(false)));
 }
 
 /************************************************************************
@@ -6305,6 +6386,7 @@ void CLuaBaseEntity::setCostume2(uint16 costume)
         PChar->pushPacket<GP_SERV_COMMAND_GRAP_LIST>(PChar);
     }
 }
+
 /************************************************************************
  *  Function: getAnimation()
  *  Purpose : Returns the assigned default animation of an entity
@@ -8732,6 +8814,7 @@ uint32 CLuaBaseEntity::getMissionStatus(MissionLog logId, const sol::object& mis
     ShowError("Lua::getMissionStatus: missionLogID %i is invalid", static_cast<uint8_t>(logId));
     return 0;
 }
+
 /************************************************************************
  *  Function: sendPartialMissionLog()
  *  Purpose : Sends the packet for mission log
@@ -9994,6 +10077,32 @@ void CLuaBaseEntity::delCP(int32 cp)
 
     charutils::AddPoints(PChar, charutils::GetConquestPointsName(PChar).c_str(), -cp);
     PChar->pushPacket<GP_SERV_COMMAND_CONQUEST>(PChar);
+}
+
+/************************************************************************
+ *  Function: gainConquestInfluence()
+ *  Purpose : Adds conquest influence to the player's nation and current region
+ *  Example : player:gainConquestInfluence(50)
+ *  Notes   : Applies the player's Moghancement region bonus.
+ ************************************************************************/
+
+void CLuaBaseEntity::gainConquestInfluence(int32 points)
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowWarning("Invalid entity type calling function (%s).", m_PBaseEntity->getName());
+        return;
+    }
+
+    if (points <= 0)
+    {
+        ShowWarning("gainConquestInfluence: non-positive amount (%d) ignored.", points);
+        return;
+    }
+
+    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
+
+    conquest::GainInfluencePoints(PChar, static_cast<uint32>(points));
 }
 
 /************************************************************************
@@ -14504,6 +14613,30 @@ void CLuaBaseEntity::delStatusEffectsByFlag(uint32 flag, const sol::object& sile
 }
 
 /************************************************************************
+ *  Function: delStatusEffectsByType()
+ *  Purpose : Removes all Status Effects of a specified type
+ *  Example : target:delStatusEffectsByType(xi.effectType.SPIKES)
+ *  Notes   : Used for removal of multiple effects with matching type
+ ************************************************************************/
+
+void CLuaBaseEntity::delStatusEffectsByType(uint16 type)
+{
+    if (m_PBaseEntity->objtype == TYPE_NPC)
+    {
+        ShowWarning("Invalid Entity (NPC: %s) calling function.", m_PBaseEntity->getName());
+        return;
+    }
+
+    auto* PBattleEntity = dynamic_cast<CBattleEntity*>(m_PBaseEntity);
+    if (!PBattleEntity)
+    {
+        return;
+    }
+
+    PBattleEntity->StatusEffectContainer->DelStatusEffectsByType(type);
+}
+
+/************************************************************************
  *  Function: delStatusEffectSilent()
  *  Purpose : Removes a Status Effect from the Entity without showing a message
  *  Example : target:delStatusEffectSilent(xi.effect.SANDSTORM)
@@ -16957,6 +17090,29 @@ auto CLuaBaseEntity::hasAttachment(const uint16 itemID) const -> bool
 }
 
 /************************************************************************
+ *  Function: hasAttachmentSet()
+ *  Purpose : Returns true if automaton has attachment set (in current use)
+ *  Example : if player:hasAttachmentSet() then
+ *  Notes   :
+ ************************************************************************/
+
+auto CLuaBaseEntity::hasAttachmentSet(const uint16 itemID) const -> bool
+{
+    if (m_PBaseEntity->objtype != TYPE_PET)
+    {
+        ShowWarning("Invalid entity type calling function (%s).", m_PBaseEntity->getName());
+        return false;
+    }
+
+    if (static_cast<CPetEntity*>(m_PBaseEntity)->getPetType() == PET_TYPE::AUTOMATON)
+    {
+        return static_cast<CAutomatonEntity*>(m_PBaseEntity)->hasAttachment(itemID - 0x2100);
+    }
+
+    return false;
+}
+
+/************************************************************************
  *  Function: getAutomatonName()
  *  Purpose : Returns the string name of the player's automaton
  *  Example : local name = player:getAutomatonName()
@@ -17943,6 +18099,27 @@ void CLuaBaseEntity::setNpcFlags(uint32 flags)
 }
 
 /************************************************************************
+ *  Function: setNpcAlwaysRelevant()
+ *  Purpose : Set NPC such that it is always relevant to players regardless of distance
+ *  Example : npc:setNpcAlwaysRelevant(true)
+ *  Notes   :
+ ************************************************************************/
+void CLuaBaseEntity::setNpcAlwaysRelevant(bool alwaysRelevant)
+{
+    if (m_PBaseEntity->objtype != TYPE_NPC)
+    {
+        return;
+    }
+
+    auto* PNpc = dynamic_cast<CNpcEntity*>(m_PBaseEntity);
+
+    if (PNpc != nullptr)
+    {
+        PNpc->setAlwaysRelevant(alwaysRelevant);
+    }
+}
+
+/************************************************************************
  *  Function: spawn()
  *  Purpose : Forces a mob to spawn with optional Despawn/Respawn values
  *  Example : mob:spawn(60,3600); mob:spawn()
@@ -18628,6 +18805,52 @@ void CLuaBaseEntity::delMobMod(uint16 mobModID, int16 value)
 }
 
 /************************************************************************
+ *  Function: getfTPModifierOverride()
+ *  Purpose : Returns the fTP modifier override table set for a mob skill, or nil if none is set
+ *  Example : mob:getfTPModifierOverride(xi.mobSkill.FLYING_HIP_PRESS)
+ *  Notes   :
+ ************************************************************************/
+
+auto CLuaBaseEntity::getfTPModifierOverride(uint16 skillId) -> sol::object
+{
+    if (m_PBaseEntity->objtype & TYPE_NPC || m_PBaseEntity->objtype & TYPE_PC)
+    {
+        ShowError("function call on invalid entity! (name: %s type: %d)", m_PBaseEntity->name, m_PBaseEntity->objtype);
+        return sol::lua_nil;
+    }
+
+    if (const auto fTPModifierOverride = static_cast<CMobEntity*>(m_PBaseEntity)->getfTPModifierOverride(skillId))
+    {
+        auto table = lua.create_table();
+        table.add((*fTPModifierOverride)[0]);
+        table.add((*fTPModifierOverride)[1]);
+        table.add((*fTPModifierOverride)[2]);
+
+        return table;
+    }
+
+    return sol::lua_nil;
+}
+
+/************************************************************************
+ *  Function: setfTPModifierOverride()
+ *  Purpose : Sets an fTP modifier override table for a mob skill, replacing the skill's default fTP scaling
+ *  Example : mob:setfTPModifierOverride(xi.mobSkill.FLYING_HIP_PRESS, 7.0, 9.0, 11.0)
+ *  Notes   : Needs to be added to the mob skill to be consumed. params.fTP = mob:getfTPModifierOverride(skill:getID()) or params.fTP
+ ************************************************************************/
+
+void CLuaBaseEntity::setfTPModifierOverride(uint16 skillId, float ftp1, float ftp2, float ftp3)
+{
+    if (m_PBaseEntity->objtype & TYPE_NPC || m_PBaseEntity->objtype & TYPE_PC)
+    {
+        ShowError("function call on invalid entity! (name: %s type: %d)", m_PBaseEntity->name, m_PBaseEntity->objtype);
+        return;
+    }
+
+    static_cast<CMobEntity*>(m_PBaseEntity)->setfTPModifierOverride(skillId, ftp1, ftp2, ftp3);
+}
+
+/************************************************************************
  *  Function: getBattleTime()
  *  Purpose : Returns the time the Mob has been engaged in seconds
  *  Example : if mob:getBattleTime() == 3600 then -- 1 Hour
@@ -18663,6 +18886,25 @@ auto CLuaBaseEntity::getCrystalElement() const -> ELEMENT
     }
 
     return static_cast<ELEMENT>(PMob->m_Element);
+}
+
+/************************************************************************
+ *  Function: setCrystalElement()
+ *  Purpose : Sets a mob crystal element
+ *  Example : mob:setCrystalElement(xi.element.FIRE)
+ *  Notes   :
+ ************************************************************************/
+void CLuaBaseEntity::setCrystalElement(ELEMENT crystalElement)
+{
+    auto* PMob = dynamic_cast<CMobEntity*>(m_PBaseEntity);
+
+    if (!PMob)
+    {
+        ShowWarning("Invalid Entity (NPC: %s) calling function.", m_PBaseEntity->getName());
+        return;
+    }
+
+    PMob->m_Element = crystalElement;
 }
 
 /************************************************************************
@@ -19334,12 +19576,12 @@ void CLuaBaseEntity::restoreFromChest(CLuaBaseEntity* PLuaBaseEntity, uint32 res
                 .actiontype = ActionCategory::MobSkillFinish,
                 .targets    = {
                     {
-                           .actorId = PChar->id,
-                           .results = {
+                        .actorId = PChar->id,
+                        .results = {
                             {
-                                   .animation = animationID,
-                                   .param     = messageParam,
-                                   .messageID = messageID,
+                                .animation = animationID,
+                                .param     = messageParam,
+                                .messageID = messageID,
                             },
                         },
                     },
@@ -20367,6 +20609,9 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("changeMusic", CLuaBaseEntity::changeMusic);
     SOL_REGISTER("sendMenu", CLuaBaseEntity::sendMenu);
     SOL_REGISTER("sendGuild", CLuaBaseEntity::sendGuild);
+    SOL_REGISTER("openGuildShop", CLuaBaseEntity::openGuildShop);
+    SOL_REGISTER("clearGuildShop", CLuaBaseEntity::clearGuildShop);
+    SOL_REGISTER("sendGuildClose", CLuaBaseEntity::sendGuildClose);
     SOL_REGISTER("openSendBox", CLuaBaseEntity::openSendBox);
     SOL_REGISTER("leaveGame", CLuaBaseEntity::leaveGame);
     SOL_REGISTER("sendEmote", CLuaBaseEntity::sendEmote);
@@ -20656,6 +20901,7 @@ void CLuaBaseEntity::Register()
 
     SOL_REGISTER("getCP", CLuaBaseEntity::getCP);
     SOL_REGISTER("addCP", CLuaBaseEntity::addCP);
+    SOL_REGISTER("gainConquestInfluence", CLuaBaseEntity::gainConquestInfluence);
     SOL_REGISTER("delCP", CLuaBaseEntity::delCP);
 
     SOL_REGISTER("getSeals", CLuaBaseEntity::getSeals);
@@ -20871,6 +21117,7 @@ void CLuaBaseEntity::Register()
 
     SOL_REGISTER("delStatusEffect", CLuaBaseEntity::delStatusEffect);
     SOL_REGISTER("delStatusEffectsByFlag", CLuaBaseEntity::delStatusEffectsByFlag);
+    SOL_REGISTER("delStatusEffectsByType", CLuaBaseEntity::delStatusEffectsByType);
     SOL_REGISTER("delStatusEffectSilent", CLuaBaseEntity::delStatusEffectSilent);
     SOL_REGISTER("eraseStatusEffect", CLuaBaseEntity::eraseStatusEffect);
     SOL_REGISTER("eraseAllStatusEffect", CLuaBaseEntity::eraseAllStatusEffect);
@@ -20982,6 +21229,7 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("delPetMod", CLuaBaseEntity::delPetMod);
 
     SOL_REGISTER("hasAttachment", CLuaBaseEntity::hasAttachment);
+    SOL_REGISTER("hasAttachmentSet", CLuaBaseEntity::hasAttachmentSet);
     SOL_REGISTER("getAutomatonName", CLuaBaseEntity::getAutomatonName);
     SOL_REGISTER("getAutomatonFrame", CLuaBaseEntity::getAutomatonFrame);
     SOL_REGISTER("setAutomatonFrame", CLuaBaseEntity::setAutomatonFrame);
@@ -21035,6 +21283,7 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("setMobFlags", CLuaBaseEntity::setMobFlags);
     SOL_REGISTER("getMobFlags", CLuaBaseEntity::getMobFlags);
     SOL_REGISTER("setNpcFlags", CLuaBaseEntity::setNpcFlags);
+    SOL_REGISTER("setNpcAlwaysRelevant", CLuaBaseEntity::setNpcAlwaysRelevant);
 
     SOL_REGISTER("spawn", CLuaBaseEntity::spawn);
     SOL_REGISTER("isSpawned", CLuaBaseEntity::isSpawned);
@@ -21076,7 +21325,10 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("delMobMod", CLuaBaseEntity::delMobMod);
 
     SOL_REGISTER("getBattleTime", CLuaBaseEntity::getBattleTime);
+    SOL_REGISTER("getfTPModifierOverride", CLuaBaseEntity::getfTPModifierOverride);
+    SOL_REGISTER("setfTPModifierOverride", CLuaBaseEntity::setfTPModifierOverride);
     SOL_REGISTER("getCrystalElement", CLuaBaseEntity::getCrystalElement);
+    SOL_REGISTER("setCrystalElement", CLuaBaseEntity::setCrystalElement);
 
     SOL_REGISTER("getBehavior", CLuaBaseEntity::getBehavior);
     SOL_REGISTER("setBehavior", CLuaBaseEntity::setBehavior);
