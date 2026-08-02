@@ -45,6 +45,7 @@
 #include "instance.h"
 #include "ipc_client.h"
 #include "item_container.h"
+#include "items.h"
 #include "job_points.h"
 #include "latent_effect_container.h"
 #include "linkshell.h"

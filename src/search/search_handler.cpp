@@ -48,6 +48,7 @@ SearchHandler::SearchHandler(Scheduler& scheduler, asio::ip::tcp::socket socket,
 : scheduler_(scheduler)
 , socket_(std::move(socket))
 , buffer_{}
+, readBuffer_{}
 , IPAddressesInUse_(IPAddressesInUseList)
 , IPAddressWhitelist_(IPAddressWhitelist)
 {

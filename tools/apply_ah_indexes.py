@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Apply auction_house_search_perf_indexes.sql using settings/network credentials."""
+"""Apply zz_auction_house_search_perf_indexes.sql using settings/network credentials."""
 
 import os
 import re
