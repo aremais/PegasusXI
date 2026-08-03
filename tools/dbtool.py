@@ -476,7 +476,10 @@ def fetch_files(express=False):
             "verify_",
         )
         skip_full_import_names = {
+            # Diagnostic / operator-only; must not run on fresh CI imports.
             "audit_zone_settings.sql",
+            # Rewrites zoneip away from 127.0.0.1 and breaks local/CI zone load.
+            "fix_zone_settings_public_ip.sql",
         }
         for _, _, filenames in os.walk(from_server_path("sql/")):
             for filename in sorted(filenames):
